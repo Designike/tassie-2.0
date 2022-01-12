@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -12,7 +14,9 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Container(),
+      body: Center(
+        child: Text('Henlo Tassite!'),),
+      
     );
   }
 }
