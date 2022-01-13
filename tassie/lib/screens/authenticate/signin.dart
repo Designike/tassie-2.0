@@ -1,10 +1,11 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, avoid_print
 
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:tassie/screens/home/home.dart';
 import '../../constants.dart';
 
 class SignIn extends StatefulWidget {
@@ -22,6 +23,7 @@ class _SignInState extends State<SignIn> {
   String error = "";
   final _formKey = GlobalKey<FormState>();
   String? value;
+  final storage = FlutterSecureStorage();
   var dio = Dio();
   Future<String?> check() async {
     const storage = FlutterSecureStorage();
@@ -144,7 +146,7 @@ class _SignInState extends State<SignIn> {
                       // },
                       onTap: () async {
                         if (_formKey.currentState!.validate()) {
-                          final response = await dio.post(
+                          Response response = await dio.post(
                             "https://api-tassie.herokuapp.com/user/login/",
                             options: Options(headers: {
                               HttpHeaders.contentTypeHeader: "application/json",
@@ -153,6 +155,17 @@ class _SignInState extends State<SignIn> {
                             data: email != ""
                                 ? {"email": email, "password": password}
                                 : {"username": username, "password": password},
+                          );
+                          print('1');
+                          await storage.write(
+                              key: "token",
+                              value: response.data['data']['token']);
+                          print('2');
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) {
+                              return Home();
+                            }),
                           );
                           print(response.toString());
                         }

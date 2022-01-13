@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:tassie/constants.dart';
 
 import 'authenticate/authenticate.dart';
 import 'home/home.dart';
@@ -12,9 +14,14 @@ class Wrapper extends StatefulWidget {
 
 class _WrapperState extends State<Wrapper> {
   String? value;
+  bool isLoading = true;
   Future<String?> check() async {
     const storage = FlutterSecureStorage();
-    value = await storage.read(key: "token");
+    var x = await storage.read(key: "token");
+    setState(() {
+      value = x;
+      isLoading = false;
+    });
   }
 
   @override
@@ -25,10 +32,22 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   Widget build(BuildContext context) {
-    if (value != null) {
-      return Home();
+    if (isLoading) {
+      return const Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: SpinKitThreeBounce(
+            color: kPrimaryColor,
+            size: 50.0,
+          ),
+        ),
+      );
     } else {
-      return Authenticate();
+      if (value != null) {
+        return const Home();
+      } else {
+        return const Authenticate();
+      }
     }
   }
 }

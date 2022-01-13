@@ -1,10 +1,11 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, avoid_print
 
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:tassie/screens/home/home.dart';
 
 import '../../constants.dart';
 
@@ -23,6 +24,7 @@ class _OTPFormState extends State<OTPForm> {
   FocusNode? pin5FocusNode;
   FocusNode? pin6FocusNode;
   var dio = Dio();
+  final storage = FlutterSecureStorage();
   List<String> totp = List<String>.filled(6, '', growable: true);
   @override
   void initState() {
@@ -217,6 +219,16 @@ class _OTPFormState extends State<OTPForm> {
                       HttpHeaders.contentTypeHeader: "application/json",
                     }),
                     data: {"totp": otp});
+                print('1');
+                await storage.write(
+                    key: "token", value: response.data['data']['token']);
+                print('2');
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return Home();
+                  }),
+                );
                 print(widget.uuid);
                 print(response.data);
               } on DioError catch (e) {
