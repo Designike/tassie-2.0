@@ -92,10 +92,8 @@ class _ViewCommentsState extends State<ViewComments> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       // backgroundColor: Color(0xFFEDF0F6),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Column(
+      body: SingleChildScrollView(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -286,17 +284,44 @@ class _ViewCommentsState extends State<ViewComments> {
                 ],
               ),
             ),
-           
+            // SizedBox(height: 10.0),
+            // Container(
+            //   width: double.infinity,
+            //   height: 600.0,
+            //   decoration: BoxDecoration(
+            //     // color: Colors.white,
+            //     borderRadius: BorderRadius.only(
+            //       topLeft: Radius.circular(30.0),
+            //       topRight: Radius.circular(30.0),
+            //     ),
+            //   ),
+            //   // child: Column(
+            //   //   children: [_createComment(0)],
+            //   // ),
+            //   child: Expanded(child: ListView.builder(
+            //     // controller: _sc,
+            //   itemCount: no_of_comments,
+            //     itemBuilder: (context, index) {
+            //     return _createComment(index);
+            //   }))
+            // )
+            Expanded(
+              flex: 15,
+              child: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: ListView.builder(
+                    // controller: _sc,
+                    // physics: NeverScrollableScrollPhysics(),
+                    itemCount: no_of_comments,
+                    itemBuilder: (context, index) {
+                      return _createComment(index);
+                    }),
+              ),
+            ),
+            // SizedBox(height: 100.0),
           ],
         ),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate((context, index) {
-              return _createComment(index);
-            },childCount: no_of_comments),
-          )
-        ],
-        
       ),
       bottomNavigationBar: Transform.translate(
         offset: Offset(0.0, -1 * MediaQuery.of(context).viewInsets.bottom),

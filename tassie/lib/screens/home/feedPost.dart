@@ -45,6 +45,7 @@ class _FeedPostState extends State<FeedPost> {
 
   Widget _feedPostElement(int index) {
     List posts = widget.posts;
+    Size size = MediaQuery.of(context).size;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
       child: Container(
@@ -105,12 +106,13 @@ class _FeedPostState extends State<FeedPost> {
                     child: Container(
                       margin: EdgeInsets.all(10.0),
                       width: double.infinity,
-                      height: 400.0,
+                      height: size.width - 40.0,
+                      // height: 400.0,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25.0),
                         image: DecorationImage(
                           image: NetworkImage(posts[index]['url']),
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),

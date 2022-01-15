@@ -27,9 +27,9 @@ class _FeedState extends State<Feed> {
   // ];
   static int page = 1;
   final ScrollController _sc = ScrollController();
-  List posts = [];
+  static List posts = [];
   bool isLazyLoading = false;
-  bool isLoading = true;
+  static bool isLoading = true;
   bool isEnd = false;
   final dio = Dio();
   final storage = FlutterSecureStorage();
