@@ -14,31 +14,33 @@ class ViewComments extends StatefulWidget {
 }
 
 class _ViewCommentsState extends State<ViewComments> {
-  List<Map> comments = [
-    {
-      "image": "https://picsum.photos/200",
-      "name": "soham",
-      "text": "Fuck off!"
-    },
-    {
-      "image": "https://picsum.photos/200",
-      "name": "soham",
-      "text": "Fuck off!"
-    },
-    {
-      "image": "https://picsum.photos/200",
-      "name": "soham",
-      "text": "Fuck off!"
-    },
-    {
-      "image": "https://picsum.photos/200",
-      "name": "soham",
-      "text": "Fuck off!"
-    },
-    {"image": "https://picsum.photos/200", "name": "soham", "text": "Fuck off!"}
-  ];
+  // List<Map> comments = [
+  //   {
+  //     "image": "https://picsum.photos/200",
+  //     "name": "soham",
+  //     "text": "Fuck off!"
+  //   },
+  //   {
+  //     "image": "https://picsum.photos/200",
+  //     "name": "soham",
+  //     "text": "Fuck off!"
+  //   },
+  //   {
+  //     "image": "https://picsum.photos/200",
+  //     "name": "soham",
+  //     "text": "Fuck off!"
+  //   },
+  //   {
+  //     "image": "https://picsum.photos/200",
+  //     "name": "soham",
+  //     "text": "Fuck off!"
+  //   },
+  //   {"image": "https://picsum.photos/200", "name": "soham", "text": "Fuck off!"}
+  // ];
 
   Widget _createComment(int index) {
+    Map post = widget.post;
+    print(post);
     return Padding(
       padding: EdgeInsets.all(10.0),
       child: ListTile(
@@ -53,20 +55,20 @@ class _ViewCommentsState extends State<ViewComments> {
               child: Image(
                 height: 50.0,
                 width: 50.0,
-                image: NetworkImage(comments[index]['image']),
+                image: NetworkImage(post['profilePic']),
                 fit: BoxFit.cover,
               ),
             ),
           ),
         ),
         title: Text(
-          comments[index]['name'],
+          post['comments'][index]['username'],
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
         subtitle: Text(
-          comments[index]['text'],
+          post['comments'][index]['comment'],
           style: TextStyle(
             color: MediaQuery.of(context).platformBrightness == Brightness.dark
                 ? kLight
@@ -129,21 +131,20 @@ class _ViewCommentsState extends State<ViewComments> {
                                       child: Image(
                                         height: 50.0,
                                         width: 50.0,
-                                        image:
-                                            NetworkImage(widget.post['image']),
+                                        image: NetworkImage(widget.post['url']),
                                         fit: BoxFit.cover,
                                       ),
                                     ),
                                   ),
                                 ),
                                 title: Text(
-                                  widget.post['name'],
+                                  widget.post['username'],
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 subtitle: Text(
-                                  widget.post['time'],
+                                  widget.post['createdAt'],
                                   style: TextStyle(
                                       color: MediaQuery.of(context)
                                                   .platformBrightness ==
@@ -170,7 +171,7 @@ class _ViewCommentsState extends State<ViewComments> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(25.0),
                               image: DecorationImage(
-                                image: NetworkImage(widget.post['image']),
+                                image: NetworkImage(widget.post['profilePic']),
                                 fit: BoxFit.fitWidth,
                               ),
                             ),
@@ -248,7 +249,7 @@ class _ViewCommentsState extends State<ViewComments> {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: widget.post['name'],
+                                  text: widget.post['username'],
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: MediaQuery.of(context)
@@ -292,13 +293,7 @@ class _ViewCommentsState extends State<ViewComments> {
                 ),
               ),
               child: Column(
-                children: [
-                  _createComment(0),
-                  _createComment(1),
-                  _createComment(2),
-                  _createComment(3),
-                  _createComment(4),
-                ],
+                children: [_createComment(0)],
               ),
             )
           ],
@@ -344,7 +339,7 @@ class _ViewCommentsState extends State<ViewComments> {
                       child: Image(
                         height: 48.0,
                         width: 48.0,
-                        image: NetworkImage(widget.post['image']),
+                        image: NetworkImage(widget.post['url']),
                         fit: BoxFit.cover,
                       ),
                     ),

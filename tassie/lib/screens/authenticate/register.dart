@@ -242,7 +242,10 @@ class _RegisterState extends State<Register> {
                                   "name": name,
                                   "username": username,
                                   "email": email,
-                                  "password": password
+                                  "password": password,
+                                  "profilePic":"",
+                                  "website":"",
+                                  "bio":""
                                 });
                             print(response.data['data']['uuid']);
                             Navigator.push(

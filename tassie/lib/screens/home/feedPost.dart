@@ -10,10 +10,11 @@ import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/viewComments.dart';
 
 class FeedPost extends StatefulWidget {
-  const FeedPost(
-      {required this.index, required this.posts, required this.nameList});
+  const FeedPost({
+    required this.index,
+    required this.posts,
+  });
   final List posts;
-  final List nameList;
   final int index;
   @override
   _FeedPostState createState() => _FeedPostState();
@@ -44,7 +45,6 @@ class _FeedPostState extends State<FeedPost> {
 
   Widget _feedPostElement(int index) {
     List posts = widget.posts;
-    List nameList = widget.nameList;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
       child: Container(
@@ -81,13 +81,13 @@ class _FeedPostState extends State<FeedPost> {
                       ),
                     ),
                     title: Text(
-                      nameList[index],
+                      posts[index]['username'],
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     subtitle: Text(
-                      posts[index]['time'],
+                      posts[index]['createdAt'],
                       style: TextStyle(
                           color: MediaQuery.of(context).platformBrightness ==
                                   Brightness.dark
@@ -205,7 +205,7 @@ class _FeedPostState extends State<FeedPost> {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: nameList[index],
+                              text: posts[index]['username'],
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color:

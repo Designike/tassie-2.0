@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors,avoid_print
 
 import 'dart:io';
 
@@ -25,63 +25,142 @@ class _FeedState extends State<Feed> {
   //   {"name": "Soham", "time": "30 mins", "image": "https://picsum.photos/200"},
   //   {"name": "Soham", "time": "30 mins", "image": "https://picsum.photos/200"}
   // ];
-  late List posts;
-  late List nameList;
+  static int page = 1;
+  final ScrollController _sc = ScrollController();
+  List posts = [];
+  bool isLazyLoading = false;
   bool isLoading = true;
+  bool isEnd = false;
   final dio = Dio();
   final storage = FlutterSecureStorage();
-  Future<void> load() async {
-    var token = await storage.read(key: "token");
-    // try {
-    Response response = await dio.post("https://api-tassie.herokuapp.com/feed/",
-        options: Options(headers: {
-          HttpHeaders.contentTypeHeader: "application/json",
-          HttpHeaders.authorizationHeader: "Bearer " + token!
-        }),
-        data: {});
+  // Future<void> load() async {
+  //   var token = await storage.read(key: "token");
+  //   // try {https://api-tassie.herokuapp.com/feed/
+  //   Response response = await dio.post("http://10.0.2.2:3000/feed/",
+  //       options: Options(headers: {
+  //         HttpHeaders.contentTypeHeader: "application/json",
+  //         HttpHeaders.authorizationHeader: "Bearer " + token!
+  //       }),
+  //       data: {});
 
-    // to fix error
-    if (response.data['data'] != null) {
-      print(response.data['data']['post']);
+  //   // to fix error
+  //   if (response.data['data'] != null) {
+  //     print(response.data['data']['post']);
 
-      posts = response.data['data']['post'][0];
-    } else {
-      posts = [];
+  //     posts = response.data['data']['post'][0];
+  //   } else {
+  //     posts = [];
+  //   }
+  //   if (response.data['data']['nameList'] != null) {
+  //     nameList = response.data['data']['nameList'];
+  //   } else {
+  //     nameList = [];
+  //   }
+  //   setState(() {
+  //     isLoading = false;
+  //   });
+  // } on DioError catch (e) {
+  //   if (e.response!.statusCode == 401 &&
+  //       e.response!.statusMessage == "Unauthorized") {
+  //     await storage.delete(key: "token");
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(builder: (context) {
+  //         return Wrapper();
+  //       }),
+  //     );
+  //   } else {
+  //     print(e);
+  //   }
+  // } catch (e) {
+  //   print(e);
+  // }
+  // }
+
+  void _getMoreData(int index) async {
+    if (!isEnd) {
+      if (!isLazyLoading) {
+        setState(() {
+          isLazyLoading = true;
+        });
+        var url = "http://10.0.2.2:3000/feed/lazyfeed/" + index.toString();
+        var token = await storage.read(key: "token");
+        Response response = await dio.get(
+          url,
+          options: Options(headers: {
+            HttpHeaders.contentTypeHeader: "application/json",
+            HttpHeaders.authorizationHeader: "Bearer " + token!
+          }),
+        );
+        List tList = [];
+        if (response.data['data']['posts'] != null) {
+          for (int i = 0;
+              i < response.data['data']['posts']['results'].length;
+              i++) {
+            tList.add(response.data['data']['posts']['results'][i]);
+          }
+          setState(() {
+            if (index == 1) {
+              isLoading = false;
+            }
+            isLazyLoading = false;
+            posts.addAll(tList);
+            page++;
+          });
+          if (response.data['data']['posts']['results'].length == 0) {
+            setState(() {
+              isEnd = true;
+            });
+          }
+        }
+      }
     }
-    if (response.data['data']['nameList'] != null) {
-      nameList = response.data['data']['nameList'];
-    } else {
-      nameList = [];
-    }
-    setState(() {
-      isLoading = false;
-    });
-    // } on DioError catch (e) {
-    //   if (e.response!.statusCode == 401 &&
-    //       e.response!.statusMessage == "Unauthorized") {
-    //     await storage.delete(key: "token");
-    //     Navigator.pushReplacement(
-    //       context,
-    //       MaterialPageRoute(builder: (context) {
-    //         return Wrapper();
-    //       }),
-    //     );
-    //   } else {
-    //     print(e);
-    //   }
-    // } catch (e) {
-    //   print(e);
-    // }
+  }
+
+  Widget _buildProgressIndicator() {
+    return Padding(
+      padding: const EdgeInsets.all(kDefaultPadding),
+      child: Center(
+        child: Opacity(
+          opacity: isLazyLoading ? 0.8 : 00,
+          child: CircularProgressIndicator(
+            color: kPrimaryColor,
+            strokeWidth: 2.0,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _endMessage() {
+    print(isEnd);
+    return Padding(
+      padding: const EdgeInsets.all(kDefaultPadding),
+      child: Center(
+        child: Opacity(
+          opacity: 0.8,
+          child: Text('That\'s all for now!'),
+        ),
+      ),
+    );
   }
 
   @override
   void initState() {
+    _getMoreData(page);
     super.initState();
-    load();
+    // load();
+
+    _sc.addListener(() {
+      if (_sc.position.pixels == _sc.position.maxScrollExtent) {
+        _getMoreData(page);
+      }
+    });
   }
 
   @override
   void dispose() {
+    _sc.dispose();
     super.dispose();
   }
 
@@ -118,6 +197,7 @@ class _FeedState extends State<Feed> {
               ),
               centerTitle: true,
             ),
+            // resizeToAvoidBottomInset: false,
             body: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -125,16 +205,27 @@ class _FeedState extends State<Feed> {
                   height: 10,
                   thickness: 0.5,
                 ),
-                if (posts.length > 0)
+                if (posts.length > 0) ...[
                   Expanded(
+                    // child: ListView.builder(
+                    //     itemCount: posts.length,
+                    //     itemBuilder: (context, index) {
+                    //       return FeedPost(
+                    //           index: index, posts: posts, nameList: nameList);
+                    //     }),
                     child: ListView.builder(
-                        itemCount: posts.length,
-                        itemBuilder: (context, index) {
-                          return FeedPost(
-                              index: index, posts: posts, nameList: nameList);
-                        }),
-                  )
-                else
+                      itemCount: posts.length + 1,
+                      itemBuilder: (context, index) {
+                        return index == posts.length
+                            ? isEnd ? _endMessage() :_buildProgressIndicator()
+                            : FeedPost(index: index, posts: posts);
+                      },
+                      controller: _sc,
+                    ),
+                  ),
+                ] else ...[
+                  // isEnd ? _endMessage() : SizedBox(height: 1.0),
+
                   Center(
                     child: Column(
                       children: [
@@ -162,6 +253,7 @@ class _FeedState extends State<Feed> {
                       ],
                     ),
                   ),
+                ]
               ],
             ),
           );
