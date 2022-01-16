@@ -18,11 +18,11 @@ class ViewComments extends StatefulWidget {
 }
 
 class _ViewCommentsState extends State<ViewComments> {
-  static int page = 1;
   final ScrollController _sc = ScrollController();
   static List comments = [];
   bool isLazyLoading = false;
   static bool isLoading = true;
+  static int page = 1;
   bool isEnd = false;
   final dio = Dio();
   final storage = FlutterSecureStorage();
@@ -90,13 +90,13 @@ class _ViewCommentsState extends State<ViewComments> {
           ),
         ),
         title: Text(
-          post['comments'][index]['username'],
+          comments[index]['username'],
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
         subtitle: Text(
-          post['comments'][index]['comment'],
+          comments[index]['comment'],
           style: TextStyle(
             color: MediaQuery.of(context).platformBrightness == Brightness.dark
                 ? kLight
@@ -136,6 +136,8 @@ class _ViewCommentsState extends State<ViewComments> {
         var url = "http://10.0.2.2:3000/feed/lazycomment/" +
             widget.post['uuid'] +
             '/' +
+            widget.post['userUuid'] +
+            '/' +
             index.toString();
         var token = await storage.read(key: "token");
         Response response = await dio.get(
@@ -146,12 +148,17 @@ class _ViewCommentsState extends State<ViewComments> {
           }),
         );
         List tList = [];
-        if (response.data['data']['comments'] != null) {
+        print(response);
+        if (response.data['data']['comments']['results'] != null) {
           for (int i = 0;
-              i < response.data['data']['comments']['comment'].length;
+              i <
+                  response
+                      .data['data']['comments']['results']['comments'].length;
               i++) {
-            tList.add(response.data['data']['comments']['comment'][i]);
+            tList.add(
+                response.data['data']['comments']['results']['comments'][i]);
           }
+
           setState(() {
             if (index == 1) {
               isLoading = false;
@@ -160,19 +167,22 @@ class _ViewCommentsState extends State<ViewComments> {
             comments.addAll(tList);
             page++;
           });
-          if (response.data['data']['comments']['comment'].length == 0) {
+          if (response.data['data']['comments']['results']['comments'].length ==
+              0) {
             setState(() {
               isEnd = true;
             });
           }
         }
-        print(comments);
+        // print(comments);
       }
     }
   }
 
   @override
   void initState() {
+    page = 1;
+    comments = [];
     _getMoreData(page);
     super.initState();
     // load();
@@ -192,7 +202,7 @@ class _ViewCommentsState extends State<ViewComments> {
 
   @override
   Widget build(BuildContext context) {
-    int no_of_comments = widget.post['comments'].length;
+    int no_of_comments = comments.length;
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       // backgroundColor: Color(0xFFEDF0F6),

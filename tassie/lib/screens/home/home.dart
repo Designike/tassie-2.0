@@ -28,8 +28,6 @@ class _HomeState extends State<Home> {
     });
   }
 
-  
-
   final List<Widget> _screens = [
     Feed(),
     Recipes(),
@@ -68,7 +66,10 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
-      body: _screens[_selectedIndex],
+      body: IndexedStack(
+        children: _screens,
+        index: _selectedIndex,
+      ),
     );
   }
 }

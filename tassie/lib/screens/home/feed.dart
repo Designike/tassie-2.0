@@ -145,6 +145,16 @@ class _FeedState extends State<Feed> {
     );
   }
 
+  Future<void> _refreshPage() async {
+    setState(() {
+      page = 1;
+      posts = [];
+      isEnd = false;
+      isLoading = true;
+      _getMoreData(page);
+    });
+  }
+
   @override
   void initState() {
     _getMoreData(page);
@@ -198,63 +208,73 @@ class _FeedState extends State<Feed> {
               centerTitle: true,
             ),
             // resizeToAvoidBottomInset: false,
-            body: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Divider(
-                  height: 10,
-                  thickness: 0.5,
-                ),
-                if (posts.length > 0) ...[
-                  Expanded(
-                    // child: ListView.builder(
-                    //     itemCount: posts.length,
-                    //     itemBuilder: (context, index) {
-                    //       return FeedPost(
-                    //           index: index, posts: posts, nameList: nameList);
-                    //     }),
-                    child: ListView.builder(
-                      itemCount: posts.length + 1,
-                      itemBuilder: (context, index) {
-                        return index == posts.length
-                            ? isEnd ? _endMessage() :_buildProgressIndicator()
-                            : FeedPost(index: index, posts: posts);
-                      },
-                      controller: _sc,
-                    ),
+            body: RefreshIndicator(
+              onRefresh: _refreshPage,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Divider(
+                    height: 10,
+                    thickness: 0.5,
                   ),
-                ] else ...[
-                  // isEnd ? _endMessage() : SizedBox(height: 1.0),
+                  if (posts.length > 0) ...[
+                    Expanded(
+                      // child: ListView.builder(
+                      //     itemCount: posts.length,
+                      //     itemBuilder: (context, index) {
+                      //       return FeedPost(
+                      //           index: index, posts: posts, nameList: nameList);
+                      //     }),
+                      child: ListView.builder(
+                        itemCount: posts.length + 1,
+                        itemBuilder: (context, index) {
+                          return index == posts.length
+                              ? isEnd
+                                  ? _endMessage()
+                                  : _buildProgressIndicator()
+                              : FeedPost(index: index, posts: posts);
+                        },
+                        controller: _sc,
+                      ),
+                    ),
+                  ] else ...[
+                    // isEnd ? _endMessage() : SizedBox(height: 1.0),
 
-                  Center(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: size.height * 0.25,
+                    SingleChildScrollView(
+                      physics: AlwaysScrollableScrollPhysics(),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: size.height * 0.25,
+                            ),
+                            Image(
+                              image: MediaQuery.of(context)
+                                          .platformBrightness ==
+                                      Brightness.dark
+                                  ? AssetImage('assets/images/no_feed_dark.png')
+                                  : AssetImage(
+                                      'assets/images/no_feed_light.png'),
+                              width: size.width * 0.75,
+                            ),
+                            SizedBox(
+                              height: 30.0,
+                            ),
+                            SizedBox(
+                              width: size.width * 0.75,
+                              child: Text(
+                                'Hey! Subscribe other Tassites to get them in feed.',
+                                style: TextStyle(fontSize: 18.0),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
                         ),
-                        Image(
-                          image: MediaQuery.of(context).platformBrightness ==
-                                  Brightness.dark
-                              ? AssetImage('assets/images/no_feed_dark.png')
-                              : AssetImage('assets/images/no_feed_light.png'),
-                          width: size.width * 0.75,
-                        ),
-                        SizedBox(
-                          height: 30.0,
-                        ),
-                        SizedBox(
-                          width: size.width * 0.75,
-                          child: Text(
-                            'Hey! Subscribe other Tassites to get them in feed.',
-                            style: TextStyle(fontSize: 18.0),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                ]
-              ],
+                  ]
+                ],
+              ),
             ),
           );
   }
