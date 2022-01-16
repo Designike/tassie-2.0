@@ -19,7 +19,9 @@ class Feed extends StatefulWidget {
   _FeedState createState() => _FeedState();
 }
 
-class _FeedState extends State<Feed> {
+class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin{
+  @override
+  bool get wantKeepAlive => true;
   // List<Map> posts = [
   //   {"name": "Soham", "time": "30 mins", "image": "https://picsum.photos/200"},
   //   {"name": "Soham", "time": "30 mins", "image": "https://picsum.photos/200"},
@@ -176,6 +178,7 @@ class _FeedState extends State<Feed> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     Size size = MediaQuery.of(context).size;
     return (isLoading == true)
         ? Scaffold(

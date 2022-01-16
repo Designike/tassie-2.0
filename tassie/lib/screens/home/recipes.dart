@@ -18,7 +18,9 @@ class Recipes extends StatefulWidget {
   _RecipesState createState() => _RecipesState();
 }
 
-class _RecipesState extends State<Recipes> {
+class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin{
+  @override
+  bool get wantKeepAlive => true;
   // recs to be fetched from api
   // List recs = [];
   // List<Map> recs = [
@@ -136,6 +138,7 @@ class _RecipesState extends State<Recipes> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     Size size = MediaQuery.of(context).size;
     return (isLoading == true)
         ? Scaffold(
@@ -167,61 +170,69 @@ class _RecipesState extends State<Recipes> {
               ),
               centerTitle: true,
             ),
-            body: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Divider(
-                  height: 10,
-                  thickness: 0.5,
-                ),
-                if (recs.length > 0) ...[
-                  Expanded(
-                    child: GridView.builder(
-                      controller: _sc,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: (size.width / 2) /
-                            ((size.width / 2) + (size.width / 10) + 100.0),
+            body: RefreshIndicator(
+              onRefresh: _refreshPage,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Divider(
+                    height: 10,
+                    thickness: 0.5,
+                  ),
+                  if (recs.length > 0) ...[
+                    Expanded(
+                      child: GridView.builder(
+                        controller: _sc,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: (size.width / 2) /
+                              ((size.width / 2) + (size.width / 10) + 100.0),
+                        ),
+                        itemBuilder: (context, index) {
+                          return index == recs.length
+                                ? isEnd
+                                    ? _endMessage()
+                                    : _buildProgressIndicator()
+                                // : FeedPost(index: index, posts: posts);
+                         : RecPost(recs: recs[index]);
+                          // return Container(
+                          //   color: Colors.red,
+                          // );
+                        },
+                        itemCount: recs.length,
                       ),
-                      itemBuilder: (context, index) {
-                        return RecPost(index: index, recs: recs);
-                        // return Container(
-                        //   color: Colors.red,
-                        // );
-                      },
-                      itemCount: recs.length,
                     ),
-                  ),
-                ] else ...[
-                  Center(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: size.height * 0.25,
-                        ),
-                        Image(
-                          image: MediaQuery.of(context).platformBrightness ==
-                                  Brightness.dark
-                              ? AssetImage('assets/images/no_feed_dark.png')
-                              : AssetImage('assets/images/no_feed_light.png'),
-                          width: size.width * 0.75,
-                        ),
-                        SizedBox(
-                          height: 30.0,
-                        ),
-                        SizedBox(
-                          width: size.width * 0.75,
-                          child: Text(
-                            'Subscribe to see others\' recs.',
-                            style: TextStyle(fontSize: 18.0),
-                            textAlign: TextAlign.center,
+                  ] else ...[
+                    Center(
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: size.height * 0.25,
                           ),
-                        ),
-                      ],
+                          Image(
+                            image: MediaQuery.of(context).platformBrightness ==
+                                    Brightness.dark
+                                ? AssetImage('assets/images/no_feed_dark.png')
+                                : AssetImage('assets/images/no_feed_light.png'),
+                            width: size.width * 0.75,
+                          ),
+                          SizedBox(
+                            height: 30.0,
+                          ),
+                          SizedBox(
+                            width: size.width * 0.75,
+                            child: Text(
+                              'Subscribe to see others\' recs.',
+                              style: TextStyle(fontSize: 18.0),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ]
-              ],
+                  ],
+                ],
+              ),
             ),
           );
   }

@@ -4,7 +4,7 @@ class ViewRecPost extends StatefulWidget {
   const ViewRecPost({
     required this.recs,
   });
-  final List recs;
+  final Map recs;
   @override
   _ViewRecPostState createState() => _ViewRecPostState();
 }

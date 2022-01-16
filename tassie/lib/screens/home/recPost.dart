@@ -7,12 +7,11 @@ import '../../constants.dart';
 
 class RecPost extends StatefulWidget {
   const RecPost({
-    required this.index,
     required this.recs,
   });
 
-  final List recs;
-  final int index;
+  final Map recs;
+  // final int index;
 
   @override
   _RecPostState createState() => _RecPostState();
@@ -22,8 +21,7 @@ class _RecPostState extends State<RecPost> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    List recs = widget.recs;
-    int index = widget.index;
+    Map recs = widget.recs;
     return Padding(
       padding: EdgeInsets.all(10.0),
       child: Container(
@@ -51,7 +49,7 @@ class _RecPostState extends State<RecPost> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(25.0),
                       image: DecorationImage(
-                        image: NetworkImage(recs[index]['url']),
+                        image: NetworkImage(recs['url']),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -70,7 +68,7 @@ class _RecPostState extends State<RecPost> {
                         child: Image(
                           height: (size.width - 40.0)/12,
                           width: (size.width - 40.0)/12,
-                          image: NetworkImage(recs[index]['profilePic']),
+                          image: NetworkImage(recs['profilePic']),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -84,18 +82,18 @@ class _RecPostState extends State<RecPost> {
                 ),
                 GestureDetector(
                   onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (_) => ViewRecPost(
-                        //       recs: recs[index],
-                        //     ),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ViewRecPost(
+                              recs: recs,
+                            ),
+                          ),
+                        );
                   },
                   child: ListTile(
                     title: Text(
-                      recs[index]['name'],
+                      recs['name'],
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                       style: TextStyle(
@@ -103,7 +101,7 @@ class _RecPostState extends State<RecPost> {
                       ),
                     ),
                     subtitle: Text(
-                      recs[index]['username'],
+                      recs['username'],
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                           color: MediaQuery.of(context).platformBrightness ==
