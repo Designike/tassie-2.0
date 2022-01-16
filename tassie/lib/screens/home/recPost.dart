@@ -103,7 +103,7 @@ class _RecPostState extends State<RecPost> {
                       ),
                     ),
                     subtitle: Text(
-                      recs[index]['user'],
+                      recs[index]['username'],
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                           color: MediaQuery.of(context).platformBrightness ==
