@@ -85,8 +85,9 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
         setState(() {
           isLazyLoading = true;
         });
-        var url = "https://api-tassie.herokuapp.com/feed/lazyfeed/" +
-            index.toString();
+        // var url = "https://api-tassie.herokuapp.com/feed/lazyfeed/" +
+        //     index.toString();
+        var url = "http://10.0.2.2:3000/feed/lazyfeed/" + index.toString();
 
         var token = await storage.read(key: "token");
         Response response = await dio.get(
@@ -111,6 +112,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
             posts.addAll(tList);
             page++;
           });
+          print(response.data['data']['posts']);
           if (response.data['data']['posts']['results'].length == 0) {
             setState(() {
               isEnd = true;
@@ -237,7 +239,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                               ? isEnd
                                   ? _endMessage()
                                   : _buildProgressIndicator()
-                              : FeedPost(index: index, posts: posts);
+                              : FeedPost(posts: posts[index]);
                         },
                         controller: _sc,
                       ),
