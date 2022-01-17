@@ -11,9 +11,13 @@ import 'package:tassie/screens/home/viewComments.dart';
 
 class FeedPost extends StatefulWidget {
   const FeedPost({
-    required this.posts,
+    required this.post,
+    required this.noOfComment,
+    required this.noOfLike
   });
-  final Map posts;
+  final Map post;
+  final Map noOfComment;
+  final Map noOfLike;
   @override
   _FeedPostState createState() => _FeedPostState();
 }
@@ -42,7 +46,8 @@ class _FeedPostState extends State<FeedPost> {
   // ];
 
   Widget _feedPostElement() {
-    Map posts = widget.posts;
+    Map post = widget.post;
+    
     Size size = MediaQuery.of(context).size;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
@@ -73,20 +78,20 @@ class _FeedPostState extends State<FeedPost> {
                           child: Image(
                             height: 50.0,
                             width: 50.0,
-                            image: NetworkImage(posts['url']),
+                            image: NetworkImage(post['url']),
                             fit: BoxFit.cover,
                           ),
                         ),
                       ),
                     ),
                     title: Text(
-                      posts['username'],
+                      post['username'],
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     subtitle: Text(
-                      posts['createdAt'],
+                      post['createdAt'],
                       style: TextStyle(
                           color: MediaQuery.of(context).platformBrightness ==
                                   Brightness.dark
@@ -109,7 +114,7 @@ class _FeedPostState extends State<FeedPost> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25.0),
                         image: DecorationImage(
-                          image: NetworkImage(posts['url']),
+                          image: NetworkImage(post['url']),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -130,7 +135,7 @@ class _FeedPostState extends State<FeedPost> {
                                   onPressed: () => print('Like post'),
                                 ),
                                 Text(
-                                  '2,515',
+                                  widget.noOfLike['count'].toString(),
                                   style: TextStyle(
                                     fontSize: 14.0,
                                     fontWeight: FontWeight.w600,
@@ -149,14 +154,15 @@ class _FeedPostState extends State<FeedPost> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (_) => ViewComments(
-                                          post: posts,
+                                          post: post, noOfComment: widget.noOfComment, noOfLike: widget.noOfLike
+
                                         ),
                                       ),
                                     );
                                   },
                                 ),
                                 Text(
-                                  '500',
+                                  widget.noOfComment['count'].toString(),
                                   style: TextStyle(
                                     fontSize: 14.0,
                                     fontWeight: FontWeight.w600,
@@ -195,7 +201,7 @@ class _FeedPostState extends State<FeedPost> {
                           context,
                           MaterialPageRoute(
                             builder: (_) => ViewComments(
-                              post: posts,
+                              post: post, noOfComment: widget.noOfComment, noOfLike: widget.noOfLike
                             ),
                           ),
                         );
@@ -205,7 +211,7 @@ class _FeedPostState extends State<FeedPost> {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: posts['username'],
+                              text: post['username'],
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color:
@@ -217,7 +223,7 @@ class _FeedPostState extends State<FeedPost> {
                             ),
                             TextSpan(text: " "),
                             TextSpan(
-                              text: posts['description'],
+                              text: post['description'],
                               style: TextStyle(
                                 color:
                                     MediaQuery.of(context).platformBrightness ==

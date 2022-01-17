@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:tassie/constants.dart';
 
 class Uploader extends StatefulWidget {
   final File? file;
@@ -59,6 +60,7 @@ class _UploaderState extends State<Uploader> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     if (progress != 0.0) {
       /// Manage the task state and event subscription with a StreamBuilder
 
@@ -79,15 +81,35 @@ class _UploaderState extends State<Uploader> {
           //   ),
 
           // Progress bar
-          LinearProgressIndicator(value: progress),
+          Padding(
+            padding: const EdgeInsets.all(kDefaultPadding * 1.5),
+            child: LinearProgressIndicator(value: progress),
+          ),
           Text('${(progress).toStringAsFixed(2)} % '),
         ],
       );
     } else {
       // Allows user to decide when to start the upload
-      return TextButton(
-        child: Icon(Icons.cloud_upload),
-        onPressed: _startUpload,
+      // return IconButton(
+      //   icon: Icon(Icons.cloud_upload),
+      //   color: kPrimaryColor,
+      //   onPressed: _startUpload,
+      // );
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+        child: Container(
+                      child: IconButton(
+                        padding: EdgeInsets.symmetric(vertical: 10.0),
+                        icon: Icon(Icons.cloud_upload),
+                        iconSize: 30.0,
+                        color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                      ? kPrimaryColor
+                      : kPrimaryColorAccent,
+                      onPressed: () => _startUpload(),
+                      ),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(15.0),
+                      color: kDark[900],),
+                    ),
       );
     }
   }

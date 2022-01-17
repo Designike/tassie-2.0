@@ -30,6 +30,8 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
   static int page = 1;
   final ScrollController _sc = ScrollController();
   static List posts = [];
+  static List noOfComments = [];
+  static List noOfLikes = [];
   bool isLazyLoading = false;
   static bool isLoading = true;
   bool isEnd = false;
@@ -97,19 +99,26 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
             HttpHeaders.authorizationHeader: "Bearer " + token!
           }),
         );
-        List tList = [];
+        // List tList = [];
         if (response.data['data']['posts'] != null) {
-          for (int i = 0;
-              i < response.data['data']['posts']['results'].length;
-              i++) {
-            tList.add(response.data['data']['posts']['results'][i]);
-          }
+        //   for (int i = 0;
+        //       i < response.data['data']['posts']['results'].length;
+        //       i++) {
+        //     tList.add(response.data['data']['posts']['results'][i]);
+        //   }
           setState(() {
             if (index == 1) {
               isLoading = false;
             }
             isLazyLoading = false;
-            posts.addAll(tList);
+            posts.addAll(response.data['data']['posts']['results']);
+            // posts.addAll(tList);
+            if(response.data['data']['posts']['noOfComments'] != null) {
+              noOfComments.addAll(response.data['data']['posts']['noOfComments']);
+            }
+            if(response.data['data']['posts']['noOfLikes'] != null) {
+              noOfLikes.addAll(response.data['data']['posts']['noOfLikes']);
+            }
             page++;
           });
           print(response.data['data']['posts']);
@@ -239,7 +248,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                               ? isEnd
                                   ? _endMessage()
                                   : _buildProgressIndicator()
-                              : FeedPost(posts: posts[index]);
+                              : FeedPost(post: posts[index], noOfComment: noOfComments[index], noOfLike: noOfLikes[index]);
                         },
                         controller: _sc,
                       ),

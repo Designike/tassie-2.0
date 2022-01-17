@@ -10,8 +10,10 @@ import '../../constants.dart';
 
 class ViewComments extends StatefulWidget {
   final Map post;
+  final Map noOfComment;
+  final Map noOfLike;
+  ViewComments({required this.post, required this.noOfComment, required this.noOfLike});
 
-  ViewComments({required this.post});
 
   @override
   _ViewCommentsState createState() => _ViewCommentsState();
@@ -286,6 +288,7 @@ class _ViewCommentsState extends State<ViewComments> {
                             InkWell(
                               onDoubleTap: () => print('Like post'),
                               splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
                               child: Container(
                                 margin: EdgeInsets.all(10.0),
                                 width: double.infinity,
@@ -316,7 +319,7 @@ class _ViewCommentsState extends State<ViewComments> {
                                             onPressed: () => print('Like post'),
                                           ),
                                           Text(
-                                            '2,515',
+                                            widget.noOfLike['count'].toString(),
                                             style: TextStyle(
                                               fontSize: 14.0,
                                               fontWeight: FontWeight.w600,
@@ -335,7 +338,7 @@ class _ViewCommentsState extends State<ViewComments> {
                                             },
                                           ),
                                           Text(
-                                            '350',
+                                            widget.noOfComment['count'].toString(),
                                             style: TextStyle(
                                               fontSize: 14.0,
                                               fontWeight: FontWeight.w600,
