@@ -43,12 +43,14 @@ class _UploaderState extends State<Uploader> {
       'http://10.0.2.2:3000/drive/upload',
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "multipart/form-data",
-        // HttpHeaders.authorizationHeader: "Bearer " + token!
+        HttpHeaders.authorizationHeader: "Bearer " + token!
       }),
       data: formData,
       onSendProgress: (int sent, int total) {
         setState(() {
+          print(progress);
           progress = (sent / total * 100);
+          print(progress);
         });
       },
     );
