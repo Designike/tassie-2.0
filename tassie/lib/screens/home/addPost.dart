@@ -2,10 +2,12 @@
 
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:tassie/screens/home/upload.dart';
 
 import '../../constants.dart';
 
@@ -19,6 +21,7 @@ class AddPost extends StatefulWidget {
 class _AddPostState extends State<AddPost> {
   File? _imageFile;
 
+  
   /// Cropper plugin
   Future<void> _cropImage() async {
     File? cropped = await ImageCropper.cropImage(
@@ -124,7 +127,7 @@ class _AddPostState extends State<AddPost> {
                 ),
               ],
             ),
-            // Uploader(file: _imageFile)
+            Uploader(file: _imageFile)
           ]
         ],
       ),

@@ -18,7 +18,7 @@ class Recipes extends StatefulWidget {
   _RecipesState createState() => _RecipesState();
 }
 
-class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin{
+class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   // recs to be fetched from api
@@ -71,7 +71,8 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin{
         setState(() {
           isLazyLoading = true;
         });
-        var url = "http://10.0.2.2:3000/recs/lazyrecs/" + index.toString();
+        var url = "https://api-tassie.herokuapp.com/recs/lazyrecs/" +
+            index.toString();
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
@@ -190,11 +191,11 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin{
                         ),
                         itemBuilder: (context, index) {
                           return index == recs.length
-                                ? isEnd
-                                    ? _endMessage()
-                                    : _buildProgressIndicator()
-                                // : FeedPost(index: index, posts: posts);
-                         : RecPost(recs: recs[index]);
+                              ? isEnd
+                                  ? _endMessage()
+                                  : _buildProgressIndicator()
+                              // : FeedPost(index: index, posts: posts);
+                              : RecPost(recs: recs[index]);
                           // return Container(
                           //   color: Colors.red,
                           // );

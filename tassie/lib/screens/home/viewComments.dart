@@ -133,7 +133,7 @@ class _ViewCommentsState extends State<ViewComments> {
         setState(() {
           isLazyLoading = true;
         });
-        var url = "http://10.0.2.2:3000/feed/lazycomment/" +
+        var url = "https://api-tassie.herokuapp.com/feed/lazycomment/" +
             widget.post['uuid'] +
             '/' +
             widget.post['userUuid'] +
