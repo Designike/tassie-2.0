@@ -1,7 +1,10 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Uploader extends StatefulWidget {
   final File? file;
@@ -21,18 +24,27 @@ class Uploader extends StatefulWidget {
 // }
 
 class _UploaderState extends State<Uploader> {
-  /// Starts an upload task
-  late Response response;
-  static double progress = 0.0;
+  // Starts an upload task
+
+  double progress = 0.0;
   Future<void> _startUpload() async {
     var dio = Dio();
+    var storage = FlutterSecureStorage();
     var formData = FormData();
-    formData.files.add(MapEntry(
-      "Picture",
-      await MultipartFile.fromFile(widget.file!.path, filename: "pic-name.png"),
-    ));
-    response = await dio.put(
-      'https://api-tassie.herokuapp.com/drive/upload',
+    print(widget.file!.path);
+    formData = FormData.fromMap({
+      "media":
+          await MultipartFile.fromFile(widget.file!.path),
+    });
+    var token = await storage.read(key: "token");
+    print(formData.files[0]);
+    Response response = await dio.post(
+      // 'https://api-tassie.herokuapp.com/drive/upload',
+      'http://10.0.2.2:3000/drive/upload',
+      options: Options(headers: {
+        HttpHeaders.contentTypeHeader: "multipart/form-data",
+        // HttpHeaders.authorizationHeader: "Bearer " + token!
+      }),
       data: formData,
       onSendProgress: (int sent, int total) {
         setState(() {
@@ -40,11 +52,12 @@ class _UploaderState extends State<Uploader> {
         });
       },
     );
+    print(response);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (response != null) {
+    if (progress != 0.0) {
       /// Manage the task state and event subscription with a StreamBuilder
 
       return Column(

@@ -21,7 +21,6 @@ class AddPost extends StatefulWidget {
 class _AddPostState extends State<AddPost> {
   File? _imageFile;
 
-  
   /// Cropper plugin
   Future<void> _cropImage() async {
     File? cropped = await ImageCropper.cropImage(
@@ -49,6 +48,7 @@ class _AddPostState extends State<AddPost> {
       if (selected == null) return;
       setState(() {
         _imageFile = File(selected.path);
+        _cropImage();
       });
     }
   }
