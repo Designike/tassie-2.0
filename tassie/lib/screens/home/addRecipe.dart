@@ -39,16 +39,27 @@ class _AddRecipeState extends State<AddRecipe> {
   Map ingredientPics = {};
   //ama bhi same
   Map stepPics = {};
+
   final TextEditingController _stepController = TextEditingController();
   final TextEditingController _ingredientController = TextEditingController();
   static List<String?> stepsList = [null];
   static List<String?> ingredientsList = [null];
 
   //ane tassie mathi leto avje code plus vado e page ma bov kayi che nayi ena sivayi
-  List<Widget> _UploadImg(size) {
+  List<Widget> _UploadImg(size,key,index,image) {
+    print('henlo-----------------------------');
+    print('step pics');
+    print(stepPics);
+    print('ing pics');
+    print(ingredientPics);
+    print('image');
+    print(image);
+    print('index');
+    print(index);
+    print('---------------------------------');
   List<Widget> _upload = [
-    if (_imageFile != null) ...[
-            
+    if (image==null && _imageFile != null) ...[
+        
             Padding(
               padding: const EdgeInsets.symmetric(vertical: kDefaultPadding * 1.5, horizontal: 5.0),
               child: Image.file(_imageFile!),
@@ -60,7 +71,7 @@ class _AddRecipeState extends State<AddRecipe> {
                 children: <Widget>[
                   TextButton(
                     child: Icon(Icons.crop),
-                    onPressed: _cropImage,
+                    onPressed:_cropImage,
                   ),
                   TextButton(
                     child: Icon(Icons.refresh),
@@ -105,9 +116,21 @@ class _AddRecipeState extends State<AddRecipe> {
                     ? kPrimaryColor
                     : kPrimaryColorAccent,
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    recipePic = _imageFile;
-                    _startUpload( _imageFile,recipeName,'name','rec', widget.folder);
+                  print('1');
+                  
+                    if(key=='r'){
+                      recipePic = _imageFile;
+                      print('2');
+                    }else if(key=='i'){
+                      ingredientPics[(index).toString()]=_imageFile;
+                      print('3');
+                    }else{
+                      stepPics[(index).toString()]=_imageFile;
+                      print('4');
+                    }
+                    print('5');
+                    if (recipeName!='') {
+                    _startUpload( _imageFile,recipeName,'name',key+'_'+(index+1).toString(), widget.folder);
                     }
                 },
               ),
@@ -116,7 +139,29 @@ class _AddRecipeState extends State<AddRecipe> {
                 color: kDark[900],
               ),
             ),
-          ] else ... [
+          ] else if(image!='' && image!=null) ... [
+             Padding(
+              padding: const EdgeInsets.symmetric(vertical: kDefaultPadding * 1.5, horizontal: 5.0),
+              child: Image.file(image),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  TextButton(
+                    child: Icon(Icons.crop),
+                    onPressed:_cropImage,
+                  ),
+                  TextButton(
+                    child: Icon(Icons.refresh),
+                    onPressed: _clear,
+                  ),
+                ],
+              ),
+            ),
+          ]
+          else ... [
             Container(
               
               child: Column(
@@ -224,7 +269,7 @@ class _AddRecipeState extends State<AddRecipe> {
                             : null,
                       ),
 
-                      ... _UploadImg(size)
+                      ... _UploadImg(size,'r',0,recipePic)
               ],
             ),
           ),
@@ -276,7 +321,7 @@ List<Widget> _getRecipe(size) {
                 _addRemoveButtonR(i == 0, stepsList.length - 1, i),
               ],
             ),
-            ... _UploadImg(size)
+            ... _UploadImg(size,'s',i,stepPics[i.toString()])
           ],
         ),
       ));
@@ -289,10 +334,13 @@ List<Widget> _getRecipe(size) {
       onTap: () {
         if (add) {
           stepsList.insert(index + 1, "");
+          stepPics[(index + 1).toString()] = '';
         } else {
           stepsList.removeAt(i);
+          stepPics[i.toString()] = '';
+          
         }
-        if (this.mounted) {
+        if (mounted) {
           setState(() {});
         }
       },
@@ -327,7 +375,7 @@ List<Widget> _getRecipe(size) {
                 _addRemoveButtonI(i == 0, ingredientsList.length - 1, i),
               ],
             ),
-            ... _UploadImg(size)
+            ... _UploadImg(size,'i',i,ingredientPics[i.toString()])
           ],
         ),
       ));
@@ -340,9 +388,12 @@ List<Widget> _getRecipe(size) {
       onTap: () {
         if (add) {
           ingredientsList.insert(index + 1, "");
-        } else
+          ingredientPics[i.toString()] = null;
+        } else{
           ingredientsList.removeAt(i);
-        if (this.mounted) {
+          ingredientPics[i.toString()] = null;
+        }
+        if (mounted) {
           setState(() {});
         }
       },
@@ -424,6 +475,7 @@ List<Widget> _getRecipe(size) {
       "folder": folder,
       "uuid": widget.uuid
     });
+    _imageFile = null;
     var token = await storage.read(key: "token");
     print(formData.files[0]);
     Response response = await dio.post(
@@ -439,14 +491,17 @@ List<Widget> _getRecipe(size) {
           print(progress);
           progress = (sent / total * 100);
           print(progress);
+          
         });
       },
     );
+    
     if (response.data['status'] == false) {
       _imageFile = null;
       showSnack(context, response.data['message'], () {}, 'OK', 5);
     }
     if (response.data['status'] == true) {
+     
       showSnack(context, response.data['message'], () {}, 'OK', 3);
     }
     
@@ -559,14 +614,39 @@ List<Widget> _getRecipe(size) {
                 );
               },
               currentStep: _currentStep,
-              onStepContinue: () {
+              onStepContinue: () async {
                 final _isLastStep = _currentStep == steps(size).length - 1;
                 if (_isLastStep) {
+                  if (_formKey.currentState!.validate()){
                   // to submit here
+                  
+                  var url = "http://10.0.2.2:3000/recs/updateRecipe";
+                  var token = await storage.read(key: "token");
+                  Response response = await dio.post(url,
+                      options: Options(headers: {
+                        HttpHeaders.contentTypeHeader: "application/json",
+                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                      }),
+                      data: {'uuid': widget.uuid, 'folder': widget.folder, 'steps': stepsList});
+                  }
+                  
                 } else {
                   setState(() {
                     _currentStep += 1;
+                    print(_currentStep);
                   });
+                  print('2.d');
+                  if(_currentStep == 2){
+                  var url = "http://10.0.2.2:3000/recs/updateRecipe";
+                  var token = await storage.read(key: "token");
+                  Response response = await dio.post(url,
+                      options: Options(headers: {
+                        HttpHeaders.contentTypeHeader: "application/json",
+                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                      }),
+                      data: {'uuid': widget.uuid, 'folder': widget.folder, 'ingredients': ingredientsList});
+                  }
+                  
                 }
               },
               onStepCancel: () {
