@@ -217,7 +217,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                 'Tassie',
                 style: TextStyle(
                   color: kPrimaryColor,
-                  fontFamily: 'StyleScript',
+                  fontFamily: 'LobsterTwo',
                   fontSize: 40.0,
                 ),
               ),

@@ -3,12 +3,14 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/addPost.dart';
+import 'package:tassie/screens/home/addRecipe.dart';
 import 'package:tassie/screens/home/explore.dart';
 import 'package:tassie/screens/home/feed.dart';
 import 'package:tassie/screens/home/profile.dart';
@@ -24,6 +26,9 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
+  // static bool isLoading = true;
+  final dio = Dio();
+  final storage = FlutterSecureStorage();
 
   void _navigateBottomBar(int index) {
     setState(() {
@@ -79,21 +84,67 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           // onClose: () => animatedController.forward(),
           children: [
             SpeedDialChild(
-              child: Icon(Icons.post_add_rounded),
-              label: 'New Post',
-              onTap: () => {
-                Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) {
-                                return AddPost();
-                              }),
-                            )
-              }
-            ),
+                child: Icon(Icons.post_add_rounded),
+                label: 'New Post',
+                onTap: () => {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) {
+                          return AddPost();
+                        }),
+                      )
+                    }),
             SpeedDialChild(
-              child: Icon(Icons.fastfood_rounded),
-              label: 'New Recipe',
-            ),
+                child: Icon(Icons.fastfood_rounded),
+                label: 'New Recipe',
+                onTap: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) {
+                      return Scaffold(
+                        // backgroundColor: Colors.white,
+                        body: Center(
+                          child: AnimatedTextKit(
+                            pause: Duration(milliseconds: 100),
+                            animatedTexts: [
+                              FadeAnimatedText('Finding Trivets'),
+                              FadeAnimatedText('Settling grubs'),
+                              FadeAnimatedText('Hoarding stuff'),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                  );
+                  var url = "http://10.0.2.2:3000/recs/createRecipe/";
+
+                  var token = await storage.read(key: "token");
+                  Response response = await dio.get(
+                    url,
+                    options: Options(headers: {
+                      HttpHeaders.contentTypeHeader: "application/json",
+                      HttpHeaders.authorizationHeader: "Bearer " + token!
+                    }),
+                  );
+                  await Future.delayed(Duration(seconds: 1));
+                  if (response.data['status'] == true) {
+                    print(response);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return AddRecipe(
+                            uuid: response.data['data']['recUuid'], folder: response.data['data']['folder'],);
+                      }),
+                    );
+                  } else {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return Home();
+                      }),
+                    );
+                  }
+                }),
           ],
         ),
         // bottomNavigationBar: BottomNavigationBar(

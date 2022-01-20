@@ -12,8 +12,8 @@ class ViewComments extends StatefulWidget {
   final Map post;
   final Map noOfComment;
   final Map noOfLike;
-  ViewComments({required this.post, required this.noOfComment, required this.noOfLike});
-
+  ViewComments(
+      {required this.post, required this.noOfComment, required this.noOfLike});
 
   @override
   _ViewCommentsState createState() => _ViewCommentsState();
@@ -237,7 +237,10 @@ class _ViewCommentsState extends State<ViewComments> {
                                   icon: Icon(Icons.arrow_back),
                                   iconSize: 30.0,
                                   // color: Colors.black,
-                                  onPressed: () => Navigator.pop(context),
+                                  onPressed: () {
+                                    print('henlo');
+                                    Navigator.pop(context);
+                                  },
                                 ),
                                 Container(
                                   width:
@@ -338,7 +341,8 @@ class _ViewCommentsState extends State<ViewComments> {
                                             },
                                           ),
                                           Text(
-                                            widget.noOfComment['count'].toString(),
+                                            widget.noOfComment['count']
+                                                .toString(),
                                             style: TextStyle(
                                               fontSize: 14.0,
                                               fontWeight: FontWeight.w600,

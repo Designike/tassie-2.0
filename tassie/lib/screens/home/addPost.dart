@@ -20,7 +20,28 @@ class AddPost extends StatefulWidget {
 
 class _AddPostState extends State<AddPost> {
   File? _imageFile;
+  static String desc = "";
+  final _formKey = GlobalKey<FormState>();
 
+  @override
+  void initState() {
+    desc = '';
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  checkFields() {
+    final form = _formKey.currentState;
+    if (form!.validate()) {
+      form.save();
+      return true;
+    }
+    return false;
+  }
   /// Cropper plugin
   Future<void> _cropImage() async {
     File? cropped = await ImageCropper.cropImage(
@@ -130,7 +151,7 @@ class _AddPostState extends State<AddPost> {
                 'Some toppings ...',
                 style: TextStyle(
                   color: kPrimaryColor,
-                  fontFamily: 'StyleScript',
+                  fontFamily: 'LobsterTwo',
                   fontSize: 40.0,
                 ),
                 textAlign: TextAlign.center,
@@ -156,11 +177,14 @@ class _AddPostState extends State<AddPost> {
               ),
             ),
             Padding(padding: EdgeInsets.all(kDefaultPadding * 1.5),
-            child: Form(child: Column(children: [
+            child: Form(
+              key: _formKey,
+              child: Column(children: [
               TextFormField(
                 // style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
                 //     ? kLight
                 //     : kDark[900]),
+                      initialValue: desc.isNotEmpty ? desc : '',
                       decoration: InputDecoration(
                           labelText: 'DESCRIPTION',
                           
@@ -183,16 +207,44 @@ class _AddPostState extends State<AddPost> {
                       
                       maxLines: null,
                       onChanged: (value) {
-                        // password = value;
+                        desc = value;
                       },
                       validator: (val) => val!.isEmpty || val.length > 500
                           ? 'Description should be within 500 characters'
                           : null,
                     ),
                     
+                    
             ],)),
             ),
-            Uploader(file: _imageFile)
+            // onTap: () async {
+            //             if (_formKey.currentState!.validate()) {
+            //               Response response = await dio.post(
+            //                 "https://api-tassie.herokuapp.com/user/login/",
+            //                 options: Options(headers: {
+            //                   HttpHeaders.contentTypeHeader: "application/json",
+            //                 }),
+            //                 // data: jsonEncode(value),
+            //                 data: email != ""
+            //                     ? {"email": email, "password": password}
+            //                     : {"username": username, "password": password},
+            //               );
+            //               print('1');
+            //               await storage.write(
+            //                   key: "token",
+            //                   value: response.data['data']['token']);
+            //               print('2');
+            //               Navigator.pushReplacement(
+            //                 context,
+            //                 MaterialPageRoute(builder: (context) {
+            //                   return Home();
+            //                 }),
+            //               );
+            //               print(response.toString());
+            //             }
+            //           },
+
+            Uploader(file: _imageFile, desc: desc, formKey: _formKey)
           ] else ... [
             Container(
               padding: EdgeInsets.symmetric(vertical: 50.0),
@@ -203,7 +255,7 @@ class _AddPostState extends State<AddPost> {
                 'What\'s cooking ?',
                 style: TextStyle(
                   color: kPrimaryColor,
-                  fontFamily: 'StyleScript',
+                  fontFamily: 'LobsterTwo',
                   fontSize: 40.0,
                 ),
                 

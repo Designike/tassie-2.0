@@ -118,7 +118,10 @@ class _ViewCommentsState extends State<ViewComments> {
                               icon: Icon(Icons.arrow_back),
                               iconSize: 30.0,
                               // color: Colors.black,
-                              onPressed: () => Navigator.pop(context),
+                              onPressed: () {
+                                print('henlo');
+                                Navigator.pop(context);
+                              },
                             ),
                             Container(
                               width: MediaQuery.of(context).size.width * 0.8,

@@ -2,14 +2,18 @@
 
 import 'dart:io';
 
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/home/home.dart';
 
 class Uploader extends StatefulWidget {
   final File? file;
-  const Uploader({this.file});
+  final String desc;
+  final GlobalKey<FormState> formKey;
+  const Uploader({this.file, required this.desc, required this.formKey});
 
   @override
   _UploaderState createState() => _UploaderState();
@@ -34,14 +38,14 @@ class _UploaderState extends State<Uploader> {
     var formData = FormData();
     print(widget.file!.path);
     formData = FormData.fromMap({
-      "media":
-          await MultipartFile.fromFile(widget.file!.path),
+      "media": await MultipartFile.fromFile(widget.file!.path),
+      "desc": widget.desc
     });
     var token = await storage.read(key: "token");
     print(formData.files[0]);
     Response response = await dio.post(
       // 'https://api-tassie.herokuapp.com/drive/upload',
-      'http://10.0.2.2:3000/drive/upload',
+      'http://10.0.2.2:3000/feed/newpost',
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "multipart/form-data",
         HttpHeaders.authorizationHeader: "Bearer " + token!
@@ -55,7 +59,17 @@ class _UploaderState extends State<Uploader> {
         });
       },
     );
-    print(response);
+    if (response.data['status'] == true) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) {
+          return Home();
+        }),
+      );
+    } else {
+      // handle error
+
+    }
   }
 
   @override
@@ -82,10 +96,24 @@ class _UploaderState extends State<Uploader> {
 
           // Progress bar
           Padding(
-            padding: const EdgeInsets.all(kDefaultPadding * 1.5),
+            padding:
+                const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
             child: LinearProgressIndicator(value: progress),
           ),
           Text('${(progress).toStringAsFixed(2)} % '),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+            child: AnimatedTextKit(
+              pause: Duration(milliseconds: 100),
+              animatedTexts: [
+                RotateAnimatedText('Blending your stuff'),
+                RotateAnimatedText('Some Sautéing'),
+                RotateAnimatedText('Let\'s Stir'),
+                RotateAnimatedText('Baking up'),
+              ],
+            ),
+          ),
         ],
       );
     } else {
@@ -98,18 +126,22 @@ class _UploaderState extends State<Uploader> {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
         child: Container(
-                      child: IconButton(
-                        padding: EdgeInsets.symmetric(vertical: 10.0),
-                        icon: Icon(Icons.cloud_upload),
-                        iconSize: 30.0,
-                        color: MediaQuery.of(context).platformBrightness == Brightness.dark
-                      ? kPrimaryColor
-                      : kPrimaryColorAccent,
-                      onPressed: () => _startUpload(),
-                      ),
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(15.0),
-                      color: kDark[900],),
-                    ),
+          child: IconButton(
+            padding: EdgeInsets.symmetric(vertical: 10.0),
+            icon: Icon(Icons.cloud_upload),
+            iconSize: 30.0,
+            color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                ? kPrimaryColor
+                : kPrimaryColorAccent,
+            onPressed: () => {
+              if (widget.formKey.currentState!.validate()) {_startUpload()}
+            },
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15.0),
+            color: kDark[900],
+          ),
+        ),
       );
     }
   }

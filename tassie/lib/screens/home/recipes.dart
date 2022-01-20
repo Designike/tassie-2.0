@@ -165,7 +165,7 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
                 'Yumminess ahead !',
                 style: TextStyle(
                   color: kPrimaryColor,
-                  fontFamily: 'StyleScript',
+                  fontFamily: 'LobsterTwo',
                   fontSize: 30.0,
                 ),
               ),
