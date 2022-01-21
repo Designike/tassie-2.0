@@ -32,6 +32,7 @@ class _AddRecipeState extends State<AddRecipe> {
   int _currentStep = 0;
   File? _imageFile;
   String recipeName = "";
+  String youtubeLink = "";
   final _formKey = GlobalKey<FormState>();
   //a chene ek vaar set kri leje jyare recipe pic les ane validator ma check krvanu
   File? recipePic;
@@ -47,99 +48,97 @@ class _AddRecipeState extends State<AddRecipe> {
 
   //ane tassie mathi leto avje code plus vado e page ma bov kayi che nayi ena sivayi
   List<Widget> _UploadImg(size,key,index,image) {
-    print('henlo-----------------------------');
-    print('step pics');
-    print(stepPics);
-    print('ing pics');
-    print(ingredientPics);
-    print('image');
-    print(image);
-    print('index');
-    print(index);
-    print('---------------------------------');
+    
   List<Widget> _upload = [
-    if (image==null && _imageFile != null) ...[
+    // if (image=='' && _imageFile != null) ...[
         
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: kDefaultPadding * 1.5, horizontal: 5.0),
-              child: Image.file(_imageFile!),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  TextButton(
-                    child: Icon(Icons.crop),
-                    onPressed:_cropImage,
-                  ),
-                  TextButton(
-                    child: Icon(Icons.refresh),
-                    onPressed: _clear,
-                  ),
-                ],
-              ),
-            ),
+    //         Padding(
+    //           padding: const EdgeInsets.symmetric(vertical: kDefaultPadding * 1.5, horizontal: 5.0),
+    //           child: Image.file(_imageFile!),
+    //         ),
+    //         Padding(
+    //           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+    //           child: Row(
+    //             mainAxisAlignment: MainAxisAlignment.center,
+    //             children: <Widget>[
+    //               TextButton(
+    //                 child: Icon(Icons.crop),
+    //                 onPressed:() => _cropImage(key, index),
+    //               ),
+    //               TextButton(
+    //                 child: Icon(Icons.refresh),
+    //                 onPressed: _clear,
+    //               ),
+    //             ],
+    //           ),
+    //         ),
             
-            // onTap: () async {
-            //             if (_formKey.currentState!.validate()) {
-            //               Response response = await dio.post(
-            //                 "https://api-tassie.herokuapp.com/user/login/",
-            //                 options: Options(headers: {
-            //                   HttpHeaders.contentTypeHeader: "application/json",
-            //                 }),
-            //                 // data: jsonEncode(value),
-            //                 data: email != ""
-            //                     ? {"email": email, "password": password}
-            //                     : {"username": username, "password": password},
-            //               );
-            //               print('1');
-            //               await storage.write(
-            //                   key: "token",
-            //                   value: response.data['data']['token']);
-            //               print('2');
-            //               Navigator.pushReplacement(
-            //                 context,
-            //                 MaterialPageRoute(builder: (context) {
-            //                   return Home();
-            //                 }),
-            //               );
-            //               print(response.toString());
-            //             }
-            //           },
-            Container(
-              child: IconButton(
-                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
-                icon: Icon(Icons.cloud_upload),
-                iconSize: 30.0,
-                color: MediaQuery.of(context).platformBrightness == Brightness.dark
-                    ? kPrimaryColor
-                    : kPrimaryColorAccent,
-                onPressed: () {
-                  print('1');
+    //         // onTap: () async {
+    //         //             if (_formKey.currentState!.validate()) {
+    //         //               Response response = await dio.post(
+    //         //                 "https://api-tassie.herokuapp.com/user/login/",
+    //         //                 options: Options(headers: {
+    //         //                   HttpHeaders.contentTypeHeader: "application/json",
+    //         //                 }),
+    //         //                 // data: jsonEncode(value),
+    //         //                 data: email != ""
+    //         //                     ? {"email": email, "password": password}
+    //         //                     : {"username": username, "password": password},
+    //         //               );
+    //         //               print('1');
+    //         //               await storage.write(
+    //         //                   key: "token",
+    //         //                   value: response.data['data']['token']);
+    //         //               print('2');
+    //         //               Navigator.pushReplacement(
+    //         //                 context,
+    //         //                 MaterialPageRoute(builder: (context) {
+    //         //                   return Home();
+    //         //                 }),
+    //         //               );
+    //         //               print(response.toString());
+    //         //             }
+    //         //           },
+    //         Container(
+    //           child: IconButton(
+    //             padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
+    //             icon: Icon(Icons.cloud_upload),
+    //             iconSize: 30.0,
+    //             color: MediaQuery.of(context).platformBrightness == Brightness.dark
+    //                 ? kPrimaryColor
+    //                 : kPrimaryColorAccent,
+    //             onPressed: () {
+    //               print('1');
                   
-                    if(key=='r'){
-                      recipePic = _imageFile;
-                      print('2');
-                    }else if(key=='i'){
-                      ingredientPics[(index).toString()]=_imageFile;
-                      print('3');
-                    }else{
-                      stepPics[(index).toString()]=_imageFile;
-                      print('4');
-                    }
-                    print('5');
-                    if (recipeName!='') {
-                    _startUpload( _imageFile,recipeName,'name',key+'_'+(index+1).toString(), widget.folder);
-                    }
-                },
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15.0),
-                color: kDark[900],
-              ),
-            ),
-          ] else if(image!='' && image!=null) ... [
+    //                 if(key=='r'){
+    //                   recipePic = _imageFile;
+    //                   _imageFile = null;
+    //                   _startUpload( recipePic,recipeName,'name',key+'_'+(index+1).toString(), widget.folder);
+    //                   print('2');
+    //                 }else if(key=='i'){
+    //                   ingredientPics[(index).toString()]=_imageFile;
+    //                   _imageFile = null;
+    //                   _startUpload( ingredientPics[(index).toString()],recipeName,'name',key+'_'+(index+1).toString(), widget.folder);
+    //                   print('3');
+    //                 }else{
+    //                   stepPics[(index).toString()]=_imageFile;
+    //                   _imageFile = null;
+    //                   _startUpload( stepPics[(index).toString()],recipeName,'name',key+'_'+(index+1).toString(), widget.folder);
+    //                   print('4');
+    //                 }
+    //                 print('5');
+    //                 // if (recipeName!='') {
+    //                 // _startUpload( _imageFile,recipeName,'name',key+'_'+(index+1).toString(), widget.folder);
+    //                 // }
+    //             },
+    //           ),
+    //           decoration: BoxDecoration(
+    //             borderRadius: BorderRadius.circular(15.0),
+    //             color: kDark[900],
+    //           ),
+    //         ),
+    //       ] else 
+          if(image!='' && image!=null) ... [
              Padding(
               padding: const EdgeInsets.symmetric(vertical: kDefaultPadding * 1.5, horizontal: 5.0),
               child: Image.file(image),
@@ -148,15 +147,55 @@ class _AddRecipeState extends State<AddRecipe> {
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
+                children: [
                   TextButton(
                     child: Icon(Icons.crop),
-                    onPressed:_cropImage,
+                    onPressed:() => _cropImage(key, index),
                   ),
                   TextButton(
                     child: Icon(Icons.refresh),
-                    onPressed: _clear,
+                    onPressed: () => _clear(key, index),
                   ),
+                  Container(
+              child: IconButton(
+                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
+                icon: Icon(Icons.cloud_upload),
+                iconSize: 30.0,
+                color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                    ? kPrimaryColor
+                    : kPrimaryColorAccent,
+                onPressed: () {
+                  // print('1');
+                  
+                  //   if(key=='r'){
+                  //     recipePic = _imageFile;
+                  //     _imageFile = null;
+                  //     _startUpload( recipePic,recipeName,'name',key+'_'+(index+1).toString(), widget.folder);
+                  //     print('2');
+                  //   }else if(key=='i'){
+                  //     ingredientPics[(index).toString()]=_imageFile;
+                  //     _imageFile = null;
+                  //     _startUpload( ingredientPics[(index).toString()],recipeName,'name',key+'_'+(index+1).toString(), widget.folder);
+                  //     print('3');
+                  //   }else{
+                  //     stepPics[(index).toString()]=_imageFile;
+                  //     _imageFile = null;
+                  //     _startUpload( stepPics[(index).toString()],recipeName,'name',key+'_'+(index+1).toString(), widget.folder);
+                  //     print('4');
+                  //   }
+                  //   print('5');
+                    if (recipeName!='') {
+                    _startUpload( image, recipeName,'name', key+'_'+(index+1).toString(), widget.folder);
+                    } else {
+                      showSnack(context, 'Enter recipe name', () {}, 'OK', 3);
+                    }
+                },
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15.0),
+                color: kDark[900],
+              ),
+            ),
                 ],
               ),
             ),
@@ -181,7 +220,7 @@ class _AddRecipeState extends State<AddRecipe> {
                           padding: EdgeInsets.all(size.width * 0.05),
                           icon: Icon(Icons.camera_alt_rounded),
                           iconSize: 50.0,
-                        onPressed: () => _pickImage(ImageSource.camera),
+                        onPressed: () => _pickImage(ImageSource.camera, key, index),
                         ),
                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(size.width),
                         color: MediaQuery.of(context).platformBrightness == Brightness.dark
@@ -195,7 +234,7 @@ class _AddRecipeState extends State<AddRecipe> {
                       padding: EdgeInsets.all(size.width * 0.05),
                       icon: Icon(Icons.photo_library_rounded),
                       iconSize: 50.0,
-                    onPressed: () => _pickImage(ImageSource.gallery),
+                    onPressed: () => _pickImage(ImageSource.gallery, key,index),
                     ),
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(size.width),
                     color: MediaQuery.of(context).platformBrightness == Brightness.dark
@@ -301,6 +340,60 @@ class _AddRecipeState extends State<AddRecipe> {
             ],
           ),
         ),
+        Step(
+          isActive: _currentStep >= 3,
+          title: Text('Youtube link'),
+          subtitle: Text('Namak Swaad Anusaar!  (Optional)', 
+                    style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                      ? kDark
+                      : kDark[700]),),
+          content: Padding(
+            padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+            child: Column(
+              children: [
+                TextFormField(
+                    // style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                    //     ? kLight
+                    //     : kDark[900]),
+                          initialValue: youtubeLink.isNotEmpty ? youtubeLink : '',
+                          decoration: InputDecoration(
+                              labelText: 'Tutorial Link',
+                              
+                              labelStyle: TextStyle(
+                                // fontFamily: 'Raleway',
+                                fontSize: 16.0,
+                                color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                        ? kPrimaryColor
+                        : kDark[900],
+                              ),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
+                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                        ? kPrimaryColor
+                        : kDark[900]!),borderRadius: BorderRadius.circular(15.0),),
+                                  ),
+                          keyboardType: TextInputType.multiline,
+                          
+                          maxLines: null,
+                          onChanged: (value) {
+                            youtubeLink = value;
+                          },
+                          validator: (val) {
+                            if(val!.isNotEmpty) {
+                            if (!RegExp(r"http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?​=]*)?")
+                              .hasMatch(val)) {
+                            return 'Please enter a valid youtube link';
+                          }}
+                          return null;
+                          },
+                        ),
+              ],
+            ),
+          ),
+        ),
+        
       ];
   
   //////////add and subtract
@@ -388,7 +481,7 @@ List<Widget> _getRecipe(size) {
       onTap: () {
         if (add) {
           ingredientsList.insert(index + 1, "");
-          ingredientPics[i.toString()] = '';
+          ingredientPics[(index+1).toString()] = '';
         } else{
           ingredientsList.removeAt(i);
           ingredientPics[i.toString()] = '';
@@ -415,7 +508,7 @@ List<Widget> _getRecipe(size) {
   ////////  
 
   /// Cropper plugin
-  Future<void> _cropImage() async {
+  Future<void> _cropImage(key, index) async {
     File? cropped = await ImageCropper.cropImage(
         sourcePath: _imageFile!.path,
         // ratioX: 1.0,
@@ -426,7 +519,7 @@ List<Widget> _getRecipe(size) {
         aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
         compressQuality: 80,
         androidUiSettings: AndroidUiSettings(
-          toolbarTitle: 'Garnish it,'
+          toolbarTitle: 'Garnish it'
           toolbarColor: Theme.of(context).scaffoldBackgroundColor,
           toolbarWidgetColor: MediaQuery.of(context).platformBrightness == Brightness.dark
                     ? kDark
@@ -438,12 +531,24 @@ List<Widget> _getRecipe(size) {
         );
 
     setState(() {
-      _imageFile = cropped ?? _imageFile;
+      if(key=='r'){
+          recipePic = cropped ?? _imageFile;
+          _imageFile = null;
+          
+        }else if(key=='i'){
+          ingredientPics[(index).toString()]= cropped ?? _imageFile;
+          _imageFile = null;
+          
+        }else{
+          stepPics[(index).toString()]= cropped ?? _imageFile;
+          _imageFile = null;
+          
+        }
     });
   }
 
   /// Select an image via gallery or camera
-  Future<void> _pickImage(ImageSource source) async {
+  Future<void> _pickImage(ImageSource source, key, index) async {
     await Permission.photos.request();
     var permissionStatus = await Permission.photos.status;
 
@@ -452,14 +557,25 @@ List<Widget> _getRecipe(size) {
       if (selected == null) return;
       setState(() {
         _imageFile = File(selected.path);
-        _cropImage();
+        _cropImage(key, index);
       });
     }
   }
 
   /// Remove image
-  void _clear() {
-    setState(() => _imageFile = null);
+  void _clear(key, index) {
+    setState(() {
+      if(key=='r'){
+          recipePic = null;
+          
+        }else if(key=='i'){
+          ingredientPics[(index).toString()]= '';
+          
+        }else{
+          stepPics[(index).toString()]= '';
+          
+        }
+    });
   }
 
   double progress = 0.0;
@@ -487,12 +603,12 @@ List<Widget> _getRecipe(size) {
       }),
       data: formData,
       onSendProgress: (int sent, int total) {
-        setState(() {
-          print(progress);
-          progress = (sent / total * 100);
-          print(progress);
+        // setState(() {
+        //   print(progress);
+        //   progress = (sent / total * 100);
+        //   print(progress);
           
-        });
+        // });
       },
     );
     
@@ -619,7 +735,6 @@ List<Widget> _getRecipe(size) {
                 if (_isLastStep) {
                   if (_formKey.currentState!.validate()){
                   // to submit here
-                  
                   var url = "http://10.0.2.2:3000/recs/updateRecipe";
                   var token = await storage.read(key: "token");
                   Response response = await dio.post(url,
@@ -627,12 +742,15 @@ List<Widget> _getRecipe(size) {
                         HttpHeaders.contentTypeHeader: "application/json",
                         HttpHeaders.authorizationHeader: "Bearer " + token!
                       }),
-                      data: {'uuid': widget.uuid, 'folder': widget.folder, 'steps': stepsList});
+                      data: {'uuid': widget.uuid, 'folder': widget.folder, 'youtubeLink': youtubeLink});
+                  } else {
+                    showSnack(context, 'Check missing ingredients or steps!', () {}, 'OK', 4);
                   }
                   
                 } else {
                   setState(() {
                     _currentStep += 1;
+                    print('currentstep :');
                     print(_currentStep);
                   });
                   print('2.d');
@@ -646,13 +764,23 @@ List<Widget> _getRecipe(size) {
                       }),
                       data: {'uuid': widget.uuid, 'folder': widget.folder, 'ingredients': ingredientsList});
                   }
-                  
+                  if(_currentStep == 3){
+                  var url = "http://10.0.2.2:3000/recs/updateRecipe";
+                  var token = await storage.read(key: "token");
+                  Response response = await dio.post(url,
+                      options: Options(headers: {
+                        HttpHeaders.contentTypeHeader: "application/json",
+                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                      }),
+                      data: {'uuid': widget.uuid, 'folder': widget.folder, 'steps': stepsList});
+                  }
                 }
               },
               onStepCancel: () {
                 _currentStep == 0
                     ? null
                     : setState(() {
+                      print('current step back');
                         _currentStep -= 1;
                       });
               },
