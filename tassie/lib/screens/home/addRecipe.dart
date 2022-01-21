@@ -36,9 +36,9 @@ class _AddRecipeState extends State<AddRecipe> {
   //a chene ek vaar set kri leje jyare recipe pic les ane validator ma check krvanu
   File? recipePic;
   //ama index thi save krto jaje etle update thatu jase
-  Map ingredientPics = {};
+  Map ingredientPics = {'0': ''};
   //ama bhi same
-  Map stepPics = {};
+  Map stepPics = {'0': ''};
 
   final TextEditingController _stepController = TextEditingController();
   final TextEditingController _ingredientController = TextEditingController();
@@ -388,10 +388,10 @@ List<Widget> _getRecipe(size) {
       onTap: () {
         if (add) {
           ingredientsList.insert(index + 1, "");
-          ingredientPics[i.toString()] = null;
+          ingredientPics[i.toString()] = '';
         } else{
           ingredientsList.removeAt(i);
-          ingredientPics[i.toString()] = null;
+          ingredientPics[i.toString()] = '';
         }
         if (mounted) {
           setState(() {});
