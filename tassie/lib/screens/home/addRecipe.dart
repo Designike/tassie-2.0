@@ -41,8 +41,8 @@ class _AddRecipeState extends State<AddRecipe> {
   //ama bhi same
   Map stepPics = {'0': ''};
 
-  final TextEditingController _stepController = TextEditingController();
-  final TextEditingController _ingredientController = TextEditingController();
+  // final TextEditingController _stepController = TextEditingController();
+  // final TextEditingController _ingredientController = TextEditingController();
   static List<String?> stepsList = [null];
   static List<String?> ingredientsList = [null];
 
@@ -280,7 +280,7 @@ class _AddRecipeState extends State<AddRecipe> {
                   //     : kDark[900]),
                         initialValue: recipeName.isNotEmpty ? recipeName : '',
                         decoration: InputDecoration(
-                            labelText: 'RECIPE NAME',
+                            labelText: 'Recipe Name',
                             
                             labelStyle: TextStyle(
                               // fontFamily: 'Raleway',
@@ -297,9 +297,9 @@ class _AddRecipeState extends State<AddRecipe> {
                       ? kPrimaryColor
                       : kDark[900]!),borderRadius: BorderRadius.circular(15.0),),
                                 ),
-                        keyboardType: TextInputType.multiline,
+                        // keyboardType: TextInputType.multiline,
                         
-                        maxLines: null,
+                        // maxLines: null,
                         onChanged: (value) {
                           recipeName = value;
                         },
@@ -699,9 +699,7 @@ List<Widget> _getRecipe(size) {
             child: Stepper(
               physics: ClampingScrollPhysics(),
               type: StepperType.vertical,
-              onStepTapped: (value) => setState(() {
-                _currentStep = value;
-              }),
+              onStepTapped: (value) => {},
               controlsBuilder: (BuildContext context, ControlsDetails details) {
                 final _isLastStep = _currentStep == steps(size).length - 1;
                 return Row(
