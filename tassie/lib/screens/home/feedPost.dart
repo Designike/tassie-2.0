@@ -10,44 +10,28 @@ import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/viewComments.dart';
 
 class FeedPost extends StatefulWidget {
-  const FeedPost({
-    required this.post,
-    required this.noOfComment,
-    required this.noOfLike
-  });
+  const FeedPost(
+      {required this.post,
+      required this.noOfComment,
+      required this.noOfLike,
+      required this.func});
   final Map post;
   final Map noOfComment;
   final Map noOfLike;
+  final void Function(bool) func;
   @override
   _FeedPostState createState() => _FeedPostState();
 }
 
 class _FeedPostState extends State<FeedPost> {
-  // List<Map> posts = [
-  //   {
-  //     "name": "Soham",
-  //     "time": "30 mins",
-  //     "image": "https://picsum.photos/200/300",
-  //     "description":
-  //         "This is a sample caption for tassie aaaaaaaaaaaaaaaaa a a a a a abc bcd fghLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-  //   },
-  //   {
-  //     "name": "Soham",
-  //     "time": "30 mins",
-  //     "image": "https://picsum.photos/200",
-  //     "description": "This is a sample caption for tassie app."
-  //   },
-  //   {
-  //     "name": "Soham",
-  //     "time": "30 mins",
-  //     "image": "https://picsum.photos/200",
-  //     "description": "This is a sample caption for tassie app."
-  //   }
-  // ];
+  final dio = Dio();
+  final storage = FlutterSecureStorage();
 
-  Widget _feedPostElement() {
+  @override
+  Widget build(BuildContext context) {
     Map post = widget.post;
-    
+    bool liked = widget.noOfLike['isLiked'];
+    int likeNumber = widget.noOfLike['count'];
     Size size = MediaQuery.of(context).size;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
@@ -105,7 +89,16 @@ class _FeedPostState extends State<FeedPost> {
                     ),
                   ),
                   InkWell(
-                    onDoubleTap: () => print('Like post'),
+                    onDoubleTap: () async {
+                      var token = await storage.read(key: "token");
+                      dio.post("http://10.0.2.2:3000/feed/like",
+                          options: Options(headers: {
+                            HttpHeaders.contentTypeHeader: "application/json",
+                            HttpHeaders.authorizationHeader: "Bearer " + token!
+                          }),
+                          data: {'uuid': post['uuid']});
+                      widget.func(true);
+                    },
                     child: Container(
                       margin: EdgeInsets.all(10.0),
                       width: double.infinity,
@@ -130,12 +123,49 @@ class _FeedPostState extends State<FeedPost> {
                             Row(
                               children: [
                                 IconButton(
-                                  icon: Icon(Icons.favorite_border),
+                                  icon: (!liked)
+                                      ? Icon(Icons.favorite_border)
+                                      : Icon(
+                                          Icons.favorite,
+                                          color: kPrimaryColor,
+                                        ),
                                   iconSize: 30.0,
-                                  onPressed: () => print('Like post'),
+                                  onPressed: () async {
+                                    if (liked) {
+                                      // print(post);
+
+                                      var token =
+                                          await storage.read(key: "token");
+                                      dio.post(
+                                          "http://10.0.2.2:3000/feed/unlike",
+                                          options: Options(headers: {
+                                            HttpHeaders.contentTypeHeader:
+                                                "application/json",
+                                            HttpHeaders.authorizationHeader:
+                                                "Bearer " + token!
+                                          }),
+                                          data: {'uuid': post['uuid']});
+                                      widget.func(false);
+                                    } else {
+                                      // print(post);
+
+                                      var token =
+                                          await storage.read(key: "token");
+                                      dio.post("http://10.0.2.2:3000/feed/like",
+                                          options: Options(headers: {
+                                            HttpHeaders.contentTypeHeader:
+                                                "application/json",
+                                            HttpHeaders.authorizationHeader:
+                                                "Bearer " + token!
+                                          }),
+                                          data: {'uuid': post['uuid']});
+                                      widget.func(true);
+                                    }
+                                    print(likeNumber.toString());
+                                  },
                                 ),
                                 Text(
-                                  widget.noOfLike['count'].toString(),
+                                  likeNumber.toString(),
                                   style: TextStyle(
                                     fontSize: 14.0,
                                     fontWeight: FontWeight.w600,
@@ -154,9 +184,10 @@ class _FeedPostState extends State<FeedPost> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (_) => ViewComments(
-                                          post: post, noOfComment: widget.noOfComment, noOfLike: widget.noOfLike
-
-                                        ),
+                                            post: post,
+                                            noOfComment: widget.noOfComment,
+                                            noOfLike: widget.noOfLike,
+                                            func: widget.func),
                                       ),
                                     );
                                   },
@@ -201,8 +232,10 @@ class _FeedPostState extends State<FeedPost> {
                           context,
                           MaterialPageRoute(
                             builder: (_) => ViewComments(
-                              post: post, noOfComment: widget.noOfComment, noOfLike: widget.noOfLike
-                            ),
+                                post: post,
+                                noOfComment: widget.noOfComment,
+                                noOfLike: widget.noOfLike,
+                                func: widget.func),
                           ),
                         );
                       },
@@ -245,10 +278,5 @@ class _FeedPostState extends State<FeedPost> {
         ),
       ),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _feedPostElement();
   }
 }

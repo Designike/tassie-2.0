@@ -59,6 +59,7 @@ class _IngredientTextFieldState extends State<IngredientTextField> {
       suggestionsCallback: IngredientData.getSuggestions,
       textFieldConfiguration: TextFieldConfiguration(
         controller: _ingredientController,
+        onChanged: (v) => widget.ingredientsList[widget.index!] = v,
         decoration: InputDecoration(
                     labelText: 'Add Ingredient',
                     
@@ -81,8 +82,13 @@ class _IngredientTextFieldState extends State<IngredientTextField> {
       itemBuilder: (context, String? suggestion) => ListTile(
         title: Text(suggestion!),
       ),
-      onSuggestionSelected: (String? suggestion) =>
-        _ingredientController.text = suggestion!
+      onSuggestionSelected: (String? v) {
+      // setState(() {
+       widget.ingredientsList[widget.index!] = v;
+        // print(_ingredientController.text);
+      // }); 
+      }
+        
       ,
       validator: (v) {
         if (v!.trim().isEmpty) return 'Please enter something';

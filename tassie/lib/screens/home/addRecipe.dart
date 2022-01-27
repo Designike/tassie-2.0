@@ -1,13 +1,16 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tassie/screens/home/snackbar.dart';
 import 'package:tassie/screens/home/upload.dart';
@@ -40,12 +43,23 @@ class _AddRecipeState extends State<AddRecipe> {
   Map ingredientPics = {'0': ''};
   //ama bhi same
   Map stepPics = {'0': ''};
+  final LocalStorage lstorage = LocalStorage('tassie');
 
   // final TextEditingController _stepController = TextEditingController();
   // final TextEditingController _ingredientController = TextEditingController();
-  static List<String?> stepsList = [null];
-  static List<String?> ingredientsList = [null];
-
+  List<String?> stepsList = [null];
+  List<String?> ingredientsList = [null];
+  bool isVeg = true;
+  int selectedFlavour = 0;
+  int selectedCourse = 0;
+  String flavour = "";
+  String course = "";
+  List<String> hours=['0', '1', '2', '3'];
+  final minutes=['00', '15', '30', '45'];
+  bool isUpload = false;
+  String? hour;
+  String? min;
+  // RangeValues _currentRangeValues = RangeValues(0, 15);
   //ane tassie mathi leto avje code plus vado e page ma bov kayi che nayi ena sivayi
   List<Widget> _UploadImg(size,key,index,image) {
     
@@ -185,6 +199,7 @@ class _AddRecipeState extends State<AddRecipe> {
                   //   }
                   //   print('5');
                     if (recipeName!='') {
+                     
                     _startUpload( image, recipeName,'name', key+'_'+(index+1).toString(), widget.folder);
                     } else {
                       showSnack(context, 'Enter recipe name', () {}, 'OK', 3);
@@ -265,6 +280,59 @@ class _AddRecipeState extends State<AddRecipe> {
   return _upload;
   }
 
+  void changeFlavour(int index, String flavour) {
+    setState(() {
+      flavour = flavour;
+      selectedFlavour = index;
+    });
+  }
+
+  void changeCourse(int index, String course) {
+    setState(() {
+      course = course;
+      selectedCourse = index;
+    });
+  }
+
+  Widget flavourRadio(int index, String flavour) {
+    return Padding(
+            padding: const EdgeInsets.only(right: kDefaultPadding),
+            child: OutlinedButton(
+              onPressed: () => changeFlavour(index, flavour),
+              child: Text(flavour),
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+                padding: EdgeInsets.all(15.0),
+                side: BorderSide(
+                  color: selectedFlavour == index ? kPrimaryColor : kDark,
+                  width: selectedFlavour == index ? 2 : 1,
+                ),
+                backgroundColor: selectedFlavour == index ? kPrimaryColor.withOpacity(0.1) : Colors.transparent,
+              ),
+
+            ),
+          );
+  }
+
+  Widget courseRadio(int index, String course) {
+    return Padding(
+            padding: const EdgeInsets.only(right: kDefaultPadding),
+            child: OutlinedButton(
+              onPressed: () => changeCourse(index, course),
+              child: Text(course),
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+                padding: EdgeInsets.all(15.0),
+                side: BorderSide(
+                  color: selectedCourse == index ? kPrimaryColor : kDark,
+                  width: selectedCourse == index ? 2 : 1,
+                ),
+                backgroundColor: selectedCourse == index ? kPrimaryColor.withOpacity(0.1) : Colors.transparent,
+              ),
+
+            ),
+          );
+  }
   List<Step> steps(Size size) => [
         Step(
           isActive: _currentStep >= 0,
@@ -316,6 +384,180 @@ class _AddRecipeState extends State<AddRecipe> {
         Step(
           isActive: _currentStep >= 1,
           state: _currentStep > 1 ? StepState.complete : StepState.indexed,
+          title: Text('Tags'),
+          // subtitle: Text('Images are optional', 
+          //           style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
+          //             ? kDark
+          //             : kDark[700]),),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                    child: Text('Category'),
+                  ),
+              // SizedBox(height: 3 * kDefaultPadding,),
+                  Padding(
+                    padding: const EdgeInsets.all(kDefaultPadding),
+                    
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        
+                        Padding(
+                          padding: const EdgeInsets.only(right: kDefaultPadding),
+                          child: OutlinedButton(
+                            onPressed: () {
+                              setState(() {
+                                isVeg = true;
+                              });
+                            },
+                            child: Text('Veg'),
+                            style: OutlinedButton.styleFrom(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+                              padding: EdgeInsets.all(15.0),
+                              side: BorderSide(
+                                color: isVeg ? Colors.green : kDark,
+                                 width: isVeg ? 2 : 1,
+                              ),
+                              backgroundColor: isVeg ? kPrimaryColor.withOpacity(0.1) : Colors.transparent,
+                            ),
+            
+                          ),
+                        ),
+                        OutlinedButton(
+                          onPressed: () {
+                            setState(() {
+                              isVeg = false;
+                            });
+                          },
+                          child: Text('Non Veg'),
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+                            padding: EdgeInsets.all(15.0),
+                            side: BorderSide(
+                              color: !isVeg ? Colors.red : kDark,
+                               width: !isVeg ? 2 : 1,
+                            ),
+                            backgroundColor: !isVeg ? kPrimaryColor.withOpacity(0.1) : Colors.transparent,
+                          ),
+            
+                        ),
+                        
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                    child: Text('Flavour'),
+                  ),
+                  
+              // SizedBox(height: 3 * kDefaultPadding,),
+                  Padding(
+                    padding: const EdgeInsets.all(kDefaultPadding),
+                    
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          flavourRadio(0,'Spicy'),
+                          flavourRadio(1,'Sweet'),
+                          flavourRadio(2,'Sour'),
+                          flavourRadio(3,'Salty'),
+                          flavourRadio(4,'Bitter'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                    child: Text('Course'),
+                  ),
+                  
+              // SizedBox(height: 3 * kDefaultPadding,),
+                  Padding(
+                    padding: const EdgeInsets.all(kDefaultPadding),
+                    
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          courseRadio(0,'Snack'),
+                          courseRadio(1,'Starter'),
+                          courseRadio(2,'Farali'),
+                          courseRadio(3,'Main course'),
+                          courseRadio(4,'Dessert'),
+                          courseRadio(5,'Drinks'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                    child: Text('Cooking Time (HH : MM)'),
+                  ),
+                  Padding(padding: const EdgeInsets.all(kDefaultPadding),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        width: size.width * 0.25,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: kDark),
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(value:hour,items: hours.map((String i){return DropdownMenuItem(
+                                      value: i,
+                                      child: Text(i),
+                                    );}).toList() , onChanged: (value) {
+                                            setState(() {
+                             hour = value!;                 
+                                            });
+                                            
+                                          },
+                                          borderRadius: BorderRadius.circular(15.0),
+                                          isExpanded:true),
+                        ),
+                  
+                      ),
+                      SizedBox(
+                    width: 10.0,
+                  ),
+                    Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        width: size.width * 0.25,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: kDark),
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(value:min,items: minutes.map((String i){return DropdownMenuItem(
+                                      value: i,
+                                      child: Text(i),
+                                    );}).toList() , onChanged: (value) {
+                                            setState(() {
+                             min = value!;                 
+                                            });
+                                            
+                                          },
+                                          borderRadius: BorderRadius.circular(15.0),
+                                          isExpanded:true),
+                        ),
+                  
+                      ),
+                    ],
+                  ),)
+                  
+                  
+            ],
+          ),
+        ),
+        Step(
+          isActive: _currentStep >= 2,
+          state: _currentStep > 2 ? StepState.complete : StepState.indexed,
           title: Text('Ingredients'),
           subtitle: Text('Images are optional', 
                     style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
@@ -328,7 +570,8 @@ class _AddRecipeState extends State<AddRecipe> {
           ),
         ),
         Step(
-          isActive: _currentStep >= 2,
+          isActive: _currentStep >= 3,
+          state: _currentStep > 3 ? StepState.complete : StepState.indexed,
           title: Text('Steps'),
           subtitle: Text('Images are optional', 
                     style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
@@ -341,7 +584,7 @@ class _AddRecipeState extends State<AddRecipe> {
           ),
         ),
         Step(
-          isActive: _currentStep >= 3,
+          isActive: _currentStep >= 4,
           title: Text('Youtube link'),
           subtitle: Text('Namak Swaad Anusaar!  (Optional)', 
                     style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
@@ -461,7 +704,7 @@ List<Widget> _getRecipe(size) {
           children: [
             Row(
               children: [
-                Expanded(child: IngredientTextField(index: i, ingredientsList: ingredientsList,)),
+                Expanded(child: IngredientTextField(index: i, ingredientsList: ingredientsList)),
                 SizedBox(
                   width: 16,
                 ),
@@ -614,14 +857,24 @@ List<Widget> _getRecipe(size) {
     
     if (response.data['status'] == false) {
       _imageFile = null;
+      if(imgName=='r_1'){
+        setState(() {
+                  isUpload=false;
+                });
+      }
       showSnack(context, response.data['message'], () {}, 'OK', 5);
     }
     if (response.data['status'] == true) {
-     
+      if(imgName=='r_1'){
+        setState(() {
+                  isUpload=true;
+                });
+      }
       showSnack(context, response.data['message'], () {}, 'OK', 3);
     }
     
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -731,7 +984,11 @@ List<Widget> _getRecipe(size) {
               onStepContinue: () async {
                 final _isLastStep = _currentStep == steps(size).length - 1;
                 if (_isLastStep) {
-                  if (_formKey.currentState!.validate()){
+                  if (_formKey.currentState!.validate() && isUpload){
+                    if(hour != null && min != null) {
+                      if(hour == '0' && min == '00')  {
+                        showSnack(context, 'Cooking time cannot be 0:00, Are you cooking at light\'s speed xD?', () {}, 'OK', 4);
+                      } else {
                   // to submit here
                   var url = "http://10.0.2.2:3000/recs/updateRecipe";
                   var token = await storage.read(key: "token");
@@ -741,8 +998,12 @@ List<Widget> _getRecipe(size) {
                         HttpHeaders.authorizationHeader: "Bearer " + token!
                       }),
                       data: {'uuid': widget.uuid, 'folder': widget.folder, 'youtubeLink': youtubeLink});
+                      }
+                    } else {
+                      showSnack(context, 'Add cooking time', () {}, 'OK', 4);
+                    }
                   } else {
-                    showSnack(context, 'Check missing ingredients or steps!', () {}, 'OK', 4);
+                    showSnack(context, 'Check missing ingredients or steps or recipe image!', () {}, 'OK', 4);
                   }
                   
                 } else {
@@ -752,7 +1013,7 @@ List<Widget> _getRecipe(size) {
                     print(_currentStep);
                   });
                   print('2.d');
-                  if(_currentStep == 2){
+                  if(_currentStep == 1){
                   var url = "http://10.0.2.2:3000/recs/updateRecipe";
                   var token = await storage.read(key: "token");
                   Response response = await dio.post(url,
@@ -760,7 +1021,27 @@ List<Widget> _getRecipe(size) {
                         HttpHeaders.contentTypeHeader: "application/json",
                         HttpHeaders.authorizationHeader: "Bearer " + token!
                       }),
-                      data: {'uuid': widget.uuid, 'folder': widget.folder, 'ingredients': ingredientsList});
+                      data: {'uuid': widget.uuid, 'name': recipeName});
+                  }
+                  if(_currentStep == 2){
+                    if(hour != null && min != null) {
+                      if(hour == '0' && min == '00')  {
+                        showSnack(context, 'Cooking time cannot be 0:00, Are you cooking at light\'s speed xD?', () {}, 'OK', 4);
+                      } else {
+                    
+                  var url = "http://10.0.2.2:3000/recs/updateRecipe";
+                  var token = await storage.read(key: "token");
+                  var time = int.parse(hour!)*60 + int.parse(min!);
+                  Response response = await dio.post(url,
+                      options: Options(headers: {
+                        HttpHeaders.contentTypeHeader: "application/json",
+                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                      }),
+                      data: {'uuid': widget.uuid,'flavour':flavour,'veg':isVeg,'course':course,'estimatedTime':time});
+                      }
+                    } else {
+                      showSnack(context, 'Add cooking time', () {}, 'OK', 4);
+                    }
                   }
                   if(_currentStep == 3){
                   var url = "http://10.0.2.2:3000/recs/updateRecipe";
@@ -770,7 +1051,17 @@ List<Widget> _getRecipe(size) {
                         HttpHeaders.contentTypeHeader: "application/json",
                         HttpHeaders.authorizationHeader: "Bearer " + token!
                       }),
-                      data: {'uuid': widget.uuid, 'folder': widget.folder, 'steps': stepsList});
+                      data: {'uuid': widget.uuid, 'ingredients': ingredientsList});
+                  }
+                  if(_currentStep == 4){
+                  var url = "http://10.0.2.2:3000/recs/updateRecipe";
+                  var token = await storage.read(key: "token");
+                  Response response = await dio.post(url,
+                      options: Options(headers: {
+                        HttpHeaders.contentTypeHeader: "application/json",
+                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                      }),
+                      data: {'uuid': widget.uuid,'steps': stepsList}); // 'folder': widget.folder, 
                   }
                 }
               },

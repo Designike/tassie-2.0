@@ -101,11 +101,11 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
         );
         // List tList = [];
         if (response.data['data']['posts'] != null) {
-        //   for (int i = 0;
-        //       i < response.data['data']['posts']['results'].length;
-        //       i++) {
-        //     tList.add(response.data['data']['posts']['results'][i]);
-        //   }
+          //   for (int i = 0;
+          //       i < response.data['data']['posts']['results'].length;
+          //       i++) {
+          //     tList.add(response.data['data']['posts']['results'][i]);
+          //   }
           setState(() {
             if (index == 1) {
               isLoading = false;
@@ -113,15 +113,17 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
             isLazyLoading = false;
             posts.addAll(response.data['data']['posts']['results']);
             // posts.addAll(tList);
-            if(response.data['data']['posts']['noOfComments'] != null) {
-              noOfComments.addAll(response.data['data']['posts']['noOfComments']);
+            if (response.data['data']['posts']['noOfComments'] != null) {
+              noOfComments
+                  .addAll(response.data['data']['posts']['noOfComments']);
             }
-            if(response.data['data']['posts']['noOfLikes'] != null) {
+            if (response.data['data']['posts']['noOfLikes'] != null) {
               noOfLikes.addAll(response.data['data']['posts']['noOfLikes']);
+              print(noOfLikes);
             }
             page++;
           });
-          print(response.data['data']['posts']);
+          // print(response.data['data']['posts']);
           if (response.data['data']['posts']['results'].length == 0) {
             setState(() {
               isEnd = true;
@@ -164,6 +166,8 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
     setState(() {
       page = 1;
       posts = [];
+      noOfComments = [];
+      noOfLikes = [];
       isEnd = false;
       isLoading = true;
       _getMoreData(page);
@@ -248,7 +252,22 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                               ? isEnd
                                   ? _endMessage()
                                   : _buildProgressIndicator()
-                              : FeedPost(post: posts[index], noOfComment: noOfComments[index], noOfLike: noOfLikes[index]);
+                              : FeedPost(
+                                  post: posts[index],
+                                  noOfComment: noOfComments[index],
+                                  noOfLike: noOfLikes[index],
+                                  func: (islike) {
+                                    setState(() {
+                                      if (islike) {
+                                        noOfLikes[index]['count'] += 1;
+                                      } else {
+                                        noOfLikes[index]['count'] -= 1;
+                                      }
+                                      noOfLikes[index]['isLiked'] =
+                                          !noOfLikes[index]['isLiked'];
+                                    });
+                                  },
+                                );
                         },
                         controller: _sc,
                       ),

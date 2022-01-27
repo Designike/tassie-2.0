@@ -12,8 +12,12 @@ class ViewComments extends StatefulWidget {
   final Map post;
   final Map noOfComment;
   final Map noOfLike;
+  final void Function(bool) func;
   ViewComments(
-      {required this.post, required this.noOfComment, required this.noOfLike});
+      {required this.post,
+      required this.noOfComment,
+      required this.noOfLike,
+      required this.func});
 
   @override
   _ViewCommentsState createState() => _ViewCommentsState();
@@ -204,6 +208,7 @@ class _ViewCommentsState extends State<ViewComments> {
 
   @override
   Widget build(BuildContext context) {
+    bool liked = widget.noOfLike['isLiked'];
     int no_of_comments = comments.length;
     Size size = MediaQuery.of(context).size;
     return Scaffold(
@@ -289,7 +294,18 @@ class _ViewCommentsState extends State<ViewComments> {
                               ],
                             ),
                             InkWell(
-                              onDoubleTap: () => print('Like post'),
+                              onDoubleTap: () async {
+                                var token = await storage.read(key: "token");
+                                dio.post("http://10.0.2.2:3000/feed/like",
+                                    options: Options(headers: {
+                                      HttpHeaders.contentTypeHeader:
+                                          "application/json",
+                                      HttpHeaders.authorizationHeader:
+                                          "Bearer " + token!
+                                    }),
+                                    data: {'uuid': widget.post['uuid']});
+                                widget.func(true);
+                              },
                               splashColor: Colors.transparent,
                               highlightColor: Colors.transparent,
                               child: Container(
@@ -317,9 +333,57 @@ class _ViewCommentsState extends State<ViewComments> {
                                       Row(
                                         children: <Widget>[
                                           IconButton(
-                                            icon: Icon(Icons.favorite_border),
+                                            icon: (!liked)
+                                                ? Icon(Icons.favorite_border)
+                                                : Icon(
+                                                    Icons.favorite,
+                                                    color: kPrimaryColor,
+                                                  ),
                                             iconSize: 30.0,
-                                            onPressed: () => print('Like post'),
+                                            onPressed: () async {
+                                              if (liked) {
+                                                // print(post);
+
+                                                var token = await storage.read(
+                                                    key: "token");
+                                                dio.post(
+                                                    "http://10.0.2.2:3000/feed/unlike",
+                                                    options: Options(headers: {
+                                                      HttpHeaders
+                                                              .contentTypeHeader:
+                                                          "application/json",
+                                                      HttpHeaders
+                                                              .authorizationHeader:
+                                                          "Bearer " + token!
+                                                    }),
+                                                    data: {
+                                                      'uuid':
+                                                          widget.post['uuid']
+                                                    });
+                                                widget.func(false);
+                                              } else {
+                                                // print(post);
+
+                                                var token = await storage.read(
+                                                    key: "token");
+                                                dio.post(
+                                                    "http://10.0.2.2:3000/feed/like",
+                                                    options: Options(headers: {
+                                                      HttpHeaders
+                                                              .contentTypeHeader:
+                                                          "application/json",
+                                                      HttpHeaders
+                                                              .authorizationHeader:
+                                                          "Bearer " + token!
+                                                    }),
+                                                    data: {
+                                                      'uuid':
+                                                          widget.post['uuid']
+                                                    });
+                                                widget.func(true);
+                                              }
+                                              // print(likeNumber.toString());
+                                            },
                                           ),
                                           Text(
                                             widget.noOfLike['count'].toString(),
