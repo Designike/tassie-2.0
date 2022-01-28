@@ -66,7 +66,7 @@ class _AddPostState extends State<AddPost> {
         );
 
     setState(() {
-      _imageFile = cropped ?? _imageFile;
+      _imageFile = cropped;
     });
   }
 
