@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
       home: Wrapper(),
       theme: lightThemeData(context),
       darkTheme: darkThemeData(context),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

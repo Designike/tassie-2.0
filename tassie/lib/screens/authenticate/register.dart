@@ -47,7 +47,7 @@ class _RegisterState extends State<Register> {
     // var dio = Dio();
     try {
       Response response = await dio
-          .get("http://api-tassie.herokuapp.com/user/checkEmail/" + email);
+          .get("http://10.0.2.2/user/checkEmail/" + email);
       // var res = jsonDecode(response.toString());
 
       // if(response)
@@ -232,8 +232,8 @@ class _RegisterState extends State<Register> {
                           // print(response.toString());
                           try {
                             Response response = await dio.post(
-                                "https://api-tassie.herokuapp.com/user/",
-                                // "http://10.0.2.2:3000/user/",
+                                // "https://api-tassie.herokuapp.com/user/",
+                                "http://10.0.2.2:3000/user/",
                                 options: Options(headers: {
                                   HttpHeaders.contentTypeHeader:
                                       "application/json",

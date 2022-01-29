@@ -213,8 +213,8 @@ class _OTPFormState extends State<OTPForm> {
                 print(totp);
                 print(otp);
                 Response response = await dio.post(
-                    "https://api-tassie.herokuapp.com/user/tsa/" + widget.uuid,
-                    // "https://10.0.2.2:3000/user/tsa/" + widget.uuid,
+                    // "https://api-tassie.herokuapp.com/user/tsa/" + widget.uuid,
+                    "http://10.0.2.2:3000/user/tsa/" + widget.uuid,
                     options: Options(headers: {
                       HttpHeaders.contentTypeHeader: "application/json",
                     }),

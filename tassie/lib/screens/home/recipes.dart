@@ -95,7 +95,7 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
             }
             isLazyLoading = false;
             recs.addAll(tList);
-            print(recs[0]['name']);
+            // print(recs[0]['name']);
             page++;
           });
           if (response.data['data']['recs']['results'].length == 0) {

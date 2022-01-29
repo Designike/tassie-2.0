@@ -28,7 +28,7 @@ class _ProfileState extends State<Profile> {
             onPressed: () async {
               var token = await storage.read(key: "token");
               Response response = await dio
-                  .post("https://api-tassie.herokuapp.com/user/logout/",
+                  .post("http://10.0.2.2/user/logout/",
                       options: Options(headers: {
                         HttpHeaders.contentTypeHeader: "application/json",
                         HttpHeaders.authorizationHeader: "Bearer " + token!
