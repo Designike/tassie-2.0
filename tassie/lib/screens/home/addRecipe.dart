@@ -91,7 +91,7 @@ class _AddRecipeState extends State<AddRecipe> {
     //         // onTap: () async {
     //         //             if (_formKey.currentState!.validate()) {
     //         //               Response response = await dio.post(
-    //         //                 "https://api-tassie.herokuapp.com/user/login/",
+    //         //                 "http://10.0.2.2:3000/user/login/",
     //         //                 options: Options(headers: {
     //         //                   HttpHeaders.contentTypeHeader: "application/json",
     //         //                 }),
@@ -251,26 +251,28 @@ class _AddRecipeState extends State<AddRecipe> {
   return _upload;
   }
 
-  void changeFlavour(int index, String flavour) {
+  void changeFlavour(int index, String flav) {
     setState(() {
-      flavour = flavour;
+      flavour = flav;
       selectedFlavour = index;
     });
+    print(flavour);
   }
 
-  void changeCourse(int index, String course) {
+  void changeCourse(int index, String cour) {
     setState(() {
-      course = course;
+      course = cour;
       selectedCourse = index;
     });
+    print(course);
   }
 
-  Widget flavourRadio(int index, String flavour) {
+  Widget flavourRadio(int index, String flav) {
     return Padding(
             padding: const EdgeInsets.only(right: kDefaultPadding),
             child: OutlinedButton(
-              onPressed: () => changeFlavour(index, flavour),
-              child: Text(flavour),
+              onPressed: () => changeFlavour(index, flav),
+              child: Text(flav),
               style: OutlinedButton.styleFrom(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
                 padding: EdgeInsets.all(15.0),
@@ -285,12 +287,12 @@ class _AddRecipeState extends State<AddRecipe> {
           );
   }
 
-  Widget courseRadio(int index, String course) {
+  Widget courseRadio(int index, String cour) {
     return Padding(
             padding: const EdgeInsets.only(right: kDefaultPadding),
             child: OutlinedButton(
-              onPressed: () => changeCourse(index, course),
-              child: Text(course),
+              onPressed: () => changeCourse(index, cour),
+              child: Text(cour),
               style: OutlinedButton.styleFrom(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
                 padding: EdgeInsets.all(15.0),
@@ -787,7 +789,7 @@ List<Widget> _getRecipe(size) {
           var token = await storage.read(key: "token");
     // print(formData.files[0]);
     Response response = await dio.post(
-      // 'https://api-tassie.herokuapp.com/drive/upload',
+      // 'http://10.0.2.2:3000/drive/upload',
       'http://10.0.2.2:3000/recs/resetImage/',
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "application/json",
@@ -803,7 +805,7 @@ List<Widget> _getRecipe(size) {
           var token = await storage.read(key: "token");
     // print(formData.files[0]);
     Response response = await dio.post(
-      // 'https://api-tassie.herokuapp.com/drive/upload',
+      // 'http://10.0.2.2:3000/drive/upload',
       'http://10.0.2.2:3000/recs/resetImage/',
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "application/json",
@@ -820,7 +822,7 @@ List<Widget> _getRecipe(size) {
           var token = await storage.read(key: "token");
     // print(formData.files[0]);
     Response response = await dio.post(
-      // 'https://api-tassie.herokuapp.com/drive/upload',
+      // 'http://10.0.2.2:3000/drive/upload',
       'http://10.0.2.2:3000/recs/resetImage/',
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "application/json",
@@ -848,7 +850,7 @@ List<Widget> _getRecipe(size) {
     var token = await storage.read(key: "token");
     print(formData.files[0]);
     Response response = await dio.post(
-      // 'https://api-tassie.herokuapp.com/drive/upload',
+      // 'http://10.0.2.2:3000/drive/upload',
       'http://10.0.2.2:3000/recs/updateRecipe/',
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "multipart/form-data",
@@ -1008,6 +1010,7 @@ List<Widget> _getRecipe(size) {
                         HttpHeaders.authorizationHeader: "Bearer " + token!
                       }),
                       data: {'uuid': widget.uuid, 'folder': widget.folder, 'youtubeLink': youtubeLink});
+                        Navigator.of(context).pop();
                        Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) {
@@ -1037,7 +1040,7 @@ List<Widget> _getRecipe(size) {
                         HttpHeaders.contentTypeHeader: "application/json",
                         HttpHeaders.authorizationHeader: "Bearer " + token!
                       }),
-                      data: {'uuid': widget.uuid, 'name': recipeName});
+                      data: {'uuid': widget.uuid,'folder': widget.folder, 'name': recipeName});
                   }
                   if(_currentStep == 2){
                     if(hour != null && min != null) {
@@ -1048,12 +1051,16 @@ List<Widget> _getRecipe(size) {
                   var url = "http://10.0.2.2:3000/recs/updateRecipe";
                   var token = await storage.read(key: "token");
                   var time = int.parse(hour!)*60 + int.parse(min!);
+                  print('should print');
+                  print(flavour);
+                  print(course);
                   Response response = await dio.post(url,
                       options: Options(headers: {
                         HttpHeaders.contentTypeHeader: "application/json",
                         HttpHeaders.authorizationHeader: "Bearer " + token!
                       }),
-                      data: {'uuid': widget.uuid,'flavour':flavour,'veg':isVeg,'course':course,'estimatedTime':time});
+                      
+                      data: {'uuid': widget.uuid,'folder': widget.folder,'flavour':flavour,'veg':isVeg,'course':course,'estimatedTime':time});
                       }
                     } else {
                       showSnack(context, 'Add cooking time', () {}, 'OK', 4);
@@ -1067,7 +1074,7 @@ List<Widget> _getRecipe(size) {
                         HttpHeaders.contentTypeHeader: "application/json",
                         HttpHeaders.authorizationHeader: "Bearer " + token!
                       }),
-                      data: {'uuid': widget.uuid, 'ingredients': ingredientsList});
+                      data: {'uuid': widget.uuid,'folder': widget.folder, 'ingredients': ingredientsList});
                   }
                   if(_currentStep == 4){
                   var url = "http://10.0.2.2:3000/recs/updateRecipe";
@@ -1077,7 +1084,7 @@ List<Widget> _getRecipe(size) {
                         HttpHeaders.contentTypeHeader: "application/json",
                         HttpHeaders.authorizationHeader: "Bearer " + token!
                       }),
-                      data: {'uuid': widget.uuid,'steps': stepsList}); // 'folder': widget.folder, 
+                      data: {'uuid': widget.uuid,'folder': widget.folder,'steps': stepsList}); // 'folder': widget.folder, 
                   }
                 }
               },

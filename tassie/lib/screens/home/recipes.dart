@@ -68,10 +68,11 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
   void _getMoreData(int index) async {
     if (!isEnd) {
       if (!isLazyLoading) {
+        print('calling...');
         setState(() {
           isLazyLoading = true;
         });
-        var url = "https://api-tassie.herokuapp.com/recs/lazyrecs/" +
+        var url = "http://10.0.2.2:3000/recs/lazyrecs/" +
             index.toString();
         var token = await storage.read(key: "token");
         Response response = await dio.get(
@@ -103,6 +104,11 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
               isEnd = true;
             });
           }
+        } else {
+          setState(() {
+            isLoading = false;
+            isLazyLoading = false;
+          });
         }
       }
     }
@@ -153,6 +159,7 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
           )
         : Scaffold(
             appBar: AppBar(
+              toolbarHeight: kToolbarHeight * 1.1,
               backgroundColor: Colors.transparent,
               systemOverlayStyle: SystemUiOverlayStyle(
                   statusBarColor: Theme.of(context).scaffoldBackgroundColor,
@@ -204,31 +211,36 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
                       ),
                     ),
                   ] else ...[
-                    Center(
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: size.height * 0.25,
-                          ),
-                          Image(
-                            image: MediaQuery.of(context).platformBrightness ==
-                                    Brightness.dark
-                                ? AssetImage('assets/images/no_feed_dark.png')
-                                : AssetImage('assets/images/no_feed_light.png'),
-                            width: size.width * 0.75,
-                          ),
-                          SizedBox(
-                            height: 30.0,
-                          ),
-                          SizedBox(
-                            width: size.width * 0.75,
-                            child: Text(
-                              'Subscribe to see others\' recs.',
-                              style: TextStyle(fontSize: 18.0),
-                              textAlign: TextAlign.center,
+                    SingleChildScrollView(
+                      physics: AlwaysScrollableScrollPhysics(),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: size.height * 0.25,
                             ),
-                          ),
-                        ],
+                            Image(
+                              image: MediaQuery.of(context)
+                                          .platformBrightness ==
+                                      Brightness.dark
+                                  ? AssetImage('assets/images/no_feed_dark.png')
+                                  : AssetImage(
+                                      'assets/images/no_feed_light.png'),
+                              width: size.width * 0.75,
+                            ),
+                            SizedBox(
+                              height: 30.0,
+                            ),
+                            SizedBox(
+                              width: size.width * 0.75,
+                              child: Text(
+                                'Subscribe to see others\' recs.',
+                                style: TextStyle(fontSize: 18.0),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],

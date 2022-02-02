@@ -46,10 +46,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     }
     String? date = await storage.read(key: 'date');
 
-    print(date);
+    // print(date);
     // print(DateTime.now());
     lstorage.ready.then((value) async {
-      print(json.decode(lstorage.getItem('ingreds')).runtimeType);
+      // print(json.decode(lstorage.getItem('ingreds')).runtimeType);
       if ((lstorage.getItem('ingreds') == null) ||
           DateTime.parse(date!).isBefore(DateTime.now())) {
         print('thai che');
@@ -69,16 +69,17 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         // // print(ingreds);
         lstorage.setItem('ingreds', json.encode(response.data['data']));
 
-        // await storage.write(
-        //     key: 'date',
-        //     value: DateTime.now().add(Duration(hours: 48)).toString());
+        await storage.write(
+            key: 'date',
+            value: DateTime.now().add(Duration(hours: 48)).toString());
         // setState(() {
         //   isFetching = false;
         // });
-      }
-    });
 
-    print(lstorage.getItem('ingreds.json'));
+      }
+      // print('1');
+      // print(lstorage.getItem('ingreds'));
+    });
   }
 
   void _navigateBottomBar(int index) {
@@ -182,7 +183,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           );
                         }),
                       );
-                      var url = "http://10.0.2.2:3000/recs/createRecipe/";
+                      var url =
+                          "http://10.0.2.2:3000/recs/createRecipe/";
 
                       var token = await storage.read(key: "token");
                       Response response = await dio.get(
@@ -196,7 +198,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       print(response);
                       if (response.data['status'] == true) {
                         print(response);
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(builder: (context) {
                             return AddRecipe(
@@ -206,6 +208,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           }),
                         );
                       } else {
+                        print(response.data);
                         showSnack(
                             context, 'Unable to create recipe', () {}, 'OK', 3);
                         Navigator.pushReplacement(

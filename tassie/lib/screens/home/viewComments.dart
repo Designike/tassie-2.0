@@ -12,12 +12,20 @@ class ViewComments extends StatefulWidget {
   final Map post;
   final Map noOfComment;
   final Map noOfLike;
+  final Map bookmark;
   final void Function(bool) func;
+  final void Function(bool) funcB;
+  final void Function() plusComment;
+  final void Function() minusComment;
   ViewComments(
       {required this.post,
       required this.noOfComment,
       required this.noOfLike,
-      required this.func});
+      required this.func,
+      required this.plusComment,
+      required this.funcB,
+      required this.bookmark,
+      required this.minusComment});
 
   @override
   _ViewCommentsState createState() => _ViewCommentsState();
@@ -25,6 +33,7 @@ class ViewComments extends StatefulWidget {
 
 class _ViewCommentsState extends State<ViewComments> {
   final ScrollController _sc = ScrollController();
+  final TextEditingController _tc = TextEditingController();
   static List comments = [];
   bool isLazyLoading = false;
   static bool isLoading = true;
@@ -32,7 +41,8 @@ class _ViewCommentsState extends State<ViewComments> {
   bool isEnd = false;
   final dio = Dio();
   final storage = FlutterSecureStorage();
-
+  String comment = '';
+  String? uuid;
   // List<Map> comments = [
   //   {
   //     "image": "https://picsum.photos/200",
@@ -109,13 +119,32 @@ class _ViewCommentsState extends State<ViewComments> {
                 : kDark[900],
           ),
         ),
-        trailing: IconButton(
-          icon: Icon(
-            Icons.favorite_border,
-          ),
-          color: Colors.grey,
-          onPressed: () => print('Like comment'),
-        ),
+        trailing: (widget.post['userUuid'] == uuid ||
+                comments[index]['uuid'].split('_comment_')[0] == uuid)
+            ? IconButton(
+                icon: Icon(
+                  Icons.delete_rounded,
+                ),
+                color: Colors.grey,
+                onPressed: () async {
+                  var token = await storage.read(key: "token");
+                  Response response =
+                      await dio.post("http://10.0.2.2:3000/feed/removeComment",
+                          options: Options(headers: {
+                            HttpHeaders.contentTypeHeader: "application/json",
+                            HttpHeaders.authorizationHeader: "Bearer " + token!
+                          }),
+                          data: {
+                        'postUuid': widget.post['uuid'],
+                        'commentUuid': comments[index]['uuid'],
+                      });
+                  setState(() {
+                    comments.remove(index);
+                  });
+                  widget.minusComment();
+                },
+              )
+            : null,
       ),
     );
   }
@@ -135,17 +164,20 @@ class _ViewCommentsState extends State<ViewComments> {
 
   void _getMoreData(int index) async {
     if (!isEnd) {
+      print('1');
       if (!isLazyLoading) {
+        print('2');
         setState(() {
           isLazyLoading = true;
         });
-        var url = "https://api-tassie.herokuapp.com/feed/lazycomment/" +
+        var url = "http://10.0.2.2:3000/feed/lazycomment/" +
             widget.post['uuid'] +
             '/' +
             widget.post['userUuid'] +
             '/' +
             index.toString();
         var token = await storage.read(key: "token");
+        uuid = await storage.read(key: "uuid");
         Response response = await dio.get(
           url,
           options: Options(headers: {
@@ -211,6 +243,7 @@ class _ViewCommentsState extends State<ViewComments> {
     bool liked = widget.noOfLike['isLiked'];
     int no_of_comments = comments.length;
     Size size = MediaQuery.of(context).size;
+    bool isBookmarked = widget.bookmark['isBookmarked'];
     return Scaffold(
       // backgroundColor: Color(0xFFEDF0F6),
       body: CustomScrollView(
@@ -295,16 +328,19 @@ class _ViewCommentsState extends State<ViewComments> {
                             ),
                             InkWell(
                               onDoubleTap: () async {
-                                var token = await storage.read(key: "token");
-                                dio.post("http://10.0.2.2:3000/feed/like",
-                                    options: Options(headers: {
-                                      HttpHeaders.contentTypeHeader:
-                                          "application/json",
-                                      HttpHeaders.authorizationHeader:
-                                          "Bearer " + token!
-                                    }),
-                                    data: {'uuid': widget.post['uuid']});
-                                widget.func(true);
+                                if (!liked) {
+                                  var token = await storage.read(key: "token");
+                                  dio.post("http://10.0.2.2:3000/feed/like",
+                                      options: Options(headers: {
+                                        HttpHeaders.contentTypeHeader:
+                                            "application/json",
+                                        HttpHeaders.authorizationHeader:
+                                            "Bearer " + token!
+                                      }),
+                                      data: {'uuid': widget.post['uuid']});
+                                  widget.func(true);
+                                  setState(() {});
+                                }
                               },
                               splashColor: Colors.transparent,
                               highlightColor: Colors.transparent,
@@ -382,6 +418,7 @@ class _ViewCommentsState extends State<ViewComments> {
                                                     });
                                                 widget.func(true);
                                               }
+                                              setState(() {});
                                               // print(likeNumber.toString());
                                             },
                                           ),
@@ -417,9 +454,44 @@ class _ViewCommentsState extends State<ViewComments> {
                                     ],
                                   ),
                                   IconButton(
-                                    icon: Icon(Icons.bookmark_border),
+                                    icon: (isBookmarked)
+                                        ? Icon(Icons.bookmark)
+                                        : Icon(Icons.bookmark_border),
                                     iconSize: 30.0,
-                                    onPressed: () => print('Save post'),
+                                    onPressed: () async {
+                                      if (!isBookmarked) {
+                                        var token =
+                                            await storage.read(key: "token");
+                                        Response response = await dio.post(
+                                            "http://10.0.2.2:3000/feed/bookmark",
+                                            options: Options(headers: {
+                                              HttpHeaders.contentTypeHeader:
+                                                  "application/json",
+                                              HttpHeaders.authorizationHeader:
+                                                  "Bearer " + token!
+                                            }),
+                                            data: {
+                                              'uuid': widget.post['uuid']
+                                            });
+                                        widget.funcB(true);
+                                      } else {
+                                        var token =
+                                            await storage.read(key: "token");
+                                        Response response = await dio.post(
+                                            "http://10.0.2.2:3000/feed/removeBookmark",
+                                            options: Options(headers: {
+                                              HttpHeaders.contentTypeHeader:
+                                                  "application/json",
+                                              HttpHeaders.authorizationHeader:
+                                                  "Bearer " + token!
+                                            }),
+                                            data: {
+                                              'uuid': widget.post['uuid']
+                                            });
+                                        widget.funcB(false);
+                                      }
+                                      setState(() {});
+                                    },
                                   ),
                                 ],
                               ),
@@ -480,13 +552,16 @@ class _ViewCommentsState extends State<ViewComments> {
             ),
           ),
           SliverList(
-            delegate: SliverChildBuilderDelegate((context, index) {
-              return index == comments.length
-                  ? isEnd
-                      ? _endMessage()
-                      : _buildProgressIndicator()
-                  : _createComment(index);
-            }, childCount: no_of_comments),
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                return index == comments.length
+                    ? isEnd
+                        ? _endMessage()
+                        : _buildProgressIndicator()
+                    : _createComment(index);
+              },
+              childCount: no_of_comments,
+            ),
           )
         ],
       ),
@@ -506,6 +581,10 @@ class _ViewCommentsState extends State<ViewComments> {
           child: Padding(
             padding: EdgeInsets.all(12.0),
             child: TextField(
+              onChanged: (val) {
+                comment = val;
+              },
+              controller: _tc,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 enabledBorder: OutlineInputBorder(
@@ -544,7 +623,27 @@ class _ViewCommentsState extends State<ViewComments> {
                     //   borderRadius: BorderRadius.circular(30.0),
                     // ),
                     // color: Color(0xFF23B66F),
-                    onPressed: () => print('Post comment'),
+                    onPressed: () async {
+                      var token = await storage.read(key: "token");
+                      Response response = await dio.post(
+                          "http://10.0.2.2:3000/feed/addComment",
+                          options: Options(headers: {
+                            HttpHeaders.contentTypeHeader: "application/json",
+                            HttpHeaders.authorizationHeader: "Bearer " + token!
+                          }),
+                          data: {
+                            'comment': comment,
+                            'postUuid': widget.post['uuid']
+                          });
+                      if (response.data['status'] == true) {
+                        widget.plusComment();
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    super.widget));
+                      }
+                    },
                     icon: Icon(
                       Icons.send,
                       size: 25.0,

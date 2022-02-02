@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/screens/home/home.dart';
+import 'package:tassie/screens/home/snackbar.dart';
 import '../../constants.dart';
 
 class SignIn extends StatefulWidget {
@@ -147,7 +148,7 @@ class _SignInState extends State<SignIn> {
                       onTap: () async {
                         if (_formKey.currentState!.validate()) {
                           Response response = await dio.post(
-                            "https://api-tassie.herokuapp.com/user/login/",
+                            "http://10.0.2.2:3000/user/login/",
                             options: Options(headers: {
                               HttpHeaders.contentTypeHeader: "application/json",
                             }),
@@ -157,10 +158,17 @@ class _SignInState extends State<SignIn> {
                                 : {"username": username, "password": password},
                           );
                           print('1');
+                          if(response.data != null) {
+                            if(response.data['status'] == true) {
+                              
+                          
                           await storage.write(
                               key: "token",
                               value: response.data['data']['token']);
-                          print('2');
+                          await storage.write(
+                              key: "uuid",
+                              value: response.data['data']['uuid']);
+                          print(response.data['data']['uuid']);
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (context) {
@@ -168,6 +176,11 @@ class _SignInState extends State<SignIn> {
                             }),
                           );
                           print(response.toString());
+                          } else {
+                            print(response.toString());
+                            showSnack(context, response.data['message'], () {}, 'OK', 4);
+                          }
+                          }
                         }
                       },
                       child: Container(

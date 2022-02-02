@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/screens/home/home.dart';
+import 'package:tassie/screens/home/snackbar.dart';
 
 import '../../constants.dart';
 
@@ -197,7 +198,7 @@ class _OTPFormState extends State<OTPForm> {
             onTap: () async {
               // if (_formKey.currentState!.validate()) {
               //   final response = await dio.post(
-              //     "https://api-tassie.herokuapp.com/user/login/",
+              //     "http://10.0.2.2:3000/user/login/",
               //     options: Options(headers: {
               //       HttpHeaders.contentTypeHeader: "application/json",
               //     }),
@@ -213,24 +214,36 @@ class _OTPFormState extends State<OTPForm> {
                 print(totp);
                 print(otp);
                 Response response = await dio.post(
-                    // "https://api-tassie.herokuapp.com/user/tsa/" + widget.uuid,
+                    // "http://10.0.2.2:3000/user/tsa/" + widget.uuid,
                     "http://10.0.2.2:3000/user/tsa/" + widget.uuid,
                     options: Options(headers: {
                       HttpHeaders.contentTypeHeader: "application/json",
                     }),
                     data: {"totp": otp});
-                print('1');
-                await storage.write(
-                    key: "token", value: response.data['data']['token']);
-                print('2');
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return Home();
-                  }),
-                );
-                print(widget.uuid);
-                print(response.data);
+                if (response.data != null) {
+                  if (response.data['status'] == true) {
+                    print('1');
+                    await storage.write(
+                        key: "token", value: response.data['data']['token']);
+                     await storage.write(
+                        key: "uuid", value: response.data['data']['uuid']);
+                    print('2');
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return Home();
+                      }),
+                    );
+                  } else {
+                    showSnack(
+                        context, response.data['message'], () {}, 'OK', 4);
+                  }
+                } else {
+                  showSnack(context, 'Unable to connect', () {}, 'OK', 4);
+                }
+
+                // print(widget.uuid);
+                // print(response.data);
               } on DioError catch (e) {
                 // if (e.response != null) {
                 print(e.response!.data);
@@ -259,8 +272,41 @@ class _OTPFormState extends State<OTPForm> {
           ),
           SizedBox(height: 20.0),
           GestureDetector(
-            onTap: () {
+            onTap: () async {
               // widget.func!();
+              try {
+                Response response = await dio.get(
+                  // "http://10.0.2.2:3000/user/",
+                  "http://10.0.2.2:3000/user/mail/" + widget.uuid,
+                  options: Options(headers: {
+                    HttpHeaders.contentTypeHeader: "application/json",
+                  }),
+                );
+                print(response.data['data']['uuid']);
+                if (response.data != null) {
+                  if (response.data['status'] == true) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return OTP(
+                            uuid: response.data['data']['uuid'],
+                            time: response.data['data']['time']);
+                      }),
+                    );
+                  } else {
+                    showSnack(
+                        context, response.data['message'], () {}, 'OK', 4);
+                  }
+                } else {
+                  showSnack(context, 'Unable to connect', () {}, 'OK', 4);
+                }
+              } on DioError catch (e) {
+                if (e.response != null) {
+                  var errorMessage = e.response!.data;
+                  print(errorMessage);
+                  showSnack(context, 'Unable to connect', () {}, 'OK', 4);
+                }
+              }
             },
             child: Container(
               height: 50.0,
@@ -303,7 +349,8 @@ class _OTPFormState extends State<OTPForm> {
 
 class OTP extends StatefulWidget {
   final String uuid;
-  const OTP({required this.uuid});
+  final int time;
+  const OTP({required this.uuid, required this.time});
 
   @override
   _OTPState createState() => _OTPState();
@@ -372,8 +419,8 @@ class _OTPState extends State<OTP> {
                     children: [
                       Text('Your code will expire in'),
                       TweenAnimationBuilder(
-                        tween: Tween(begin: 100.0, end: 0.0),
-                        duration: Duration(seconds: 100),
+                        tween: Tween(begin: widget.time, end: 0.0),
+                        duration: Duration(seconds: widget.time),
                         builder: (_, dynamic value, child) => Text(
                           " ${value.toInt()} seconds",
                           style: TextStyle(color: kPrimaryColor),

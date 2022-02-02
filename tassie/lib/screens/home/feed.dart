@@ -32,6 +32,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
   static List posts = [];
   static List noOfComments = [];
   static List noOfLikes = [];
+  static List bookmark = [];
   bool isLazyLoading = false;
   static bool isLoading = true;
   bool isEnd = false;
@@ -39,7 +40,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
   final storage = FlutterSecureStorage();
   // Future<void> load() async {
   //   var token = await storage.read(key: "token");
-  //   // try {https://api-tassie.herokuapp.com/feed/
+  //   // try {http://10.0.2.2:3000/feed/
   //   Response response = await dio.post("http://10.0.2.2:3000/feed/",
   //       options: Options(headers: {
   //         HttpHeaders.contentTypeHeader: "application/json",
@@ -84,10 +85,11 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
   void _getMoreData(int index) async {
     if (!isEnd) {
       if (!isLazyLoading) {
+        print('calling...');
         setState(() {
           isLazyLoading = true;
         });
-        // var url = "https://api-tassie.herokuapp.com/feed/lazyfeed/" +
+        // var url = "http://10.0.2.2:3000/feed/lazyfeed/" +
         //     index.toString();
         var url = "http://10.0.2.2:3000/feed/lazyfeed/" + index.toString();
 
@@ -121,6 +123,10 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
               noOfLikes.addAll(response.data['data']['posts']['noOfLikes']);
               print(noOfLikes);
             }
+            if (response.data['data']['posts']['bookmarks'] != null) {
+              bookmark.addAll(response.data['data']['posts']['bookmarks']);
+              print(noOfLikes);
+            }
             page++;
           });
           // print(response.data['data']['posts']);
@@ -129,6 +135,11 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
               isEnd = true;
             });
           }
+        } else {
+          setState(() {
+            isLoading = false;
+            isLazyLoading = false;
+          });
         }
       }
     }
@@ -168,6 +179,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
       posts = [];
       noOfComments = [];
       noOfLikes = [];
+      bookmark = [];
       isEnd = false;
       isLoading = true;
       _getMoreData(page);
@@ -176,6 +188,13 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
 
   @override
   void initState() {
+  posts = [];
+  noOfComments = [];
+  noOfLikes = [];
+  bookmark = [];
+  page=1;
+   isLoading = true;
+   isEnd = false;
     _getMoreData(page);
     super.initState();
     // load();
@@ -209,6 +228,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
           )
         : Scaffold(
             appBar: AppBar(
+              toolbarHeight: kToolbarHeight * 1.1,
               backgroundColor: Colors.transparent,
               systemOverlayStyle: SystemUiOverlayStyle(
                   statusBarColor: Theme.of(context).scaffoldBackgroundColor,
@@ -256,6 +276,11 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                                   post: posts[index],
                                   noOfComment: noOfComments[index],
                                   noOfLike: noOfLikes[index],
+                                  plusComment: () {
+                                    setState(() {
+                                      noOfComments[index]['count'] += 1;
+                                    });
+                                  },
                                   func: (islike) {
                                     setState(() {
                                       if (islike) {
@@ -265,6 +290,17 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                                       }
                                       noOfLikes[index]['isLiked'] =
                                           !noOfLikes[index]['isLiked'];
+                                    });
+                                  },
+                                  bookmark: bookmark[index],
+                                  funcB: (isBook) {
+                                    setState(() {
+                                      bookmark[index]['isBookmarked'] =
+                                          !bookmark[index]['isBookmarked'];
+                                    });
+                                  },minusComment: () {
+                                    setState(() {
+                                      noOfComments[index]['count'] -= 1;
                                     });
                                   },
                                 );

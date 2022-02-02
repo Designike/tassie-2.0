@@ -14,11 +14,19 @@ class FeedPost extends StatefulWidget {
       {required this.post,
       required this.noOfComment,
       required this.noOfLike,
-      required this.func});
+      required this.func,
+      required this.plusComment,
+      required this.bookmark,
+      required this.funcB,
+      required this.minusComment});
   final Map post;
   final Map noOfComment;
   final Map noOfLike;
+  final Map bookmark;
   final void Function(bool) func;
+  final void Function(bool) funcB;
+  final void Function() plusComment;
+  final void Function() minusComment;
   @override
   _FeedPostState createState() => _FeedPostState();
 }
@@ -29,7 +37,9 @@ class _FeedPostState extends State<FeedPost> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.bookmark);
     Map post = widget.post;
+    bool isBookmarked = widget.bookmark['isBookmarked'];
     bool liked = widget.noOfLike['isLiked'];
     int likeNumber = widget.noOfLike['count'];
     Size size = MediaQuery.of(context).size;
@@ -90,14 +100,17 @@ class _FeedPostState extends State<FeedPost> {
                   ),
                   InkWell(
                     onDoubleTap: () async {
-                      var token = await storage.read(key: "token");
-                      dio.post("http://10.0.2.2:3000/feed/like",
-                          options: Options(headers: {
-                            HttpHeaders.contentTypeHeader: "application/json",
-                            HttpHeaders.authorizationHeader: "Bearer " + token!
-                          }),
-                          data: {'uuid': post['uuid']});
-                      widget.func(true);
+                      if (!liked) {
+                        var token = await storage.read(key: "token");
+                        dio.post("http://10.0.2.2:3000/feed/like",
+                            options: Options(headers: {
+                              HttpHeaders.contentTypeHeader: "application/json",
+                              HttpHeaders.authorizationHeader:
+                                  "Bearer " + token!
+                            }),
+                            data: {'uuid': post['uuid']});
+                        widget.func(true);
+                      }
                     },
                     child: Container(
                       margin: EdgeInsets.all(10.0),
@@ -187,7 +200,11 @@ class _FeedPostState extends State<FeedPost> {
                                             post: post,
                                             noOfComment: widget.noOfComment,
                                             noOfLike: widget.noOfLike,
-                                            func: widget.func),
+                                            func: widget.func,
+                                            plusComment: widget.plusComment,
+                                            funcB: widget.funcB,
+                                            bookmark: widget.bookmark,
+                                            minusComment: widget.minusComment),
                                       ),
                                     );
                                   },
@@ -204,9 +221,37 @@ class _FeedPostState extends State<FeedPost> {
                           ],
                         ),
                         IconButton(
-                          icon: Icon(Icons.bookmark_border),
+                          icon: (isBookmarked)
+                              ? Icon(Icons.bookmark)
+                              : Icon(Icons.bookmark_border),
                           iconSize: 30.0,
-                          onPressed: () => print('Save post'),
+                          onPressed: () async {
+                            if (!isBookmarked) {
+                              var token = await storage.read(key: "token");
+                              Response response = await dio
+                                  .post("http://10.0.2.2:3000/feed/bookmark",
+                                      options: Options(headers: {
+                                        HttpHeaders.contentTypeHeader:
+                                            "application/json",
+                                        HttpHeaders.authorizationHeader:
+                                            "Bearer " + token!
+                                      }),
+                                      data: {'uuid': post['uuid']});
+                              widget.funcB(true);
+                            } else {
+                              var token = await storage.read(key: "token");
+                              Response response = await dio.post(
+                                  "http://10.0.2.2:3000/feed/removeBookmark",
+                                  options: Options(headers: {
+                                    HttpHeaders.contentTypeHeader:
+                                        "application/json",
+                                    HttpHeaders.authorizationHeader:
+                                        "Bearer " + token!
+                                  }),
+                                  data: {'uuid': post['uuid']});
+                              widget.funcB(false);
+                            }
+                          },
                         ),
                       ],
                     ),
@@ -229,15 +274,20 @@ class _FeedPostState extends State<FeedPost> {
                     child: GestureDetector(
                       onTap: () {
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ViewComments(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ViewComments(
                                 post: post,
                                 noOfComment: widget.noOfComment,
                                 noOfLike: widget.noOfLike,
-                                func: widget.func),
-                          ),
-                        );
+                                func: widget.func,
+                                plusComment: widget.plusComment,
+                                funcB: widget.funcB,
+                                bookmark: widget.bookmark,
+                                minusComment: widget.minusComment,
+                              ),
+                            )
+                            );
                       },
                       child: RichText(
                         overflow: TextOverflow.ellipsis,

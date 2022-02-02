@@ -27,15 +27,17 @@ class _ProfileState extends State<Profile> {
             icon: Icon(Icons.logout),
             onPressed: () async {
               var token = await storage.read(key: "token");
-              Response response = await dio
-                  .post("http://10.0.2.2/user/logout/",
-                      options: Options(headers: {
-                        HttpHeaders.contentTypeHeader: "application/json",
-                        HttpHeaders.authorizationHeader: "Bearer " + token!
-                      }),
-                      // data: jsonEncode(value),
-                      data: {});
+              print('1');
+              Response response = await dio.get(
+                "http://10.0.2.2:3000/user/logout/",
+                options: Options(headers: {
+                  HttpHeaders.contentTypeHeader: "application/json",
+                  HttpHeaders.authorizationHeader: "Bearer " + token!
+                }),
+              );
+              print('1.1');
               await storage.delete(key: "token");
+              print('1.1.1');
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) {
