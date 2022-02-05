@@ -1,3 +1,4 @@
+// ignore_for_file: prefer_const_constructors_in_immutables, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -32,8 +33,7 @@ class _IngredientTextFieldState extends State<IngredientTextField> {
     bool index;
     final TextEditingController _ingredientController = TextEditingController();
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-      _ingredientController.text =
-          widget.ingredientsList[widget.index!] ?? '';
+      _ingredientController.text = widget.ingredientsList[widget.index!] ?? '';
     });
     // return TextFormField(
     //   controller: _ingredientController,
@@ -61,40 +61,43 @@ class _IngredientTextFieldState extends State<IngredientTextField> {
         controller: _ingredientController,
         onChanged: (v) => widget.ingredientsList[widget.index!] = v,
         decoration: InputDecoration(
-                    labelText: 'Add Ingredient',
-                    
-                    labelStyle: TextStyle(
-                      // fontFamily: 'Raleway',
-                      fontSize: 16.0,
-                      color: MediaQuery.of(context).platformBrightness == Brightness.dark
-              ? kPrimaryColor
-              : kDark[900],
-                    ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), ),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: MediaQuery.of(context).platformBrightness == Brightness.dark
-              ? kPrimaryColor
-              : kDark[900]!),borderRadius: BorderRadius.circular(15.0),),
-                        ),
+          labelText: 'Add Ingredient',
+          labelStyle: TextStyle(
+            // fontFamily: 'Raleway',
+            fontSize: 16.0,
+            color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                ? kPrimaryColor
+                : kDark[900],
+          ),
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+                color:
+                    MediaQuery.of(context).platformBrightness == Brightness.dark
+                        ? kPrimaryColor
+                        : kDark[900]!),
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+        ),
       ),
       itemBuilder: (context, String? suggestion) => ListTile(
         title: Text(suggestion!),
       ),
       onSuggestionSelected: (String? v) {
-      // setState(() {
-       widget.ingredientsList[widget.index!] = v;
+        // setState(() {
+        widget.ingredientsList[widget.index!] = v;
         // print(_ingredientController.text);
-      // }); 
-      }
-        
-      ,
+        // });
+      },
       validator: (v) {
         if (v!.trim().isEmpty) return 'Please enter something';
         return null;
       },
     );
-    
   }
 }

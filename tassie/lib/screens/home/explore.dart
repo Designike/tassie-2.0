@@ -85,7 +85,22 @@ class _ExploreState extends State<Explore> {
     },
   ];
   Future<void> _refreshPage() async {
+    getRecosts();
     setState(() {});
+  }
+
+  Future<void> getRecosts() async {
+    var url = "http://10.0.2.2:3000/search/lazyExplore/1";
+
+    var token = await storage.read(key: "token");
+    Response response = await dio.get(
+      url,
+      options: Options(headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+        HttpHeaders.authorizationHeader: "Bearer " + token!
+      }),
+    );
+    print(response);
   }
 
   @override
@@ -115,14 +130,13 @@ class _ExploreState extends State<Explore> {
     // );
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-              systemOverlayStyle: SystemUiOverlayStyle(
-                  statusBarColor: Theme.of(context).scaffoldBackgroundColor,
-                  statusBarIconBrightness:
-                      MediaQuery.of(context).platformBrightness ==
-                              Brightness.light
-                          ? Brightness.dark
-                          : Brightness.light),
+          backgroundColor: Colors.transparent,
+          systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: Theme.of(context).scaffoldBackgroundColor,
+              statusBarIconBrightness:
+                  MediaQuery.of(context).platformBrightness == Brightness.light
+                      ? Brightness.dark
+                      : Brightness.light),
           toolbarHeight: kToolbarHeight * 1.2,
           title: GestureDetector(
             onTap: () {
@@ -184,9 +198,10 @@ class _ExploreState extends State<Explore> {
                       child: Lottie.asset('assets/images/cooker.json',
                           fit: BoxFit.cover),
                       decoration: BoxDecoration(
-                          color: MediaQuery.of(context).platformBrightness == Brightness.dark
-                        ? kDark[900]
-                        : kLight,
+                          color: MediaQuery.of(context).platformBrightness ==
+                                  Brightness.dark
+                              ? kDark[900]
+                              : kLight,
                           borderRadius: BorderRadius.circular(size.width)),
                     ),
                   ),

@@ -191,6 +191,7 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
                     Expanded(
                       child: GridView.builder(
                         controller: _sc,
+                        physics: AlwaysScrollableScrollPhysics(),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio: (size.width / 2) /
