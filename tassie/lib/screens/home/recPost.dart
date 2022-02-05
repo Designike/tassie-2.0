@@ -1,16 +1,21 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/screens/home/viewRecPost.dart';
 
 import '../../constants.dart';
 
 class RecPost extends StatefulWidget {
-  const RecPost({
-    required this.recs,
-  });
+  const RecPost(
+      {required this.recs, required this.recipeData, required this.funcB});
 
   final Map recs;
+  final Map recipeData;
+  final void Function(bool) funcB;
   // final int index;
 
   @override
@@ -18,15 +23,19 @@ class RecPost extends StatefulWidget {
 }
 
 class _RecPostState extends State<RecPost> {
+  var storage = FlutterSecureStorage();
+  var dio = Dio();
   @override
   Widget build(BuildContext context) {
+    bool isBookmarked = widget.recipeData['isBookmarked'];
     Size size = MediaQuery.of(context).size;
     Map recs = widget.recs;
     return Padding(
       padding: EdgeInsets.all(10.0),
       child: Container(
         width: double.infinity,
-        height: ((size.width - 40.0)/2) + 50.0, // minus padding, plus list tile
+        height:
+            ((size.width - 40.0) / 2) + 50.0, // minus padding, plus list tile
         decoration: BoxDecoration(
           color: MediaQuery.of(context).platformBrightness == Brightness.dark
               ? kDark[900]
@@ -37,15 +46,15 @@ class _RecPostState extends State<RecPost> {
           children: [
             Column(
               children: [
-                
                 InkWell(
-                  onDoubleTap: () => print('Bookmark recipe'),
+                  // onDoubleTap: () => print('Bookmark recipe'),
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
                   child: Container(
                     margin: EdgeInsets.all(10.0),
                     width: double.infinity,
-                    height: ((size.width - 40.0)/2) - 20, // minus padding, minus margin
+                    height: ((size.width - 40.0) / 2) -
+                        20, // minus padding, minus margin
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(25.0),
                       image: DecorationImage(
@@ -58,16 +67,16 @@ class _RecPostState extends State<RecPost> {
                 ListTile(
                   dense: true,
                   leading: Container(
-                    width: (size.width - 40.0)/12,
-                    height: (size.width - 40.0)/12,
+                    width: (size.width - 40.0) / 12,
+                    height: (size.width - 40.0) / 12,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                     ),
                     child: CircleAvatar(
                       child: ClipOval(
                         child: Image(
-                          height: (size.width - 40.0)/12,
-                          width: (size.width - 40.0)/12,
+                          height: (size.width - 40.0) / 12,
+                          width: (size.width - 40.0) / 12,
                           image: NetworkImage(recs['profilePic']),
                           fit: BoxFit.cover,
                         ),
@@ -75,21 +84,48 @@ class _RecPostState extends State<RecPost> {
                     ),
                   ),
                   trailing: IconButton(
-                    icon: Icon(Icons.bookmark_border),
-                    // color: Colors.black,
-                    onPressed: () => print('Bookmark recipe'),
-                  ),
+                      icon: (isBookmarked)
+                          ? Icon(Icons.bookmark)
+                          : Icon(Icons.bookmark_border),
+                      // color: Colors.black,
+                      onPressed: () async {
+                        if (!isBookmarked) {
+                          var token = await storage.read(key: "token");
+                          Response response = await dio
+                              .post("http://10.0.2.2:3000/recs/bookmark",
+                                  options: Options(headers: {
+                                    HttpHeaders.contentTypeHeader:
+                                        "application/json",
+                                    HttpHeaders.authorizationHeader:
+                                        "Bearer " + token!
+                                  }),
+                                  data: {'uuid': recs['uuid']});
+                          widget.funcB(true);
+                        } else {
+                          var token = await storage.read(key: "token");
+                          Response response = await dio
+                              .post("http://10.0.2.2:3000/recs/removeBookmark",
+                                  options: Options(headers: {
+                                    HttpHeaders.contentTypeHeader:
+                                        "application/json",
+                                    HttpHeaders.authorizationHeader:
+                                        "Bearer " + token!
+                                  }),
+                                  data: {'uuid': recs['uuid']});
+                          widget.funcB(false);
+                        }
+                      }),
                 ),
                 GestureDetector(
                   onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ViewRecPost(
-                              recs: recs,
-                            ),
-                          ),
-                        );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ViewRecPost(
+                          recs: recs,
+                        ),
+                      ),
+                    );
                   },
                   child: ListTile(
                     title: Text(
@@ -110,7 +146,6 @@ class _RecPostState extends State<RecPost> {
                               : kDark[900]),
                     ),
                     isThreeLine: true,
-                   
                   ),
                 ),
                 // Padding(
