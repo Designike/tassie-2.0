@@ -15,6 +15,7 @@ import 'package:tassie/screens/home/exploreSearchHashtagTab.dart';
 import 'package:tassie/screens/home/exploreSearchRecipeTab.dart';
 import 'package:tassie/screens/home/exploreSearchUserTab.dart';
 import 'package:tassie/screens/home/recPost.dart';
+import 'package:tassie/screens/home/searchBar.dart';
 
 class Explore extends StatefulWidget {
   const Explore({Key? key}) : super(key: key);
@@ -251,7 +252,12 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
           toolbarHeight: kToolbarHeight * 1.2,
           title: GestureDetector(
             onTap: () {
-              showSearch(context: context, delegate: SearchBar());
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) {
+                  return SearchBar();
+                }),
+              );
             },
             child: Container(
               // child: Row(
@@ -286,7 +292,12 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
           actions: [
             IconButton(
               onPressed: () {
-                showSearch(context: context, delegate: SearchBar());
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return SearchBar();
+                  }),
+                );
               },
               icon: const Icon(Icons.search_rounded),
             ),
@@ -359,7 +370,6 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                                   post: recosts[recosts_toggle[index]]),
                               margin: EdgeInsets.all(7.0),
                             );
-                            
                     }),
               ),
             ),
@@ -371,182 +381,182 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
   }
 }
 
-class SearchBar extends SearchDelegate<String> {
-  final suggestions = ['paneer', 'sandwich', 'pani puri'];
+// class searchBar extends SearchDelegate<String> {
+//   final suggestions = ['paneer', 'sandwich', 'pani puri'];
 
-  static int page = 1;
-  static List recipes = [];
-  static List users = [];
-  static List tags = [];
-  bool isLazyLoading = false;
-  static bool isLoading = true;
-  bool isEnd = false;
-  final dio = Dio();
-  final storage = FlutterSecureStorage();
+//   static int page = 1;
+//   static List recipes = [];
+//   static List users = [];
+//   static List tags = [];
+//   bool isLazyLoading = false;
+//   static bool isLoading = true;
+//   bool isEnd = false;
+//   final dio = Dio();
+//   final storage = FlutterSecureStorage();
 
-  void _getRecosts(int index) async {
-    if (!isEnd) {
-      if (!isLazyLoading) {
-        print('calling...');
-        // showSuggestions(context);
-        isLazyLoading = true;
-        print(query);
-        var url = "http://10.0.2.2:3000/search/lazySearch/" +
-            index.toString() +
-            '/' +
-            query;
-        var token = await storage.read(key: "token");
-        Response response = await dio.get(
-          url,
-          options: Options(headers: {
-            HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer " + token!
-          }),
-        );
-        print(response);
-        // print(response.data);
-        if (response.data['data'] != null) {
-          // setState(() {
-          if (index == 1) {
-            isLoading = false;
-          }
-          isLazyLoading = false;
-          // posts.addAll(tList);
-          // print(recs);
-          if (response.data['data']['recs'] != null) {
-            recipes.addAll(response.data['data']['recs']);
-            // print(noOfLikes);
-          }
-          if (response.data['data']['tags'] != null) {
-            tags.addAll(response.data['data']['tags']);
-            // print(noOfLikes);
-          }
-          if (response.data['data']['users'] != null) {
-            users.addAll(response.data['data']['users']);
-            // print(noOfLikes);
-          }
-          page++;
-          // });
-          // print(response.data['data']['posts']);
-          // if (response.data['data'].length == 0) {
-          //   // setState(() {
-          //   isEnd = true;
-          //   // });
-          // }
-          // print(recs);
-        } else {
-          // showSuggestions(() {
-          isLoading = false;
-          isLazyLoading = false;
-          // });
-        }
-      }
-    }
-  }
+//   void _getRecosts(int index) async {
+//     if (!isEnd) {
+//       if (!isLazyLoading) {
+//         print('calling...');
+//         // showSuggestions(context);
+//         isLazyLoading = true;
+//         print(query);
+//         var url = "http://10.0.2.2:3000/search/lazySearch/" +
+//             index.toString() +
+//             '/' +
+//             query;
+//         var token = await storage.read(key: "token");
+//         Response response = await dio.get(
+//           url,
+//           options: Options(headers: {
+//             HttpHeaders.contentTypeHeader: "application/json",
+//             HttpHeaders.authorizationHeader: "Bearer " + token!
+//           }),
+//         );
+//         print(response);
+//         // print(response.data);
+//         if (response.data['data'] != null) {
+//           // setState(() {
+//           if (index == 1) {
+//             isLoading = false;
+//           }
+//           isLazyLoading = false;
+//           // posts.addAll(tList);
+//           // print(recs);
+//           if (response.data['data']['recs'] != null) {
+//             recipes.addAll(response.data['data']['recs']);
+//             // print(noOfLikes);
+//           }
+//           if (response.data['data']['tags'] != null) {
+//             tags.addAll(response.data['data']['tags']);
+//             // print(noOfLikes);
+//           }
+//           if (response.data['data']['users'] != null) {
+//             users.addAll(response.data['data']['users']);
+//             // print(noOfLikes);
+//           }
+//           page++;
+//           // });
+//           // print(response.data['data']['posts']);
+//           // if (response.data['data'].length == 0) {
+//           //   // setState(() {
+//           //   isEnd = true;
+//           //   // });
+//           // }
+//           // print(recs);
+//         } else {
+//           // showSuggestions(() {
+//           isLoading = false;
+//           isLazyLoading = false;
+//           // });
+//         }
+//       }
+//     }
+//   }
 
-  Widget _buildProgressIndicator() {
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
-      child: Center(
-        child: Opacity(
-          opacity: isLazyLoading ? 0.8 : 00,
-          child: CircularProgressIndicator(
-            color: kPrimaryColor,
-            strokeWidth: 2.0,
-          ),
-        ),
-      ),
-    );
-  }
+//   Widget _buildProgressIndicator() {
+//     return Padding(
+//       padding: const EdgeInsets.all(kDefaultPadding),
+//       child: Center(
+//         child: Opacity(
+//           opacity: isLazyLoading ? 0.8 : 00,
+//           child: CircularProgressIndicator(
+//             color: kPrimaryColor,
+//             strokeWidth: 2.0,
+//           ),
+//         ),
+//       ),
+//     );
+//   }
 
-  @override
-  List<Widget>? buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: const Icon(Icons.clear_rounded),
-        onPressed: () {
-          query = "";
-        },
-      ),
-      IconButton(
-        icon: const Icon(Icons.search_rounded),
-        onPressed: () async {
-          page = 1;
-          _getRecosts(page);
-          // showSuggestions(context);
-        },
-      )
-    ];
-  }
+//   @override
+//   List<Widget>? buildActions(BuildContext context) {
+//     return [
+//       IconButton(
+//         icon: const Icon(Icons.clear_rounded),
+//         onPressed: () {
+//           query = "";
+//         },
+//       ),
+//       IconButton(
+//         icon: const Icon(Icons.search_rounded),
+//         onPressed: () async {
+//           page = 1;
+//           _getRecosts(page);
+//           // showSuggestions(context);
+//         },
+//       )
+//     ];
+//   }
 
-  @override
-  Widget? buildLeading(BuildContext context) {
-    return IconButton(
-      icon: AnimatedIcon(
-        icon: AnimatedIcons.menu_arrow,
-        progress: transitionAnimation,
-      ),
-      onPressed: () {
-        close(context, '');
-      },
-    );
-  }
+//   @override
+//   Widget? buildLeading(BuildContext context) {
+//     return IconButton(
+//       icon: AnimatedIcon(
+//         icon: AnimatedIcons.menu_arrow,
+//         progress: transitionAnimation,
+//       ),
+//       onPressed: () {
+//         close(context, '');
+//       },
+//     );
+//   }
 
-  @override
-  Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
-    throw UnimplementedError();
-  }
+//   @override
+//   Widget buildResults(BuildContext context) {
+//     // TODO: implement buildResults
+//     throw UnimplementedError();
+//   }
 
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    final suggestionsList = suggestions;
+//   @override
+//   Widget buildSuggestions(BuildContext context) {
+//     final suggestionsList = suggestions;
 
-    return DefaultTabController(
-      length: 3,
-      child: NestedScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
-        headerSliverBuilder: (context, isScrollable) {
-          return [
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  TabBar(
-                    indicatorColor: kPrimaryColor,
-                    tabs: [
-                      Tab(
-                        icon: Icon(Icons.account_circle),
-                      ),
-                      Tab(
-                        icon: Icon(Icons.fastfood_rounded),
-                      ),
-                      Tab(
-                        icon: Icon(Icons.tag_rounded),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 2.0,
-                  )
-                ],
-              ),
-            ),
-          ];
-        },
-        body: TabBarView(
-          children: [
-            ExploreSearchRecipeTab(
-              recipes: recipes,
-            ),
-            ExploreSearchUserTab(
-              users: users,
-            ),
-            ExploreSearchHashtagTab(
-              hashtags: tags,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+//     return DefaultTabController(
+//       length: 3,
+//       child: NestedScrollView(
+//         physics: AlwaysScrollableScrollPhysics(),
+//         headerSliverBuilder: (context, isScrollable) {
+//           return [
+//             SliverToBoxAdapter(
+//               child: Column(
+//                 children: [
+//                   TabBar(
+//                     indicatorColor: kPrimaryColor,
+//                     tabs: [
+//                       Tab(
+//                         icon: Icon(Icons.account_circle),
+//                       ),
+//                       Tab(
+//                         icon: Icon(Icons.fastfood_rounded),
+//                       ),
+//                       Tab(
+//                         icon: Icon(Icons.tag_rounded),
+//                       ),
+//                     ],
+//                   ),
+//                   SizedBox(
+//                     height: 2.0,
+//                   )
+//                 ],
+//               ),
+//             ),
+//           ];
+//         },
+//         body: TabBarView(
+//           children: [
+//             ExploreSearchRecipeTab(
+//               recipes: recipes,
+//             ),
+//             ExploreSearchUserTab(
+//               users: users,
+//             ),
+//             ExploreSearchHashtagTab(
+//               hashtags: tags,
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }

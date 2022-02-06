@@ -94,6 +94,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
         var url = "http://10.0.2.2:3000/feed/lazyfeed/" + index.toString();
 
         var token = await storage.read(key: "token");
+        // print(token);
         Response response = await dio.get(
           url,
           options: Options(headers: {

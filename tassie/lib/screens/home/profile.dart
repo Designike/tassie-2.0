@@ -7,8 +7,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
-import 'package:tassie/screens/home/bookmarksPage.dart';
 import 'package:tassie/screens/home/editProfile.dart';
+import 'package:tassie/screens/home/profileBookmarks.dart';
 import 'package:tassie/screens/home/profilePostTab.dart';
 import 'package:tassie/screens/home/settings.dart';
 import 'package:tassie/screens/home/showMoreText.dart';
@@ -28,6 +28,107 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   var dio = Dio();
   final storage = FlutterSecureStorage();
+  static int page = 1;
+  List recipes = [];
+  List posts = [];
+  // List tags = [];
+  bool isLazyLoadingR = false;
+  bool isLazyLoadingP = false;
+  // bool isLazyLoadingT = false;
+  static bool isLoading = false;
+  bool isEndR = false;
+  bool isEndP = false;
+  final ScrollController _sc = ScrollController();
+  // bool isEndT = false;
+  // final dio = Dio();
+  // final storage = FlutterSecureStorage();
+  final TextEditingController _tc = TextEditingController();
+  Future<void> _getRecosts(int index) async {
+    if (!isEndR || !isEndP) {
+      if (!isLazyLoadingR || !isLazyLoadingP) {
+        print('calling...');
+        // showSuggestions(context);
+        setState(() {
+          isLazyLoadingR = true;
+          isLazyLoadingP = true;
+          // isLazyLoadingT = true;
+        });
+
+        // print(query);
+        var url =
+            "http://10.0.2.2:3000/profile/lazyProfile/" + index.toString();
+        var token = await storage.read(key: "token");
+        Response response = await dio.get(
+          url,
+          options: Options(headers: {
+            HttpHeaders.contentTypeHeader: "application/json",
+            HttpHeaders.authorizationHeader: "Bearer " + token!
+          }),
+        );
+        print(response);
+        // print(response.data);
+        if (response.data['data'] != null) {
+          setState(() {
+            // if (index == 1) {
+            //   isLoading = false;
+            // }
+            isLazyLoadingR = false;
+            isLazyLoadingP = false;
+            // posts.addAll(tList);
+            // print(recs);
+            if (response.data['data']['recs'] != null) {
+              recipes.addAll(response.data['data']['recs']);
+              // print(noOfLikes);
+            }
+            // if (response.data['data']['tags'] != null) {
+            //   tags.addAll(response.data['data']['tags']);
+            //   // print(noOfLikes);
+            // }
+            if (response.data['data']['posts'] != null) {
+              posts.addAll(response.data['data']['posts']);
+              print(posts);
+            }
+            isLoading = false;
+            page++;
+          });
+          // print(response.data['data']['posts']);
+          if (response.data['data']['recs'] == null) {
+            setState(() {
+              isEndR = true;
+            });
+          }
+          if (response.data['data']['posts'] == null) {
+            setState(() {
+              isEndP = true;
+            });
+          }
+
+          // print(recs);
+        } else {
+          setState(() {
+            isLoading = false;
+            isLazyLoadingR = false;
+            isLazyLoadingP = false;
+          });
+        }
+      }
+    }
+  }
+
+  Widget _buildProgressIndicator() {
+    return Padding(
+      padding: const EdgeInsets.all(kDefaultPadding),
+      child: Center(
+        child: Opacity(
+          opacity: 1,
+          child: CircularProgressIndicator(
+            color: kPrimaryColor,
+            strokeWidth: 2.0,
+          ),
+        ),
+      ),
+    );
+  }
 
   void _launchURL(url) async {
     try {
@@ -40,7 +141,40 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> _refreshPage() async {
-    setState(() {});
+    setState(() {
+      page = 1;
+      recipes = [];
+      posts = [];
+      // recosts_toggle = [];
+      isEndP = false;
+      isEndR = false;
+      isLoading = true;
+      isLazyLoadingR = false;
+      isLazyLoadingP = false;
+      _getRecosts(page);
+    });
+  }
+
+  @override
+  void initState() {
+    page = 1;
+    recipes = [];
+    // recosts_toggle = [];
+    posts = [];
+    isEndP = false;
+    isEndR = false;
+    isLoading = true;
+    isLazyLoadingR = false;
+    isLazyLoadingP = false;
+    _getRecosts(page);
+    super.initState();
+    // load();
+
+    _sc.addListener(() {
+      if (_sc.position.pixels == _sc.position.maxScrollExtent) {
+        _getRecosts(page);
+      }
+    });
   }
 
   @override
@@ -98,7 +232,7 @@ class _ProfileState extends State<Profile> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) {
-                      return BookmarksPage();
+                      return ProfileBookmarks();
                     }),
                   );
                 },
@@ -117,6 +251,7 @@ class _ProfileState extends State<Profile> {
             ],
           ),
           body: NestedScrollView(
+            controller: _sc,
             physics: AlwaysScrollableScrollPhysics(),
             headerSliverBuilder: (context, isScrollable) {
               return [
@@ -279,17 +414,27 @@ class _ProfileState extends State<Profile> {
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.all(2.0),
-                                child: Container(
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Center(child: Text('Edit Profile')),
-                                  decoration: BoxDecoration(
-                                      color: MediaQuery.of(context)
-                                                  .platformBrightness ==
-                                              Brightness.dark
-                                          ? kDark[900]
-                                          : kLight,
-                                      borderRadius:
-                                          BorderRadius.circular(10.0)),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) {
+                                        return EditProfilePage();
+                                      }),
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Center(child: Text('Edit Profile')),
+                                    decoration: BoxDecoration(
+                                        color: MediaQuery.of(context)
+                                                    .platformBrightness ==
+                                                Brightness.dark
+                                            ? kDark[900]
+                                            : kLight,
+                                        borderRadius:
+                                            BorderRadius.circular(10.0)),
+                                  ),
                                 ),
                               ),
                             ),
@@ -335,12 +480,18 @@ class _ProfileState extends State<Profile> {
                 ),
               ];
             },
-            body: TabBarView(
-              children: [
-                PostTab(),
-                RecipeTab(),
-              ],
-            ),
+            body: isLoading
+                ? _buildProgressIndicator()
+                : TabBarView(
+                    children: [
+                      PostTab(
+                        refreshPage: _refreshPage,
+                        posts: posts,
+                        isEnd:isEndP
+                      ),
+                      RecipeTab(refreshPage: _refreshPage, recipes: recipes,isEnd:isEndR),
+                    ],
+                  ),
           ),
         ),
       ),
