@@ -295,7 +295,7 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
         onRefresh: _refreshPage,
         child: CustomScrollView(
           physics: AlwaysScrollableScrollPhysics(),
-          // controller: _sc,
+          controller: _sc,
           slivers: [
             SliverToBoxAdapter(
               child: Column(
@@ -359,6 +359,7 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                                   post: recosts[recosts_toggle[index]]),
                               margin: EdgeInsets.all(7.0),
                             );
+                            
                     }),
               ),
             ),
