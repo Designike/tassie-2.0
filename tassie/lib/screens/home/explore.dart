@@ -155,9 +155,9 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
             recosts.addAll(response.data['data']['results']);
             // posts.addAll(tList);
             // print(recs);
-            if (response.data['data']['recipeData'] != null) {
+            if (response.data['data']['data'] != null) {
               recostsData.addAll(response.data['data']['data']);
-              // print(noOfLikes);
+              // print(recostsData);
             }
             if (response.data['data']['indices'] != null) {
               recosts_toggle.addAll(response.data['data']['indices']);
@@ -340,7 +340,17 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                           // : Container(height: 150.0, color: Colors.green);
                           ? Container(
                               child: ExploreRec(
-                                  recs: recosts[recosts_toggle[index]]),
+                                recs: recosts[recosts_toggle[index]],
+                                recostData: recostsData[recosts_toggle[index]],
+                                funcB: (isBook) {
+                                  setState(() {
+                                    recostsData[recosts_toggle[index]]
+                                            ['isBookmarked'] =
+                                        !recostsData[recosts_toggle[index]]
+                                            ['isBookmarked'];
+                                  });
+                                },
+                              ),
                               margin: EdgeInsets.all(7.0),
                             )
                           // : ExplorePost(post: post, noOfComment: noOfComment, noOfLike: noOfLike, func: func, plusComment: plusComment, bookmark: bookmark, funcB: funcB, minusComment: minusComment);
@@ -362,7 +372,7 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
 
 class SearchBar extends SearchDelegate<String> {
   final suggestions = ['paneer', 'sandwich', 'pani puri'];
-  
+
   static int page = 1;
   static List recipes = [];
   static List users = [];

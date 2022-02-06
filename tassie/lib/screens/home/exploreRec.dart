@@ -1,16 +1,21 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/screens/home/viewRecPost.dart';
 
 import '../../constants.dart';
 
 class ExploreRec extends StatefulWidget {
-  const ExploreRec({
-    required this.recs,
-  });
+  const ExploreRec(
+      {required this.recs, required this.recostData, required this.funcB});
 
   final Map recs;
+  final Map recostData;
+  final void Function(bool) funcB;
   // final int index;
 
   @override
@@ -20,6 +25,9 @@ class ExploreRec extends StatefulWidget {
 class _ExploreRecState extends State<ExploreRec> {
   @override
   Widget build(BuildContext context) {
+    var storage = FlutterSecureStorage();
+    var dio = Dio();
+    bool isBookmarked = widget.recostData['isBookmarked'];
     Size size = MediaQuery.of(context).size;
     Map recs = widget.recs;
     return Container(
@@ -35,7 +43,6 @@ class _ExploreRecState extends State<ExploreRec> {
         children: [
           Column(
             children: [
-              
               InkWell(
                 onDoubleTap: () => print('Bookmark recipe'),
                 splashColor: Colors.transparent,
@@ -43,7 +50,8 @@ class _ExploreRecState extends State<ExploreRec> {
                 child: Container(
                   margin: EdgeInsets.all(10.0),
                   width: double.infinity,
-                  height: ((size.width - 42.0)/2) - 20, // minus padding, minus margin
+                  height: ((size.width - 42.0) / 2) -
+                      20, // minus padding, minus margin
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(25.0),
                     image: DecorationImage(
@@ -56,16 +64,16 @@ class _ExploreRecState extends State<ExploreRec> {
               ListTile(
                 dense: true,
                 leading: Container(
-                  width: (size.width - 42.0)/12,
-                  height: (size.width - 42.0)/12,
+                  width: (size.width - 42.0) / 12,
+                  height: (size.width - 42.0) / 12,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                   ),
                   child: CircleAvatar(
                     child: ClipOval(
                       child: Image(
-                        height: (size.width - 42.0)/12,
-                        width: (size.width - 42.0)/12,
+                        height: (size.width - 42.0) / 12,
+                        width: (size.width - 42.0) / 12,
                         image: NetworkImage(recs['profilePic']),
                         fit: BoxFit.cover,
                       ),
@@ -73,21 +81,47 @@ class _ExploreRecState extends State<ExploreRec> {
                   ),
                 ),
                 trailing: IconButton(
-                  icon: Icon(Icons.bookmark_border),
+                  icon: (isBookmarked)
+                      ? Icon(Icons.bookmark)
+                      : Icon(Icons.bookmark_border),
                   // color: Colors.black,
-                  onPressed: () => print('Bookmark recipe'),
+                  onPressed: () async {
+                    if (!isBookmarked) {
+                      var token = await storage.read(key: "token");
+                      Response response =
+                          await dio.post("http://10.0.2.2:3000/recs/bookmark",
+                              options: Options(headers: {
+                                HttpHeaders.contentTypeHeader:
+                                    "application/json",
+                                HttpHeaders.authorizationHeader:
+                                    "Bearer " + token!
+                              }),
+                              data: {'uuid': recs['uuid']});
+                      widget.funcB(true);
+                    } else {
+                      var token = await storage.read(key: "token");
+                      Response response = await dio.post(
+                          "http://10.0.2.2:3000/recs/removeBookmark",
+                          options: Options(headers: {
+                            HttpHeaders.contentTypeHeader: "application/json",
+                            HttpHeaders.authorizationHeader: "Bearer " + token!
+                          }),
+                          data: {'uuid': recs['uuid']});
+                      widget.funcB(false);
+                    }
+                  },
                 ),
               ),
               GestureDetector(
                 onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ViewRecPost(
-                            recs: recs,
-                          ),
-                        ),
-                      );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ViewRecPost(
+                        recs: recs,
+                      ),
+                    ),
+                  );
                 },
                 child: ListTile(
                   title: Text(
@@ -108,7 +142,6 @@ class _ExploreRecState extends State<ExploreRec> {
                             : kDark[900]),
                   ),
                   isThreeLine: true,
-                 
                 ),
               ),
               // Padding(
