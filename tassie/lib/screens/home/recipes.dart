@@ -96,7 +96,7 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
             if (response.data['data']['recipeData'] != null) {
               recipeData.addAll(response.data['data']['recipeData']);
               // print(noOfLikes);
-              
+
             }
             page++;
           });
