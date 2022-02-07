@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:tassie/constants.dart';
+import 'package:tassie/screens/home/changeUsername.dart';
 import 'package:tassie/screens/wrapper.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -19,33 +22,34 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 1,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.green,
-          ),
+        elevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Theme.of(context).scaffoldBackgroundColor,
+            statusBarIconBrightness:
+                MediaQuery.of(context).platformBrightness == Brightness.light
+                    ? Brightness.dark
+                    : Brightness.light),
+        title: Text(
+          "Settings",
+          // style: TextStyle(fontWeight: FontWeight.w500),
         ),
       ),
       body: Container(
-        padding: EdgeInsets.only(left: 16, top: 25, right: 16),
+        padding: EdgeInsets.all(kDefaultPadding),
         child: ListView(
           children: [
-            Text(
-              "Settings",
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
-            ),
-            SizedBox(
-              height: 40,
-            ),
+            // Text(
+            //   "Settings",
+            //   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+            // ),
+            // SizedBox(
+            //   height: 40,
+            // ),
             Row(
               children: [
                 Icon(
                   Icons.person,
-                  color: Colors.green,
+                  color: kPrimaryColor,
                 ),
                 SizedBox(
                   width: 8,
@@ -63,25 +67,31 @@ class _SettingsPageState extends State<SettingsPage> {
             SizedBox(
               height: 10,
             ),
-            buildAccountOptionRow(context, "Change password"),
-            buildAccountOptionRow(context, "Content settings"),
-            buildAccountOptionRow(context, "Social"),
-            buildAccountOptionRow(context, "Language"),
-            buildAccountOptionRow(context, "Privacy and security"),
+            buildAccountOptionRow("Change username", () {
+              
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) {
+                  return ChangeUsername();
+                }),
+              );
+            }),
+            buildAccountOptionRow("Password", () {}),
+            buildAccountOptionRow("Update Email", () {}),
             SizedBox(
               height: 40,
             ),
             Row(
               children: [
                 Icon(
-                  Icons.volume_up_outlined,
-                  color: Colors.green,
+                  Icons.settings,
+                  color: kPrimaryColor,
                 ),
                 SizedBox(
                   width: 8,
                 ),
                 Text(
-                  "Notifications",
+                  "General",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
@@ -93,17 +103,25 @@ class _SettingsPageState extends State<SettingsPage> {
             SizedBox(
               height: 10,
             ),
-            buildNotificationOptionRow("New for you", true),
-            buildNotificationOptionRow("Account activity", true),
-            buildNotificationOptionRow("Opportunity", false),
+
+            buildNotificationOptionRow("Notifications", true),
+            buildAccountOptionRow("Theme", () {}),
+            buildAccountOptionRow("Opportunity", () {}),
+
             SizedBox(
               height: 50,
             ),
             Center(
-              child: OutlineButton(
-                padding: EdgeInsets.symmetric(horizontal: 40),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
+              child: OutlinedButton(
+                // padding: EdgeInsets.symmetric(horizontal: 40),
+
+                // shape: RoundedRectangleBorder(
+                //     borderRadius: BorderRadius.circular(20)),
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
                 onPressed: () async {
                   var token = await storage.read(key: "token");
                   print('1');
@@ -114,9 +132,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       HttpHeaders.authorizationHeader: "Bearer " + token!
                     }),
                   );
-                  print('1.1');
                   await storage.delete(key: "token");
-                  print('1.1.1');
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) {
@@ -128,7 +144,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   "SIGN OUT",
                   style: TextStyle(
                     fontSize: 16,
-                    letterSpacing: 2.2,
+                    letterSpacing: 2,
                     // color: Colors.black,
                   ),
                 ),
@@ -152,41 +168,21 @@ class _SettingsPageState extends State<SettingsPage> {
               color: Colors.grey[600]),
         ),
         Transform.scale(
-            scale: 0.7,
+            scale: 0.8,
             child: CupertinoSwitch(
+              activeColor: kPrimaryColor,
               value: isActive,
-              onChanged: (bool val) {},
+              onChanged: (bool val) {
+                isActive = val;
+              },
             ))
       ],
     );
   }
 
-  GestureDetector buildAccountOptionRow(BuildContext context, String title) {
+  GestureDetector buildAccountOptionRow(String title, Function() onTap) {
     return GestureDetector(
-      onTap: () {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(title),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text("Option 1"),
-                    Text("Option 2"),
-                    Text("Option 3"),
-                  ],
-                ),
-                actions: [
-                  FlatButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text("Close")),
-                ],
-              );
-            });
-      },
+      onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Row(

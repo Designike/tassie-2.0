@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -181,41 +183,45 @@ class _ProfileBookmarksState extends State<ProfileBookmarks> {
                   children: [
                     RefreshIndicator(
                       onRefresh: _refreshPage,
-                      child: posts.length > 0
-                          ? GridView.builder(
-                              shrinkWrap: true,
-                              // controller: _sc,
-                              physics: NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                crossAxisSpacing: 2,
-                                mainAxisSpacing: 2,
-                                // childAspectRatio: (size.width / 2) /
-                                //     ((size.width / 2) + (size.width / 10) + 100.0),
-                              ),
-                              itemBuilder: (context, index) {
-                                return index == posts.length
-                                    ? isEndP
-                                        ? _endMessage()
-                                        : _buildProgressIndicator()
-                                    // : FeedPost(index: index, posts: posts);
-                                    : Image.network(posts[index]['url']);
-                                // return Container(
-                                //   color: Colors.red,
-                                // );
-                              },
-                              itemCount: posts.length,
-                            )
-                          : Center(
-                              child: Padding(
-                                padding: EdgeInsets.all(size.width * 0.15),
-                                child: Text(
-                                  'No posts saved',
-                                  style: TextStyle(fontSize: 18),
+                      child: ListView(
+                        children: [
+                          posts.length > 0
+                              ? GridView.builder(
+                                  shrinkWrap: true,
+                                  // controller: _sc,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    crossAxisSpacing: 2,
+                                    mainAxisSpacing: 2,
+                                    // childAspectRatio: (size.width / 2) /
+                                    //     ((size.width / 2) + (size.width / 10) + 100.0),
+                                  ),
+                                  itemBuilder: (context, index) {
+                                    return index == posts.length
+                                        ? isEndP
+                                            ? _endMessage()
+                                            : _buildProgressIndicator()
+                                        // : FeedPost(index: index, posts: posts);
+                                        : Image.network(posts[index]['url']);
+                                    // return Container(
+                                    //   color: Colors.red,
+                                    // );
+                                  },
+                                  itemCount: posts.length,
+                                )
+                              : Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(size.width * 0.15),
+                                    child: Text(
+                                      'No posts saved',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
+                        ],
+                      ),
                     ),
                     RefreshIndicator(
                       onRefresh: _refreshPage,

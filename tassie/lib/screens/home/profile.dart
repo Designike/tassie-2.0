@@ -38,6 +38,7 @@ class _ProfileState extends State<Profile> {
   static bool isLoading = false;
   bool isEndR = false;
   bool isEndP = false;
+  bool editBtnClicked = false;
   final ScrollController _sc = ScrollController();
   // bool isEndT = false;
   // final dio = Dio();
@@ -415,17 +416,50 @@ class _ProfileState extends State<Profile> {
                               child: Padding(
                                 padding: const EdgeInsets.all(2.0),
                                 child: GestureDetector(
-                                  onTap: () {
+                                  onTap: () async {
+                                    setState(() {
+                                      editBtnClicked = true;
+                                    });
+                                    var token =
+                                        await storage.read(key: "token");
+                                    Response response = await dio.post(
+                                        "http://10.0.2.2:3000/profile/currentProfile/",
+                                        options: Options(headers: {
+                                          HttpHeaders.contentTypeHeader:
+                                              "application/json",
+                                          HttpHeaders.authorizationHeader:
+                                              "Bearer " + token!
+                                        }),
+                                        // data: jsonEncode(value),
+                                        data: {});
+                                    setState(() {
+                                      editBtnClicked = false;
+                                    });
+                                    // print(response.data);
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(builder: (context) {
-                                        return EditProfilePage();
+                                        return EditProfilePage(
+                                          name: response.data['data']['user']
+                                              ['name'],
+                                          bio: response.data['data']['user']
+                                              ['bio'],
+                                          website: response.data['data']['user']
+                                              ['website'],
+                                          number: response.data['data']['user']
+                                              ['number'],
+                                          gender: response.data['data']['user']
+                                              ['gender'],
+                                        );
                                       }),
                                     );
                                   },
                                   child: Container(
                                     padding: EdgeInsets.all(10.0),
-                                    child: Center(child: Text('Edit Profile')),
+                                    child: Center(
+                                        child: editBtnClicked
+                                            ? Text('Loading ...')
+                                            : Text('Edit Profile')),
                                     decoration: BoxDecoration(
                                         color: MediaQuery.of(context)
                                                     .platformBrightness ==
@@ -485,11 +519,13 @@ class _ProfileState extends State<Profile> {
                 : TabBarView(
                     children: [
                       PostTab(
-                        refreshPage: _refreshPage,
-                        posts: posts,
-                        isEnd:isEndP
-                      ),
-                      RecipeTab(refreshPage: _refreshPage, recipes: recipes,isEnd:isEndR),
+                          refreshPage: _refreshPage,
+                          posts: posts,
+                          isEnd: isEndP),
+                      RecipeTab(
+                          refreshPage: _refreshPage,
+                          recipes: recipes,
+                          isEnd: isEndR),
                     ],
                   ),
           ),

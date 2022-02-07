@@ -158,28 +158,27 @@ class _SignInState extends State<SignIn> {
                                 : {"username": username, "password": password},
                           );
                           print('1');
-                          if(response.data != null) {
-                            if(response.data['status'] == true) {
-                              
-                          
-                          await storage.write(
-                              key: "token",
-                              value: response.data['data']['token']);
-                          await storage.write(
-                              key: "uuid",
-                              value: response.data['data']['uuid']);
-                          print(response.data['data']['uuid']);
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) {
-                              return Home();
-                            }),
-                          );
-                          print(response.toString());
-                          } else {
-                            print(response.toString());
-                            showSnack(context, response.data['message'], () {}, 'OK', 4);
-                          }
+                          if (response.data != null) {
+                            if (response.data['status'] == true) {
+                              await storage.write(
+                                  key: "token",
+                                  value: response.data['data']['token']);
+                              await storage.write(
+                                  key: "uuid",
+                                  value: response.data['data']['uuid']);
+                              print(response.data['data']['uuid']);
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) {
+                                  return Home();
+                                }),
+                              );
+                              print(response.toString());
+                            } else {
+                              print(response.toString());
+                              showSnack(context, response.data['message'],
+                                  () {}, 'OK', 4);
+                            }
                           }
                         }
                       },
