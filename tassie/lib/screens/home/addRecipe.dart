@@ -23,8 +23,10 @@ import 'home.dart';
 
 class AddRecipe extends StatefulWidget {
   final String uuid;
-  final String folder;
-  const AddRecipe({required this.uuid, required this.folder});
+  // final String folder;
+  const AddRecipe({required this.uuid
+  // , required this.folder
+  });
 
   @override
   _AddRecipeState createState() => _AddRecipeState();
@@ -160,7 +162,9 @@ class _AddRecipeState extends State<AddRecipe> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
-              child: RecImageUploader(file: image, keyValue: recipeName,keyName: 'name', imgName: key+'_'+(index+1).toString(),folder: widget.folder, uuid: widget.uuid,trueResp: () {
+              child: RecImageUploader(file: image, keyValue: recipeName,keyName: 'name', imgName: key+'_'+(index+1).toString(),
+              // folder: widget.folder, 
+              uuid: widget.uuid,trueResp: () {
                   _imageFile = null;
                   if (key+'_'+(index+1).toString() == 'r_1') {
                     setState(() {
@@ -920,7 +924,9 @@ List<Widget> _getRecipe(size) {
                         HttpHeaders.contentTypeHeader: "application/json",
                         HttpHeaders.authorizationHeader: "Bearer " + token!
                       }),
-                      data: {'uuid': widget.uuid, 'folder': widget.folder});
+                      data: {'uuid': widget.uuid, 
+                      // 'folder': widget.folder
+                      });
                   if (response.data['status'] == true) {
                     print('deleted');
                   } else {
@@ -1009,7 +1015,9 @@ List<Widget> _getRecipe(size) {
                         HttpHeaders.contentTypeHeader: "application/json",
                         HttpHeaders.authorizationHeader: "Bearer " + token!
                       }),
-                      data: {'uuid': widget.uuid, 'folder': widget.folder, 'youtubeLink': youtubeLink});
+                      data: {'uuid': widget.uuid, 
+                      // 'folder': widget.folder, 
+                      'youtubeLink': youtubeLink});
                         Navigator.of(context).pop();
                        Navigator.pushReplacement(
                         context,
@@ -1040,7 +1048,9 @@ List<Widget> _getRecipe(size) {
                         HttpHeaders.contentTypeHeader: "application/json",
                         HttpHeaders.authorizationHeader: "Bearer " + token!
                       }),
-                      data: {'uuid': widget.uuid,'folder': widget.folder, 'name': recipeName});
+                      data: {'uuid': widget.uuid,
+                      // 'folder': widget.folder, 
+                      'name': recipeName});
                   }
                   if(_currentStep == 2){
                     if(hour != null && min != null) {
@@ -1060,7 +1070,9 @@ List<Widget> _getRecipe(size) {
                         HttpHeaders.authorizationHeader: "Bearer " + token!
                       }),
                       
-                      data: {'uuid': widget.uuid,'folder': widget.folder,'flavour':flavour,'veg':isVeg,'course':course,'estimatedTime':time});
+                      data: {'uuid': widget.uuid,
+                      // 'folder': widget.folder,
+                      'flavour':flavour,'veg':isVeg,'course':course,'estimatedTime':time});
                       }
                     } else {
                       showSnack(context, 'Add cooking time', () {}, 'OK', 4);
@@ -1074,7 +1086,9 @@ List<Widget> _getRecipe(size) {
                         HttpHeaders.contentTypeHeader: "application/json",
                         HttpHeaders.authorizationHeader: "Bearer " + token!
                       }),
-                      data: {'uuid': widget.uuid,'folder': widget.folder, 'ingredients': ingredientsList});
+                      data: {'uuid': widget.uuid,
+                      // 'folder': widget.folder, 
+                      'ingredients': ingredientsList});
                   }
                   if(_currentStep == 4){
                   var url = "http://10.0.2.2:3000/recs/updateRecipe";
@@ -1084,7 +1098,9 @@ List<Widget> _getRecipe(size) {
                         HttpHeaders.contentTypeHeader: "application/json",
                         HttpHeaders.authorizationHeader: "Bearer " + token!
                       }),
-                      data: {'uuid': widget.uuid,'folder': widget.folder,'steps': stepsList}); // 'folder': widget.folder, 
+                      data: {'uuid': widget.uuid,
+                      // 'folder': widget.folder,
+                      'steps': stepsList}); // 'folder': widget.folder, 
                   }
                 }
               },

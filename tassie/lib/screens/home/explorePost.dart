@@ -8,18 +8,19 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/viewComments.dart';
+import 'package:tassie/screens/imgLoader.dart';
 
 class ExplorePost extends StatefulWidget {
-  const ExplorePost(
-      {required this.post,
-      // required this.noOfComment,
-      // required this.noOfLike,
-      // required this.func,
-      // required this.plusComment,
-      // required this.bookmark,
-      // required this.funcB,
-      // required this.minusComment
-      });
+  const ExplorePost({
+    required this.post,
+    // required this.noOfComment,
+    // required this.noOfLike,
+    // required this.func,
+    // required this.plusComment,
+    // required this.bookmark,
+    // required this.funcB,
+    // required this.minusComment
+  });
   final Map post;
   // final Map noOfComment;
   // final Map noOfLike;
@@ -35,6 +36,18 @@ class ExplorePost extends StatefulWidget {
 class _ExplorePostState extends State<ExplorePost> {
   final dio = Dio();
   final storage = FlutterSecureStorage();
+  String _image = "";
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadImg(widget.post['postID']).then((result) {
+      setState(() {
+        _image = result;
+        // isImage = true;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +70,6 @@ class _ExplorePostState extends State<ExplorePost> {
         children: <Widget>[
           Column(
             children: <Widget>[
-              
               InkWell(
                 // onDoubleTap: () async {
                 //   if (!liked) {
@@ -73,50 +85,54 @@ class _ExplorePostState extends State<ExplorePost> {
                 //   }
                 // },
                 onTap: () {
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (_) => ViewComments(
-                    //         post: post,
-                    //         noOfComment: widget.noOfComment,
-                    //         noOfLike: widget.noOfLike,
-                    //         func: widget.func,
-                    //         plusComment: widget.plusComment,
-                    //         funcB: widget.funcB,
-                    //         bookmark: widget.bookmark,
-                    //         minusComment: widget.minusComment,
-                    //       ),
-                    //     )
-                    //     );
-                  },
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (_) => ViewComments(
+                  //         post: post,
+                  //         noOfComment: widget.noOfComment,
+                  //         noOfLike: widget.noOfLike,
+                  //         func: widget.func,
+                  //         plusComment: widget.plusComment,
+                  //         funcB: widget.funcB,
+                  //         bookmark: widget.bookmark,
+                  //         minusComment: widget.minusComment,
+                  //       ),
+                  //     )
+                  //     );
+                },
                 child: Container(
                   margin: EdgeInsets.all(10.0),
                   width: double.infinity,
-                  height: (size.width/2) - 10.0 - 10.0,
+                  height: (size.width / 2) - 20.0 - 14.0,
                   // height: 400.0,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(25.0),
                     image: DecorationImage(
-                      image: NetworkImage(post['url']),
+                      image: _image == ""
+                          ? Image.asset('assets/images/broken.png',
+                                  fit: BoxFit.cover)
+                              .image
+                          : Image.network(_image, fit: BoxFit.cover).image,
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
               ),
               ListTile(
-                minLeadingWidth: (size.width - 42.0)/12,
+                minLeadingWidth: (size.width - 42.0) / 12,
                 leading: Container(
-                  width: (size.width - 42.0)/12,
-                  height: (size.width - 42.0)/12,
+                  width: (size.width - 42.0) / 12,
+                  height: (size.width - 42.0) / 12,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                   ),
                   child: CircleAvatar(
                     child: ClipOval(
                       child: Image(
-                        height: (size.width - 42.0)/12,
-                        width: (size.width - 42.0)/12,
-                        image: NetworkImage(post['url']),
+                        height: (size.width - 42.0) / 12,
+                        width: (size.width - 42.0) / 12,
+                        image: NetworkImage(post['profilePic']),
                         fit: BoxFit.cover,
                       ),
                     ),

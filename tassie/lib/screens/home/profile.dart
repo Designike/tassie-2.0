@@ -13,51 +13,170 @@ import 'package:tassie/screens/home/profilePostTab.dart';
 import 'package:tassie/screens/home/settings.dart';
 import 'package:tassie/screens/home/showMoreText.dart';
 import 'package:tassie/screens/home/snackbar.dart';
+import 'package:tassie/screens/imgLoader.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../wrapper.dart';
 import 'profileRecipeTab.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  const Profile({Key? key, required this.uuid}) : super(key: key);
+  final String uuid;
 
   @override
   _ProfileState createState() => _ProfileState();
 }
 
-class _ProfileState extends State<Profile> {
+class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   var dio = Dio();
   final storage = FlutterSecureStorage();
-  static int page = 1;
+  static int pageR = 1;
+  static int pageP = 1;
   List recipes = [];
   List posts = [];
   // List tags = [];
   bool isLazyLoadingR = false;
   bool isLazyLoadingP = false;
   // bool isLazyLoadingT = false;
-  static bool isLoading = false;
+  // static bool isLoading = false;
+  static bool isLoadingR = false;
+  static bool isLoadingP = false;
   bool isEndR = false;
   bool isEndP = false;
   bool editBtnClicked = false;
   final ScrollController _sc = ScrollController();
+  int subscribeds = 0;
+  int subscribers = 0;
+  int noOfPosts = 0;
+  int noOfRecipes = 0;
+  String username = "";
+  String bio = "";
+  String website = "";
+  String name = "";
+  bool isSubscribed = false;
+
   // bool isEndT = false;
   // final dio = Dio();
   // final storage = FlutterSecureStorage();
   final TextEditingController _tc = TextEditingController();
-  Future<void> _getRecosts(int index) async {
-    if (!isEndR || !isEndP) {
-      if (!isLazyLoadingR || !isLazyLoadingP) {
+  // Future<void> _getRecipes(int index) async {
+  //   if (!isEndR || !isEndP) {
+  //     if (!isLazyLoadingR || !isLazyLoadingP) {
+  //       print('calling...');
+  //       // showSuggestions(context);
+  //       setState(() {
+  //         isLazyLoadingR = true;
+  //         isLazyLoadingP = true;
+  //         // isLazyLoadingT = true;
+  //       });
+
+  //       // print(query);
+  //       var url =
+  //           "http://10.0.2.2:3000/profile/lazyProfile/" + index.toString();
+  //       var token = await storage.read(key: "token");
+  //       Response response = await dio.get(
+  //         url,
+  //         options: Options(headers: {
+  //           HttpHeaders.contentTypeHeader: "application/json",
+  //           HttpHeaders.authorizationHeader: "Bearer " + token!
+  //         }),
+  //       );
+  //       print(response);
+  //       // print(response.data);
+  //       if (response.data['data'] != null) {
+  //         setState(() {
+  //           // if (index == 1) {
+  //           //   isLoading = false;
+  //           // }
+  //           isLazyLoadingR = false;
+  //           isLazyLoadingP = false;
+  //           // posts.addAll(tList);
+  //           // print(recs);
+  //           if (response.data['data']['recs'] != null) {
+  //             recipes.addAll(response.data['data']['recs']);
+  //             // print(noOfLikes);
+  //           }
+  //           // if (response.data['data']['tags'] != null) {
+  //           //   tags.addAll(response.data['data']['tags']);
+  //           //   // print(noOfLikes);
+  //           // }
+  //           if (response.data['data']['posts'] != null) {
+  //             posts.addAll(response.data['data']['posts']);
+  //             print(posts);
+  //           }
+  //           isLoading = false;
+  //           page++;
+  //         });
+  //         // print(response.data['data']['posts']);
+  //         if (response.data['data']['recs'] == null) {
+  //           setState(() {
+  //             isEndR = true;
+  //           });
+  //         }
+  //         if (response.data['data']['posts'] == null) {
+  //           setState(() {
+  //             isEndP = true;
+  //           });
+  //         }
+
+  //         // print(recs);
+  //       } else {
+  //         setState(() {
+  //           isLoading = false;
+  //           isLazyLoadingR = false;
+  //           isLazyLoadingP = false;
+  //         });
+  //       }
+  //     }
+  //   }
+  // }
+
+  Future<void> _getProfile() async {
+    var url = "http://10.0.2.2:3000/profile/getProfile/" + widget.uuid;
+    var token = await storage.read(key: "token");
+    Response response = await dio.get(
+      url,
+      options: Options(headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+        HttpHeaders.authorizationHeader: "Bearer " + token!
+      }),
+    );
+    if (response.data['data'] != null) {
+      setState(() {
+        subscribeds = response.data['data']['noOfSub']['subscribed'];
+        subscribers = response.data['data']['noOfSub']['subscriber'];
+        isSubscribed = response.data['data']['noOfSub']['isSubscribed'];
+        noOfPosts = response.data['data']['noOfPosts'];
+        noOfRecipes = response.data['data']['noOfRecipes'];
+        username = response.data['data']['userData']['username'];
+        bio = response.data['data']['userData']['bio'];
+        website = response.data['data']['userData']['website'];
+        name = response.data['data']['userData']['name'];
+      });
+      print(isSubscribed);
+    } else {
+      showSnack(context, "Unable to update", () {}, "OK", 3);
+    }
+  }
+
+  Future<void> _getRecipes(int index) async {
+    if (!isEndR) {
+      if (!isLazyLoadingR) {
         print('calling...');
         // showSuggestions(context);
         setState(() {
           isLazyLoadingR = true;
-          isLazyLoadingP = true;
           // isLazyLoadingT = true;
         });
 
         // print(query);
-        var url =
-            "http://10.0.2.2:3000/profile/lazyProfile/" + index.toString();
+        var url = "http://10.0.2.2:3000/profile/lazyProfileRecs/" +
+            widget.uuid +
+            "/" +
+            index.toString();
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
@@ -74,7 +193,6 @@ class _ProfileState extends State<Profile> {
             //   isLoading = false;
             // }
             isLazyLoadingR = false;
-            isLazyLoadingP = false;
             // posts.addAll(tList);
             // print(recs);
             if (response.data['data']['recs'] != null) {
@@ -85,12 +203,12 @@ class _ProfileState extends State<Profile> {
             //   tags.addAll(response.data['data']['tags']);
             //   // print(noOfLikes);
             // }
-            if (response.data['data']['posts'] != null) {
-              posts.addAll(response.data['data']['posts']);
-              print(posts);
-            }
-            isLoading = false;
-            page++;
+            // if (response.data['data']['posts'] != null) {
+            //   posts.addAll(response.data['data']['posts']);
+            //   print(posts);
+            // }
+            isLoadingR = false;
+            pageR++;
           });
           // print(response.data['data']['posts']);
           if (response.data['data']['recs'] == null) {
@@ -98,6 +216,65 @@ class _ProfileState extends State<Profile> {
               isEndR = true;
             });
           }
+
+          // print(recs);
+        } else {
+          setState(() {
+            isLoadingR = false;
+            isLazyLoadingR = false;
+          });
+        }
+      }
+    }
+  }
+
+  Future<void> _getPosts(int index) async {
+    if (!isEndP) {
+      if (!isLazyLoadingP) {
+        print('calling...');
+        // showSuggestions(context);
+        setState(() {
+          isLazyLoadingP = true;
+          // isLazyLoadingT = true;
+        });
+
+        // print(query);
+        var url = "http://10.0.2.2:3000/profile/lazyProfilePost/" +
+            widget.uuid +
+            "/" +
+            index.toString();
+        var token = await storage.read(key: "token");
+        Response response = await dio.get(
+          url,
+          options: Options(headers: {
+            HttpHeaders.contentTypeHeader: "application/json",
+            HttpHeaders.authorizationHeader: "Bearer " + token!
+          }),
+        );
+        print(response);
+        // print(response.data);
+        if (response.data['data'] != null) {
+          setState(() {
+            // if (index == 1) {
+            //   isLoading = false;
+            // }
+            isLazyLoadingP = false;
+            // posts.addAll(tList);
+            // print(recs);
+
+            // if (response.data['data']['tags'] != null) {
+            //   tags.addAll(response.data['data']['tags']);
+            //   // print(noOfLikes);
+            // }
+            if (response.data['data']['posts'] != null) {
+              posts.addAll(response.data['data']['posts']);
+              print(posts);
+            }
+            isLoadingP = false;
+            pageP++;
+          });
+          // print(response.data['data']['posts']);
+
           if (response.data['data']['posts'] == null) {
             setState(() {
               isEndP = true;
@@ -107,8 +284,7 @@ class _ProfileState extends State<Profile> {
           // print(recs);
         } else {
           setState(() {
-            isLoading = false;
-            isLazyLoadingR = false;
+            isLoadingP = false;
             isLazyLoadingP = false;
           });
         }
@@ -141,39 +317,63 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-  Future<void> _refreshPage() async {
-    setState(() {
-      page = 1;
-      recipes = [];
-      posts = [];
-      // recosts_toggle = [];
-      isEndP = false;
-      isEndR = false;
-      isLoading = true;
-      isLazyLoadingR = false;
-      isLazyLoadingP = false;
-      _getRecosts(page);
-    });
+  Future<void> _refreshPostPage() async {
+    if (mounted) {
+      setState(() {
+        pageP = 1;
+        // recipes = [];
+        posts = [];
+        // recosts_toggle = [];
+        isEndP = false;
+        // isEndR = false;
+        isLoadingP = true;
+        // isLazyLoadingR = false;
+        isLazyLoadingP = false;
+        _getProfile();
+        _getPosts(pageP);
+      });
+    }
+  }
+
+  Future<void> _refreshRecipePage() async {
+    if (mounted) {
+      setState(() {
+        pageR = 1;
+        recipes = [];
+        // posts = [];
+        // recosts_toggle = [];
+        // isEndP = false;
+        isEndR = false;
+        isLoadingR = true;
+        isLazyLoadingR = false;
+        // isLazyLoadingP = false;
+        _getRecipes(pageR);
+      });
+    }
   }
 
   @override
   void initState() {
-    page = 1;
+    pageR = 1;
+    pageP = 1;
     recipes = [];
     // recosts_toggle = [];
     posts = [];
     isEndP = false;
     isEndR = false;
-    isLoading = true;
+    // isLoading = true;
     isLazyLoadingR = false;
     isLazyLoadingP = false;
-    _getRecosts(page);
+    _getProfile();
+    _getPosts(pageP);
+    _getRecipes(pageR);
     super.initState();
     // load();
 
     _sc.addListener(() {
       if (_sc.position.pixels == _sc.position.maxScrollExtent) {
-        _getRecosts(page);
+        _getPosts(pageP);
+        _getRecipes(pageR);
       }
     });
   }
@@ -213,70 +413,69 @@ class _ProfileState extends State<Profile> {
     // );
     return DefaultTabController(
       length: 2,
-      child: RefreshIndicator(
-        onRefresh: _refreshPage,
-        child: Scaffold(
-          appBar: AppBar(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            title: Text(
-              'parthnamdev',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
-              ),
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          title: Text(
+            username,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
             ),
-            actions: [
-              IconButton(
-                icon: Icon(Icons.bookmark_rounded),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return ProfileBookmarks();
-                    }),
-                  );
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.more_vert_rounded),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return SettingsPage();
-                    }),
-                  );
-                },
-              ),
-            ],
           ),
-          body: NestedScrollView(
-            controller: _sc,
-            physics: AlwaysScrollableScrollPhysics(),
-            headerSliverBuilder: (context, isScrollable) {
-              return [
-                SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 20.0),
-                      Center(
-                        child: Stack(
-                          children: [
-                            ClipOval(
-                              child: Material(
-                                child: Ink.image(
-                                  height: 128,
-                                  width: 128,
-                                  image:
-                                      NetworkImage('https://picsum.photos/200'),
-                                  fit: BoxFit.cover,
-                                  child: InkWell(
-                                    onTap: () {},
-                                  ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.bookmark_rounded),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return ProfileBookmarks();
+                  }),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.more_vert_rounded),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return SettingsPage();
+                  }),
+                );
+              },
+            ),
+          ],
+        ),
+        body: NestedScrollView(
+          controller: _sc,
+          physics: AlwaysScrollableScrollPhysics(),
+          headerSliverBuilder: (context, isScrollable) {
+            return [
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    SizedBox(height: 20.0),
+                    Center(
+                      child: Stack(
+                        children: [
+                          ClipOval(
+                            child: Material(
+                              child: Ink.image(
+                                height: 128,
+                                width: 128,
+                                image:
+                                    NetworkImage('https://picsum.photos/200'),
+                                fit: BoxFit.cover,
+                                child: InkWell(
+                                  onTap: () {},
                                 ),
                               ),
                             ),
+                          ),
+                          if (widget.uuid == "user") ...[
                             Positioned(
                               bottom: 0,
                               right: 0,
@@ -297,237 +496,376 @@ class _ProfileState extends State<Profile> {
                                   ),
                                 ),
                               ),
-                            ),
+                            )
                           ],
-                        ),
+                        ],
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: size.width * 0.15, vertical: 30.0),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Column(
-                                  children: [
-                                    Text(
-                                      '237',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),
-                                    ),
-                                    Text('Posts'),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    Text(
-                                      '237',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),
-                                    ),
-                                    Text('Recipes'),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Divider(
-                              height: 50.0,
-                              thickness: 1,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Column(
-                                  children: [
-                                    Text('3930',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16)),
-                                    Text('Subscribers'),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    Text('40',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16)),
-                                    Text('Subscribed'),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // Name and bio
-                      Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'koko',
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 2.0),
-                              child: ShowMoreText(
-                                  text:
-                                      'I create yummy recipe henlo hi nike noice'),
-                            ),
-                            SizedBox(height: 10.0),
-                            // Text(
-                            //   'm.youtube.com/mitchkoko/',
-                            //   style: TextStyle(color: Colors.blue),
-                            //   overflow: TextOverflow.ellipsis,
-                            //   maxLines: 1,
-                            // ),
-                            RichText(
-                              text: TextSpan(
-                                text:
-                                    'https://www.youtube.com/channel/UCMKbJiTDOyBcTQZjDtRMdWA',
-                                style: TextStyle(color: Colors.blue),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    _launchURL(
-                                        'https://www.youtube.com/channel/UCMKbJiTDOyBcTQZjDtRMdWA');
-                                  },
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    setState(() {
-                                      editBtnClicked = true;
-                                    });
-                                    var token =
-                                        await storage.read(key: "token");
-                                    Response response = await dio.post(
-                                        "http://10.0.2.2:3000/profile/currentProfile/",
-                                        options: Options(headers: {
-                                          HttpHeaders.contentTypeHeader:
-                                              "application/json",
-                                          HttpHeaders.authorizationHeader:
-                                              "Bearer " + token!
-                                        }),
-                                        // data: jsonEncode(value),
-                                        data: {});
-                                    setState(() {
-                                      editBtnClicked = false;
-                                    });
-                                    // print(response.data);
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) {
-                                        return EditProfilePage(
-                                          name: response.data['data']['user']
-                                              ['name'],
-                                          bio: response.data['data']['user']
-                                              ['bio'],
-                                          website: response.data['data']['user']
-                                              ['website'],
-                                          number: response.data['data']['user']
-                                              ['number'],
-                                          gender: response.data['data']['user']
-                                              ['gender'],
-                                        );
-                                      }),
-                                    );
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.all(10.0),
-                                    child: Center(
-                                        child: editBtnClicked
-                                            ? Text('Loading ...')
-                                            : Text('Edit Profile')),
-                                    decoration: BoxDecoration(
-                                        color: MediaQuery.of(context)
-                                                    .platformBrightness ==
-                                                Brightness.dark
-                                            ? kDark[900]
-                                            : kLight,
-                                        borderRadius:
-                                            BorderRadius.circular(10.0)),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: size.width * 0.15, vertical: 30.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Column(
+                                children: [
+                                  Text(
+                                    noOfPosts.toString(),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
                                   ),
-                                ),
+                                  Text('Posts'),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // stories
-                      // Padding(
-                      //   padding:
-                      //       const EdgeInsets.symmetric(horizontal: 0.0, vertical: 20),
-                      //   child: Container(
-                      //     height: 110,
-                      //     child: ListView(
-                      //       scrollDirection: Axis.horizontal,
-                      //       children: [
-                      //         BubbleStories(text: 'story 1'),
-                      //         BubbleStories(text: 'story 2'),
-                      //         BubbleStories(text: 'story 3'),
-                      //         BubbleStories(text: 'story 4'),
-                      //         BubbleStories(text: 'story 5'),
-                      //         BubbleStories(text: 'story 6'),
-                      //         BubbleStories(text: 'story 7'),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
-
-                      TabBar(
-                        indicatorColor: kPrimaryColor,
-                        tabs: [
-                          Tab(icon: Icon(Icons.photo_rounded)),
-                          Tab(
-                            icon: Icon(Icons.fastfood_rounded),
+                              Column(
+                                children: [
+                                  Text(
+                                    noOfRecipes.toString(),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  ),
+                                  Text('Recipes'),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Divider(
+                            height: 50.0,
+                            thickness: 1,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Column(
+                                children: [
+                                  Text(subscribers.toString(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16)),
+                                  Text('Subscribers'),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  Text(subscribeds.toString(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16)),
+                                  Text('Subscribed'),
+                                ],
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                      SizedBox(
-                        height: 2.0,
-                      )
-                    ],
-                  ),
+                    ),
+
+                    // Name and bio
+                    Container(
+                      width: size.width,
+                      padding: const EdgeInsets.all(15.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            name,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.left,
+                          ),
+                          if (bio != "") ...[
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 2.0),
+                              child: ShowMoreText(text: bio),
+                            ),
+                            SizedBox(height: 10.0)
+                          ],
+                          // Text(
+                          //   'm.youtube.com/mitchkoko/',
+                          //   style: TextStyle(color: Colors.blue),
+                          //   overflow: TextOverflow.ellipsis,
+                          //   maxLines: 1,
+                          // ),
+                          if (website != "") ...[
+                            RichText(
+                              text: TextSpan(
+                                text: website,
+                                style: TextStyle(color: Colors.blue),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    _launchURL(website);
+                                  },
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ]
+                        ],
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: widget.uuid == "user"
+                                  ? GestureDetector(
+                                      onTap: () async {
+                                        setState(() {
+                                          editBtnClicked = true;
+                                        });
+                                        var token =
+                                            await storage.read(key: "token");
+                                        Response response = await dio.post(
+                                            "http://10.0.2.2:3000/profile/currentProfile/",
+                                            options: Options(headers: {
+                                              HttpHeaders.contentTypeHeader:
+                                                  "application/json",
+                                              HttpHeaders.authorizationHeader:
+                                                  "Bearer " + token!
+                                            }),
+                                            // data: jsonEncode(value),
+                                            data: {});
+                                        setState(() {
+                                          editBtnClicked = false;
+                                        });
+                                        // print(response.data);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) {
+                                            return EditProfilePage(
+                                              name: response.data['data']
+                                                  ['user']['name'],
+                                              bio: response.data['data']['user']
+                                                  ['bio'],
+                                              website: response.data['data']
+                                                  ['user']['website'],
+                                              number: response.data['data']
+                                                  ['user']['number'],
+                                              gender: response.data['data']
+                                                  ['user']['gender'],
+                                            );
+                                          }),
+                                        );
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(10.0),
+                                        child: Center(
+                                            child: editBtnClicked
+                                                ? Text('Loading ...')
+                                                : Text('Edit Profile')),
+                                        decoration: BoxDecoration(
+                                            color: MediaQuery.of(context)
+                                                        .platformBrightness ==
+                                                    Brightness.dark
+                                                ? kDark[900]
+                                                : kLight,
+                                            borderRadius:
+                                                BorderRadius.circular(10.0)),
+                                      ),
+                                    )
+                                  : GestureDetector(
+                                      onTap: () async {
+                                        if (isSubscribed) {
+                                          setState(() {
+                                            editBtnClicked = true;
+                                          });
+                                          var token =
+                                              await storage.read(key: "token");
+                                          Response response = await dio.post(
+                                              "http://10.0.2.2:3000/profile/unsubscribe/",
+                                              options: Options(headers: {
+                                                HttpHeaders.contentTypeHeader:
+                                                    "application/json",
+                                                HttpHeaders.authorizationHeader:
+                                                    "Bearer " + token!
+                                              }),
+                                              // data: jsonEncode(value),
+                                              data: {'uuid': widget.uuid});
+                                          if (response.data['status'] == true) {
+                                            setState(() {
+                                              isSubscribed = false;
+                                              editBtnClicked = false;
+                                            });
+                                          } else {
+                                            showSnack(
+                                                context,
+                                                "Unable to unsubscribe, try again!",
+                                                () {},
+                                                "OK",
+                                                3);
+                                            setState(() {
+                                              editBtnClicked = false;
+                                            });
+                                          }
+                                        } else {
+                                          setState(() {
+                                            editBtnClicked = true;
+                                          });
+                                          var token =
+                                              await storage.read(key: "token");
+                                          Response response = await dio.post(
+                                              "http://10.0.2.2:3000/profile/subscribe/",
+                                              options: Options(headers: {
+                                                HttpHeaders.contentTypeHeader:
+                                                    "application/json",
+                                                HttpHeaders.authorizationHeader:
+                                                    "Bearer " + token!
+                                              }),
+                                              // data: jsonEncode(value),
+                                              data: {'uuid': widget.uuid});
+                                          if (response.data['status'] == true) {
+                                            setState(() {
+                                              isSubscribed = true;
+                                              editBtnClicked = false;
+                                            });
+                                          } else {
+                                            showSnack(
+                                                context,
+                                                "Unable to subscribe, try again!",
+                                                () {},
+                                                "OK",
+                                                3);
+                                            setState(() {
+                                              editBtnClicked = false;
+                                            });
+                                          }
+                                        }
+                                        // var token =
+                                        //     await storage.read(key: "token");
+                                        // Response response = await dio.post(
+                                        //     "http://10.0.2.2:3000/profile/currentProfile/",
+                                        //     options: Options(headers: {
+                                        //       HttpHeaders.contentTypeHeader:
+                                        //           "application/json",
+                                        //       HttpHeaders.authorizationHeader:
+                                        //           "Bearer " + token!
+                                        //     }),
+                                        //     // data: jsonEncode(value),
+                                        //     data: {});
+                                        // setState(() {
+                                        //
+                                        // });
+                                        // print(response.data);
+                                        // Navigator.push(
+                                        //   context,
+                                        //   MaterialPageRoute(builder: (context) {
+                                        //     return EditProfilePage(
+                                        //       name: response.data['data']
+                                        //           ['user']['name'],
+                                        //       bio: response.data['data']['user']
+                                        //           ['bio'],
+                                        //       website: response.data['data']
+                                        //           ['user']['website'],
+                                        //       number: response.data['data']
+                                        //           ['user']['number'],
+                                        //       gender: response.data['data']
+                                        //           ['user']['gender'],
+                                        //     );
+                                        //   }),
+                                        // );
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(10.0),
+                                        child: Center(
+                                          child: editBtnClicked
+                                              ? Text('Loading ...')
+                                              : isSubscribed
+                                                  ? Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text('Subscribed',
+                                                            style: TextStyle(
+                                                                color:
+                                                                    kPrimaryColor)),
+                                                        Icon(Icons.check_circle,
+                                                            color:
+                                                                kPrimaryColor)
+                                                      ],
+                                                    )
+                                                  : Text('Subscribe'),
+                                        ),
+                                        decoration: BoxDecoration(
+                                            color: MediaQuery.of(context)
+                                                        .platformBrightness ==
+                                                    Brightness.dark
+                                                ? kDark[900]
+                                                : kLight,
+                                            borderRadius:
+                                                BorderRadius.circular(10.0)),
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // stories
+                    // Padding(
+                    //   padding:
+                    //       const EdgeInsets.symmetric(horizontal: 0.0, vertical: 20),
+                    //   child: Container(
+                    //     height: 110,
+                    //     child: ListView(
+                    //       scrollDirection: Axis.horizontal,
+                    //       children: [
+                    //         BubbleStories(text: 'story 1'),
+                    //         BubbleStories(text: 'story 2'),
+                    //         BubbleStories(text: 'story 3'),
+                    //         BubbleStories(text: 'story 4'),
+                    //         BubbleStories(text: 'story 5'),
+                    //         BubbleStories(text: 'story 6'),
+                    //         BubbleStories(text: 'story 7'),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
+
+                    TabBar(
+                      indicatorColor: kPrimaryColor,
+                      tabs: [
+                        Tab(icon: Icon(Icons.photo_rounded)),
+                        Tab(
+                          icon: Icon(Icons.fastfood_rounded),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 2.0,
+                    )
+                  ],
                 ),
-              ];
-            },
-            body: isLoading
-                ? _buildProgressIndicator()
-                : TabBarView(
-                    children: [
-                      PostTab(
-                          refreshPage: _refreshPage,
-                          posts: posts,
-                          isEnd: isEndP),
-                      RecipeTab(
-                          refreshPage: _refreshPage,
-                          recipes: recipes,
-                          isEnd: isEndR),
-                    ],
-                  ),
+              ),
+            ];
+          },
+          body: TabBarView(
+            dragStartBehavior: DragStartBehavior.down,
+            children: [
+              isLoadingP
+                  ? _buildProgressIndicator()
+                  : PostTab(
+                      refreshPage: _refreshPostPage,
+                      posts: posts,
+                      isEnd: isEndP),
+              isLoadingR
+                  ? _buildProgressIndicator()
+                  : RecipeTab(
+                      refreshPage: _refreshRecipePage,
+                      recipes: recipes,
+                      isEnd: isEndR),
+            ],
           ),
         ),
       ),

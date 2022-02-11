@@ -68,7 +68,6 @@ class _SettingsPageState extends State<SettingsPage> {
               height: 10,
             ),
             buildAccountOptionRow("Change username", () {
-              
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) {
@@ -133,6 +132,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     }),
                   );
                   await storage.delete(key: "token");
+                  Navigator.pop(context);
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) {

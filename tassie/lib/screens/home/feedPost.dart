@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/viewComments.dart';
+import 'package:tassie/screens/imgLoader.dart';
 
 class FeedPost extends StatefulWidget {
   const FeedPost(
@@ -18,11 +20,13 @@ class FeedPost extends StatefulWidget {
       required this.plusComment,
       required this.bookmark,
       required this.funcB,
+      // required this.image,
       required this.minusComment});
   final Map post;
   final Map noOfComment;
   final Map noOfLike;
   final Map bookmark;
+  // final Uint8List image;
   final void Function(bool) func;
   final void Function(bool) funcB;
   final void Function() plusComment;
@@ -32,17 +36,36 @@ class FeedPost extends StatefulWidget {
 }
 
 class _FeedPostState extends State<FeedPost> {
+  // final Map post;
+
   final dio = Dio();
   final storage = FlutterSecureStorage();
+  String _image = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadImg(widget.post['postID']).then((result) {
+      // print('hello');
+      // print(result);
+      setState(() {
+        _image = result;
+        // isImage = true;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Future<Uint8List> load = loadImg(widget.post['postID']);
     print(widget.bookmark);
     Map post = widget.post;
     bool isBookmarked = widget.bookmark['isBookmarked'];
     bool liked = widget.noOfLike['isLiked'];
     int likeNumber = widget.noOfLike['count'];
     Size size = MediaQuery.of(context).size;
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
       child: Container(
@@ -120,7 +143,10 @@ class _FeedPostState extends State<FeedPost> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25.0),
                         image: DecorationImage(
-                          image: NetworkImage(post['url']),
+                          // image: NetworkImage(post['url']),
+                          image: _image == ""
+                              ? Image.asset('assets/images/broken.png').image
+                              : Image.network(_image).image,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -286,8 +312,7 @@ class _FeedPostState extends State<FeedPost> {
                                 bookmark: widget.bookmark,
                                 minusComment: widget.minusComment,
                               ),
-                            )
-                            );
+                            ));
                       },
                       child: RichText(
                         overflow: TextOverflow.ellipsis,

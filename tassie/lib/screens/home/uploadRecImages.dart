@@ -14,7 +14,7 @@ class RecImageUploader extends StatefulWidget {
       required this.keyValue,
       required this.keyName,
       required this.imgName,
-      required this.folder,
+      // required this.folder,
       required this.trueResp,
       required this.falseResp,
       required this.imageNull,
@@ -25,7 +25,7 @@ class RecImageUploader extends StatefulWidget {
   final String keyValue;
   final String keyName;
   final String imgName;
-  final String folder;
+  // final String folder;
   final void Function() trueResp;
   final void Function() falseResp;
   final void Function() imageNull;
@@ -39,7 +39,9 @@ class _RecImageUploaderState extends State<RecImageUploader> {
   double progress = 0.0;
   bool isUploaded = false;
   Future<void> _startUpload(File? file, String keyValue, String keyName,
-      String imgName, String folder) async {
+      String imgName
+      // , String folder
+      ) async {
     var dio = Dio();
     var storage = FlutterSecureStorage();
     var formData = FormData();
@@ -48,7 +50,7 @@ class _RecImageUploaderState extends State<RecImageUploader> {
       "media": await MultipartFile.fromFile(file.path),
       keyName: keyValue,
       "imgName": imgName,
-      "folder": folder,
+      // "folder": folder,
       "uuid": widget.uuid
     });
     widget.imageNull();
@@ -237,7 +239,9 @@ class _RecImageUploaderState extends State<RecImageUploader> {
 
                 // // print(isClicked);
                 _startUpload(widget.file, widget.keyValue, widget.keyName,
-                    widget.imgName, widget.folder);
+                    widget.imgName
+                    // , widget.folder
+                    );
 
                 // RecImageUploader(file: image, keyValue: recipeName,keyName: 'name', imgName: key+'_'+(index+1).toString(),folder: widget.folder, uuid: widget.uuid,trueResp: () {
                 //   _imageFile = null;

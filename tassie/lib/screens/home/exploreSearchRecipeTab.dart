@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/imgLoader.dart';
 
 class ExploreSearchRecipeTab extends StatefulWidget {
   const ExploreSearchRecipeTab(
@@ -64,17 +65,50 @@ class _ExploreSearchRecipeTabState extends State<ExploreSearchRecipeTab> {
                 ),
                 leading: CircleAvatar(
                   child: ClipOval(
-                    child: Image(
-                      height: 50.0,
-                      width: 50.0,
-                      image: NetworkImage(recipes[index]['url']),
-                      fit: BoxFit.cover,
-                    ),
+                    child: exploreRecipeAvatar(
+                        recipeImageID: recipes[index]['recipeImageID']),
                   ),
                 ),
               );
       },
       itemCount: recipes.length,
+    );
+  }
+}
+
+class exploreRecipeAvatar extends StatefulWidget {
+  const exploreRecipeAvatar({
+    Key? key,
+    required this.recipeImageID,
+  }) : super(key: key);
+  final String recipeImageID;
+  @override
+  State<exploreRecipeAvatar> createState() => _exploreRecipeAvatarState();
+}
+
+class _exploreRecipeAvatarState extends State<exploreRecipeAvatar> {
+  String _image = "";
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadImg(widget.recipeImageID).then((result) {
+      setState(() {
+        _image = result;
+        // isImage = true;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Image(
+      height: 50.0,
+      width: 50.0,
+      fit: BoxFit.cover,
+      image: _image == ""
+          ? Image.asset('assets/images/broken.png', fit: BoxFit.cover).image
+          : Image.network(_image, fit: BoxFit.cover).image,
     );
   }
 }

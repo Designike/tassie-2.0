@@ -1,10 +1,12 @@
 // ignore_for_file: prefer_const_constructors, avoid_print
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:tassie/screens/home/home.dart';
 import 'package:tassie/screens/home/snackbar.dart';
 import '../../constants.dart';
@@ -26,6 +28,22 @@ class _SignInState extends State<SignIn> {
   String? value;
   final storage = FlutterSecureStorage();
   var dio = Dio();
+  final google = GoogleSignIn();
+
+  // Future<GoogleSignInAuthentication?> login()
+  Future<GoogleSignInAccount?> login() => google.signIn().then((result) {
+        print(result);
+        result?.authentication.then((googleKey) {
+          print(googleKey.accessToken);
+          // print(googleKey.idToken);
+          // print(google.currentUser?.displayName);
+        }).catchError((err) {
+          print('inner error');
+        });
+      }).catchError((err) {
+        print('error occured');
+      });
+
   Future<String?> check() async {
     const storage = FlutterSecureStorage();
     value = await storage.read(key: "token");
@@ -240,6 +258,17 @@ class _SignInState extends State<SignIn> {
                           ),
                         ),
                       ),
+                    ),
+                    IconButton(
+                      onPressed: () async {
+                        try {
+                          await login();
+                          // print(x);
+                        } catch (e) {
+                          print(e);
+                        }
+                      },
+                      icon: Icon(Icons.login_rounded),
                     ),
                     SizedBox(height: 20.0),
                     Center(

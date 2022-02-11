@@ -1,5 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
+// import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/home/profile.dart';
+import 'package:tassie/screens/imgLoader.dart';
 
 class PostTab extends StatefulWidget {
   const PostTab(
@@ -11,7 +18,9 @@ class PostTab extends StatefulWidget {
   _PostTabState createState() => _PostTabState();
 }
 
-class _PostTabState extends State<PostTab> {
+class _PostTabState extends State<PostTab> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   // final ScrollController _sc = ScrollController();
   // List<Map> recs = [
   //   {
@@ -62,10 +71,18 @@ class _PostTabState extends State<PostTab> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     List posts = widget.posts;
     // print(posts);
     Size size = MediaQuery.of(context).size;
+    print('henlo');
+    print(posts);
     return RefreshIndicator(
       onRefresh: widget.refreshPage,
       child: ListView(
@@ -88,7 +105,7 @@ class _PostTabState extends State<PostTab> {
                             ? _endMessage()
                             : _buildProgressIndicator()
                         // : FeedPost(index: index, posts: posts);
-                        : Image.network(posts[index]['url']);
+                        : ProfilePostTabChild(postID: posts[index]['postID']);
                     // return Container(
                     //   color: Colors.red,
                     // );
@@ -108,5 +125,55 @@ class _PostTabState extends State<PostTab> {
       ),
     );
     // return Container();
+  }
+}
+
+class ProfilePostTabChild extends StatefulWidget {
+  const ProfilePostTabChild({
+    Key? key,
+    required this.postID,
+  }) : super(key: key);
+
+  final String postID;
+
+  @override
+  State<ProfilePostTabChild> createState() => _ProfilePostTabChildState();
+}
+
+class _ProfilePostTabChildState extends State<ProfilePostTabChild> {
+  String _image = "";
+  bool isImage = false;
+
+  @override
+  void didUpdateWidget(covariant ProfilePostTabChild oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _image = "";
+    loadImg(widget.postID).then((result) {
+      print('post refresh');
+      if (mounted) {
+        setState(() {
+          print(result);
+          _image = result;
+          isImage = true;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return !isImage ? Container() : Image.network(_image);
   }
 }

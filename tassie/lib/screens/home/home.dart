@@ -109,7 +109,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       Recipes(),
       // Add(),
       Explore(),
-      Profile(),
+      Profile(uuid: "user"),
     ];
 
     _pageController = PageController(initialPage: _selectedIndex);
@@ -183,8 +183,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           );
                         }),
                       );
-                      var url =
-                          "http://10.0.2.2:3000/recs/createRecipe/";
+                      var url = "http://10.0.2.2:3000/recs/createRecipe/";
 
                       var token = await storage.read(key: "token");
                       Response response = await dio.get(
@@ -203,7 +202,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           MaterialPageRoute(builder: (context) {
                             return AddRecipe(
                               uuid: response.data['data']['recUuid'],
-                              folder: response.data['data']['folder'],
+                              // folder: response.data['data']['folder'],
                             );
                           }),
                         );

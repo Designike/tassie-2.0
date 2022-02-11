@@ -8,8 +8,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/authenticate/authenticate.dart';
 import 'package:tassie/screens/home/feedPost.dart';
 import 'package:tassie/screens/home/profile.dart';
+import 'package:tassie/screens/imgLoader.dart';
 import 'package:tassie/screens/wrapper.dart';
 
 class Feed extends StatefulWidget {
@@ -33,6 +35,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
   static List noOfComments = [];
   static List noOfLikes = [];
   static List bookmark = [];
+  // static List images = [];
   bool isLazyLoading = false;
   static bool isLoading = true;
   bool isEnd = false;
@@ -103,44 +106,57 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
           }),
         );
         // List tList = [];
-        if (response.data['data']['posts'] != null) {
-          //   for (int i = 0;
-          //       i < response.data['data']['posts']['results'].length;
-          //       i++) {
-          //     tList.add(response.data['data']['posts']['results'][i]);
-          //   }
-          setState(() {
-            if (index == 1) {
-              isLoading = false;
+        if (response.data['status'] == true) {
+          if (response.data['data']['posts'] != null) {
+            //   for (int i = 0;
+            //       i < response.data['data']['posts']['results'].length;
+            //       i++) {
+            //     tList.add(response.data['data']['posts']['results'][i]);
+            //   }
+            setState(() async {
+              if (index == 1) {
+                isLoading = false;
+              }
+              isLazyLoading = false;
+              posts.addAll(response.data['data']['posts']['results']);
+              // posts.addAll(tList);
+              if (response.data['data']['posts']['noOfComments'] != null) {
+                noOfComments
+                    .addAll(response.data['data']['posts']['noOfComments']);
+              }
+              if (response.data['data']['posts']['noOfLikes'] != null) {
+                noOfLikes.addAll(response.data['data']['posts']['noOfLikes']);
+                print(noOfLikes);
+              }
+              if (response.data['data']['posts']['bookmarks'] != null) {
+                bookmark.addAll(response.data['data']['posts']['bookmarks']);
+                print(noOfLikes);
+              }
+              // for (var item in response.data['data']['posts']['results']) {
+              //   images.add(await loadImg(item['postID']));
+              // }
+              page++;
+            });
+            // print(response.data['data']['posts']);
+            if (response.data['data']['posts']['results'].length == 0) {
+              setState(() {
+                isEnd = true;
+              });
             }
-            isLazyLoading = false;
-            posts.addAll(response.data['data']['posts']['results']);
-            // posts.addAll(tList);
-            if (response.data['data']['posts']['noOfComments'] != null) {
-              noOfComments
-                  .addAll(response.data['data']['posts']['noOfComments']);
-            }
-            if (response.data['data']['posts']['noOfLikes'] != null) {
-              noOfLikes.addAll(response.data['data']['posts']['noOfLikes']);
-              print(noOfLikes);
-            }
-            if (response.data['data']['posts']['bookmarks'] != null) {
-              bookmark.addAll(response.data['data']['posts']['bookmarks']);
-              print(noOfLikes);
-            }
-            page++;
-          });
-          // print(response.data['data']['posts']);
-          if (response.data['data']['posts']['results'].length == 0) {
+          } else {
             setState(() {
-              isEnd = true;
+              isLoading = false;
+              isLazyLoading = false;
             });
           }
         } else {
-          setState(() {
-            isLoading = false;
-            isLazyLoading = false;
-          });
+          await storage.delete(key: "token");
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) {
+              return Authenticate();
+            }),
+          );
         }
       }
     }
@@ -189,13 +205,13 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
 
   @override
   void initState() {
-  posts = [];
-  noOfComments = [];
-  noOfLikes = [];
-  bookmark = [];
-  page=1;
-   isLoading = true;
-   isEnd = false;
+    posts = [];
+    noOfComments = [];
+    noOfLikes = [];
+    bookmark = [];
+    page = 1;
+    isLoading = true;
+    isEnd = false;
     _getMoreData(page);
     super.initState();
     // load();
@@ -274,6 +290,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                                   ? _endMessage()
                                   : _buildProgressIndicator()
                               : FeedPost(
+                                  // image: images[index],
                                   post: posts[index],
                                   noOfComment: noOfComments[index],
                                   noOfLike: noOfLikes[index],
@@ -299,7 +316,8 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                                       bookmark[index]['isBookmarked'] =
                                           !bookmark[index]['isBookmarked'];
                                     });
-                                  },minusComment: () {
+                                  },
+                                  minusComment: () {
                                     setState(() {
                                       noOfComments[index]['count'] -= 1;
                                     });

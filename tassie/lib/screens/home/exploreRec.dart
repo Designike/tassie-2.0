@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/screens/home/viewRecPost.dart';
+import 'package:tassie/screens/imgLoader.dart';
 
 import '../../constants.dart';
 
@@ -23,6 +24,20 @@ class ExploreRec extends StatefulWidget {
 }
 
 class _ExploreRecState extends State<ExploreRec> {
+  String _image = "";
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadImg(widget.recs['recipeImageID']).then((result) {
+      setState(() {
+        _image = result;
+        // isImage = true;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var storage = FlutterSecureStorage();
@@ -55,7 +70,11 @@ class _ExploreRecState extends State<ExploreRec> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(25.0),
                     image: DecorationImage(
-                      image: NetworkImage(recs['url']),
+                      image: _image == ""
+                          ? Image.asset('assets/images/broken.png',
+                                  fit: BoxFit.cover)
+                              .image
+                          : Image.network(_image, fit: BoxFit.cover).image,
                       fit: BoxFit.cover,
                     ),
                   ),

@@ -1,5 +1,9 @@
+import 'dart:typed_data';
+
+// import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/imgLoader.dart';
 
 class RecipeTab extends StatefulWidget {
   const RecipeTab(
@@ -61,6 +65,13 @@ class _RecipeTabState extends State<RecipeTab> {
     );
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     List recs = widget.recipes;
@@ -86,7 +97,8 @@ class _RecipeTabState extends State<RecipeTab> {
                             ? _endMessage()
                             : _buildProgressIndicator()
                         // : FeedPost(index: index, posts: posts);
-                        : Image.network(recs[index]['url']);
+                        : ProfileRecipeTabChild(
+                            recID: recs[index]['recipeImageID']);
                     // return Container(
                     //   color: Colors.red,
                     // );
@@ -105,5 +117,58 @@ class _RecipeTabState extends State<RecipeTab> {
         ],
       ),
     );
+  }
+}
+
+class ProfileRecipeTabChild extends StatefulWidget {
+  const ProfileRecipeTabChild({
+    Key? key,
+    required this.recID,
+  }) : super(key: key);
+
+  final String recID;
+
+  @override
+  State<ProfileRecipeTabChild> createState() => _ProfileRecipeTabChildState();
+}
+
+class _ProfileRecipeTabChildState extends State<ProfileRecipeTabChild>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+  bool isImage = false;
+  String _image = "";
+
+  @override
+  void didUpdateWidget(covariant ProfileRecipeTabChild oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _image = "";
+    loadImg(widget.recID).then((result) {
+      print('recs refresh');
+      if (mounted) {
+        setState(() {
+          print(result);
+          _image = result;
+          isImage = true;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return !isImage ? Container() : Image.network(_image);
   }
 }
