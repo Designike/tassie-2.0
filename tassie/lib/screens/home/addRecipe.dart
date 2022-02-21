@@ -61,7 +61,7 @@ class _AddRecipeState extends State<AddRecipe> {
   int selectedCourse = 0;
   String flavour = "";
   String course = "";
-  List<bool> mealType = [true, false, false, false];
+  List<bool> mealType = [false, false, false, false];
   List<String> hours=['0', '1', '2', '3'];
   final minutes=['00', '15', '30', '45'];
   bool isUpload = false;
