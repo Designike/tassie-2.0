@@ -113,7 +113,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
             //       i++) {
             //     tList.add(response.data['data']['posts']['results'][i]);
             //   }
-            setState(() async {
+            setState(() {
               if (index == 1) {
                 isLoading = false;
               }

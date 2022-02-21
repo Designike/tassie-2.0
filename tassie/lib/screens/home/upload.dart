@@ -68,7 +68,8 @@ class _UploaderState extends State<Uploader> {
       );
     } else {
       // handle error
-
+      print(response.data['message']);
+      print(response.data['error']);
     }
   }
 
@@ -95,22 +96,31 @@ class _UploaderState extends State<Uploader> {
           //   ),
 
           // Progress bar
+          // Padding(
+          //   padding:
+          //       const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+          //   child: LinearProgressIndicator(value: progress),
+          // ),
+          // Text('${(progress).toStringAsFixed(2)} % '),
           Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
-            child: LinearProgressIndicator(value: progress),
-          ),
-          Text('${(progress).toStringAsFixed(2)} % '),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
-            child: AnimatedTextKit(
-              pause: Duration(milliseconds: 100),
-              animatedTexts: [
-                RotateAnimatedText('Blending your stuff'),
-                RotateAnimatedText('Some Sautéing'),
-                RotateAnimatedText('Let\'s Stir'),
-                RotateAnimatedText('Baking up'),
+                const EdgeInsets.symmetric(horizontal: kDefaultPadding * 2),
+            child: Row(
+              children: [
+                CircularProgressIndicator(strokeWidth: 2.0),
+                Expanded(
+                  child: AnimatedTextKit(
+                    pause: Duration(milliseconds: 100),
+                    isRepeatingAnimation: true,
+                    totalRepeatCount: 10,
+                    animatedTexts: [
+                      RotateAnimatedText('Blending your stuff'),
+                      RotateAnimatedText('Some Sautéing'),
+                      RotateAnimatedText('Let\'s Stir'),
+                      RotateAnimatedText('Baking up'),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:localstorage/localstorage.dart';
@@ -19,6 +20,7 @@ import 'package:tassie/screens/home/uploadRecImages.dart';
 import '../../constants.dart';
 import 'addIngredient.dart';
 import 'addStep.dart';
+import 'hashtag_suggestions.dart';
 import 'home.dart';
 
 class AddRecipe extends StatefulWidget {
@@ -40,6 +42,8 @@ class _AddRecipeState extends State<AddRecipe> {
   String recipeName = "";
   String youtubeLink = "";
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _tagController = TextEditingController();
+  String desc = "";
   //a chene ek vaar set kri leje jyare recipe pic les ane validator ma check krvanu
   File? recipePic;
   //ama index thi save krto jaje etle update thatu jase
@@ -57,6 +61,7 @@ class _AddRecipeState extends State<AddRecipe> {
   int selectedCourse = 0;
   String flavour = "";
   String course = "";
+  List<bool> mealType = [true, false, false, false];
   List<String> hours=['0', '1', '2', '3'];
   final minutes=['00', '15', '30', '45'];
   bool isUpload = false;
@@ -255,6 +260,19 @@ class _AddRecipeState extends State<AddRecipe> {
   return _upload;
   }
 
+  String _appendHashtag(desc1, tag) {
+    print(desc1);
+    print(tag);
+    // String desc1 = desc;
+    String last = desc1.substring(desc1.length-1);
+    while(last != '#') {
+      desc1 = desc1.substring(0, desc1.length-1);
+      last = desc1.substring(desc1.length-1);
+    }
+    print(desc1 + tag.substring(1,tag.length));
+    return desc1 + tag.substring(1,tag.length);
+  }
+  
   void changeFlavour(int index, String flav) {
     setState(() {
       flavour = flav;
@@ -269,6 +287,33 @@ class _AddRecipeState extends State<AddRecipe> {
       selectedCourse = index;
     });
     print(course);
+  }
+
+  void changeMeal(int index, bool check) {
+    setState(() {
+      mealType[index] = check;
+    });
+    // print(course);
+  }
+
+  Widget mealCheckBox(int index, String flav) {
+    return Padding(
+            padding: const EdgeInsets.only(right: kDefaultPadding),
+            child: OutlinedButton(
+              onPressed: () => changeMeal(index, !mealType[index]),
+              child: Text(flav),
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+                padding: EdgeInsets.all(15.0),
+                side: BorderSide(
+                  color: mealType[index] ? kPrimaryColor : kDark,
+                  width: mealType[index] ? 2 : 1,
+                ),
+                backgroundColor: mealType[index] ? kPrimaryColor.withOpacity(0.1) : Colors.transparent,
+              ),
+
+            ),
+          );
   }
 
   Widget flavourRadio(int index, String flav) {
@@ -426,6 +471,28 @@ class _AddRecipeState extends State<AddRecipe> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                    child: Text('Meal Type'),
+                  ),
+                  
+              // SizedBox(height: 3 * kDefaultPadding,),
+                  Padding(
+                    padding: const EdgeInsets.all(kDefaultPadding),
+                    
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          mealCheckBox(0,'Lunch'),
+                          mealCheckBox(1,'Breakfast'),
+                          mealCheckBox(2,'Dinner'),
+                          mealCheckBox(3,'Craving'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
                     child: Text('Flavour'),
                   ),
                   
@@ -562,6 +629,80 @@ class _AddRecipeState extends State<AddRecipe> {
         ),
         Step(
           isActive: _currentStep >= 4,
+          title: Text('Description'),
+          subtitle: Text('You can also add hashtags and mentions', 
+                    style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                      ? kDark
+                      : kDark[700]),),
+          content: Padding(
+            padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+            child: Column(
+              children: [
+                TypeAheadFormField<String?>(
+                      hideOnEmpty:true, 
+                      debounceDuration: Duration(seconds:1),
+                      // direction: AxisDirection.up,
+                      autoFlipDirection: true,
+                      keepSuggestionsOnSuggestionSelected: true,
+                      // suggestionsCallback: _ingredientController.text.isNotEmpty ? _ingredientController.text.characters.last != '#' ? Hashtags.getSuggestions : (v) => [] : (v) => [],
+                      suggestionsCallback: Hashtags.getSuggestions,
+                      textFieldConfiguration: TextFieldConfiguration(
+                        keyboardType: TextInputType.multiline,
+                                      
+                        maxLines: null,
+                        controller: _tagController,
+                        onChanged: (v) {
+                          desc = v;        
+                          },
+                        decoration: InputDecoration(
+                          labelText: 'Description',
+                          labelStyle: TextStyle(
+                            // fontFamily: 'Raleway',
+                            fontSize: 16.0,
+                            color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                                ? kPrimaryColor
+                                : kDark[900],
+                          ),
+                          contentPadding:
+                              EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color:
+                                    MediaQuery.of(context).platformBrightness == Brightness.dark
+                                        ? kPrimaryColor
+                                        : kDark[900]!),
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          
+                        ),
+                      ),
+                      itemBuilder: (context, String? suggestion) => ListTile(
+                        title: Text(suggestion!),
+                      ),
+                      onSuggestionSelected: (v) {
+                        // setState(() {
+                          print("first");
+                          print(_appendHashtag(desc, v));
+                          _tagController.text = _appendHashtag(desc, v);
+                          print("second");
+                        print(_tagController.text);
+                        // });
+                      },
+                      validator: (val) => val!.isEmpty || val.length > 500
+                                          ? 'Description should be within 500 characters'
+                                          : null,
+                          
+    ),
+              ],
+            ),
+          ),
+        ),
+        Step(
+          isActive: _currentStep >= 5,
           title: Text('Youtube link'),
           subtitle: Text('Namak Swaad Anusaar!  (Optional)', 
                     style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
@@ -964,6 +1105,7 @@ List<Widget> _getRecipe(size) {
           ),
           centerTitle: true,
         ),
+        // resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -1072,7 +1214,7 @@ List<Widget> _getRecipe(size) {
                       
                       data: {'uuid': widget.uuid,
                       // 'folder': widget.folder,
-                      'flavour':flavour,'veg':isVeg,'course':course,'estimatedTime':time});
+                      'flavour':flavour,'veg':isVeg,'course':course,'estimatedTime':time, 'isLunch': mealType[0], 'isBreakfast': mealType[1], 'isDinner': mealType[2], 'isCraving': mealType[3]});
                       }
                     } else {
                       showSnack(context, 'Add cooking time', () {}, 'OK', 4);
@@ -1101,6 +1243,18 @@ List<Widget> _getRecipe(size) {
                       data: {'uuid': widget.uuid,
                       // 'folder': widget.folder,
                       'steps': stepsList}); // 'folder': widget.folder, 
+                  }
+                  if(_currentStep == 5){
+                  var url = "http://10.0.2.2:3000/recs/addHashtag";
+                  var token = await storage.read(key: "token");
+                  Response response = await dio.post(url,
+                      options: Options(headers: {
+                        HttpHeaders.contentTypeHeader: "application/json",
+                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                      }),
+                      data: {'uuid': widget.uuid,
+                      // 'folder': widget.folder,
+                      'desc': desc}); // 'folder': widget.folder, 
                   }
                 }
               },

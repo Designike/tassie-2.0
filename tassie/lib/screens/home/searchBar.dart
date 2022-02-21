@@ -151,78 +151,79 @@ class _SearchBarState extends State<SearchBar> {
       length: 3,
       child: Scaffold(
         body: NestedScrollView(
-                floatHeaderSlivers: true,
-                physics: AlwaysScrollableScrollPhysics(),
-                headerSliverBuilder: (context, isScrollable) {
-                  return [
-                    SliverAppBar(
-                      elevation: 0,
-                      // forceElevated: isScrollable,
-                      pinned: true,
-                      backgroundColor: Colors.transparent,
-                      title: TextFormField(
-                        controller: _tc,
-                        autofocus: true,
-                        decoration: InputDecoration(
-                          hintText: 'Search',
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          border: InputBorder.none,
-                        ),
-                        onChanged: (value) {
-                          query = value;
-                        },
-                        validator: (val) => val!.isEmpty || val.length > 100
-                            ? 'Recipe name should be within 100 characters'
-                            : null,
-                      ),
-                      actions: [
-                        IconButton(
-                          icon: Icon(Icons.clear_rounded),
-                          onPressed: () {
-                            // clear query
-                            _tc.text = "";
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.search_rounded),
-                          onPressed: () {
-                            // search here
-                            page = 1;
-                            recipes = [];
-                            users = [];
-                            tags = [];
-                            setState(() {
-                              isLoading = true;
-                            });
-                            _getRecosts(page);
-                          },
-                        ),
-                      ],
-                      bottom: TabBar(
-                        indicatorColor: kPrimaryColor,
-                        tabs: [
-                          Tab(
-                            icon: Icon(Icons.fastfood_rounded),
-                          ),
-                          Tab(
-                            icon: Icon(Icons.account_circle),
-                          ),
-                          Tab(
-                            icon: Icon(Icons.tag_rounded),
-                          ),
-                        ],
-                      ),
+          floatHeaderSlivers: true,
+          physics: NeverScrollableScrollPhysics(),
+          headerSliverBuilder: (context, isScrollable) {
+            return [
+              SliverAppBar(
+                elevation: 0,
+                // forceElevated: isScrollable,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                pinned: true,
+                // backgroundColor: Colors.transparent,
+                title: TextFormField(
+                  controller: _tc,
+                  autofocus: true,
+                  decoration: InputDecoration(
+                    hintText: 'Search',
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    border: InputBorder.none,
+                  ),
+                  onChanged: (value) {
+                    query = value;
+                  },
+                  validator: (val) => val!.isEmpty || val.length > 100
+                      ? 'Recipe name should be within 100 characters'
+                      : null,
+                ),
+                actions: [
+                  IconButton(
+                    icon: Icon(Icons.clear_rounded),
+                    onPressed: () {
+                      // clear query
+                      _tc.text = "";
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.search_rounded),
+                    onPressed: () {
+                      // search here
+                      page = 1;
+                      recipes = [];
+                      users = [];
+                      tags = [];
+                      setState(() {
+                        isLoading = true;
+                      });
+                      _getRecosts(page);
+                    },
+                  ),
+                ],
+                bottom: TabBar(
+                  indicatorColor: kPrimaryColor,
+                  tabs: [
+                    Tab(
+                      icon: Icon(Icons.fastfood_rounded),
                     ),
-                    SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: 2.0,
-                      ),
+                    Tab(
+                      icon: Icon(Icons.account_circle),
                     ),
-                  ];
-                },
-                body:  isLoading
-            ? _buildProgressIndicator()
-            : TabBarView(
+                    Tab(
+                      icon: Icon(Icons.tag_rounded),
+                    ),
+                  ],
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 2.0,
+                ),
+              ),
+            ];
+          },
+          body: isLoading
+              ? _buildProgressIndicator()
+              : TabBarView(
                   children: [
                     ExploreSearchRecipeTab(
                       recipes: recipes,
@@ -240,7 +241,7 @@ class _SearchBarState extends State<SearchBar> {
                         isLazyLoadingT: isLazyLoadingT),
                   ],
                 ),
-              ),
+        ),
       ),
     );
   }

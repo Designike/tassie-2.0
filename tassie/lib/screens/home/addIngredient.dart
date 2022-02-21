@@ -56,6 +56,8 @@ class _IngredientTextFieldState extends State<IngredientTextField> {
     //   },
     // );
     return TypeAheadFormField<String?>(
+      // direction: AxisDirection.up,
+      autoFlipDirection: true,
       suggestionsCallback: IngredientData.getSuggestions,
       textFieldConfiguration: TextFieldConfiguration(
         controller: _ingredientController,

@@ -48,6 +48,8 @@ class _ExploreSearchUserTabState extends State<ExploreSearchUserTab> {
   Widget build(BuildContext context) {
     List users = widget.users;
     return ListView.builder(
+      shrinkWrap: true,
+      padding: EdgeInsets.all(0.0),
       itemBuilder: (context, index) {
         return ListTile(
           onTap: () {

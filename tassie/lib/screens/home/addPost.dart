@@ -4,12 +4,14 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tassie/screens/home/upload.dart';
 
 import '../../constants.dart';
+import 'hashtag_suggestions.dart';
 
 class AddPost extends StatefulWidget {
   const AddPost({Key? key}) : super(key: key);
@@ -22,7 +24,7 @@ class _AddPostState extends State<AddPost> {
   File? _imageFile;
   static String desc = "";
   final _formKey = GlobalKey<FormState>();
-
+  final TextEditingController _tagController = TextEditingController();
   @override
   void initState() {
     desc = '';
@@ -85,14 +87,30 @@ class _AddPostState extends State<AddPost> {
     }
   }
 
+  String _appendHashtag(desc1, tag) {
+    print(desc1);
+    print(tag);
+    // String desc1 = desc;
+    String last = desc1.substring(desc1.length-1);
+    while(last != '#') {
+      desc1 = desc1.substring(0, desc1.length-1);
+      last = desc1.substring(desc1.length-1);
+    }
+    print(desc1 + tag.substring(1,tag.length));
+    return desc1 + tag.substring(1,tag.length);
+  }
+
   /// Remove image
   void _clear() {
     setState(() => _imageFile = null);
   }
 
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    
+    
     return Scaffold(
       // Select an image from the camera or gallery
       // bottomNavigationBar: BottomAppBar(
@@ -147,12 +165,13 @@ class _AddPostState extends State<AddPost> {
       body: ListView(
         children: <Widget>[
           if (_imageFile != null) ...[
+            SizedBox(height: 15.0),
             Text(
                 'Some toppings ...',
                 style: TextStyle(
                   color: kPrimaryColor,
                   fontFamily: 'LobsterTwo',
-                  fontSize: 40.0,
+                  fontSize: 35.0,
                 ),
                 textAlign: TextAlign.center,
                 ),
@@ -180,39 +199,96 @@ class _AddPostState extends State<AddPost> {
             child: Form(
               key: _formKey,
               child: Column(children: [
-              TextFormField(
-                // style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
-                //     ? kLight
-                //     : kDark[900]),
-                      initialValue: desc.isNotEmpty ? desc : '',
-                      decoration: InputDecoration(
-                          labelText: 'DESCRIPTION',
+              // TextFormField(
+              //   // style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
+              //   //     ? kLight
+              //   //     : kDark[900]),
+              //         initialValue: desc.isNotEmpty ? desc : '',
+              //         decoration: InputDecoration(
+              //             labelText: 'DESCRIPTION',
                           
+              //             labelStyle: TextStyle(
+              //               // fontFamily: 'Raleway',
+              //               fontSize: 16.0,
+              //               color: MediaQuery.of(context).platformBrightness == Brightness.dark
+              //       ? kPrimaryColor
+              //       : kDark[900],
+              //             ),
+              //             contentPadding: EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
+              //             floatingLabelBehavior: FloatingLabelBehavior.always,
+              //             border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), ),
+              //             focusedBorder: OutlineInputBorder(
+              //                 borderSide: BorderSide(color: MediaQuery.of(context).platformBrightness == Brightness.dark
+              //       ? kPrimaryColor
+              //       : kDark[900]!),borderRadius: BorderRadius.circular(15.0),),
+              //                 ),
+              //         keyboardType: TextInputType.multiline,
+                      
+              //         maxLines: null,
+              //         onChanged: (value) {
+              //           desc = value;
+              //         },
+              //         validator: (val) => val!.isEmpty || val.length > 500
+              //             ? 'Description should be within 500 characters'
+              //             : null,
+              //       ),
+                    TypeAheadFormField<String?>(
+                      hideOnEmpty:true, 
+                      debounceDuration: Duration(seconds:1),
+                      direction: AxisDirection.up,
+                      // suggestionsCallback: _ingredientController.text.isNotEmpty ? _ingredientController.text.characters.last != '#' ? Hashtags.getSuggestions : (v) => [] : (v) => [],
+                      suggestionsCallback: Hashtags.getSuggestions,
+                      textFieldConfiguration: TextFieldConfiguration(
+                        keyboardType: TextInputType.multiline,
+                                      
+                        maxLines: null,
+                        controller: _tagController,
+                        onChanged: (v) {
+                          desc = v;        
+                          },
+                        decoration: InputDecoration(
+                          labelText: 'Description',
                           labelStyle: TextStyle(
                             // fontFamily: 'Raleway',
                             fontSize: 16.0,
                             color: MediaQuery.of(context).platformBrightness == Brightness.dark
-                    ? kPrimaryColor
-                    : kDark[900],
+                                ? kPrimaryColor
+                                : kDark[900],
                           ),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
+                          contentPadding:
+                              EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
                           floatingLabelBehavior: FloatingLabelBehavior.always,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
                           focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: MediaQuery.of(context).platformBrightness == Brightness.dark
-                    ? kPrimaryColor
-                    : kDark[900]!),borderRadius: BorderRadius.circular(15.0),),
-                              ),
-                      keyboardType: TextInputType.multiline,
-                      
-                      maxLines: null,
-                      onChanged: (value) {
-                        desc = value;
+                            borderSide: BorderSide(
+                                color:
+                                    MediaQuery.of(context).platformBrightness == Brightness.dark
+                                        ? kPrimaryColor
+                                        : kDark[900]!),
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          
+                        ),
+                      ),
+                      itemBuilder: (context, String? suggestion) => ListTile(
+                        title: Text(suggestion!),
+                      ),
+                      onSuggestionSelected: (v) {
+                        // setState(() {
+                          print("first");
+                          print(_appendHashtag(desc, v));
+                          _tagController.text = _appendHashtag(desc, v);
+                          print("second");
+                        print(_tagController.text);
+                        // });
                       },
                       validator: (val) => val!.isEmpty || val.length > 500
-                          ? 'Description should be within 500 characters'
-                          : null,
-                    ),
+                                          ? 'Description should be within 500 characters'
+                                          : null,
+                          
+    ),
                     
                     
             ],)),

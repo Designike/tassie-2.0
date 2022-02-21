@@ -20,7 +20,6 @@ import 'package:tassie/screens/home/feed.dart';
 import 'package:tassie/screens/home/profile.dart';
 import 'package:tassie/screens/home/recipes.dart';
 import 'package:tassie/screens/home/snackbar.dart';
-import 'package:tassie/screens/home/tabNavigator.dart';
 import 'package:tassie/screens/wrapper.dart';
 
 class Home extends StatefulWidget {
@@ -33,12 +32,11 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   // String _currentPage = "Page1";
   // List<String> pageKeys = ["Page1", "Page2", "Page3"];
-  Map<int, GlobalKey<NavigatorState>> _navigatorKeys = {
-    0: GlobalKey<NavigatorState>(),
-    1: GlobalKey<NavigatorState>(),
-    2: GlobalKey<NavigatorState>(),
-    3: GlobalKey<NavigatorState>(),
-  };
+  // Map<String, GlobalKey<NavigatorState>> _navigatorKeys = {
+  //   "Page1": GlobalKey<NavigatorState>(),
+  //   "Page2": GlobalKey<NavigatorState>(),
+  //   "Page3": GlobalKey<NavigatorState>(),
+  // };
   // int _selectedIndex = 0;
 
   int _selectedIndex = 0;
@@ -104,24 +102,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   List<Widget> _screens = [];
 
   // double _angle = 0;
-  Widget _buildOffstageNavigator(int index) {
-    return TabNavigator(
-      navigatorKey: _navigatorKeys[index]!,
-      tabItem: index,
-    );
-  }
-
-  void _selectTab(int index) {
-    print('thai che');
-    if (index == _selectedIndex) {
-      _navigatorKeys[index]!.currentState?.popUntil((route) => route.isFirst);
-    } else {
-      setState(() {
-        _selectedIndex = index;
-        _pageController.jumpToPage(index);
-      });
-    }
-  }
 
   @override
   void initState() {
@@ -134,18 +114,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     //     _angle = animatedController.value * 45 / 360 * pi * 2;
     //   });
     _selectedIndex = 0;
-    // _screens = [
-    //   Feed(),
-    //   Recipes(),
-    //   // Add(),
-    //   Explore(),
-    //   Profile(uuid: "user"),
-    // ];
     _screens = [
-      _buildOffstageNavigator(0),
-      _buildOffstageNavigator(1),
-      _buildOffstageNavigator(2),
-      _buildOffstageNavigator(3),
+      Feed(),
+      Recipes(),
+      // Add(),
+      Explore(),
+      Profile(uuid: "user"),
     ];
 
     _pageController = PageController(initialPage: _selectedIndex);
@@ -174,7 +148,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         //     :
         Scaffold(
             extendBody: true,
-            resizeToAvoidBottomInset: false,
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerDocked,
             floatingActionButton: SpeedDial(
@@ -306,11 +279,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   children: [
                     MaterialButton(
                       onPressed: () {
-                        _selectTab(0);
-                        // setState(() {
-                        //   _selectedIndex = 0;
-                        //   _pageController.jumpToPage(0);
-                        // });
+                        setState(() {
+                          _selectedIndex = 0;
+                          _pageController.jumpToPage(0);
+                        });
 
                         // ignore: prefer_const_literals_to_create_immutables
                       },
@@ -336,11 +308,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     ),
                     MaterialButton(
                       onPressed: () {
-                        _selectTab(1);
-                        // setState(() {
-                        //   _selectedIndex = 1;
-                        //   _pageController.jumpToPage(1);
-                        // });
+                        setState(() {
+                          _selectedIndex = 1;
+                          _pageController.jumpToPage(1);
+                        });
                         // ignore: prefer_const_literals_to_create_immutables
                       },
                       child: Column(
@@ -368,11 +339,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     ),
                     MaterialButton(
                       onPressed: () {
-                        _selectTab(2);
-                        // setState(() {
-                        //   _selectedIndex = 2;
-                        //   _pageController.jumpToPage(2);
-                        // });
+                        setState(() {
+                          _selectedIndex = 2;
+                          _pageController.jumpToPage(2);
+                        });
                         // ignore: prefer_const_literals_to_create_immutables
                       },
                       child: Column(
@@ -397,11 +367,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     ),
                     MaterialButton(
                       onPressed: () {
-                        // setState(() {
-                        //   _selectedIndex = 3;
-                        //   _pageController.jumpToPage(3);
-                        // });
-                        _selectTab(3);
+                        setState(() {
+                          _selectedIndex = 3;
+                          _pageController.jumpToPage(3);
+                        });
                         // ignore: prefer_const_literals_to_create_immutables
                       },
                       child: Column(
