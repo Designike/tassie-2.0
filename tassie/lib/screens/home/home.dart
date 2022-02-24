@@ -174,7 +174,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         //       )
         //     :
         WillPopScope(
-      onWillPop: () async =>!await _navigatorKeys[_selectedIndex]!.currentState!.maybePop(),
+      onWillPop: () async =>
+          !await _navigatorKeys[_selectedIndex]!.currentState!.maybePop(),
       child: Scaffold(
           extendBody: true,
           resizeToAvoidBottomInset: false,

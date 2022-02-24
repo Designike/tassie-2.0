@@ -9,14 +9,14 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/showMoreText.dart';
+import 'package:tassie/screens/home/snackbar.dart';
 import 'package:tassie/screens/home/viewRecSimilarRec.dart';
 import 'package:tassie/screens/imgLoader.dart';
 
 import 'viewRecAllComments.dart';
 
 class ViewRecPost extends StatefulWidget {
-  const ViewRecPost(
-      {required this.recs, required this.funcB});
+  const ViewRecPost({required this.recs, required this.funcB});
   final Map recs;
   final void Function(bool) funcB;
   @override
@@ -111,7 +111,10 @@ class _ViewRecPostState extends State<ViewRecPost> {
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Bearer " + token!
         }),
-        data: {'uuid': widget.recs['uuid']});
+        data: {
+          'uuid': widget.recs['uuid'],
+          'chefUuid': widget.recs['userUuid']
+        });
 
     if (response.data != null) {
       setState(() {
@@ -124,6 +127,12 @@ class _ViewRecPostState extends State<ViewRecPost> {
         isLiked = response.data['data']['recipeData']['isLiked'];
         recipeImageID = response.data['data']['recipe']['recipeImageID'];
         // isLazyLoading = false;
+        if(response.data['data']['recipeData']['userRating'].isNotEmpty) {
+        rating = response.data['data']['recipeData']['userRating'][0]['star'].toDouble();
+        } else {
+          rating = 0.0;
+        }
+        isSubscribed = response.data['data']['isSubscribed'];
         recipeName = response.data['data']['recipe']['name'];
         chefName = response.data['data']['recipe']['username'];
         isVeg = response.data['data']['recipe']['veg'];
@@ -348,7 +357,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
     isLoading = true;
     getRecipe();
     // myFuture = loadImg(x);
-    AsyncMemoizer _memoizer = AsyncMemoizer();
+    // AsyncMemoizer _memoizer = AsyncMemoizer();
     super.initState();
   }
 
@@ -851,13 +860,67 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                     ? TextButton.icon(
                                         icon: Icon(Icons.check_circle),
                                         label: Text('SUBSCRIBED'),
-                                        onPressed: () {},
+                                        onPressed: () async {
+                                          var token =
+                                              await storage.read(key: "token");
+                                          Response response = await dio.post(
+                                              "http://10.0.2.2:3000/profile/unsubscribe/",
+                                              options: Options(headers: {
+                                                HttpHeaders.contentTypeHeader:
+                                                    "application/json",
+                                                HttpHeaders.authorizationHeader:
+                                                    "Bearer " + token!
+                                              }),
+                                              // data: jsonEncode(value),
+                                              data: {
+                                                'uuid': widget.recs['userUuid']
+                                              });
+                                          if (response.data['status'] == true) {
+                                            setState(() {
+                                              isSubscribed = false;
+                                            });
+                                          } else {
+                                            showSnack(
+                                                context,
+                                                "Unable to unsubscribe, try again!",
+                                                () {},
+                                                "OK",
+                                                3);
+                                          }
+                                        },
                                         style: TextButton.styleFrom(
                                             primary: kPrimaryColor),
                                       )
                                     : TextButton(
                                         child: Text('SUBSCRIBE'),
-                                        onPressed: () {},
+                                        onPressed: () async {
+                                          var token =
+                                              await storage.read(key: "token");
+                                          Response response = await dio.post(
+                                              "http://10.0.2.2:3000/profile/subscribe/",
+                                              options: Options(headers: {
+                                                HttpHeaders.contentTypeHeader:
+                                                    "application/json",
+                                                HttpHeaders.authorizationHeader:
+                                                    "Bearer " + token!
+                                              }),
+                                              // data: jsonEncode(value),
+                                              data: {
+                                                'uuid': widget.recs['userUuid']
+                                              });
+                                          if (response.data['status'] == true) {
+                                            setState(() {
+                                              isSubscribed = true;
+                                            });
+                                          } else {
+                                            showSnack(
+                                                context,
+                                                "Unable to subscribe, try again!",
+                                                () {},
+                                                "OK",
+                                                3);
+                                          }
+                                        },
                                         style: TextButton.styleFrom(
                                             primary: kPrimaryColor),
                                       ),
@@ -1095,15 +1158,15 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           _createRatingPercentBar(
-                                              size, 5, 4, Colors.green),
+                                              size, 5, five, Colors.green),
                                           _createRatingPercentBar(
-                                              size, 4, 2, Colors.lightGreen),
+                                              size, 4, four, Colors.lightGreen),
                                           _createRatingPercentBar(
-                                              size, 3, 3, Colors.yellow),
+                                              size, 3, three, Colors.yellow),
                                           _createRatingPercentBar(
-                                              size, 2, 1, Colors.amber),
+                                              size, 2, two, Colors.amber),
                                           _createRatingPercentBar(
-                                              size, 1, 1, Colors.orange),
+                                              size, 1, one, Colors.orange),
 
                                           // Container(
                                           // width: 10.0, color: kDark, height: 10.0),
@@ -1206,16 +1269,48 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                 ),
                                 updateOnDrag: false,
                                 tapOnlyMode: true,
-                                onRatingUpdate: (rate) {
+                                onRatingUpdate: (rate) async {
                                   setState(() {
                                     rating = rate;
                                   });
                                   //to update user rating
+                                  var token = await storage.read(key: "token");
+                                  Response response = await dio.post(
+                                      "http://10.0.2.2:3000/recs/addRating",
+                                      options: Options(headers: {
+                                        HttpHeaders.contentTypeHeader:
+                                            "application/json",
+                                        HttpHeaders.authorizationHeader:
+                                            "Bearer " + token!
+                                      }),
+                                      data: {
+                                        'uuid': widget.recs['uuid'],
+                                        'star': rating,
+                                      });
                                 },
                               ),
                               IconButton(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     // to reset user rating
+                                    var token =
+                                        await storage.read(key: "token");
+                                    Response response = await dio.post(
+                                        "http://10.0.2.2:3000/recs/resetRating",
+                                        options: Options(headers: {
+                                          HttpHeaders.contentTypeHeader:
+                                              "application/json",
+                                          HttpHeaders.authorizationHeader:
+                                              "Bearer " + token!
+                                        }),
+                                        data: {
+                                          'uuid': widget.recs['uuid'],
+                                          'star': rating,
+                                        });
+                                    setState(() {
+                                      rating = 0.0;
+                                    });
+
+                                    // if (response.data != null) {
                                   },
                                   icon: Icon(Icons.restart_alt))
                             ],
@@ -1308,7 +1403,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                 child: TextButton.icon(
                                     onPressed: () {
                                       Navigator.of(context,
-                                              rootNavigator: false)
+                                              rootNavigator: true)
                                           .push(
                                         MaterialPageRoute(
                                           builder: (context) =>

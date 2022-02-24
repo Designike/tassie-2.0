@@ -16,7 +16,7 @@ Future loadImg(key) async {
           HttpHeaders.contentTypeHeader: "application/json",
         }),
         data: {"key": key});
-    // print(response);
+    print(response);
     return response.data['data']['url'];
   });
 }
