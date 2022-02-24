@@ -225,9 +225,31 @@ class _OTPFormState extends State<OTPForm> {
                     print('1');
                     await storage.write(
                         key: "token", value: response.data['data']['token']);
-                     await storage.write(
+                    await storage.write(
                         key: "uuid", value: response.data['data']['uuid']);
                     print('2');
+                    // Response response1 = await dio.get(
+                    //     "http://10.0.2.2:3000/user/getProfilePic/",
+                    //     options: Options(headers: {
+                    //       HttpHeaders.contentTypeHeader: "application/json",
+                    //       HttpHeaders.authorizationHeader:
+                    //           "Bearer " + response.data['data']['token']
+                    //     }));
+                    // if (response.data['data']['profilePic'] != "") {
+                    await storage.write(
+                        key: "profilePic",
+                        value: response.data['data']['profilePic']);
+                    // } else {
+                    //   List option = [
+                    //     'assets/Avacado.png',
+                    //     'assets/Banana.png',
+                    //     'assets/Pineapple.png',
+                    //     'assets/Pumpkin.png',
+                    //     'assets/Shushi.png'
+                    //   ];
+                    //   String randomItem = (option..shuffle()).first;
+                    //   await storage.write(key: "profilePic", value: randomItem);
+                    // }
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) {

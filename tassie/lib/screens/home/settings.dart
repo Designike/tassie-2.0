@@ -133,12 +133,18 @@ class _SettingsPageState extends State<SettingsPage> {
                   );
                   await storage.delete(key: "token");
                   Navigator.pop(context);
-                  Navigator.pushReplacement(
+                  Navigator.of(
                     context,
-                    MaterialPageRoute(builder: (context) {
-                      return Wrapper();
-                    }),
-                  );
+                    rootNavigator: true,
+                  ).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (_) => Wrapper()),
+                      (route) => false);
+                  // Navigator.pushReplacement(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) {
+                  //     return Wrapper();
+                  //   }),
+                  // );
                 },
                 child: Text(
                   "SIGN OUT",

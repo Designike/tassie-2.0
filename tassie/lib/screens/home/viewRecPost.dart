@@ -1,6 +1,18 @@
+import 'dart:io';
+
+import 'package:async/async.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+// import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/home/showMoreText.dart';
+import 'package:tassie/screens/home/viewRecSimilarRec.dart';
+import 'package:tassie/screens/imgLoader.dart';
+
+import 'viewRecAllComments.dart';
 
 class ViewRecPost extends StatefulWidget {
   const ViewRecPost({
@@ -12,36 +24,202 @@ class ViewRecPost extends StatefulWidget {
 }
 
 class _ViewRecPostState extends State<ViewRecPost> {
-  bool isSubscribed = true;
+  bool isSubscribed = false;
   bool isExpandedIng = false;
   bool isExpandedSteps = false;
+  bool isBookmarked = false;
+  bool isLiked = false;
+  bool isLunch = false;
+  bool isDinner = false;
+  bool isBreakfast = false;
+  bool isCraving = false;
+  String course = "";
+  String? uuid;
+  List comments = [];
+  String recipeImageID = "";
+  String flavour = "";
+  String recipeName = "";
+  String chefName = "";
+  bool isVeg = false;
+  // List ratings = [];
+  bool isLoading = true;
+  int one = 0;
+  int two = 0;
+  int three = 0;
+  int four = 0;
+  int five = 0;
+  int totalRatings = 11;
+  // bool isLazyLoading = false;
+  double rating = 0.0;
+  double meanRating = 4.7;
+  // String profilePic = "";
+  final dio = Dio();
+  final storage = FlutterSecureStorage();
 
-  var ingredientPics = [
-    {'index': '1', 'url': 'https://picsum.photos/200', 'fileID': 'abcd'},
-    {'index': '3', 'url': 'https://picsum.photos/200', 'fileID': 'abcd'}
-  ];
+  // Future<String> myFuture = "" as Future<String>;
+  // var ingredientPics = [
+  //   {'index': '1', 'fileID': 'https://picsum.photos/200'},
+  //   {'index': '3', 'fileID': 'https://picsum.photos/200'}
+  // ];
+  List ingredientPics = [];
 
-  var ingredients = [
-    'henlooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo',
-    'henlo',
-    'henlo',
-    'henlo',
-    'henlo',
+  // var ingredients = [
+  //   'henlooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo',
+  //   'henlo',
+  //   'henlo',
+  //   'henlo',
+  //   'henlo',
+  // ];
+  List ingredients = [];
 
-  ];
+  // var steps = [
+  //   'henlo',
+  //   'henlo',
+  //   'henlo',
+  //   'henlo',
+  //   'henlo',
+  // ];
+  List steps = [];
 
-  var steps = [
-    'henlo',
-    'henlo',
-    'henlo',
-    'henlo',
-    'henlo',
-  ];
+  // var stepPics = [
+  //   {'index': '1', 'fileID': 'https://picsum.photos/200'},
+  //   {'index': '3', 'fileID': 'https://picsum.photos/200'}
+  // ];
+  List stepPics = [];
 
-  var stepPics = [
-    {'index': '1', 'url': 'https://picsum.photos/200', 'fileID': 'abcd'},
-    {'index': '3', 'url': 'https://picsum.photos/200', 'fileID': 'abcd'}
-  ];
+  // String getImage(img) {
+  //   String x = "";
+  //   print(img);
+  //   loadImg(img).then((result) {
+  //     setState(() {
+  //       x = result;
+  //     });
+  //     return x;
+  //     print(x);
+  //   });
+  //   return x;
+  // }
+
+  Future<void> getRecipe() async {
+    // isLazyLoading = true;
+    var token = await storage.read(key: 'token');
+    uuid = await storage.read(key: "uuid");
+    Response response = await dio.post(
+        // 'http://10.0.2.2:3000/drive/upload',
+        'http://10.0.2.2:3000/recs/getRecipe/',
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.authorizationHeader: "Bearer " + token!
+        }),
+        data: {'uuid': widget.recs['uuid']});
+
+    if (response.data != null) {
+      setState(() {
+        stepPics.addAll(response.data['data']['recipe']['stepPics']);
+        steps.addAll(response.data['data']['recipe']['steps']);
+        ingredients.addAll(response.data['data']['recipe']['ingredients']);
+        ingredientPics
+            .addAll(response.data['data']['recipe']['ingredientPics']);
+        isBookmarked = response.data['data']['recipeData']['isBookmarked'];
+        isLiked = response.data['data']['recipeData']['isLiked'];
+        recipeImageID = response.data['data']['recipe']['recipeImageID'];
+        // isLazyLoading = false;
+        recipeName = response.data['data']['recipe']['name'];
+        chefName = response.data['data']['recipe']['username'];
+        isVeg = response.data['data']['recipe']['veg'];
+        course = response.data['data']['recipe']['course'];
+        flavour = response.data['data']['recipe']['flavour'];
+        isLunch = response.data['data']['recipe']['isLunch'];
+        isBreakfast = response.data['data']['recipe']['isBreakfast'];
+        isDinner = response.data['data']['recipe']['isDinner'];
+        isCraving = response.data['data']['recipe']['isCraving'];
+        one = response.data['data']['recipeData']['1'];
+        two = response.data['data']['recipeData']['2'];
+        three = response.data['data']['recipeData']['3'];
+        four = response.data['data']['recipeData']['4'];
+        five = response.data['data']['recipeData']['5'];
+        totalRatings = response.data['data']['recipeData']['ratings'];
+        if (totalRatings != 0) {
+          meanRating =
+              ((five * 5) + (four * 4) + (three * 3) + (two * 2) + (one * 1)) /
+                  totalRatings;
+        } else {
+          meanRating = 0;
+        }
+        isLoading = false;
+      });
+    }
+  }
+
+  String desc =
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+
+  Widget _createComment(Map comment, int index) {
+    // Map post = widget.post;
+    // print(post);
+    return Padding(
+      padding: EdgeInsets.all(10.0),
+      child: ListTile(
+        leading: Container(
+          width: 50.0,
+          height: 50.0,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+          ),
+          child: CircleAvatar(
+            child: ClipOval(
+              child: Image(
+                height: 50.0,
+                width: 50.0,
+                image: NetworkImage(comment['profilePic']),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ),
+        title: Text(
+          comment['username'],
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        subtitle: Text(
+          comment['comment'],
+          style: TextStyle(
+            color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                ? kLight
+                : kDark[900],
+          ),
+        ),
+        trailing: (widget.recs['userUuid'] == uuid ||
+                comment['uuid'].split('_comment_')[0] == uuid)
+            ? IconButton(
+                icon: Icon(
+                  Icons.delete_rounded,
+                ),
+                color: Colors.grey,
+                onPressed: () async {
+                  var token = await storage.read(key: "token");
+                  Response response =
+                      await dio.post("http://10.0.2.2:3000/recs/removeComment",
+                          options: Options(headers: {
+                            HttpHeaders.contentTypeHeader: "application/json",
+                            HttpHeaders.authorizationHeader: "Bearer " + token!
+                          }),
+                          data: {
+                        'recipeUuid': widget.recs['uuid'],
+                        'commentUuid': comment['uuid'],
+                      });
+                  setState(() {
+                    comments.remove(index);
+                  });
+                  // widget.minusComment();
+                },
+              )
+            : null,
+      ),
+    );
+  }
 
   Column myList(size, listItems, listImages, showMoreBtn, isIng) {
     return Column(
@@ -55,7 +233,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
               String url = "";
               for (var i = 0; i < listImages.length; i++) {
                 if (listImages[i]["index"] == (index + 1).toString()) {
-                  url = listImages[i]['url'];
+                  url = listImages[i]['fileID'];
                 }
               }
               return Column(
@@ -79,10 +257,28 @@ class _ViewRecPostState extends State<ViewRecPost> {
                               child: SizedBox(
                                 width: size.width - (2 * kDefaultPadding),
                                 height: size.width - (2 * kDefaultPadding),
-                                child: Image(
-                                  image: NetworkImage(url),
-                                  fit: BoxFit.cover,
-                                ),
+                                // child: Image(
+                                //   // image: NetworkImage(url),
+                                //   image:
+                                //       NetworkImage('https://picsum.photos/200'),
+                                //   fit: BoxFit.cover,
+                                // ),
+                                child: FutureBuilder(
+                                    future: loadImg(url),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot text) {
+                                      if (text.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return Image.asset(
+                                            "assets/images/broken.png");
+                                      } else {
+                                        return Image(
+                                          image: NetworkImage(
+                                              text.data.toString()),
+                                          fit: BoxFit.cover,
+                                        );
+                                      }
+                                    }),
                               ),
                             ),
                           ),
@@ -98,35 +294,66 @@ class _ViewRecPostState extends State<ViewRecPost> {
                 ],
               );
             }),
-        showMoreBtn ?    
-        TextButton.icon(
-          icon: isIng
-              ? isExpandedIng
-                  ? Icon(Icons.keyboard_arrow_up_rounded)
-                  : Icon(Icons.keyboard_arrow_down_rounded)
-              : isExpandedSteps
-                  ? Icon(Icons.keyboard_arrow_up_rounded)
-                  : Icon(Icons.keyboard_arrow_down_rounded),
-          label: isIng
-              ? isExpandedIng
-                  ? Text('Show less')
-                  : Text('Show more')
-              : isExpandedSteps
-                  ? Text('Show less')
-                  : Text('Show more'),
-          onPressed: () {
-            setState(() {
-              if (isIng == true) {
-                isExpandedIng = !isExpandedIng;
-              } else {
-                isExpandedSteps = !isExpandedSteps;
-              }
-            });
-          },
-          style: TextButton.styleFrom(primary: kPrimaryColor),
-        ) : SizedBox(height: 0.0,),
+        showMoreBtn
+            ? TextButton.icon(
+                icon: isIng
+                    ? isExpandedIng
+                        ? Icon(Icons.keyboard_arrow_up_rounded)
+                        : Icon(Icons.keyboard_arrow_down_rounded)
+                    : isExpandedSteps
+                        ? Icon(Icons.keyboard_arrow_up_rounded)
+                        : Icon(Icons.keyboard_arrow_down_rounded),
+                label: isIng
+                    ? isExpandedIng
+                        ? Text('Show less')
+                        : Text('Show more')
+                    : isExpandedSteps
+                        ? Text('Show less')
+                        : Text('Show more'),
+                onPressed: () {
+                  setState(() {
+                    if (isIng == true) {
+                      isExpandedIng = !isExpandedIng;
+                    } else {
+                      isExpandedSteps = !isExpandedSteps;
+                    }
+                  });
+                },
+                style: TextButton.styleFrom(primary: kPrimaryColor),
+              )
+            : SizedBox(
+                height: 0.0,
+              ),
       ],
     );
+  }
+
+  Widget _createRatingPercentBar(Size size, int star, int rating, Color color) {
+    return Row(children: [
+      Text(star.toString()),
+      Icon(Icons.star, size: 14.0, color: kDark),
+      SizedBox(width: 5.0),
+      Container(
+        width: size.width * 0.45,
+        child: LinearProgressIndicator(
+          value: totalRatings == 0 ? 0.0 : rating / totalRatings,
+          color: color,
+        ),
+      ),
+    ]);
+  }
+
+  @override
+  void initState() {
+    getRecipe();
+    // myFuture = loadImg(x);
+    AsyncMemoizer _memoizer = AsyncMemoizer();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -135,6 +362,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
+          leadingWidth: kToolbarHeight * 1.1,
           toolbarHeight: kToolbarHeight * 1.1,
           backgroundColor: Colors.transparent,
           systemOverlayStyle: SystemUiOverlayStyle(
@@ -143,370 +371,946 @@ class _ViewRecPostState extends State<ViewRecPost> {
                   MediaQuery.of(context).platformBrightness == Brightness.light
                       ? Brightness.dark
                       : Brightness.light),
-        ),
-        body: ListView(
-          padding: EdgeInsets.only(top: 0),
-          children: [
-            GestureDetector(
-              onTap: () {},
-              child: Container(
-                width: size.width,
-                height: size.width,
-                child: Image(
-                  image: NetworkImage('https://picsum.photos/200'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            Transform.translate(
-              offset: Offset(0, -20.0),
-              child: Container(
-                padding: EdgeInsets.all(kDefaultPadding),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(25.0),
-                    topRight: Radius.circular(25.0),
+          leading: ClipOval(
+            child: Container(
+              padding: EdgeInsets.all(8.0),
+              color: Colors.transparent,
+              child: ClipOval(
+                child: Container(
+                  // padding: EdgeInsets.all(8.0),
+                  width: (kToolbarHeight * 1.1) - 16.0,
+                  color: kPrimaryColor,
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    icon: Icon(Icons.chevron_left_rounded),
                   ),
                 ),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 30.0,
-                      ),
-                      Text(
-                        'Paneer Tikka',
-                        style: TextStyle(
-                          // color: kPrimaryColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25.0,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 15.0,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: size.width * 0.7,
-                            child: Wrap(
-                              runSpacing: 10.0,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 10.0),
-                                  child: OutlinedButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      'Lunch',
-                                      style: TextStyle(color: kDark),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0)),
-                                      padding: EdgeInsets.all(10.0),
-                                      side: BorderSide(
-                                        color: kDark,
-                                        width: 1,
-                                      ),
-                                      backgroundColor: Colors.transparent,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 10.0),
-                                  child: OutlinedButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      'Main course',
-                                      style: TextStyle(color: kDark),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0)),
-                                      padding: EdgeInsets.all(10.0),
-                                      side: BorderSide(
-                                        color: kDark,
-                                        width: 1,
-                                      ),
-                                      backgroundColor: Colors.transparent,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 10.0),
-                                  child: OutlinedButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      'Sweet',
-                                      style: TextStyle(color: kDark),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0)),
-                                      padding: EdgeInsets.all(10.0),
-                                      side: BorderSide(
-                                        color: kDark,
-                                        width: 1,
-                                      ),
-                                      backgroundColor: Colors.transparent,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            height: 36.0,
-                            width: 36.0,
-                            padding: EdgeInsets.all(10.0),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5.0),
-                                border: Border.all(color: Colors.red)),
-                            child: ClipOval(
-                              child: Container(
-                                // padding: EdgeInsets.all(10.0),
-                                color: Colors.red,
-                                // height: 10.0,
-                                // width: 10.0,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.timer),
-                          SizedBox(
-                            width: 5.0,
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: '15',
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    color: MediaQuery.of(context)
-                                                .platformBrightness ==
-                                            Brightness.dark
-                                        ? kLight
-                                        : kDark[900],
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: 'm',
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    color: MediaQuery.of(context)
-                                                .platformBrightness ==
-                                            Brightness.dark
-                                        ? kLight
-                                        : kDark[900],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                      ListTile(
-                        minLeadingWidth: (size.width - 40.0) / 10,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                        leading: Container(
-                          width: (size.width - 40.0) / 10,
-                          height: (size.width - 40.0) / 10,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                          ),
-                          child: CircleAvatar(
-                            child: ClipOval(
-                              child: Image(
-                                height: (size.width - 40.0) / 10,
-                                width: (size.width - 40.0) / 10,
-                                image:
-                                    NetworkImage('https://picsum.photos/200'),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                        title: Text(
-                          'Tassie',
-                          style: TextStyle(
-                            overflow: TextOverflow.ellipsis,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        trailing: isSubscribed
-                            ? TextButton.icon(
-                                icon: Icon(Icons.check_circle),
-                                label: Text('SUBSCRIBED'),
-                                onPressed: () {},
-                                style: TextButton.styleFrom(
-                                    primary: kPrimaryColor),
-                              )
-                            : TextButton(
-                                child: Text('SUBSCRIBE'),
-                                onPressed: () {},
-                                style: TextButton.styleFrom(
-                                    primary: kPrimaryColor),
-                              ),
-                      ),
-                    ]),
               ),
             ),
-            Divider(
-              thickness: 5,
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            Container(
-              padding: EdgeInsets.all(kDefaultPadding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Ingredients',
-                        style: TextStyle(
-                          // color: kPrimaryColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                        ),
-                      ),
-                      ingredients.length > 2
-                          ? IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  isExpandedIng = !isExpandedIng;
-                                });
-                              },
-                              icon: isExpandedIng
-                                  ? Icon(Icons.keyboard_arrow_up_rounded)
-                                  : Icon(Icons.keyboard_arrow_down_rounded),
-                              iconSize: 35.0,
-                              padding: EdgeInsets.all(0.0),
-                              color: kDark,
-                            )
-                          : SizedBox(
-                              width: 0.0,
-                            ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  // !isExpandedIng
-                  //     ? ingredients.length > 2
-                  //         ? myList(size, ingredients.sublist(0, 2),
-                  //             ingredientPics, true, true)
-                  //         : myList(
-                  //             size, ingredients, ingredientPics, false, true)
-                  //     : myList(size, ingredients, ingredientPics, true, true),
-
-                    ingredients.length > 2
-                    ? !isExpandedIng 
-                        ? myList(size, ingredients.sublist(0, 2),
-                            ingredientPics, true, true)
-                        : myList(size, ingredients, ingredientPics, true, true)
-                    : myList(
-                              size, ingredients, ingredientPics, false, true),
-                  // MyList(listItems: ingredients, listImages: ingredientPics)
-                  // ListView.builder(
-                  //     padding: EdgeInsets.only(bottom: 30.0),
-                  //     itemCount: ingredients.length,
-                  //     shrinkWrap: true,
-                  //     physics: NeverScrollableScrollPhysics(),
-                  //     itemBuilder: (context, index) {
-                  //       return ListTile(
-                  //         leading: MyBullet(),
-                  //         title: Text(listItems[index]),
-                  //       );
-                  //     })
-                ],
-              ),
-            ),
-            Divider(
-              thickness: 5,
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            Container(
-              padding: EdgeInsets.all(kDefaultPadding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Recipe steps',
-                        style: TextStyle(
-                          // color: kPrimaryColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                        ),
-                      ),
-                      steps.length > 2 ? IconButton(
-                        onPressed: () {
+          ),
+          actions: [
+            ClipOval(
+              child: Container(
+                padding: EdgeInsets.all(8.0),
+                color: Colors.transparent,
+                child: ClipOval(
+                  child: Container(
+                    // padding: EdgeInsets.all(8.0),
+                    width: (kToolbarHeight * 1.1) - 16.0,
+                    color: kPrimaryColor,
+                    child: IconButton(
+                      icon: (isBookmarked)
+                          ? Icon(Icons.bookmark)
+                          : Icon(Icons.bookmark_border),
+                      iconSize: 30.0,
+                      onPressed: () async {
+                        if (!isBookmarked) {
+                          var token = await storage.read(key: "token");
+                          Response response = await dio
+                              .post("http://10.0.2.2:3000/recs/bookmark",
+                                  options: Options(headers: {
+                                    HttpHeaders.contentTypeHeader:
+                                        "application/json",
+                                    HttpHeaders.authorizationHeader:
+                                        "Bearer " + token!
+                                  }),
+                                  data: {'uuid': widget.recs['uuid']});
+                          // widget.funcB(true);
                           setState(() {
-                            isExpandedSteps = !isExpandedSteps;
+                            isBookmarked = !isBookmarked;
                           });
-                        },
-                        icon: isExpandedSteps
-                            ? Icon(Icons.keyboard_arrow_up_rounded)
-                            : Icon(Icons.keyboard_arrow_down_rounded),
-                        iconSize: 35.0,
-                        padding: EdgeInsets.all(0.0),
-                        color: kDark,
-                      ) : SizedBox(
-                              width: 0.0,
+                        } else {
+                          var token = await storage.read(key: "token");
+                          Response response = await dio
+                              .post("http://10.0.2.2:3000/recs/removeBookmark",
+                                  options: Options(headers: {
+                                    HttpHeaders.contentTypeHeader:
+                                        "application/json",
+                                    HttpHeaders.authorizationHeader:
+                                        "Bearer " + token!
+                                  }),
+                                  data: {'uuid': widget.recs['uuid']});
+                          // widget.funcB(false);
+                          setState(() {
+                            isBookmarked = !isBookmarked;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            ClipOval(
+              child: Container(
+                padding: EdgeInsets.all(8.0),
+                color: Colors.transparent,
+                child: ClipOval(
+                  child: Container(
+                    // padding: EdgeInsets.all(8.0),
+                    width: (kToolbarHeight * 1.1) - 16.0,
+                    color: kPrimaryColor,
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.favorite_border),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            // Container(
+            //   width: kToolbarHeight * 1.1,
+            //   height: kToolbarHeight * 1.1,
+            //   decoration: BoxDecoration(
+            //     borderRadius: BorderRadius.circular(100.0),
+            //     color:
+            //         MediaQuery.of(context).platformBrightness == Brightness.dark
+            //             ? kLight
+            //             : kDark[900],
+            //   ),
+            //   child: IconButton(
+            //     onPressed: () {},
+            //     icon: Icon(Icons.bookmark_outline_rounded),
+            //   ),
+            // ),
+            // IconButton(
+            //   onPressed: () {},
+            //   icon: Icon(Icons.favorite_border),
+            // ),
+          ],
+        ),
+        body: isLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.0,
+                ),
+              )
+            : ListView(
+                padding: EdgeInsets.only(top: 0),
+                children: [
+                  GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      width: size.width,
+                      height: size.width,
+                      // child: recipeImageID != " "
+                      //     ? Image(
+                      //         image: NetworkImage(getImage(recipeImageID)),
+                      //         fit: BoxFit.cover,
+                      //       )
+                      //     : null,
+                      child: FutureBuilder(
+                          future: loadImg(recipeImageID),
+                          builder: (BuildContext context, AsyncSnapshot text) {
+                            if (text.connectionState ==
+                                ConnectionState.waiting) {
+                              return Image.asset("assets/images/broken.png");
+                            } else {
+                              return Image.network(text.data.toString());
+                            }
+                          }),
+                    ),
+                  ),
+                  Transform.translate(
+                    offset: Offset(0, -20.0),
+                    child: Container(
+                      padding: EdgeInsets.all(kDefaultPadding),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(25.0),
+                          topRight: Radius.circular(25.0),
+                        ),
                       ),
-                    ],
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: 30.0,
+                            ),
+                            Text(
+                              recipeName,
+                              style: TextStyle(
+                                // color: kPrimaryColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 25.0,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 15.0,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: size.width * 0.7,
+                                  child: Wrap(
+                                    runSpacing: 10.0,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 10.0),
+                                        child: OutlinedButton(
+                                          onPressed: () {},
+                                          child: Text(
+                                            flavour,
+                                            style: TextStyle(color: kDark),
+                                          ),
+                                          style: OutlinedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10.0)),
+                                            padding: EdgeInsets.all(10.0),
+                                            side: BorderSide(
+                                              color: kDark,
+                                              width: 1,
+                                            ),
+                                            backgroundColor: Colors.transparent,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 10.0),
+                                        child: OutlinedButton(
+                                          onPressed: () {},
+                                          child: Text(
+                                            course,
+                                            style: TextStyle(color: kDark),
+                                          ),
+                                          style: OutlinedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10.0)),
+                                            padding: EdgeInsets.all(10.0),
+                                            side: BorderSide(
+                                              color: kDark,
+                                              width: 1,
+                                            ),
+                                            backgroundColor: Colors.transparent,
+                                          ),
+                                        ),
+                                      ),
+                                      if (isLunch) ...[
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: 10.0),
+                                          child: OutlinedButton(
+                                            onPressed: () {},
+                                            child: Text(
+                                              'Lunch',
+                                              style: TextStyle(color: kDark),
+                                            ),
+                                            style: OutlinedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0)),
+                                              padding: EdgeInsets.all(10.0),
+                                              side: BorderSide(
+                                                color: kDark,
+                                                width: 1,
+                                              ),
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                      if (isBreakfast) ...[
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: 10.0),
+                                          child: OutlinedButton(
+                                            onPressed: () {},
+                                            child: Text(
+                                              'Breakfast',
+                                              style: TextStyle(color: kDark),
+                                            ),
+                                            style: OutlinedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0)),
+                                              padding: EdgeInsets.all(10.0),
+                                              side: BorderSide(
+                                                color: kDark,
+                                                width: 1,
+                                              ),
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                      if (isDinner) ...[
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: 10.0),
+                                          child: OutlinedButton(
+                                            onPressed: () {},
+                                            child: Text(
+                                              'Dinner',
+                                              style: TextStyle(color: kDark),
+                                            ),
+                                            style: OutlinedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0)),
+                                              padding: EdgeInsets.all(10.0),
+                                              side: BorderSide(
+                                                color: kDark,
+                                                width: 1,
+                                              ),
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                      if (isCraving) ...[
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: 10.0),
+                                          child: OutlinedButton(
+                                            onPressed: () {},
+                                            child: Text(
+                                              'Craving',
+                                              style: TextStyle(color: kDark),
+                                            ),
+                                            style: OutlinedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0)),
+                                              padding: EdgeInsets.all(10.0),
+                                              side: BorderSide(
+                                                color: kDark,
+                                                width: 1,
+                                              ),
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  height: 36.0,
+                                  width: 36.0,
+                                  margin: EdgeInsets.only(top: 8.0),
+                                  padding: EdgeInsets.all(10.0),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5.0),
+                                      border: Border.all(
+                                          color: isVeg
+                                              ? Colors.green
+                                              : Colors.red)),
+                                  child: ClipOval(
+                                    child: Container(
+                                      // padding: EdgeInsets.all(10.0),
+                                      color: isVeg ? Colors.green : Colors.red,
+                                      // height: 10.0,
+                                      // width: 10.0,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 20.0,
+                            ),
+                            Row(
+                              children: [
+                                Icon(Icons.timer),
+                                SizedBox(
+                                  width: 5.0,
+                                ),
+                                RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: '15',
+                                        style: TextStyle(
+                                          fontSize: 18.0,
+                                          color: MediaQuery.of(context)
+                                                      .platformBrightness ==
+                                                  Brightness.dark
+                                              ? kLight
+                                              : kDark[900],
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: 'm',
+                                        style: TextStyle(
+                                          fontSize: 18.0,
+                                          color: MediaQuery.of(context)
+                                                      .platformBrightness ==
+                                                  Brightness.dark
+                                              ? kLight
+                                              : kDark[900],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 20.0,
+                            ),
+                            ListTile(
+                              minLeadingWidth: (size.width - 40.0) / 10,
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 0),
+                              leading: Container(
+                                width: (size.width - 40.0) / 10,
+                                height: (size.width - 40.0) / 10,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                ),
+                                child: CircleAvatar(
+                                  child: ClipOval(
+                                    child: Image(
+                                      height: (size.width - 40.0) / 10,
+                                      width: (size.width - 40.0) / 10,
+                                      image: NetworkImage(
+                                          'https://picsum.photos/200'),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              title: Text(
+                                chefName,
+                                style: TextStyle(
+                                  overflow: TextOverflow.ellipsis,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              trailing: isSubscribed
+                                  ? TextButton.icon(
+                                      icon: Icon(Icons.check_circle),
+                                      label: Text('SUBSCRIBED'),
+                                      onPressed: () {},
+                                      style: TextButton.styleFrom(
+                                          primary: kPrimaryColor),
+                                    )
+                                  : TextButton(
+                                      child: Text('SUBSCRIBE'),
+                                      onPressed: () {},
+                                      style: TextButton.styleFrom(
+                                          primary: kPrimaryColor),
+                                    ),
+                            ),
+                          ]),
+                    ),
+                  ),
+                  Divider(
+                    thickness: 8,
+                  ),
+                  if (desc != "") ...[
+                    Padding(
+                      padding: const EdgeInsets.all(kDefaultPadding),
+                      child: ShowMoreText(text: desc),
+                    ),
+                    SizedBox(height: 10.0)
+                  ],
+                  // Divider(
+                  //   thickness: 5,
+                  // ),
+                  // SizedBox(
+                  //   height: 10.0,
+                  // ),
+                  Container(
+                    padding: EdgeInsets.all(kDefaultPadding),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Ingredients',
+                              style: TextStyle(
+                                // color: kPrimaryColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20.0,
+                              ),
+                            ),
+                            ingredients.length > 2
+                                ? IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        isExpandedIng = !isExpandedIng;
+                                      });
+                                    },
+                                    icon: isExpandedIng
+                                        ? Icon(Icons.keyboard_arrow_up_rounded)
+                                        : Icon(
+                                            Icons.keyboard_arrow_down_rounded),
+                                    iconSize: 35.0,
+                                    padding: EdgeInsets.all(0.0),
+                                    color: kDark,
+                                  )
+                                : SizedBox(
+                                    width: 0.0,
+                                  ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        // !isExpandedIng
+                        //     ? ingredients.length > 2
+                        //         ? myList(size, ingredients.sublist(0, 2),
+                        //             ingredientPics, true, true)
+                        //         : myList(
+                        //             size, ingredients, ingredientPics, false, true)
+                        //     : myList(size, ingredients, ingredientPics, true, true),
+
+                        ingredients.length > 2
+                            ? !isExpandedIng
+                                ? myList(size, ingredients.sublist(0, 2),
+                                    ingredientPics, true, true)
+                                : myList(size, ingredients, ingredientPics,
+                                    true, true)
+                            : myList(
+                                size, ingredients, ingredientPics, false, true),
+                        // MyList(listItems: ingredients, listImages: ingredientPics)
+                        // ListView.builder(
+                        //     padding: EdgeInsets.only(bottom: 30.0),
+                        //     itemCount: ingredients.length,
+                        //     shrinkWrap: true,
+                        //     physics: NeverScrollableScrollPhysics(),
+                        //     itemBuilder: (context, index) {
+                        //       return ListTile(
+                        //         leading: MyBullet(),
+                        //         title: Text(listItems[index]),
+                        //       );
+                        //     })
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    thickness: 8,
                   ),
                   SizedBox(
                     height: 10.0,
                   ),
-                  // !isExpandedSteps
-                  //     ? steps.length > 2
-                  //         ? myList(
-                  //             size, steps.sublist(0, 2), stepPics, true, false)
-                  //         : myList(size, steps, stepPics, false, false)
-                  //     : myList(size, steps, stepPics, true, false),
-                    
-                    steps.length > 2
-                    ? !isExpandedSteps 
-                        ? myList(size, steps.sublist(0, 2),
-                            stepPics, true, false)
-                        : myList(size, steps, stepPics, true, false)
-                    : myList(
-                              size, steps, stepPics, false, false),
+                  Container(
+                    padding: EdgeInsets.all(kDefaultPadding),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Recipe steps',
+                              style: TextStyle(
+                                // color: kPrimaryColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20.0,
+                              ),
+                            ),
+                            steps.length > 2
+                                ? IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        isExpandedSteps = !isExpandedSteps;
+                                      });
+                                    },
+                                    icon: isExpandedSteps
+                                        ? Icon(Icons.keyboard_arrow_up_rounded)
+                                        : Icon(
+                                            Icons.keyboard_arrow_down_rounded),
+                                    iconSize: 35.0,
+                                    padding: EdgeInsets.all(0.0),
+                                    color: kDark,
+                                  )
+                                : SizedBox(
+                                    width: 0.0,
+                                  ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        // !isExpandedSteps
+                        //     ? steps.length > 2
+                        //         ? myList(
+                        //             size, steps.sublist(0, 2), stepPics, true, false)
+                        //         : myList(size, steps, stepPics, false, false)
+                        //     : myList(size, steps, stepPics, true, false),
+
+                        steps.length > 2
+                            ? !isExpandedSteps
+                                ? myList(size, steps.sublist(0, 2), stepPics,
+                                    true, false)
+                                : myList(size, steps, stepPics, true, false)
+                            : myList(size, steps, stepPics, false, false),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    thickness: 8,
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+
+                  Container(
+                    padding: EdgeInsets.all(kDefaultPadding),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Ratings',
+                          style: TextStyle(
+                            // color: kPrimaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0,
+                          ),
+                        ),
+                        if (totalRatings != 0) ...[
+                          Container(
+                            margin:
+                                EdgeInsets.symmetric(vertical: kDefaultPadding),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      children: [
+                                        RichText(
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: meanRating.toString(),
+                                                style: TextStyle(
+                                                  color: MediaQuery.of(context)
+                                                              .platformBrightness ==
+                                                          Brightness.dark
+                                                      ? kDark
+                                                      : kDark[700],
+                                                  fontSize: 56.0,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: '/ 5',
+                                                style: TextStyle(
+                                                  color: MediaQuery.of(context)
+                                                              .platformBrightness ==
+                                                          Brightness.dark
+                                                      ? kDark
+                                                      : kDark[700],
+                                                  fontSize: 20.0,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        // SizedBox(height: 10.0),
+                                        RatingBarIndicator(
+                                          rating: meanRating,
+                                          itemBuilder: (context, index) => Icon(
+                                            Icons.star,
+                                            color: kPrimaryColor,
+                                          ),
+                                          itemCount: 5,
+                                          itemSize: 20.0,
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        _createRatingPercentBar(
+                                            size, 5, 4, Colors.green),
+                                        _createRatingPercentBar(
+                                            size, 4, 2, Colors.lightGreen),
+                                        _createRatingPercentBar(
+                                            size, 3, 3, Colors.yellow),
+                                        _createRatingPercentBar(
+                                            size, 2, 1, Colors.amber),
+                                        _createRatingPercentBar(
+                                            size, 1, 1, Colors.orange),
+
+                                        // Container(
+                                        // width: 10.0, color: kDark, height: 10.0),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10.0),
+                                RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: totalRatings.toString(),
+                                        style: TextStyle(
+                                          // color: kDark,
+                                          fontSize: 18.0,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: ' tassite ratings.',
+                                        style: TextStyle(
+                                          color: kDark,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(left: 15.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Show ratings'),
+                                IconButton(
+                                  icon:
+                                      Icon(Icons.keyboard_arrow_right_rounded),
+                                  onPressed: () {},
+                                ),
+                              ],
+                            ),
+                            decoration: BoxDecoration(
+                                // color: MediaQuery.of(context).platformBrightness ==
+                                //         Brightness.dark
+                                //     ? kDark[900]
+                                //     : kLight,
+                                border: Border.all(color: kDark),
+                                borderRadius: BorderRadius.circular(10.0)),
+                          ),
+                        ] else ...[
+                          Center(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: MediaQuery.of(context)
+                                              .platformBrightness ==
+                                          Brightness.dark
+                                      ? kDark[900]
+                                      : kLight,
+                                  // border: Border.all(color: kDark),
+                                  borderRadius: BorderRadius.circular(10.0)),
+                              padding: EdgeInsets.all(kDefaultPadding * 1.5),
+                              margin: EdgeInsets.only(top: 20.0),
+                              width: double.infinity,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.icecream_outlined,
+                                      size: 35.0, color: kDark),
+                                  SizedBox(height: 10.0),
+                                  Text('No Ratings yet'),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                        SizedBox(height: 40.0),
+                        Text('Rate this recipe!'),
+                        SizedBox(height: 10.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            RatingBar.builder(
+                              initialRating: rating,
+                              minRating: 1,
+                              direction: Axis.horizontal,
+                              allowHalfRating: false,
+                              itemCount: 5,
+                              itemPadding:
+                                  EdgeInsets.symmetric(horizontal: 4.0),
+                              itemBuilder: (context, _) => Icon(
+                                Icons.star,
+                                color:
+                                    MediaQuery.of(context).platformBrightness ==
+                                            Brightness.dark
+                                        ? kDark[200]
+                                        : kDark[700],
+                              ),
+                              updateOnDrag: false,
+                              tapOnlyMode: true,
+                              onRatingUpdate: (rate) {
+                                setState(() {
+                                  rating = rate;
+                                });
+                                //to update user rating
+                              },
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  // to reset user rating
+                                },
+                                icon: Icon(Icons.restart_alt))
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    thickness: 8,
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Container(
+                      padding: EdgeInsets.all(kDefaultPadding),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Comments',
+                            style: TextStyle(
+                              // color: kPrimaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0,
+                            ),
+                          ),
+                          // ListView.builder(
+                          //   itemBuilder: (context, index) {
+                          //     return _createComment(comments[index], index);
+                          //   },
+                          //   itemCount: comments.length,
+                          // ),
+                          if (comments.isNotEmpty) ...[
+                            for (var i = 0; i < comments.length; i++) ...[
+                              _createComment(comments[i], i)
+                            ],
+                            Container(
+                              padding: EdgeInsets.only(left: 15.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Show all comments'),
+                                  IconButton(
+                                    icon: Icon(
+                                        Icons.keyboard_arrow_right_rounded),
+                                    onPressed: () {},
+                                  ),
+                                ],
+                              ),
+                              decoration: BoxDecoration(
+                                  // color: MediaQuery.of(context).platformBrightness ==
+                                  //         Brightness.dark
+                                  //     ? kDark[900]
+                                  //     : kLight,
+                                  border: Border.all(color: kDark),
+                                  borderRadius: BorderRadius.circular(10.0)),
+                            ),
+                          ] else ...[
+                            Center(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: MediaQuery.of(context)
+                                                .platformBrightness ==
+                                            Brightness.dark
+                                        ? kDark[900]
+                                        : kLight,
+                                    // border: Border.all(color: kDark),
+                                    borderRadius: BorderRadius.circular(10.0)),
+                                padding: EdgeInsets.all(kDefaultPadding * 1.5),
+                                margin: EdgeInsets.only(top: 20.0),
+                                width: double.infinity,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.question_answer_rounded,
+                                        size: 35.0, color: kDark),
+                                    SizedBox(height: 10.0),
+                                    Text('No comments yet'),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                          SizedBox(height: 10.0),
+                          Center(
+                              child: TextButton.icon(
+                                  onPressed: () {
+                                    Navigator.of(context, rootNavigator: false)
+                                        .push(
+                                      MaterialPageRoute(
+                                        builder: (context) => ViewRecAllComments(
+                                          userUuid: widget.recs['userUuid'],
+                                          recipeUuid: widget.recs['uuid'],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  icon: Icon(Icons.add_comment_rounded),
+                                  label: Text('Add Comment'))),
+                        ],
+                      )),
+                  Divider(
+                    thickness: 8,
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Container(
+                      padding: EdgeInsets.all(kDefaultPadding),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: TextSpan(children: [
+                              TextSpan(
+                                text: "More recipes from ",
+                                style: TextStyle(
+                                  // color: kPrimaryColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20.0,
+                                ),
+                              ),
+                              TextSpan(
+                                text: "parthnamdev",
+                                style: TextStyle(
+                                  // color: kPrimaryColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20.0,
+                                ),
+                              )
+                            ]),
+                            overflow: TextOverflow.clip,
+                          ),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                // for (var i = 0; i < 10; i++)
+                                //   ViewRecSimilarRec(
+                                //       recs: {}, recostData: {}, funcB: (test) {})
+                              ],
+                            ),
+                          )
+                        ],
+                      )),
+                  SizedBox(
+                    height: 100.0,
+                  ),
                 ],
-              ),
-            ),
-            Divider(
-              thickness: 5,
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-          ],
-        ));
+              ));
   }
 }
 

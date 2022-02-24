@@ -13,6 +13,7 @@ class Wrapper extends StatefulWidget {
 }
 
 class _WrapperState extends State<Wrapper> {
+  GlobalKey<NavigatorState> key = GlobalKey<NavigatorState>();
   String? value;
   bool isLoading = true;
   Future<String?> check() async {
@@ -45,6 +46,12 @@ class _WrapperState extends State<Wrapper> {
     } else {
       if (value != null) {
         return const Home();
+        // return Navigator(
+        //   key: key,
+        //   onGenerateRoute: (routeSettings) {
+        //     return MaterialPageRoute(builder: (context) => const Home());
+        //   },
+        // );
       } else {
         return const Authenticate();
       }

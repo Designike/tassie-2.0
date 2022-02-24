@@ -33,6 +33,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   // String _currentPage = "Page1";
   // List<String> pageKeys = ["Page1", "Page2", "Page3"];
+
   Map<int, GlobalKey<NavigatorState>> _navigatorKeys = {
     0: GlobalKey<NavigatorState>(),
     1: GlobalKey<NavigatorState>(),

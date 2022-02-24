@@ -184,6 +184,30 @@ class _SignInState extends State<SignIn> {
                               await storage.write(
                                   key: "uuid",
                                   value: response.data['data']['uuid']);
+                              // Response response1 = await dio.get(
+                              //     "http://10.0.2.2:3000/user/getProfilePic/",
+                              //     options: Options(headers: {
+                              //       HttpHeaders.contentTypeHeader:
+                              //           "application/json",
+                              //       HttpHeaders.authorizationHeader: "Bearer " +
+                              //           response.data['data']['token']
+                              //     }));
+                              // if (response.data['data']['profilePic'] != "") {
+                              await storage.write(
+                                  key: "profilePic",
+                                  value: response.data['data']['profilePic']);
+                              // } else {
+                              //   List option = [
+                              //     'assets/Avacado.png',
+                              //     'assets/Banana.png',
+                              //     'assets/Pineapple.png',
+                              //     'assets/Pumpkin.png',
+                              //     'assets/Shushi.png'
+                              //   ];
+                              //   String randomItem = (option..shuffle()).first;
+                              //   await storage.write(
+                              //       key: "profilePic", value: randomItem);
+                              // }
                               print(response.data['data']['uuid']);
                               Navigator.pushReplacement(
                                 context,

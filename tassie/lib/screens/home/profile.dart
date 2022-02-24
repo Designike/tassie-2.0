@@ -57,7 +57,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
   String website = "";
   String name = "";
   bool isSubscribed = false;
-
+  String profilePic = "";
   // bool isEndT = false;
   // final dio = Dio();
   // final storage = FlutterSecureStorage();
@@ -155,6 +155,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
         bio = response.data['data']['userData']['bio'];
         website = response.data['data']['userData']['website'];
         name = response.data['data']['userData']['name'];
+        profilePic = response.data['data']['userData']['profilePic'];
       });
       print(isSubscribed);
     } else {
@@ -463,16 +464,40 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                         children: [
                           ClipOval(
                             child: Material(
-                              child: Ink.image(
-                                height: 128,
-                                width: 128,
-                                image:
-                                    NetworkImage('https://picsum.photos/200'),
-                                fit: BoxFit.cover,
-                                child: InkWell(
-                                  onTap: () {},
-                                ),
-                              ),
+                              // child: Ink.image(
+                              //   height: 128,
+                              //   width: 128,
+                              //   image:
+                              //       NetworkImage('https://picsum.photos/200'),
+                              //   fit: BoxFit.cover,
+                              //   child: InkWell(
+                              //     onTap: () {},
+                              //   ),
+                              // ),
+                              child: FutureBuilder(
+                                  future: loadImg(profilePic),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot text) {
+                                    if (text.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Image.asset(
+                                          "assets/images/broken.png",
+                                          fit: BoxFit.cover,
+                                          height: 128,
+                                          width: 128);
+                                    } else {
+                                      return Ink.image(
+                                        height: 128,
+                                        width: 128,
+                                        image:
+                                            NetworkImage(text.data.toString()),
+                                        fit: BoxFit.cover,
+                                        child: InkWell(
+                                          onTap: () {},
+                                        ),
+                                      );
+                                    }
+                                  }),
                             ),
                           ),
                           if (widget.uuid == "user") ...[
