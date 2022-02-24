@@ -173,294 +173,288 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         //         ),
         //       )
         //     :
-        Scaffold(
-            extendBody: true,
-            resizeToAvoidBottomInset: false,
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
-            floatingActionButton: SpeedDial(
-              elevation: 0,
-              spacing: 15.0,
-              foregroundColor: kDark[900],
-              backgroundColor: kPrimaryColor,
-              icon: Icons.add_rounded,
-              activeIcon: Icons.close_rounded,
-              // onOpen: () => animatedController.reverse(),
-              // onClose: () => animatedController.forward(),
-              children: [
-                SpeedDialChild(
-                    child: Icon(Icons.post_add_rounded),
-                    label: 'New Post',
-                    onTap: () => {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) {
-                              return AddPost();
-                            }),
-                          )
-                        }),
-                SpeedDialChild(
-                    child: Icon(Icons.fastfood_rounded),
-                    label: 'New Recipe',
-                    onTap: () async {
-                      Navigator.push(
+        WillPopScope(
+      onWillPop: () async =>!await _navigatorKeys[_selectedIndex]!.currentState!.maybePop(),
+      child: Scaffold(
+          extendBody: true,
+          resizeToAvoidBottomInset: false,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: SpeedDial(
+            elevation: 0,
+            spacing: 15.0,
+            foregroundColor: kDark[900],
+            backgroundColor: kPrimaryColor,
+            icon: Icons.add_rounded,
+            activeIcon: Icons.close_rounded,
+            // onOpen: () => animatedController.reverse(),
+            // onClose: () => animatedController.forward(),
+            children: [
+              SpeedDialChild(
+                  child: Icon(Icons.post_add_rounded),
+                  label: 'New Post',
+                  onTap: () => {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) {
+                            return AddPost();
+                          }),
+                        )
+                      }),
+              SpeedDialChild(
+                  child: Icon(Icons.fastfood_rounded),
+                  label: 'New Recipe',
+                  onTap: () async {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return Scaffold(
+                          // backgroundColor: Colors.white,
+                          body: Center(
+                            child: AnimatedTextKit(
+                              pause: Duration(milliseconds: 100),
+                              animatedTexts: [
+                                FadeAnimatedText('Finding Trivets'),
+                                FadeAnimatedText('Settling grubs'),
+                                FadeAnimatedText('Hoarding stuff'),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                    );
+                    var url = "http://10.0.2.2:3000/recs/createRecipe/";
+
+                    var token = await storage.read(key: "token");
+                    Response response = await dio.get(
+                      url,
+                      options: Options(headers: {
+                        HttpHeaders.contentTypeHeader: "application/json",
+                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                      }),
+                    );
+                    await Future.delayed(Duration(seconds: 1));
+                    print(response);
+                    if (response.data['status'] == true) {
+                      print(response);
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) {
-                          return Scaffold(
-                            // backgroundColor: Colors.white,
-                            body: Center(
-                              child: AnimatedTextKit(
-                                pause: Duration(milliseconds: 100),
-                                animatedTexts: [
-                                  FadeAnimatedText('Finding Trivets'),
-                                  FadeAnimatedText('Settling grubs'),
-                                  FadeAnimatedText('Hoarding stuff'),
-                                ],
-                              ),
-                            ),
+                          return AddRecipe(
+                            uuid: response.data['data']['recUuid'],
+                            // folder: response.data['data']['folder'],
                           );
                         }),
                       );
-                      var url = "http://10.0.2.2:3000/recs/createRecipe/";
-
-                      var token = await storage.read(key: "token");
-                      Response response = await dio.get(
-                        url,
-                        options: Options(headers: {
-                          HttpHeaders.contentTypeHeader: "application/json",
-                          HttpHeaders.authorizationHeader: "Bearer " + token!
+                    } else {
+                      print(response.data);
+                      showSnack(
+                          context, 'Unable to create recipe', () {}, 'OK', 3);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) {
+                          return Home();
                         }),
                       );
-                      await Future.delayed(Duration(seconds: 1));
-                      print(response);
-                      if (response.data['status'] == true) {
-                        print(response);
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) {
-                            return AddRecipe(
-                              uuid: response.data['data']['recUuid'],
-                              // folder: response.data['data']['folder'],
-                            );
-                          }),
-                        );
-                      } else {
-                        print(response.data);
-                        showSnack(
-                            context, 'Unable to create recipe', () {}, 'OK', 3);
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) {
-                            return Home();
-                          }),
-                        );
-                      }
-                    }),
-              ],
-            ),
-            // bottomNavigationBar: BottomNavigationBar(
-            //   type: BottomNavigationBarType.fixed,
+                    }
+                  }),
+            ],
+          ),
+          // bottomNavigationBar: BottomNavigationBar(
+          //   type: BottomNavigationBarType.fixed,
 
-            //   currentIndex: _selectedIndex,
-            //   // onTap: _navigateBottomBar,
-            //   onTap: (selectedPageIndex) {
-            //   setState(() {
-            //     _selectedIndex = selectedPageIndex;
-            //     _pageController.jumpToPage(selectedPageIndex);
-            //   });
-            // },
-            //   // ignore: prefer_const_literals_to_create_immutables
-            //   items: [
-            //     BottomNavigationBarItem(
-            //       icon: Icon(Icons.feed),
-            //       label: 'Feed',
-            //     ),
-            //     BottomNavigationBarItem(
-            //       icon: Icon(Icons.restaurant),
-            //       label: 'Recs',
-            //     ),
-            //     BottomNavigationBarItem(
-            //       icon: Icon(Icons.add_circle),
-            //       label: 'New',
-            //     ),
-            //     BottomNavigationBarItem(
-            //       icon: Icon(Icons.search),
-            //       label: 'Explore',
-            //     ),
-            //     BottomNavigationBarItem(
-            //       icon: Icon(Icons.person_rounded),
-            //       label: 'Profile',
-            //     ),
-            //   ],
-            // ),
-            bottomNavigationBar: BottomAppBar(
-              shape: CircularNotchedRectangle(),
-              color:
-                  MediaQuery.of(context).platformBrightness == Brightness.dark
-                      ? kDark[900]
-                      : kLight,
-              notchMargin: 6.0,
-              child: Container(
-                height: 65.0,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    MaterialButton(
-                      onPressed: () {
-                        _selectTab(0);
-                        // setState(() {
-                        //   _selectedIndex = 0;
-                        //   _pageController.jumpToPage(0);
-                        // });
+          //   currentIndex: _selectedIndex,
+          //   // onTap: _navigateBottomBar,
+          //   onTap: (selectedPageIndex) {
+          //   setState(() {
+          //     _selectedIndex = selectedPageIndex;
+          //     _pageController.jumpToPage(selectedPageIndex);
+          //   });
+          // },
+          //   // ignore: prefer_const_literals_to_create_immutables
+          //   items: [
+          //     BottomNavigationBarItem(
+          //       icon: Icon(Icons.feed),
+          //       label: 'Feed',
+          //     ),
+          //     BottomNavigationBarItem(
+          //       icon: Icon(Icons.restaurant),
+          //       label: 'Recs',
+          //     ),
+          //     BottomNavigationBarItem(
+          //       icon: Icon(Icons.add_circle),
+          //       label: 'New',
+          //     ),
+          //     BottomNavigationBarItem(
+          //       icon: Icon(Icons.search),
+          //       label: 'Explore',
+          //     ),
+          //     BottomNavigationBarItem(
+          //       icon: Icon(Icons.person_rounded),
+          //       label: 'Profile',
+          //     ),
+          //   ],
+          // ),
+          bottomNavigationBar: BottomAppBar(
+            shape: CircularNotchedRectangle(),
+            color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                ? kDark[900]
+                : kLight,
+            notchMargin: 6.0,
+            child: Container(
+              height: 65.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  MaterialButton(
+                    onPressed: () {
+                      _selectTab(0);
+                      // setState(() {
+                      //   _selectedIndex = 0;
+                      //   _pageController.jumpToPage(0);
+                      // });
 
-                        // ignore: prefer_const_literals_to_create_immutables
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.feed,
-                              color:
-                                  _selectedIndex == 0 ? kPrimaryColor : kDark),
-                          Text(
-                            'Feed',
-                            style: TextStyle(
-                                color: _selectedIndex == 0
-                                    ? MediaQuery.of(context)
-                                                .platformBrightness ==
-                                            Brightness.light
-                                        ? kDark[900]
-                                        : kLight
-                                    : kDark),
-                          ),
-                        ],
-                      ),
+                      // ignore: prefer_const_literals_to_create_immutables
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.feed,
+                            color: _selectedIndex == 0 ? kPrimaryColor : kDark),
+                        Text(
+                          'Feed',
+                          style: TextStyle(
+                              color: _selectedIndex == 0
+                                  ? MediaQuery.of(context).platformBrightness ==
+                                          Brightness.light
+                                      ? kDark[900]
+                                      : kLight
+                                  : kDark),
+                        ),
+                      ],
                     ),
-                    MaterialButton(
-                      onPressed: () {
-                        _selectTab(1);
-                        // setState(() {
-                        //   _selectedIndex = 1;
-                        //   _pageController.jumpToPage(1);
-                        // });
-                        // ignore: prefer_const_literals_to_create_immutables
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.restaurant,
-                              color:
-                                  _selectedIndex == 1 ? kPrimaryColor : kDark),
-                          Text(
-                            'Recs',
-                            style: TextStyle(
-                                color: _selectedIndex == 1
-                                    ? MediaQuery.of(context)
-                                                .platformBrightness ==
-                                            Brightness.light
-                                        ? kDark[900]
-                                        : kLight
-                                    : kDark),
-                          ),
-                        ],
-                      ),
+                  ),
+                  MaterialButton(
+                    onPressed: () {
+                      _selectTab(1);
+                      // setState(() {
+                      //   _selectedIndex = 1;
+                      //   _pageController.jumpToPage(1);
+                      // });
+                      // ignore: prefer_const_literals_to_create_immutables
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.restaurant,
+                            color: _selectedIndex == 1 ? kPrimaryColor : kDark),
+                        Text(
+                          'Recs',
+                          style: TextStyle(
+                              color: _selectedIndex == 1
+                                  ? MediaQuery.of(context).platformBrightness ==
+                                          Brightness.light
+                                      ? kDark[900]
+                                      : kLight
+                                  : kDark),
+                        ),
+                      ],
                     ),
-                    SizedBox(
-                      width: 40.0,
+                  ),
+                  SizedBox(
+                    width: 40.0,
+                  ),
+                  MaterialButton(
+                    onPressed: () {
+                      _selectTab(2);
+                      // setState(() {
+                      //   _selectedIndex = 2;
+                      //   _pageController.jumpToPage(2);
+                      // });
+                      // ignore: prefer_const_literals_to_create_immutables
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.search,
+                            color: _selectedIndex == 2 ? kPrimaryColor : kDark),
+                        Text(
+                          'Explore',
+                          style: TextStyle(
+                              color: _selectedIndex == 2
+                                  ? MediaQuery.of(context).platformBrightness ==
+                                          Brightness.light
+                                      ? kDark[900]
+                                      : kLight
+                                  : kDark),
+                        ),
+                      ],
                     ),
-                    MaterialButton(
-                      onPressed: () {
-                        _selectTab(2);
-                        // setState(() {
-                        //   _selectedIndex = 2;
-                        //   _pageController.jumpToPage(2);
-                        // });
-                        // ignore: prefer_const_literals_to_create_immutables
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.search,
-                              color:
-                                  _selectedIndex == 2 ? kPrimaryColor : kDark),
-                          Text(
-                            'Explore',
-                            style: TextStyle(
-                                color: _selectedIndex == 2
-                                    ? MediaQuery.of(context)
-                                                .platformBrightness ==
-                                            Brightness.light
-                                        ? kDark[900]
-                                        : kLight
-                                    : kDark),
-                          ),
-                        ],
-                      ),
+                  ),
+                  MaterialButton(
+                    onPressed: () {
+                      // setState(() {
+                      //   _selectedIndex = 3;
+                      //   _pageController.jumpToPage(3);
+                      // });
+                      _selectTab(3);
+                      // ignore: prefer_const_literals_to_create_immutables
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.person_rounded,
+                            color: _selectedIndex == 3 ? kPrimaryColor : kDark),
+                        Text(
+                          'Profile',
+                          style: TextStyle(
+                              color: _selectedIndex == 3
+                                  ? MediaQuery.of(context).platformBrightness ==
+                                          Brightness.light
+                                      ? kDark[900]
+                                      : kLight
+                                  : kDark),
+                        ),
+                      ],
                     ),
-                    MaterialButton(
-                      onPressed: () {
-                        // setState(() {
-                        //   _selectedIndex = 3;
-                        //   _pageController.jumpToPage(3);
-                        // });
-                        _selectTab(3);
-                        // ignore: prefer_const_literals_to_create_immutables
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.person_rounded,
-                              color:
-                                  _selectedIndex == 3 ? kPrimaryColor : kDark),
-                          Text(
-                            'Profile',
-                            style: TextStyle(
-                                color: _selectedIndex == 3
-                                    ? MediaQuery.of(context)
-                                                .platformBrightness ==
-                                            Brightness.light
-                                        ? kDark[900]
-                                        : kLight
-                                    : kDark),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // IconButton(
-                    //   icon: Icon(Icons.feed),
-                    //   color: Colors.black,
-                    //   onPressed: () {},
-                    // ),
-                    // IconButton(
-                    //   icon: Icon(Icons.search),
-                    //   color: Colors.black,
-                    //   onPressed: () {},
-                    // ),
-                    // SizedBox(
-                    //   width: 40,
-                    // ),
-                    // IconButton(
-                    //   icon: Icon(Icons.add_shopping_cart),
-                    //   color: Colors.black,
-                    //   onPressed: () {},
-                    // ),
-                    // IconButton(
-                    //   icon: Icon(Icons.account_box),
-                    //   color: Colors.black,
-                    //   onPressed: () {},
-                    // ),
-                  ],
-                ),
+                  ),
+                  // IconButton(
+                  //   icon: Icon(Icons.feed),
+                  //   color: Colors.black,
+                  //   onPressed: () {},
+                  // ),
+                  // IconButton(
+                  //   icon: Icon(Icons.search),
+                  //   color: Colors.black,
+                  //   onPressed: () {},
+                  // ),
+                  // SizedBox(
+                  //   width: 40,
+                  // ),
+                  // IconButton(
+                  //   icon: Icon(Icons.add_shopping_cart),
+                  //   color: Colors.black,
+                  //   onPressed: () {},
+                  // ),
+                  // IconButton(
+                  //   icon: Icon(Icons.account_box),
+                  //   color: Colors.black,
+                  //   onPressed: () {},
+                  // ),
+                ],
               ),
             ),
+          ),
 
-            // body: IndexedStack(
-            //   children: _screens,
-            //   index: _selectedIndex,
-            // ),
-            body: PageView(
-              controller: _pageController,
-              physics: NeverScrollableScrollPhysics(),
-              children: _screens,
-            ));
+          // body: IndexedStack(
+          //   children: _screens,
+          //   index: _selectedIndex,
+          // ),
+          body: PageView(
+            controller: _pageController,
+            physics: NeverScrollableScrollPhysics(),
+            children: _screens,
+          )),
+    );
   }
 }

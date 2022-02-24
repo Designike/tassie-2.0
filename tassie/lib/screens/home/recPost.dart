@@ -12,8 +12,7 @@ import '../../constants.dart';
 
 class RecPost extends StatefulWidget {
   const RecPost(
-      {required this.recs, required this.recipeData, required this.funcB, required this.navigatorKey});
-  final GlobalKey<NavigatorState> navigatorKey;
+      {required this.recs, required this.recipeData, required this.funcB});
   final Map recs;
   final Map recipeData;
   final void Function(bool) funcB;
@@ -143,7 +142,6 @@ class _RecPostState extends State<RecPost> {
                         builder: (context) => ViewRecPost(
                           recs: recs,
                           funcB:widget.funcB,
-                          navigatorKey: widget.navigatorKey,
                         ),
                       ),
                     );

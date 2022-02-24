@@ -16,10 +16,9 @@ import 'viewRecAllComments.dart';
 
 class ViewRecPost extends StatefulWidget {
   const ViewRecPost(
-      {required this.recs, required this.funcB, required this.navigatorKey});
+      {required this.recs, required this.funcB});
   final Map recs;
   final void Function(bool) funcB;
-  final GlobalKey<NavigatorState> navigatorKey;
   @override
   _ViewRecPostState createState() => _ViewRecPostState();
 }
