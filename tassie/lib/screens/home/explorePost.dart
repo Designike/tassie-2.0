@@ -37,16 +37,20 @@ class _ExplorePostState extends State<ExplorePost> {
   final dio = Dio();
   final storage = FlutterSecureStorage();
   String _image = "";
+  bool isImage = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    loadImg(widget.post['postID']).then((result) {
-      setState(() {
-        _image = result;
-        // isImage = true;
-      });
-    });
+    // loadImg(widget.post['postID']).then((result) {
+    //   setState(() {
+    //     _image = result;
+    //     isImage = true;
+    //   });
+    // });
+    if (widget.post['postID'] != "") {
+      isImage = true;
+    }
   }
 
   @override
@@ -101,23 +105,62 @@ class _ExplorePostState extends State<ExplorePost> {
                   //     )
                   //     );
                 },
-                child: Container(
-                  margin: EdgeInsets.all(10.0),
-                  width: double.infinity,
-                  height: (size.width / 2) - 20.0 - 14.0,
-                  // height: 400.0,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25.0),
-                    image: DecorationImage(
-                      image: _image == ""
-                          ? Image.asset('assets/images/broken.png',
-                                  fit: BoxFit.cover)
-                              .image
-                          : Image.network(_image, fit: BoxFit.cover).image,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
+                // child: Container(
+                //   margin: EdgeInsets.all(10.0),
+                //   width: double.infinity,
+                //   height: (size.width / 2) - 20.0 - 14.0,
+                //   // height: 400.0,
+                //   decoration: BoxDecoration(
+                //     borderRadius: BorderRadius.circular(25.0),
+                //     image: DecorationImage(
+                //       image: !isImage
+                //           ? Image.asset('assets/images/broken.png',
+                //                   fit: BoxFit.cover)
+                //               .image
+                //           : Image.network(_image, fit: BoxFit.cover).image,
+                //       fit: BoxFit.cover,
+                //     ),
+                //   ),
+                // ),
+                child: FutureBuilder(
+                    future: loadImg(widget.post['postID']),
+                    builder: (BuildContext context, AsyncSnapshot text) {
+                      if (text.connectionState == ConnectionState.waiting) {
+                        return Container(
+                          margin: EdgeInsets.all(10.0),
+                          width: double.infinity,
+                          height: (size.width / 2) - 20.0 - 14.0,
+                          // height: 400.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25.0),
+                            image: DecorationImage(
+                              image: AssetImage(
+                                'assets/images/broken.png',
+                              ),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      } else {
+                        // return Image(
+                        //   image: NetworkImage(text.data.toString()),
+                        //   fit: BoxFit.cover,
+                        // );
+                        return Container(
+                          margin: EdgeInsets.all(10.0),
+                          width: double.infinity,
+                          height: (size.width / 2) - 20.0 - 14.0,
+                          // height: 400.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25.0),
+                            image: DecorationImage(
+                              image: NetworkImage(text.data.toString()),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      }
+                    }),
               ),
               ListTile(
                 minLeadingWidth: (size.width - 42.0) / 12,
@@ -129,13 +172,35 @@ class _ExplorePostState extends State<ExplorePost> {
                   ),
                   child: CircleAvatar(
                     child: ClipOval(
-                      child: Image(
-                        height: (size.width - 42.0) / 12,
-                        width: (size.width - 42.0) / 12,
-                        image: NetworkImage(post['profilePic']),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                        // child: Image(
+                        //   height: (size.width - 42.0) / 12,
+                        //   width: (size.width - 42.0) / 12,
+                        //   image: NetworkImage(post['profilePic']),
+                        //   fit: BoxFit.cover,
+                        // ),
+                        child: FutureBuilder(
+                            future: loadImg(post['profilePic']),
+                            builder:
+                                (BuildContext context, AsyncSnapshot text) {
+                              if (text.connectionState ==
+                                  ConnectionState.waiting) {
+                                // return Image.asset("assets/images/broken.png",
+                                //     fit: BoxFit.cover, height: 128, width: 128);
+                                return Image(
+                                  height: (size.width - 42.0) / 12,
+                                  width: (size.width - 42.0) / 12,
+                                  image: AssetImage("assets/images/broken.png"),
+                                  fit: BoxFit.cover,
+                                );
+                              } else {
+                                return Image(
+                                  height: (size.width - 42.0) / 12,
+                                  width: (size.width - 42.0) / 12,
+                                  image: NetworkImage(text.data.toString()),
+                                  fit: BoxFit.cover,
+                                );
+                              }
+                            })),
                   ),
                 ),
                 title: Text(

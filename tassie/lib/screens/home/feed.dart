@@ -15,8 +15,8 @@ import 'package:tassie/screens/imgLoader.dart';
 import 'package:tassie/screens/wrapper.dart';
 
 class Feed extends StatefulWidget {
-  const Feed({Key? key}) : super(key: key);
-
+  const Feed({Key? key,required this.navigatorKey }) : super(key: key);
+final GlobalKey<NavigatorState> navigatorKey;
   @override
   _FeedState createState() => _FeedState();
 }

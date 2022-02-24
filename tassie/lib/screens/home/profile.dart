@@ -58,6 +58,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
   String name = "";
   bool isSubscribed = false;
   String profilePic = "";
+  bool isLoading = true;
   // bool isEndT = false;
   // final dio = Dio();
   // final storage = FlutterSecureStorage();
@@ -156,6 +157,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
         website = response.data['data']['userData']['website'];
         name = response.data['data']['userData']['name'];
         profilePic = response.data['data']['userData']['profilePic'];
+        isLoading = false;
       });
       print(isSubscribed);
     } else {
@@ -357,6 +359,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
   void initState() {
     pageR = 1;
     pageP = 1;
+    isLoading = true;
     recipes = [];
     // recosts_toggle = [];
     posts = [];
@@ -381,6 +384,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     Size size = MediaQuery.of(context).size;
     // return Scaffold(
     //   appBar: AppBar(
@@ -474,30 +478,36 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                               //     onTap: () {},
                               //   ),
                               // ),
-                              child: FutureBuilder(
-                                  future: loadImg(profilePic),
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot text) {
-                                    if (text.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return Image.asset(
-                                          "assets/images/broken.png",
-                                          fit: BoxFit.cover,
-                                          height: 128,
-                                          width: 128);
-                                    } else {
-                                      return Ink.image(
-                                        height: 128,
-                                        width: 128,
-                                        image:
-                                            NetworkImage(text.data.toString()),
-                                        fit: BoxFit.cover,
-                                        child: InkWell(
-                                          onTap: () {},
-                                        ),
-                                      );
-                                    }
-                                  }),
+                              child: (!isLoading)
+                                  ? FutureBuilder(
+                                      future: loadImg(profilePic),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot text) {
+                                        if (text.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return Image.asset(
+                                              "assets/images/broken.png",
+                                              fit: BoxFit.cover,
+                                              height: 128,
+                                              width: 128);
+                                        } else {
+                                          return Ink.image(
+                                            height: 128,
+                                            width: 128,
+                                            image: NetworkImage(
+                                                text.data.toString()),
+                                            fit: BoxFit.cover,
+                                            child: InkWell(
+                                              onTap: () {},
+                                            ),
+                                          );
+                                        }
+                                      })
+                                  : Image.asset(
+                                              "assets/images/broken.png",
+                                              fit: BoxFit.cover,
+                                              height: 128,
+                                              width: 128),
                             ),
                           ),
                           if (widget.uuid == "user") ...[

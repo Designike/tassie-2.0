@@ -12,8 +12,8 @@ import 'package:tassie/screens/home/recPost.dart';
 import '../../constants.dart';
 
 class Recipes extends StatefulWidget {
-  const Recipes({Key? key}) : super(key: key);
-
+  const Recipes({Key? key, required this.navigatorKey}) : super(key: key);
+  final GlobalKey<NavigatorState> navigatorKey;
   @override
   _RecipesState createState() => _RecipesState();
 }
@@ -248,6 +248,7 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
                                           !recipeData[index]['isBookmarked'];
                                     });
                                   },
+                                  navigatorKey: widget.navigatorKey,
                                 );
                           // return Container(
                           //   color: Colors.red,

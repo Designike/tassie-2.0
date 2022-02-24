@@ -41,7 +41,7 @@ class _FeedPostState extends State<FeedPost> {
   final dio = Dio();
   final storage = FlutterSecureStorage();
   String _image = "";
-
+  bool isImage = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -51,7 +51,7 @@ class _FeedPostState extends State<FeedPost> {
       // print(result);
       setState(() {
         _image = result;
-        // isImage = true;
+        isImage = true;
       });
     });
   }
@@ -92,13 +92,34 @@ class _FeedPostState extends State<FeedPost> {
                       ),
                       child: CircleAvatar(
                         child: ClipOval(
-                          child: Image(
-                            height: 50.0,
-                            width: 50.0,
-                            image: NetworkImage(post['url']),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                            child: Image(
+                              height: 50.0,
+                              width: 50.0,
+                              image: NetworkImage(post['url']),
+                              fit: BoxFit.cover,
+                            ),
+                            // child: FutureBuilder(
+                            //     future: loadImg(post['url']),
+                            //     builder:
+                            //         (BuildContext context, AsyncSnapshot text) {
+                            //       if (text.connectionState ==
+                            //           ConnectionState.waiting) {
+                            //         return Image.asset(
+                            //             "assets/images/broken.png");
+                            //       } else {
+                            //         // return Image(
+                            //         //   image: NetworkImage(text.data.toString()),
+                            //         //   fit: BoxFit.cover,
+                            //         // );
+                            //         return Image(
+                            //           height: 50.0,
+                            //           width: 50.0,
+                            //           image: NetworkImage(text.data.toString()),
+                            //           fit: BoxFit.cover,
+                            //         );
+                            //       }
+                                // })
+                                ),
                       ),
                     ),
                     title: Text(
@@ -144,7 +165,7 @@ class _FeedPostState extends State<FeedPost> {
                         borderRadius: BorderRadius.circular(25.0),
                         image: DecorationImage(
                           // image: NetworkImage(post['url']),
-                          image: _image == ""
+                          image: !isImage
                               ? Image.asset('assets/images/broken.png').image
                               : Image.network(_image).image,
                           fit: BoxFit.cover,

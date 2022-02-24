@@ -12,8 +12,8 @@ import '../../constants.dart';
 
 class RecPost extends StatefulWidget {
   const RecPost(
-      {required this.recs, required this.recipeData, required this.funcB});
-
+      {required this.recs, required this.recipeData, required this.funcB, required this.navigatorKey});
+  final GlobalKey<NavigatorState> navigatorKey;
   final Map recs;
   final Map recipeData;
   final void Function(bool) funcB;
@@ -27,6 +27,7 @@ class _RecPostState extends State<RecPost> {
   var storage = FlutterSecureStorage();
   var dio = Dio();
   String _image = "";
+  bool isImage = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -34,10 +35,11 @@ class _RecPostState extends State<RecPost> {
     loadImg(widget.recs['recipeImageID']).then((result) {
       setState(() {
         _image = result;
-        // isImage = true;
+        isImage = true;
       });
     });
   }
+
   @override
   Widget build(BuildContext context) {
     bool isBookmarked = widget.recipeData['isBookmarked'];
@@ -71,7 +73,7 @@ class _RecPostState extends State<RecPost> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(25.0),
                       image: DecorationImage(
-                        image: _image == ""
+                        image: !isImage
                             ? Image.asset('assets/images/broken.png',
                                     fit: BoxFit.cover)
                                 .image
@@ -138,8 +140,10 @@ class _RecPostState extends State<RecPost> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => ViewRecPost(
+                        builder: (context) => ViewRecPost(
                           recs: recs,
+                          funcB:widget.funcB,
+                          navigatorKey: widget.navigatorKey,
                         ),
                       ),
                     );

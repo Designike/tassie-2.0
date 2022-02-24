@@ -18,13 +18,13 @@ class TabNavigator extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget child;
     if (tabItem == 0) {
-      child = const Feed();
+      child = Feed(navigatorKey: navigatorKey);
     } else if (tabItem == 1) {
-      child = const Recipes();
+      child = Recipes(navigatorKey: navigatorKey);
     } else if (tabItem == 2) {
-      child = const Explore();
+      child = Explore();
     } else {
-      child = const Profile(uuid: "user");
+      child = Profile(uuid: "user");
     }
     print(child);
     return Navigator(

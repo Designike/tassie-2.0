@@ -25,17 +25,20 @@ class ExploreRec extends StatefulWidget {
 
 class _ExploreRecState extends State<ExploreRec> {
   String _image = "";
-  
+  bool isImage = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    loadImg(widget.recs['recipeImageID']).then((result) {
-      setState(() {
-        _image = result;
-        // isImage = true;
-      });
-    });
+    // loadImg(widget.recs['recipeImageID']).then((result) {
+    //   setState(() {
+    //     _image = result;
+    //     isImage = true;
+    //   });
+    // });
+    if (widget.recs['recipeImageID'] != "") {
+      isImage = true;
+    }
   }
 
   @override
@@ -62,23 +65,62 @@ class _ExploreRecState extends State<ExploreRec> {
                 onDoubleTap: () => print('Bookmark recipe'),
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
-                child: Container(
-                  margin: EdgeInsets.all(10.0),
-                  width: double.infinity,
-                  height: ((size.width - 42.0) / 2) -
-                      20, // minus padding, minus margin
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25.0),
-                    image: DecorationImage(
-                      image: _image == ""
-                          ? Image.asset('assets/images/broken.png',
-                                  fit: BoxFit.cover)
-                              .image
-                          : Image.network(_image, fit: BoxFit.cover).image,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
+                // child: Container(
+                //   margin: EdgeInsets.all(10.0),
+                //   width: double.infinity,
+                //   height: ((size.width - 42.0) / 2) -
+                //       20, // minus padding, minus margin
+                //   decoration: BoxDecoration(
+                //     borderRadius: BorderRadius.circular(25.0),
+                //     image: DecorationImage(
+                //       image: !isImage
+                //           ? Image.asset('assets/images/broken.png',
+                //                   fit: BoxFit.cover)
+                //               .image
+                //           : Image.network(_image, fit: BoxFit.cover).image,
+                //       fit: BoxFit.cover,
+                //     ),
+                //   ),
+                // ),
+                child: FutureBuilder(
+                    future: loadImg(widget.recs['recipeImageID']),
+                    builder: (BuildContext context, AsyncSnapshot text) {
+                      if (text.connectionState == ConnectionState.waiting) {
+                        return Container(
+                          margin: EdgeInsets.all(10.0),
+                          width: double.infinity,
+                          height: (size.width / 2) - 20.0 - 14.0,
+                          // height: 400.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25.0),
+                            image: DecorationImage(
+                              image: AssetImage(
+                                'assets/images/broken.png',
+                              ),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      } else {
+                        // return Image(
+                        //   image: NetworkImage(text.data.toString()),
+                        //   fit: BoxFit.cover,
+                        // );
+                        return Container(
+                          margin: EdgeInsets.all(10.0),
+                          width: double.infinity,
+                          height: (size.width / 2) - 20.0 - 14.0,
+                          // height: 400.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25.0),
+                            image: DecorationImage(
+                              image: NetworkImage(text.data.toString()),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      }
+                    }),
               ),
               ListTile(
                 dense: true,
@@ -133,14 +175,13 @@ class _ExploreRecState extends State<ExploreRec> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ViewRecPost(
-                        recs: recs,
-                      ),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) =>
+                  //         ViewRecPost(recs: recs, funcB: widget.funcB),
+                  //   ),
+                  // );
                 },
                 child: ListTile(
                   title: Text(

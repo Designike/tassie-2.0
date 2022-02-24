@@ -114,13 +114,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     //     _angle = animatedController.value * 45 / 360 * pi * 2;
     //   });
     _selectedIndex = 0;
-    _screens = [
-      Feed(),
-      Recipes(),
-      // Add(),
-      Explore(),
-      Profile(uuid: "user"),
-    ];
+    // _screens = [
+    //   Feed(),
+    //   Recipes(),
+    //   // Add(),
+    //   Explore(),
+    //   Profile(uuid: "user"),
+    // ];
 
     _pageController = PageController(initialPage: _selectedIndex);
   }

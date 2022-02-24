@@ -34,7 +34,7 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
   static List recostsData = [];
   static List recosts_toggle = [];
   bool isLazyLoading = false;
-  static bool isLoading = true;
+  bool isLoading = true;
   bool isEnd = false;
   final dio = Dio();
   final storage = FlutterSecureStorage();
@@ -240,144 +240,156 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
     //   print(response);
     // }),
     // );
-    return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: Theme.of(context).scaffoldBackgroundColor,
-              statusBarIconBrightness:
-                  MediaQuery.of(context).platformBrightness == Brightness.light
-                      ? Brightness.dark
-                      : Brightness.light),
-          toolbarHeight: kToolbarHeight * 1.2,
-          title: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) {
-                  return SearchBar();
-                }),
-              );
-            },
-            child: Container(
-              // child: Row(
-              //   children: [
-              //     Text('Search ', style: TextStyle(color: kDark)),
-              //     AnimatedTextKit(
-              //       pause: Duration(milliseconds: 3000),
-              //       repeatForever: false,
-              //       animatedTexts: [
-              //         FadeAnimatedText('recipes!',
-              //             textStyle: TextStyle(color: kDark)),
-              //         FadeAnimatedText('tassites!',
-              //             textStyle: TextStyle(color: kDark)),
-              //         FadeAnimatedText('posts!',
-              //             textStyle: TextStyle(color: kDark)),
-              //       ],
-              //     ),
-              //   ],
-              // ),
-              child: const Text('Search', style: TextStyle(color: kDark)),
-              decoration: BoxDecoration(
-                color:
-                    MediaQuery.of(context).platformBrightness == Brightness.dark
-                        ? kDark[900]
-                        : kLight,
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              width: size.width * 0.8,
-              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-            ),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return SearchBar();
-                  }),
-                );
-              },
-              icon: const Icon(Icons.search_rounded),
-            ),
-          ]),
-      body: RefreshIndicator(
-        onRefresh: _refreshPage,
-        child: CustomScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
-          controller: _sc,
-          slivers: [
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  Center(
-                    child: Container(
-                      // padding: EdgeInsets.all(5.0),
-                      margin:
-                          EdgeInsets.only(top: 50.0, bottom: kDefaultPadding),
-                      width: size.width * 0.5,
-                      child: Lottie.asset('assets/images/cooker.json',
-                          fit: BoxFit.cover),
-                      decoration: BoxDecoration(
-                          color: MediaQuery.of(context).platformBrightness ==
-                                  Brightness.dark
-                              ? kDark[900]
-                              : kLight,
-                          borderRadius: BorderRadius.circular(size.width)),
+    return isLoading
+        ? Center(
+            child: CircularProgressIndicator(
+            strokeWidth: 2.0,
+          ))
+        : Scaffold(
+            appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                systemOverlayStyle: SystemUiOverlayStyle(
+                    statusBarColor: Theme.of(context).scaffoldBackgroundColor,
+                    statusBarIconBrightness:
+                        MediaQuery.of(context).platformBrightness ==
+                                Brightness.light
+                            ? Brightness.dark
+                            : Brightness.light),
+                toolbarHeight: kToolbarHeight * 1.2,
+                title: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return SearchBar();
+                      }),
+                    );
+                  },
+                  child: Container(
+                    // child: Row(
+                    //   children: [
+                    //     Text('Search ', style: TextStyle(color: kDark)),
+                    //     AnimatedTextKit(
+                    //       pause: Duration(milliseconds: 3000),
+                    //       repeatForever: false,
+                    //       animatedTexts: [
+                    //         FadeAnimatedText('recipes!',
+                    //             textStyle: TextStyle(color: kDark)),
+                    //         FadeAnimatedText('tassites!',
+                    //             textStyle: TextStyle(color: kDark)),
+                    //         FadeAnimatedText('posts!',
+                    //             textStyle: TextStyle(color: kDark)),
+                    //       ],
+                    //     ),
+                    //   ],
+                    // ),
+                    child: const Text('Search', style: TextStyle(color: kDark)),
+                    decoration: BoxDecoration(
+                      color: MediaQuery.of(context).platformBrightness ==
+                              Brightness.dark
+                          ? kDark[900]
+                          : kLight,
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    width: size.width * 0.8,
+                    padding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                  ),
+                ),
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) {
+                          return SearchBar();
+                        }),
+                      );
+                    },
+                    icon: const Icon(Icons.search_rounded),
+                  ),
+                ]),
+            body: RefreshIndicator(
+              onRefresh: _refreshPage,
+              child: CustomScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                controller: _sc,
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Column(
+                      children: [
+                        Center(
+                          child: Container(
+                            // padding: EdgeInsets.all(5.0),
+                            margin: EdgeInsets.only(
+                                top: 50.0, bottom: kDefaultPadding),
+                            width: size.width * 0.5,
+                            child: Lottie.asset('assets/images/cooker.json',
+                                fit: BoxFit.cover),
+                            decoration: BoxDecoration(
+                                color:
+                                    MediaQuery.of(context).platformBrightness ==
+                                            Brightness.dark
+                                        ? kDark[900]
+                                        : kLight,
+                                borderRadius:
+                                    BorderRadius.circular(size.width)),
+                          ),
+                        ),
+                        Text('Tap to suggest recipe!',
+                            style: TextStyle(fontSize: 16.0)),
+                      ],
                     ),
                   ),
-                  Text('Tap to suggest recipe!',
-                      style: TextStyle(fontSize: 16.0)),
+                  SliverToBoxAdapter(
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 50.0, horizontal: 7.0),
+                      child: MasonryGridView.count(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          crossAxisCount: 2,
+                          // mainAxisSpacing: 10,
+                          // crossAxisSpacing: 10,
+                          itemCount: recosts.length,
+                          itemBuilder: (context, index) {
+                            return recosts[recosts_toggle[index]]['isPost'] ==
+                                    false
+                                // ? Container(
+                                //     height: 100.0,
+                                //     color: Colors.red,
+                                //   )
+                                // : Container(height: 150.0, color: Colors.green);
+                                ? Container(
+                                    child: ExploreRec(
+                                      recs: recosts[recosts_toggle[index]],
+                                      recostData:
+                                          recostsData[recosts_toggle[index]],
+                                      funcB: (isBook) {
+                                        setState(() {
+                                          recostsData[recosts_toggle[index]]
+                                              ['isBookmarked'] = !recostsData[
+                                                  recosts_toggle[index]]
+                                              ['isBookmarked'];
+                                        });
+                                      },
+                                    ),
+                                    margin: EdgeInsets.all(7.0),
+                                  )
+                                // : ExplorePost(post: post, noOfComment: noOfComment, noOfLike: noOfLike, func: func, plusComment: plusComment, bookmark: bookmark, funcB: funcB, minusComment: minusComment);
+                                : Container(
+                                    child: ExplorePost(
+                                        post: recosts[recosts_toggle[index]]),
+                                    margin: EdgeInsets.all(7.0),
+                                  );
+                          }),
+                    ),
+                  ),
                 ],
+                // ),
               ),
             ),
-            SliverToBoxAdapter(
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 50.0, horizontal: 7.0),
-                child: MasonryGridView.count(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    crossAxisCount: 2,
-                    // mainAxisSpacing: 10,
-                    // crossAxisSpacing: 10,
-                    itemCount: recosts.length,
-                    itemBuilder: (context, index) {
-                      return recosts[recosts_toggle[index]]['isPost'] == false
-                          // ? Container(
-                          //     height: 100.0,
-                          //     color: Colors.red,
-                          //   )
-                          // : Container(height: 150.0, color: Colors.green);
-                          ? Container(
-                              child: ExploreRec(
-                                recs: recosts[recosts_toggle[index]],
-                                recostData: recostsData[recosts_toggle[index]],
-                                funcB: (isBook) {
-                                  setState(() {
-                                    recostsData[recosts_toggle[index]]
-                                            ['isBookmarked'] =
-                                        !recostsData[recosts_toggle[index]]
-                                            ['isBookmarked'];
-                                  });
-                                },
-                              ),
-                              margin: EdgeInsets.all(7.0),
-                            )
-                          // : ExplorePost(post: post, noOfComment: noOfComment, noOfLike: noOfLike, func: func, plusComment: plusComment, bookmark: bookmark, funcB: funcB, minusComment: minusComment);
-                          : Container(
-                              child: ExplorePost(
-                                  post: recosts[recosts_toggle[index]]),
-                              margin: EdgeInsets.all(7.0),
-                            );
-                    }),
-              ),
-            ),
-          ],
-          // ),
-        ),
-      ),
-    );
+          );
   }
 }
 

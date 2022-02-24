@@ -133,14 +133,13 @@ class _ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
               // ),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ViewRecPost(
-                        recs: recs,
-                      ),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (_) =>
+                  // ViewRecPost(recs: recs, funcB: widget.funcB),
+                  //   ),
+                  // );
                 },
                 child: ListTile(
                   title: Text(
