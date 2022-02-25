@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-
+  AsyncMemoizer memoizer = AsyncMemoizer();
   var dio = Dio();
   final storage = FlutterSecureStorage();
   static int pageR = 1;
@@ -334,6 +335,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
         isLazyLoadingP = false;
         _getProfile();
         _getPosts(pageP);
+        memoizer = AsyncMemoizer();
       });
     }
   }
@@ -368,6 +370,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
     // isLoading = true;
     isLazyLoadingR = false;
     isLazyLoadingP = false;
+    memoizer = AsyncMemoizer();
     _getProfile();
     _getPosts(pageP);
     _getRecipes(pageR);
@@ -480,7 +483,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                               // ),
                               child: (!isLoading)
                                   ? FutureBuilder(
-                                      future: loadImg(profilePic),
+                                      future: loadImg(profilePic,memoizer),
                                       builder: (BuildContext context,
                                           AsyncSnapshot text) {
                                         if (text.connectionState ==

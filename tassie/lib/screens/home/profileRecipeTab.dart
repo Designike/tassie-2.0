@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 // import 'package:cached_network_image/cached_network_image.dart';
+import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/imgLoader.dart';
@@ -138,7 +139,7 @@ class _ProfileRecipeTabChildState extends State<ProfileRecipeTabChild>
   bool get wantKeepAlive => true;
   bool isImage = false;
   String _image = "";
-
+  AsyncMemoizer memoizer = AsyncMemoizer();
   @override
   void didUpdateWidget(covariant ProfileRecipeTabChild oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -148,8 +149,9 @@ class _ProfileRecipeTabChildState extends State<ProfileRecipeTabChild>
   void initState() {
     // TODO: implement initState
     super.initState();
+    memoizer = AsyncMemoizer();
     _image = "";
-    loadImg(widget.recID).then((result) {
+    loadImg(widget.recID,memoizer).then((result) {
       print('recs refresh');
       if (mounted) {
         setState(() {

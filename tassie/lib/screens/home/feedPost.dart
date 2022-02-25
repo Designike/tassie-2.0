@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -38,6 +39,7 @@ class FeedPost extends StatefulWidget {
 class _FeedPostState extends State<FeedPost> {
   // final Map post;
 
+  AsyncMemoizer memoizer = AsyncMemoizer();
   final dio = Dio();
   final storage = FlutterSecureStorage();
   String _image = "";
@@ -45,8 +47,9 @@ class _FeedPostState extends State<FeedPost> {
   @override
   void initState() {
     // TODO: implement initState
+    memoizer = AsyncMemoizer();
     super.initState();
-    loadImg(widget.post['postID']).then((result) {
+    loadImg(widget.post['postID'],memoizer).then((result) {
       // print('hello');
       // print(result);
       setState(() {

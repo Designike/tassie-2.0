@@ -1,17 +1,20 @@
 import 'dart:io';
 
+import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/home/viewRecCommentChild.dart';
 import 'package:tassie/screens/imgLoader.dart';
 
 class ViewRecAllComments extends StatefulWidget {
   const ViewRecAllComments(
-      {Key? key, required this.userUuid, required this.recipeUuid})
+      {Key? key, required this.userUuid, required this.recipeUuid, required this.dp})
       : super(key: key);
   final String userUuid;
   final String recipeUuid;
+  final String? dp;
   @override
   _ViewRecAllCommentsState createState() => _ViewRecAllCommentsState();
 }
@@ -21,7 +24,9 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
   String? uuid;
   final dio = Dio();
   final storage = FlutterSecureStorage();
-
+  AsyncMemoizer memoizer = AsyncMemoizer();
+  // AsyncMemoizer memoizer1 = AsyncMemoizer();
+  // String? dp;
   final ScrollController _sc = ScrollController();
   final TextEditingController _tc = TextEditingController();
   // static List comments = [];
@@ -49,87 +54,88 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
     );
   }
 
-  Widget _createComment(Map comment, int index) {
-    // Map post = widget.post;
-    print(comment);
-    return Padding(
-      padding: EdgeInsets.all(10.0),
-      child: ListTile(
-        leading: Container(
-          width: 50.0,
-          height: 50.0,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-          ),
-          child: CircleAvatar(
-            child: ClipOval(
-                // child: Image(
-                //   height: 50.0,
-                //   width: 50.0,
-                //   image: NetworkImage(comment['profilePic']),
-                //   fit: BoxFit.cover,
-                // ),
-                child: FutureBuilder(
-                    future: loadImg(comment['profilePic']),
-                    // future: loadImg('assets/Banana.png'),
-                    builder: (BuildContext context, AsyncSnapshot text) {
-                      if (text.connectionState == ConnectionState.waiting) {
-                        return Image.asset("assets/images/broken.png",
-                            fit: BoxFit.cover, height: 50.0, width: 50.0);
-                      } else {
-                        return Image(
-                          height: 50.0,
-                          width: 50.0,
-                          image: NetworkImage(text.data.toString()),
-                          fit: BoxFit.cover,
-                        );
-                      }
-                    })),
-          ),
-        ),
-        title: Text(
-          comment['username'],
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        subtitle: Text(
-          comment['comment'],
-          style: TextStyle(
-            color: MediaQuery.of(context).platformBrightness == Brightness.dark
-                ? kLight
-                : kDark[900],
-          ),
-        ),
-        trailing: (widget.userUuid == uuid ||
-                comment['uuid'].split('_comment_')[0] == uuid)
-            ? IconButton(
-                icon: Icon(
-                  Icons.delete_rounded,
-                ),
-                color: Colors.grey,
-                onPressed: () async {
-                  var token = await storage.read(key: "token");
-                  Response response =
-                      await dio.post("http://10.0.2.2:3000/recs/removeComment",
-                          options: Options(headers: {
-                            HttpHeaders.contentTypeHeader: "application/json",
-                            HttpHeaders.authorizationHeader: "Bearer " + token!
-                          }),
-                          data: {
-                        'recipeUuid': widget.recipeUuid,
-                        'commentUuid': comment['uuid'],
-                      });
-                  setState(() {
-                    comments.remove(index);
-                  });
-                  // widget.minusComment();
-                },
-              )
-            : null,
-      ),
-    );
-  }
+  // Widget _createComment(Map comment, int index) {
+  //   // Map post = widget.post;
+  //   AsyncMemoizer memoizerComment = AsyncMemoizer();
+  //   print(comment);
+  //   return Padding(
+  //     padding: EdgeInsets.all(10.0),
+  //     child: ListTile(
+  //       leading: Container(
+  //         width: 50.0,
+  //         height: 50.0,
+  //         decoration: BoxDecoration(
+  //           shape: BoxShape.circle,
+  //         ),
+  //         child: CircleAvatar(
+  //           child: ClipOval(
+  //               // child: Image(
+  //               //   height: 50.0,
+  //               //   width: 50.0,
+  //               //   image: NetworkImage(comment['profilePic']),
+  //               //   fit: BoxFit.cover,
+  //               // ),
+  //               child: FutureBuilder(
+  //                   future: loadImg(comment['profilePic'], memoizerComment),
+  //                   // future: loadImg('assets/Banana.png',memoizer),
+  //                   builder: (BuildContext context, AsyncSnapshot text) {
+  //                     if (text.connectionState == ConnectionState.waiting) {
+  //                       return Image.asset("assets/images/broken.png",
+  //                           fit: BoxFit.cover, height: 50.0, width: 50.0);
+  //                     } else {
+  //                       return Image(
+  //                         height: 50.0,
+  //                         width: 50.0,
+  //                         image: NetworkImage(text.data.toString()),
+  //                         fit: BoxFit.cover,
+  //                       );
+  //                     }
+  //                   })),
+  //         ),
+  //       ),
+  //       title: Text(
+  //         comment['username'],
+  //         style: TextStyle(
+  //           fontWeight: FontWeight.bold,
+  //         ),
+  //       ),
+  //       subtitle: Text(
+  //         comment['comment'],
+  //         style: TextStyle(
+  //           color: MediaQuery.of(context).platformBrightness == Brightness.dark
+  //               ? kLight
+  //               : kDark[900],
+  //         ),
+  //       ),
+  //       trailing: (widget.userUuid == uuid ||
+  //               comment['uuid'].split('_comment_')[0] == uuid)
+  //           ? IconButton(
+  //               icon: Icon(
+  //                 Icons.delete_rounded,
+  //               ),
+  //               color: Colors.grey,
+  //               onPressed: () async {
+  //                 var token = await storage.read(key: "token");
+  //                 Response response =
+  //                     await dio.post("http://10.0.2.2:3000/recs/removeComment",
+  //                         options: Options(headers: {
+  //                           HttpHeaders.contentTypeHeader: "application/json",
+  //                           HttpHeaders.authorizationHeader: "Bearer " + token!
+  //                         }),
+  //                         data: {
+  //                       'recipeUuid': widget.recipeUuid,
+  //                       'commentUuid': comment['uuid'],
+  //                     });
+  //                 setState(() {
+  //                   comments.remove(index);
+  //                 });
+  //                 // widget.minusComment();
+  //               },
+  //             )
+  //           : null,
+  //     ),
+  //   );
+  // }
 
   void _getMoreData(int index) async {
     if (!isEnd) {
@@ -167,6 +173,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
                 response.data['data']['comments']['results']['comments'][i]);
           }
 
+          // print(dp);
           setState(() {
             if (index == 1) {
               isLoading = false;
@@ -194,6 +201,8 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
     _getMoreData(page);
     super.initState();
     // load();
+    memoizer = AsyncMemoizer();
+    // memoizer1 = AsyncMemoizer();
 
     _sc.addListener(() {
       if (_sc.position.pixels == _sc.position.maxScrollExtent) {
@@ -228,7 +237,18 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
                     ? isEnd
                         ? null
                         : _buildProgressIndicator()
-                    : _createComment(comments[index], index);
+                    : CreateComment(
+                        comment: comments[index],
+                        index: index,
+                        userUuid: widget.userUuid,
+                        recipeUuid: widget.recipeUuid,
+                        removeComment: (ind) {
+                          setState(() {
+                            comments.remove(ind);
+                          });
+                        },
+                        uuid: uuid,
+                      );
               },
               childCount: comments.length,
             ),
@@ -283,7 +303,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
                         //   fit: BoxFit.cover,
                         // ),
                         child: FutureBuilder(
-                            future: loadImg(storage.read(key: "profilePic")),
+                            future: loadImg(widget.dp, memoizer),
                             // future: loadImg('assets/Banana.png'),
                             builder:
                                 (BuildContext context, AsyncSnapshot text) {

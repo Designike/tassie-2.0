@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -27,11 +28,13 @@ class _RecPostState extends State<RecPost> {
   var dio = Dio();
   String _image = "";
   bool isImage = false;
+  AsyncMemoizer memoizer = AsyncMemoizer();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    loadImg(widget.recs['recipeImageID']).then((result) {
+    memoizer = AsyncMemoizer();
+    loadImg(widget.recs['recipeImageID'],memoizer).then((result) {
       setState(() {
         _image = result;
         isImage = true;

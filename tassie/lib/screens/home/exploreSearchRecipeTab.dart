@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/imgLoader.dart';
@@ -16,6 +17,7 @@ class ExploreSearchRecipeTab extends StatefulWidget {
 }
 
 class _ExploreSearchRecipeTabState extends State<ExploreSearchRecipeTab> {
+  // AsyncMemoizer memoizer = AsyncMemoizer();
   Widget _buildProgressIndicator() {
     return Padding(
       padding: const EdgeInsets.all(kDefaultPadding),
@@ -87,12 +89,14 @@ class exploreRecipeAvatar extends StatefulWidget {
 }
 
 class _exploreRecipeAvatarState extends State<exploreRecipeAvatar> {
+  AsyncMemoizer memoizer = AsyncMemoizer();
   String _image = "";
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    loadImg(widget.recipeImageID).then((result) {
+    memoizer = AsyncMemoizer();
+    loadImg(widget.recipeImageID,memoizer).then((result) {
       setState(() {
         _image = result;
         // isImage = true;

@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -26,10 +27,12 @@ class ExploreRec extends StatefulWidget {
 class _ExploreRecState extends State<ExploreRec> {
   String _image = "";
   bool isImage = false;
+  AsyncMemoizer memoizer = AsyncMemoizer();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    memoizer = AsyncMemoizer();
     // loadImg(widget.recs['recipeImageID']).then((result) {
     //   setState(() {
     //     _image = result;
@@ -83,7 +86,7 @@ class _ExploreRecState extends State<ExploreRec> {
                 //   ),
                 // ),
                 child: FutureBuilder(
-                    future: loadImg(widget.recs['recipeImageID']),
+                    future: loadImg(widget.recs['recipeImageID'],memoizer),
                     builder: (BuildContext context, AsyncSnapshot text) {
                       if (text.connectionState == ConnectionState.waiting) {
                         return Container(

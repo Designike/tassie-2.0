@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -36,12 +37,14 @@ class ExplorePost extends StatefulWidget {
 class _ExplorePostState extends State<ExplorePost> {
   final dio = Dio();
   final storage = FlutterSecureStorage();
+  AsyncMemoizer memoizer = AsyncMemoizer();
   String _image = "";
   bool isImage = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    memoizer = AsyncMemoizer();
     // loadImg(widget.post['postID']).then((result) {
     //   setState(() {
     //     _image = result;
@@ -123,7 +126,7 @@ class _ExplorePostState extends State<ExplorePost> {
                 //   ),
                 // ),
                 child: FutureBuilder(
-                    future: loadImg(widget.post['postID']),
+                    future: loadImg(widget.post['postID'], memoizer),
                     builder: (BuildContext context, AsyncSnapshot text) {
                       if (text.connectionState == ConnectionState.waiting) {
                         return Container(
@@ -179,7 +182,7 @@ class _ExplorePostState extends State<ExplorePost> {
                         //   fit: BoxFit.cover,
                         // ),
                         child: FutureBuilder(
-                            future: loadImg(post['profilePic']),
+                            future: loadImg(post['profilePic'], memoizer),
                             builder:
                                 (BuildContext context, AsyncSnapshot text) {
                               if (text.connectionState ==

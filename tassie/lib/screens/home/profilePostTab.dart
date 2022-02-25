@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 // import 'package:cached_network_image/cached_network_image.dart';
+import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/profile.dart';
@@ -143,6 +144,7 @@ class ProfilePostTabChild extends StatefulWidget {
 class _ProfilePostTabChildState extends State<ProfilePostTabChild> {
   String _image = "";
   bool isImage = false;
+  AsyncMemoizer memoizer = AsyncMemoizer();
 
   @override
   void didUpdateWidget(covariant ProfilePostTabChild oldWidget) {
@@ -153,8 +155,9 @@ class _ProfilePostTabChildState extends State<ProfilePostTabChild> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    memoizer = AsyncMemoizer();
     _image = "";
-    loadImg(widget.postID).then((result) {
+    loadImg(widget.postID,memoizer).then((result) {
       print('post refresh');
       if (mounted) {
         setState(() {

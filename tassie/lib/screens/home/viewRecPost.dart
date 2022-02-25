@@ -10,6 +10,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/showMoreText.dart';
 import 'package:tassie/screens/home/snackbar.dart';
+import 'package:tassie/screens/home/viewRecAllRatings.dart';
+import 'package:tassie/screens/home/viewRecCommentChild.dart';
 import 'package:tassie/screens/home/viewRecSimilarRec.dart';
 import 'package:tassie/screens/imgLoader.dart';
 
@@ -41,6 +43,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
   String recipeName = "";
   String chefName = "";
   bool isVeg = false;
+  String? dp;
   // List ratings = [];
   bool isLoading = true;
   int one = 0;
@@ -55,7 +58,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
   // String profilePic = "";
   final dio = Dio();
   final storage = FlutterSecureStorage();
-
+  AsyncMemoizer memoizer = AsyncMemoizer();
   // Future<String> myFuture = "" as Future<String>;
   // var ingredientPics = [
   //   {'index': '1', 'fileID': 'https://picsum.photos/200'},
@@ -104,6 +107,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
     // isLazyLoading = true;
     var token = await storage.read(key: 'token');
     uuid = await storage.read(key: "uuid");
+    dp = await storage.read(key: "profilePic");
     Response response = await dio.post(
         // 'http://10.0.2.2:3000/drive/upload',
         'http://10.0.2.2:3000/recs/getRecipe/',
@@ -123,15 +127,18 @@ class _ViewRecPostState extends State<ViewRecPost> {
         ingredients.addAll(response.data['data']['recipe']['ingredients']);
         ingredientPics
             .addAll(response.data['data']['recipe']['ingredientPics']);
+        comments.addAll(response.data['data']['recipe']['comments']);
         isBookmarked = response.data['data']['recipeData']['isBookmarked'];
         isLiked = response.data['data']['recipeData']['isLiked'];
         recipeImageID = response.data['data']['recipe']['recipeImageID'];
         // isLazyLoading = false;
-        if(response.data['data']['recipeData']['userRating'].isNotEmpty) {
-        rating = response.data['data']['recipeData']['userRating'][0]['star'].toDouble();
+        if (response.data['data']['recipeData']['userRating'].isNotEmpty) {
+          rating = response.data['data']['recipeData']['userRating'][0]['star']
+              .toDouble();
         } else {
           rating = 0.0;
         }
+
         isSubscribed = response.data['data']['isSubscribed'];
         recipeName = response.data['data']['recipe']['name'];
         chefName = response.data['data']['recipe']['username'];
@@ -245,62 +252,12 @@ class _ViewRecPostState extends State<ViewRecPost> {
                   url = listImages[i]['fileID'];
                 }
               }
-              return Column(
-                children: [
-                  ListTile(
-                    leading: MyBullet(index: (index + 1).toString()),
-                    title: Text(listItems[index]),
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
-                  ),
-                  url == ""
-                      ? SizedBox(
-                          height: 0,
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: GestureDetector(
-                            onTap: () {},
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(15.0),
-                              child: SizedBox(
-                                width: size.width - (2 * kDefaultPadding),
-                                height: size.width - (2 * kDefaultPadding),
-                                // child: Image(
-                                //   // image: NetworkImage(url),
-                                //   image:
-                                //       NetworkImage('https://picsum.photos/200'),
-                                //   fit: BoxFit.cover,
-                                // ),
-                                child: FutureBuilder(
-                                    future: loadImg(url),
-                                    builder: (BuildContext context,
-                                        AsyncSnapshot text) {
-                                      if (text.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return Image.asset(
-                                            "assets/images/broken.png");
-                                      } else {
-                                        return Image(
-                                          image: NetworkImage(
-                                              text.data.toString()),
-                                          fit: BoxFit.cover,
-                                        );
-                                      }
-                                    }),
-                              ),
-                            ),
-                          ),
-                        ),
-                  if (index != listItems.length - 1) ...[
-                    SizedBox(
-                      height: 15.0,
-                    ),
-                    Divider(
-                      thickness: 1.0,
-                    )
-                  ],
-                ],
+              return StepIngImage(
+                index: index,
+                text: listItems[index],
+                count: listImages.length,
+                size: size,
+                url: url,
               );
             }),
         showMoreBtn
@@ -357,7 +314,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
     isLoading = true;
     getRecipe();
     // myFuture = loadImg(x);
-    // AsyncMemoizer _memoizer = AsyncMemoizer();
+    memoizer = AsyncMemoizer();
     super.initState();
   }
 
@@ -556,7 +513,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                         //       )
                         //     : null,
                         child: FutureBuilder(
-                            future: loadImg(recipeImageID),
+                            future: loadImg(recipeImageID, memoizer),
                             builder:
                                 (BuildContext context, AsyncSnapshot text) {
                               if (text.connectionState ==
@@ -1197,27 +1154,39 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                 ],
                               ),
                             ),
-                            Container(
-                              padding: EdgeInsets.only(left: 15.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text('Show ratings'),
-                                  IconButton(
-                                    icon: Icon(
-                                        Icons.keyboard_arrow_right_rounded),
-                                    onPressed: () {},
-                                  ),
-                                ],
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context, rootNavigator: true)
+                                          .push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ViewRecAllRatings(
+                                                  userUuid:
+                                                      widget.recs['userUuid'],
+                                                  recipeUuid:
+                                                      widget.recs['uuid'],
+                                                  dp: dp),
+                                        ),
+                                      );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(10.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Show ratings'),
+                                    Icon(Icons.keyboard_arrow_right_rounded),
+                                  ],
+                                ),
+                                decoration: BoxDecoration(
+                                    // color: MediaQuery.of(context).platformBrightness ==
+                                    //         Brightness.dark
+                                    //     ? kDark[900]
+                                    //     : kLight,
+                                    border: Border.all(color: kDark),
+                                    borderRadius: BorderRadius.circular(10.0)),
                               ),
-                              decoration: BoxDecoration(
-                                  // color: MediaQuery.of(context).platformBrightness ==
-                                  //         Brightness.dark
-                                  //     ? kDark[900]
-                                  //     : kLight,
-                                  border: Border.all(color: kDark),
-                                  borderRadius: BorderRadius.circular(10.0)),
                             ),
                           ] else ...[
                             Center(
@@ -1345,29 +1314,51 @@ class _ViewRecPostState extends State<ViewRecPost> {
                             // ),
                             if (comments.isNotEmpty) ...[
                               for (var i = 0; i < comments.length; i++) ...[
-                                _createComment(comments[i], i)
+                                // createComment(comment: comments[i],index: i, )
+                                CreateComment(
+                                  comment: comments[i],
+                                  index: i,
+                                  userUuid: widget.recs['userUuid'],
+                                  recipeUuid: widget.recs['uuid'],
+                                  removeComment: (ind) {
+                                    setState(() {
+                                      comments.remove(ind);
+                                    });
+                                  },
+                                  uuid: uuid,
+                                )
                               ],
-                              Container(
-                                padding: EdgeInsets.only(left: 15.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('Show all comments'),
-                                    IconButton(
-                                      icon: Icon(
-                                          Icons.keyboard_arrow_right_rounded),
-                                      onPressed: () {},
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .push(
+                                    MaterialPageRoute(
+                                      builder: (context) => ViewRecAllComments(
+                                          userUuid: widget.recs['userUuid'],
+                                          recipeUuid: widget.recs['uuid'],
+                                          dp: dp),
                                     ),
-                                  ],
+                                  );
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Show all comments'),
+                                      Icon(Icons.keyboard_arrow_right_rounded),
+                                    ],
+                                  ),
+                                  decoration: BoxDecoration(
+                                      // color: MediaQuery.of(context).platformBrightness ==
+                                      //         Brightness.dark
+                                      //     ? kDark[900]
+                                      //     : kLight,
+                                      border: Border.all(color: kDark),
+                                      borderRadius:
+                                          BorderRadius.circular(10.0)),
                                 ),
-                                decoration: BoxDecoration(
-                                    // color: MediaQuery.of(context).platformBrightness ==
-                                    //         Brightness.dark
-                                    //     ? kDark[900]
-                                    //     : kLight,
-                                    border: Border.all(color: kDark),
-                                    borderRadius: BorderRadius.circular(10.0)),
                               ),
                             ] else ...[
                               Center(
@@ -1402,15 +1393,16 @@ class _ViewRecPostState extends State<ViewRecPost> {
                             Center(
                                 child: TextButton.icon(
                                     onPressed: () {
-                                      Navigator.of(context,
-                                              rootNavigator: true)
+                                      Navigator.of(context, rootNavigator: true)
                                           .push(
                                         MaterialPageRoute(
                                           builder: (context) =>
                                               ViewRecAllComments(
-                                            userUuid: widget.recs['userUuid'],
-                                            recipeUuid: widget.recs['uuid'],
-                                          ),
+                                                  userUuid:
+                                                      widget.recs['userUuid'],
+                                                  recipeUuid:
+                                                      widget.recs['uuid'],
+                                                  dp: dp),
                                         ),
                                       );
                                     },
@@ -1605,6 +1597,91 @@ class MyBullet extends StatelessWidget {
     return Text(
       index,
       style: TextStyle(fontSize: 30.0, color: kPrimaryColor),
+    );
+  }
+}
+
+class StepIngImage extends StatefulWidget {
+  const StepIngImage(
+      {Key? key,
+      required this.index,
+      required this.text,
+      required this.count,
+      required this.size,
+      required this.url})
+      : super(key: key);
+  final int index;
+  final int count;
+  final String text;
+  final Size size;
+  final String url;
+  @override
+  _StepIngImageState createState() => _StepIngImageState();
+}
+
+class _StepIngImageState extends State<StepIngImage> {
+  AsyncMemoizer memoizer = AsyncMemoizer();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    memoizer = AsyncMemoizer();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ListTile(
+          leading: MyBullet(index: (widget.index + 1).toString()),
+          title: Text(widget.text),
+          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
+        ),
+        widget.url == ""
+            ? SizedBox(
+                height: 0,
+              )
+            : Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: GestureDetector(
+                  onTap: () {},
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15.0),
+                    child: SizedBox(
+                      width: widget.size.width - (2 * kDefaultPadding),
+                      height: widget.size.width - (2 * kDefaultPadding),
+                      // child: Image(
+                      //   // image: NetworkImage(url),
+                      //   image:
+                      //       NetworkImage('https://picsum.photos/200'),
+                      //   fit: BoxFit.cover,
+                      // ),
+                      child: FutureBuilder(
+                          future: loadImg(widget.url, memoizer),
+                          builder: (BuildContext context, AsyncSnapshot text) {
+                            if (text.connectionState ==
+                                ConnectionState.waiting) {
+                              return Image.asset("assets/images/broken.png");
+                            } else {
+                              return Image(
+                                image: NetworkImage(text.data.toString()),
+                                fit: BoxFit.cover,
+                              );
+                            }
+                          }),
+                    ),
+                  ),
+                ),
+              ),
+        if (widget.index != widget.count - 1) ...[
+          SizedBox(
+            height: 15.0,
+          ),
+          Divider(
+            thickness: 1.0,
+          )
+        ],
+      ],
     );
   }
 }

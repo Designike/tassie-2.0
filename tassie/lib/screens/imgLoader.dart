@@ -6,9 +6,10 @@ import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 
 final dio = Dio();
-AsyncMemoizer _memoizer = AsyncMemoizer();
-Future loadImg(key) async {
-  return _memoizer.runOnce(() async {
+// AsyncMemoizer _memoizer = AsyncMemoizer();
+Future loadImg(key, AsyncMemoizer memoizer) async {
+  // if (memoizer != "comment") {
+  return memoizer.runOnce(() async {
     Response response = await dio.post(
         // "http://10.0.2.2:3000/user/",
         "http://10.0.2.2:3000/drive/file",
@@ -16,7 +17,18 @@ Future loadImg(key) async {
           HttpHeaders.contentTypeHeader: "application/json",
         }),
         data: {"key": key});
-    print(response);
+    // print(response.data['error']);
     return response.data['data']['url'];
   });
+  // } else {
+  //   Response response = await dio.post(
+  //       // "http://10.0.2.2:3000/user/",
+  //       "http://10.0.2.2:3000/drive/file",
+  //       options: Options(headers: {
+  //         HttpHeaders.contentTypeHeader: "application/json",
+  //       }),
+  //       data: {"key": key});
+  //   // print(response.data['error']);
+  //   return response.data['data']['url'];
+  // }
 }
