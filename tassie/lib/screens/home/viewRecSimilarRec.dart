@@ -24,19 +24,20 @@ class ViewRecSimilarRec extends StatefulWidget {
 }
 
 class _ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
-  String _image = "";
+  // String _image = "";
   AsyncMemoizer memoizer = AsyncMemoizer();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    print(widget.recs);
     memoizer = AsyncMemoizer();
-    loadImg(widget.recs['recipeImageID'], memoizer).then((result) {
-      setState(() {
-        _image = result;
-        // isImage = true;
-      });
-    });
+    // loadImg(widget.recs['recipeImageID'], memoizer).then((result) {
+    //   setState(() {
+    //     _image = result;
+    //     // isImage = true;
+    //   });
+    // });
   }
 
   @override
@@ -47,8 +48,9 @@ class _ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
     Size size = MediaQuery.of(context).size;
     Map recs = widget.recs;
     return Container(
-      width: 300.0,
-      height: 300.0,
+      width: 150.0,
+      margin: EdgeInsets.only(right: 15.0),
+      // height: 300.0,
       // height: ((size.width - 42.0)/2) + 120.0, // minus padding, plus list tile
       decoration: BoxDecoration(
         color: MediaQuery.of(context).platformBrightness == Brightness.dark
@@ -61,27 +63,63 @@ class _ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
           Column(
             children: [
               InkWell(
-                // onDoubleTap: () => print('Bookmark recipe'),
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                child: Container(
-                  margin: EdgeInsets.all(10.0),
-                  width: double.infinity,
-                  height: ((size.width - 42.0) / 2) -
-                      20, // minus padding, minus margin
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25.0),
-                    image: DecorationImage(
-                      image: _image == ""
-                          ? Image.asset('assets/images/broken.png',
-                                  fit: BoxFit.cover)
-                              .image
-                          : Image.network(_image, fit: BoxFit.cover).image,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
+                  // onDoubleTap: () => print('Bookmark recipe'),
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  // child: Container(
+                  //   margin: EdgeInsets.all(10.0),
+                  //   width: double.infinity,
+                  //   height: ((size.width - 42.0) / 2) -
+                  //       20, // minus padding, minus margin
+                  //   decoration: BoxDecoration(
+                  //     borderRadius: BorderRadius.circular(25.0),
+                  //     image: DecorationImage(
+                  //       image: _image == ""
+                  //           ? Image.asset('assets/images/broken.png',
+                  //                   fit: BoxFit.cover)
+                  //               .image
+                  //           : Image.network(_image, fit: BoxFit.cover).image,
+                  //       fit: BoxFit.cover,
+                  //     ),
+                  //   ),
+                  // ),
+                  child: FutureBuilder(
+                      future: loadImg(widget.recs['recipeImageID'], memoizer),
+                      builder: (BuildContext context, AsyncSnapshot text) {
+                        if (text.connectionState == ConnectionState.waiting) {
+                          // return Image.asset("assets/images/broken.png",
+                          //     fit: BoxFit.cover, height: 128, width: 128);
+                          return Container(
+                            margin: EdgeInsets.all(10.0),
+                            width: double.infinity,
+                            // height: ((size.width - 42.0) / 2) -
+                            //     20, // minus padding, minus margin
+                            height: 150 - 20,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25.0),
+                              image: DecorationImage(
+                                image: AssetImage('assets/images/broken.png'),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          );
+                        } else {
+                          return Container(
+                            margin: EdgeInsets.all(10.0),
+                            width: double.infinity,
+                            // height: ((size.width - 42.0) / 2) -
+                            //     20, // minus padding, minus margin
+                            height: 150 - 20,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25.0),
+                              image: DecorationImage(
+                                image: NetworkImage(text.data.toString()),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          );
+                        }
+                      })),
               // ListTile(
               //   dense: true,
               //   leading: Container(

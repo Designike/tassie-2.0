@@ -1499,8 +1499,9 @@ class _ViewRecPostState extends State<ViewRecPost> {
                             ],
                             Container(
                               width: size.width,
-                              padding: EdgeInsets.all(kDefaultPadding),
+                              padding: EdgeInsets.only(top: 30.0),
                               child: SingleChildScrollView(
+                                physics: BouncingScrollPhysics(),
                                 scrollDirection: Axis.horizontal,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,

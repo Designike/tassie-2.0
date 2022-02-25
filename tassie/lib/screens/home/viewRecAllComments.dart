@@ -10,7 +10,10 @@ import 'package:tassie/screens/imgLoader.dart';
 
 class ViewRecAllComments extends StatefulWidget {
   const ViewRecAllComments(
-      {Key? key, required this.userUuid, required this.recipeUuid, required this.dp})
+      {Key? key,
+      required this.userUuid,
+      required this.recipeUuid,
+      required this.dp})
       : super(key: key);
   final String userUuid;
   final String recipeUuid;
@@ -25,10 +28,13 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
   final dio = Dio();
   final storage = FlutterSecureStorage();
   AsyncMemoizer memoizer = AsyncMemoizer();
+  Animation<double>? animation;
   // AsyncMemoizer memoizer1 = AsyncMemoizer();
   // String? dp;
   final ScrollController _sc = ScrollController();
   final TextEditingController _tc = TextEditingController();
+  final GlobalKey<AnimatedListState> _commentsListKey =
+      GlobalKey<AnimatedListState>();
   // static List comments = [];
   bool isLazyLoading = false;
   static bool isLoading = true;
@@ -194,6 +200,21 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
     }
   }
 
+  // void removeItem(int index) {
+  //   final removedItem = comments[index];
+  //   comments.removeAt(index);
+  //   _commentsListKey.currentState!.removeItem(
+  //       index,
+  //       (context, animation) => CreateComment(
+  //           recost: removedItem,
+  //           index: index,
+  //           userUuid: widget.userUuid,
+  //           recipeUuid: widget.recipeUuid,
+  //           removeComment: (ind) {},
+  //           uuid: uuid,
+  //           isPost: false));
+  // }
+
   @override
   void initState() {
     page = 1;
@@ -219,6 +240,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
 
   @override
   Widget build(BuildContext context) {
+    print(comments);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -244,8 +266,13 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
                         recipeUuid: widget.recipeUuid,
                         removeComment: (ind) {
                           setState(() {
-                            comments.remove(ind);
+                            comments.removeAt(ind);
                           });
+                          // Navigator.pushReplacement(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (BuildContext context) =>
+                          //             super.widget));
                         },
                         uuid: uuid,
                         isPost: false,
@@ -253,7 +280,8 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
               },
               childCount: comments.length,
             ),
-          )
+          ),
+          
         ],
       ),
       bottomNavigationBar: Transform.translate(
