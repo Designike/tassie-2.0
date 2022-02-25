@@ -28,11 +28,13 @@ class _ExploreRecState extends State<ExploreRec> {
   String _image = "";
   bool isImage = false;
   AsyncMemoizer memoizer = AsyncMemoizer();
+  AsyncMemoizer memoizer1 = AsyncMemoizer();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     memoizer = AsyncMemoizer();
+    memoizer1 = AsyncMemoizer();
     // loadImg(widget.recs['recipeImageID']).then((result) {
     //   setState(() {
     //     _image = result;
@@ -86,7 +88,7 @@ class _ExploreRecState extends State<ExploreRec> {
                 //   ),
                 // ),
                 child: FutureBuilder(
-                    future: loadImg(widget.recs['recipeImageID'],memoizer),
+                    future: loadImg(widget.recs['recipeImageID'], memoizer),
                     builder: (BuildContext context, AsyncSnapshot text) {
                       if (text.connectionState == ConnectionState.waiting) {
                         return Container(
@@ -135,12 +137,36 @@ class _ExploreRecState extends State<ExploreRec> {
                   ),
                   child: CircleAvatar(
                     child: ClipOval(
-                      child: Image(
-                        height: (size.width - 42.0) / 12,
-                        width: (size.width - 42.0) / 12,
-                        image: NetworkImage(recs['profilePic']),
-                        fit: BoxFit.cover,
-                      ),
+                      // child: Image(
+                      //   height: (size.width - 42.0) / 12,
+                      //   width: (size.width - 42.0) / 12,
+                      //   image: NetworkImage(recs['profilePic']),
+                      //   fit: BoxFit.cover,
+                      // ),
+                      child: FutureBuilder(
+                          future: loadImg(recs['profilePic'], memoizer1),
+                          builder: (BuildContext context, AsyncSnapshot text) {
+                            if (text.connectionState ==
+                                ConnectionState.waiting) {
+                              return Image(
+                                height: (size.width - 42.0) / 12,
+                                width: (size.width - 42.0) / 12,
+                                image: AssetImage('assets/images/broken.png'),
+                                fit: BoxFit.cover,
+                              );
+                            } else {
+                              // return Image(
+                              //   image: NetworkImage(text.data.toString()),
+                              //   fit: BoxFit.cover,
+                              // );
+                              return Image(
+                                height: (size.width - 42.0) / 12,
+                                width: (size.width - 42.0) / 12,
+                                image: NetworkImage(text.data.toString()),
+                                fit: BoxFit.cover,
+                              );
+                            }
+                          }),
                     ),
                   ),
                 ),

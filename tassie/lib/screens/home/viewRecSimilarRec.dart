@@ -12,11 +12,10 @@ import 'package:tassie/screens/imgLoader.dart';
 import '../../constants.dart';
 
 class ViewRecSimilarRec extends StatefulWidget {
-  const ViewRecSimilarRec(
-      {required this.recs, required this.recostData, required this.funcB});
+  const ViewRecSimilarRec({required this.recs, required this.funcB});
 
   final Map recs;
-  final Map recostData;
+  // final Map recostData;
   final void Function(bool) funcB;
   // final int index;
 
@@ -32,7 +31,7 @@ class _ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
     // TODO: implement initState
     super.initState();
     memoizer = AsyncMemoizer();
-    loadImg(widget.recs['recipeImageID'],memoizer).then((result) {
+    loadImg(widget.recs['recipeImageID'], memoizer).then((result) {
       setState(() {
         _image = result;
         // isImage = true;
@@ -44,11 +43,12 @@ class _ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
   Widget build(BuildContext context) {
     var storage = FlutterSecureStorage();
     var dio = Dio();
-    bool isBookmarked = widget.recostData['isBookmarked'];
+    // bool isBookmarked = widget.recostData['isBookmarked'];
     Size size = MediaQuery.of(context).size;
     Map recs = widget.recs;
     return Container(
-      width: double.infinity,
+      width: 300.0,
+      height: 300.0,
       // height: ((size.width - 42.0)/2) + 120.0, // minus padding, plus list tile
       decoration: BoxDecoration(
         color: MediaQuery.of(context).platformBrightness == Brightness.dark

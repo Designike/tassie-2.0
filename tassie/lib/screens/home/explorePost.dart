@@ -38,22 +38,25 @@ class _ExplorePostState extends State<ExplorePost> {
   final dio = Dio();
   final storage = FlutterSecureStorage();
   AsyncMemoizer memoizer = AsyncMemoizer();
-  String _image = "";
-  bool isImage = false;
+  AsyncMemoizer memoizer1 = AsyncMemoizer();
+  // String _image = "";
+  // bool isImage = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     memoizer = AsyncMemoizer();
+    memoizer1 = AsyncMemoizer();
+
     // loadImg(widget.post['postID']).then((result) {
     //   setState(() {
     //     _image = result;
     //     isImage = true;
     //   });
     // });
-    if (widget.post['postID'] != "") {
-      isImage = true;
-    }
+    // if (widget.post['postID'] != "") {
+    //   isImage = true;
+    // }
   }
 
   @override
@@ -182,7 +185,7 @@ class _ExplorePostState extends State<ExplorePost> {
                         //   fit: BoxFit.cover,
                         // ),
                         child: FutureBuilder(
-                            future: loadImg(post['profilePic'], memoizer),
+                            future: loadImg(post['profilePic'], memoizer1),
                             builder:
                                 (BuildContext context, AsyncSnapshot text) {
                               if (text.connectionState ==
@@ -203,7 +206,7 @@ class _ExplorePostState extends State<ExplorePost> {
                                   fit: BoxFit.cover,
                                 );
                               }
-                            })),
+                            }),),
                   ),
                 ),
                 title: Text(

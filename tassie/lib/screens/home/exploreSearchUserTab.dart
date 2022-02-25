@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/home.dart';
@@ -101,10 +102,12 @@ class ExploreUserAvatar extends StatefulWidget {
 
 class _ExploreUserAvatarState extends State<ExploreUserAvatar> {
   // String _image = "";
+  AsyncMemoizer memoizer = AsyncMemoizer();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    memoizer = AsyncMemoizer();
     // loadImg(widget.profilePic).then((result) {
     //   setState(() {
     //     _image = result;
@@ -115,14 +118,37 @@ class _ExploreUserAvatarState extends State<ExploreUserAvatar> {
 
   @override
   Widget build(BuildContext context) {
-    return Image(
-      height: 50.0,
-      width: 50.0,
-      // image: _image == ""
-      //     ? Image.asset('assets/images/broken.png', fit: BoxFit.cover).image
-      //     : Image.network(_image, fit: BoxFit.cover).image,
-      image: NetworkImage(widget.profilePic),
-      fit: BoxFit.cover,
-    );
+    // return Image(
+    //   height: 50.0,
+    //   width: 50.0,
+    //   // image: _image == ""
+    //   //     ? Image.asset('assets/images/broken.png', fit: BoxFit.cover).image
+    //   //     : Image.network(_image, fit: BoxFit.cover).image,
+    //   image: NetworkImage(widget.profilePic),
+    //   fit: BoxFit.cover,
+    // );
+    return FutureBuilder(
+        future: loadImg(widget.profilePic, memoizer),
+        builder: (BuildContext context, AsyncSnapshot text) {
+          if (text.connectionState == ConnectionState.waiting) {
+            return Image(
+              height: 50.0,
+              width: 50.0,
+              image: AssetImage('assets/images/broken.png'),
+              fit: BoxFit.cover,
+            );
+          } else {
+            // return Image(
+            //   image: NetworkImage(text.data.toString()),
+            //   fit: BoxFit.cover,
+            // );
+            return Image(
+              height: 50.0,
+              width: 50.0,
+              image: NetworkImage(text.data.toString()),
+              fit: BoxFit.cover,
+            );
+          }
+        });
   }
 }

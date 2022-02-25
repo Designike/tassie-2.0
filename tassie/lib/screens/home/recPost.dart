@@ -26,20 +26,22 @@ class RecPost extends StatefulWidget {
 class _RecPostState extends State<RecPost> {
   var storage = FlutterSecureStorage();
   var dio = Dio();
-  String _image = "";
-  bool isImage = false;
+  // String _image = "";
+  // bool isImage = false;
   AsyncMemoizer memoizer = AsyncMemoizer();
+  AsyncMemoizer memoizer1 = AsyncMemoizer();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     memoizer = AsyncMemoizer();
-    loadImg(widget.recs['recipeImageID'],memoizer).then((result) {
-      setState(() {
-        _image = result;
-        isImage = true;
-      });
-    });
+    memoizer1 = AsyncMemoizer();
+    // loadImg(widget.recs['recipeImageID'],memoizer).then((result) {
+    //   setState(() {
+    //     _image = result;
+    //     isImage = true;
+    //   });
+    // });
   }
 
   @override
@@ -67,23 +69,62 @@ class _RecPostState extends State<RecPost> {
                   // onDoubleTap: () => print('Bookmark recipe'),
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
-                  child: Container(
-                    margin: EdgeInsets.all(10.0),
-                    width: double.infinity,
-                    height: ((size.width - 40.0) / 2) -
-                        20, // minus padding, minus margin
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25.0),
-                      image: DecorationImage(
-                        image: !isImage
-                            ? Image.asset('assets/images/broken.png',
-                                    fit: BoxFit.cover)
-                                .image
-                            : Image.network(_image, fit: BoxFit.cover).image,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
+                  // child: Container(
+                  //   margin: EdgeInsets.all(10.0),
+                  //   width: double.infinity,
+                  //   height: ((size.width - 40.0) / 2) -
+                  //       20, // minus padding, minus margin
+                  //   decoration: BoxDecoration(
+                  //     borderRadius: BorderRadius.circular(25.0),
+                  //     image: DecorationImage(
+                  //       image: !isImage
+                  //           ? Image.asset('assets/images/broken.png',
+                  //                   fit: BoxFit.cover)
+                  //               .image
+                  //           : Image.network(_image, fit: BoxFit.cover).image,
+                  //       fit: BoxFit.cover,
+                  //     ),
+                  //   ),
+                  // ),
+                  child: FutureBuilder(
+                      future: loadImg(widget.recs['recipeImageID'], memoizer),
+                      builder: (BuildContext context, AsyncSnapshot text) {
+                        if (text.connectionState == ConnectionState.waiting) {
+                          return Container(
+                            margin: EdgeInsets.all(10.0),
+                            width: double.infinity,
+                            height: ((size.width - 40.0) / 2) - 20.0,
+                            // height: 400.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25.0),
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  'assets/images/broken.png',
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          );
+                        } else {
+                          // return Image(
+                          //   image: NetworkImage(text.data.toString()),
+                          //   fit: BoxFit.cover,
+                          // );
+                          return Container(
+                            margin: EdgeInsets.all(10.0),
+                            width: double.infinity,
+                            height: ((size.width - 40.0) / 2) - 20.0,
+                            // height: 400.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25.0),
+                              image: DecorationImage(
+                                image: NetworkImage(text.data.toString()),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          );
+                        }
+                      }),
                 ),
                 ListTile(
                   dense: true,
@@ -95,12 +136,37 @@ class _RecPostState extends State<RecPost> {
                     ),
                     child: CircleAvatar(
                       child: ClipOval(
-                        child: Image(
-                          height: (size.width - 40.0) / 12,
-                          width: (size.width - 40.0) / 12,
-                          image: NetworkImage(recs['profilePic']),
-                          fit: BoxFit.cover,
-                        ),
+                        // child: Image(
+                        //   height: (size.width - 40.0) / 12,
+                        //   width: (size.width - 40.0) / 12,
+                        //   image: NetworkImage(recs['profilePic']),
+                        //   fit: BoxFit.cover,
+                        // ),
+                        child: FutureBuilder(
+                            future: loadImg(recs['profilePic'], memoizer1),
+                            builder:
+                                (BuildContext context, AsyncSnapshot text) {
+                              if (text.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Image(
+                                  height: (size.width - 40.0) / 12,
+                                  width: (size.width - 40.0) / 12,
+                                  image: AssetImage('assets/images/broken.png'),
+                                  fit: BoxFit.cover,
+                                );
+                              } else {
+                                // return Image(
+                                //   image: NetworkImage(text.data.toString()),
+                                //   fit: BoxFit.cover,
+                                // );
+                                return Image(
+                                  height: (size.width - 40.0) / 12,
+                                  width: (size.width - 40.0) / 12,
+                                  image: NetworkImage(text.data.toString()),
+                                  fit: BoxFit.cover,
+                                );
+                              }
+                            }),
                       ),
                     ),
                   ),
@@ -144,7 +210,7 @@ class _RecPostState extends State<RecPost> {
                       MaterialPageRoute(
                         builder: (context) => ViewRecPost(
                           recs: recs,
-                          funcB:widget.funcB,
+                          funcB: widget.funcB,
                         ),
                       ),
                     );

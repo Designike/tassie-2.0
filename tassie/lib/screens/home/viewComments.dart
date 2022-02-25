@@ -2,9 +2,12 @@
 
 import 'dart:io';
 
+import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:tassie/screens/home/viewRecCommentChild.dart';
+import 'package:tassie/screens/imgLoader.dart';
 
 import '../../constants.dart';
 
@@ -17,6 +20,7 @@ class ViewComments extends StatefulWidget {
   final void Function(bool) funcB;
   final void Function() plusComment;
   final void Function() minusComment;
+  final String? dp;
   ViewComments(
       {required this.post,
       required this.noOfComment,
@@ -25,7 +29,7 @@ class ViewComments extends StatefulWidget {
       required this.plusComment,
       required this.funcB,
       required this.bookmark,
-      required this.minusComment});
+      required this.minusComment, required this.dp});
 
   @override
   _ViewCommentsState createState() => _ViewCommentsState();
@@ -34,6 +38,10 @@ class ViewComments extends StatefulWidget {
 class _ViewCommentsState extends State<ViewComments> {
   final ScrollController _sc = ScrollController();
   final TextEditingController _tc = TextEditingController();
+  AsyncMemoizer memoizer = AsyncMemoizer();
+  AsyncMemoizer memoizer1 = AsyncMemoizer();
+  AsyncMemoizer memoizer2 = AsyncMemoizer();
+  String? dp;
   static List comments = [];
   bool isLazyLoading = false;
   static bool isLoading = true;
@@ -177,6 +185,7 @@ class _ViewCommentsState extends State<ViewComments> {
             '/' +
             index.toString();
         var token = await storage.read(key: "token");
+
         uuid = await storage.read(key: "uuid");
         Response response = await dio.get(
           url,
@@ -224,7 +233,9 @@ class _ViewCommentsState extends State<ViewComments> {
     _getMoreData(page);
     super.initState();
     // load();
-
+    memoizer = AsyncMemoizer();
+    memoizer1 = AsyncMemoizer();
+    memoizer2 = AsyncMemoizer();
     _sc.addListener(() {
       if (_sc.position.pixels == _sc.position.maxScrollExtent) {
         _getMoreData(page);
@@ -292,13 +303,42 @@ class _ViewCommentsState extends State<ViewComments> {
                                       ),
                                       child: CircleAvatar(
                                         child: ClipOval(
-                                          child: Image(
-                                            height: 50.0,
-                                            width: 50.0,
-                                            image: NetworkImage(
-                                                widget.post['url']),
-                                            fit: BoxFit.cover,
-                                          ),
+                                          // child: Image(
+                                          //   height: 50.0,
+                                          //   width: 50.0,
+                                          //   image: NetworkImage(
+                                          //       widget.post['url']),
+                                          //   fit: BoxFit.cover,
+                                          // ),
+                                          child: FutureBuilder(
+                                              future: loadImg(
+                                                  widget.post['profilePic'],
+                                                  memoizer1),
+                                              builder: (BuildContext context,
+                                                  AsyncSnapshot text) {
+                                                if (text.connectionState ==
+                                                    ConnectionState.waiting) {
+                                                  return Image(
+                                                    height: 50.0,
+                                                    width: 50.0,
+                                                    image: AssetImage(
+                                                        "assets/images/broken.png"),
+                                                    fit: BoxFit.cover,
+                                                  );
+                                                } else {
+                                                  // return Image(
+                                                  //   image: NetworkImage(text.data.toString()),
+                                                  //   fit: BoxFit.cover,
+                                                  // );
+                                                  return Image(
+                                                    height: 50.0,
+                                                    width: 50.0,
+                                                    image: NetworkImage(
+                                                        text.data.toString()),
+                                                    fit: BoxFit.cover,
+                                                  );
+                                                }
+                                              }),
                                         ),
                                       ),
                                     ),
@@ -344,19 +384,64 @@ class _ViewCommentsState extends State<ViewComments> {
                               },
                               splashColor: Colors.transparent,
                               highlightColor: Colors.transparent,
-                              child: Container(
-                                margin: EdgeInsets.all(10.0),
-                                width: double.infinity,
-                                height: 400.0,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  image: DecorationImage(
-                                    image:
-                                        NetworkImage(widget.post['profilePic']),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
+                              // child: Container(
+                              //   margin: EdgeInsets.all(10.0),
+                              //   width: double.infinity,
+                              //   height: 400.0,
+                              //   decoration: BoxDecoration(
+                              //     borderRadius: BorderRadius.circular(25.0),
+                              //     image: DecorationImage(
+                              //       image:
+                              //           NetworkImage(widget.post['profilePic']),
+                              //       fit: BoxFit.cover,
+                              //     ),
+                              //   ),
+                              // ),
+                              child: FutureBuilder(
+                                  future:
+                                      loadImg(widget.post['postID'], memoizer),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot text) {
+                                    if (text.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Container(
+                                        margin: EdgeInsets.all(10.0),
+                                        width: double.infinity,
+                                        height: size.width - 40.0,
+                                        // height: 400.0,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(25.0),
+                                          image: DecorationImage(
+                                            image: AssetImage(
+                                              'assets/images/broken.png',
+                                            ),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      // return Image(
+                                      //   image: NetworkImage(text.data.toString()),
+                                      //   fit: BoxFit.cover,
+                                      // );
+                                      return Container(
+                                        margin: EdgeInsets.all(10.0),
+                                        width: double.infinity,
+                                        height: size.width - 40.0,
+                                        // height: 400.0,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(25.0),
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                                text.data.toString()),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }),
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 20.0),
@@ -558,7 +643,19 @@ class _ViewCommentsState extends State<ViewComments> {
                     ? isEnd
                         ? _endMessage()
                         : _buildProgressIndicator()
-                    : _createComment(index);
+                    : CreateComment(
+                        recost: comments[index],
+                        index: index,
+                        userUuid: widget.post['userUuid'],
+                        recipeUuid: widget.post['uuid'],
+                        removeComment: (ind) {
+                          setState(() {
+                            comments.remove(ind);
+                          });
+                        },
+                        uuid: uuid,
+                        isPost: true,
+                      );
               },
               childCount: no_of_comments,
             ),
@@ -606,12 +703,36 @@ class _ViewCommentsState extends State<ViewComments> {
                   ),
                   child: CircleAvatar(
                     child: ClipOval(
-                      child: Image(
-                        height: 48.0,
-                        width: 48.0,
-                        image: NetworkImage(widget.post['url']),
-                        fit: BoxFit.cover,
-                      ),
+                      // child: Image(
+                      //   height: 48.0,
+                      //   width: 48.0,
+                      //   image: NetworkImage(widget.post['url']),
+                      //   fit: BoxFit.cover,
+                      // ),
+                      child: FutureBuilder(
+                          future: loadImg(widget.dp, memoizer2),
+                          builder: (BuildContext context, AsyncSnapshot text) {
+                            if (text.connectionState ==
+                                ConnectionState.waiting) {
+                              return Image(
+                                height: 48.0,
+                                width: 48.0,
+                                image: AssetImage("assets/images/broken.png"),
+                                fit: BoxFit.cover,
+                              );
+                            } else {
+                              // return Image(
+                              //   image: NetworkImage(text.data.toString()),
+                              //   fit: BoxFit.cover,
+                              // );
+                              return Image(
+                                height: 48.0,
+                                width: 48.0,
+                                image: NetworkImage(text.data.toString()),
+                                fit: BoxFit.cover,
+                              );
+                            }
+                          }),
                     ),
                   ),
                 ),

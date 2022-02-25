@@ -90,29 +90,52 @@ class exploreRecipeAvatar extends StatefulWidget {
 
 class _exploreRecipeAvatarState extends State<exploreRecipeAvatar> {
   AsyncMemoizer memoizer = AsyncMemoizer();
-  String _image = "";
+  // String _image = "";
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     memoizer = AsyncMemoizer();
-    loadImg(widget.recipeImageID,memoizer).then((result) {
-      setState(() {
-        _image = result;
-        // isImage = true;
-      });
-    });
+    // loadImg(widget.recipeImageID,memoizer).then((result) {
+    //   setState(() {
+    //     _image = result;
+    //     // isImage = true;
+    //   });
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Image(
-      height: 50.0,
-      width: 50.0,
-      fit: BoxFit.cover,
-      image: _image == ""
-          ? Image.asset('assets/images/broken.png', fit: BoxFit.cover).image
-          : Image.network(_image, fit: BoxFit.cover).image,
-    );
+    // return Image(
+    //   height: 50.0,
+    //   width: 50.0,
+    //   fit: BoxFit.cover,
+    //   image: _image == ""
+    //       ? Image.asset('assets/images/broken.png', fit: BoxFit.cover).image
+    //       : Image.network(_image, fit: BoxFit.cover).image,
+    // );
+    return FutureBuilder(
+        future: loadImg(widget.recipeImageID, memoizer),
+        builder: (BuildContext context, AsyncSnapshot text) {
+          if (text.connectionState == ConnectionState.waiting) {
+            return Image(
+              height: 50.0,
+              width: 50.0,
+              image: AssetImage('assets/images/broken.png'),
+              fit: BoxFit.cover,
+            );
+          } else {
+            // return Image(
+            //   image: NetworkImage(text.data.toString()),
+            //   fit: BoxFit.cover,
+            // );
+            return Image(
+              height: 50.0,
+              width: 50.0,
+              image: NetworkImage(text.data.toString()),
+              fit: BoxFit.cover,
+            );
+          }
+        });
   }
 }

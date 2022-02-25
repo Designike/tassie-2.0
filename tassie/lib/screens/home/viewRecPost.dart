@@ -89,7 +89,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
   //   {'index': '3', 'fileID': 'https://picsum.photos/200'}
   // ];
   List stepPics = [];
-
+  List similar = [];
   // String getImage(img) {
   //   String x = "";
   //   print(img);
@@ -128,6 +128,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
         ingredientPics
             .addAll(response.data['data']['recipe']['ingredientPics']);
         comments.addAll(response.data['data']['recipe']['comments']);
+        similar.addAll(response.data['data']['similar']);
         isBookmarked = response.data['data']['recipeData']['isBookmarked'];
         isLiked = response.data['data']['recipeData']['isLiked'];
         recipeImageID = response.data['data']['recipe']['recipeImageID'];
@@ -1156,18 +1157,14 @@ class _ViewRecPostState extends State<ViewRecPost> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                Navigator.of(context, rootNavigator: true)
-                                          .push(
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              ViewRecAllRatings(
-                                                  userUuid:
-                                                      widget.recs['userUuid'],
-                                                  recipeUuid:
-                                                      widget.recs['uuid'],
-                                                  dp: dp),
-                                        ),
-                                      );
+                                Navigator.of(context, rootNavigator: true).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => ViewRecAllRatings(
+                                        userUuid: widget.recs['userUuid'],
+                                        recipeUuid: widget.recs['uuid'],
+                                        dp: dp),
+                                  ),
+                                );
                               },
                               child: Container(
                                 padding: EdgeInsets.all(10.0),
@@ -1256,13 +1253,19 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                         'uuid': widget.recs['uuid'],
                                         'star': rating,
                                       });
-                                    if(response.data != null){
-                                      if(response.data['status'] == true) {
-                                        showSnack(context, "Thanks for rating!", () {}, 'OK', 3);
-                                      } else {
-                                        showSnack(context, "Unable to update rating!", () {}, 'OK', 3);
-                                      }
+                                  if (response.data != null) {
+                                    if (response.data['status'] == true) {
+                                      showSnack(context, "Thanks for rating!",
+                                          () {}, 'OK', 3);
+                                    } else {
+                                      showSnack(
+                                          context,
+                                          "Unable to update rating!",
+                                          () {},
+                                          'OK',
+                                          3);
                                     }
+                                  }
                                 },
                               ),
                               IconButton(
@@ -1286,11 +1289,17 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                       rating = 0.0;
                                     });
 
-                                    if(response.data != null){
-                                      if(response.data['status'] == true) {
-                                        showSnack(context, "Rating deleted!", () {}, 'OK', 3);
+                                    if (response.data != null) {
+                                      if (response.data['status'] == true) {
+                                        showSnack(context, "Rating deleted!",
+                                            () {}, 'OK', 3);
                                       } else {
-                                        showSnack(context, "Unable to reset rating!", () {}, 'OK', 3);
+                                        showSnack(
+                                            context,
+                                            "Unable to reset rating!",
+                                            () {},
+                                            'OK',
+                                            3);
                                       }
                                     }
                                   },
@@ -1329,7 +1338,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                               for (var i = 0; i < comments.length; i++) ...[
                                 // createComment(comment: comments[i],index: i, )
                                 CreateComment(
-                                  comment: comments[i],
+                                  recost: comments[i],
                                   index: i,
                                   userUuid: widget.recs['userUuid'],
                                   recipeUuid: widget.recs['uuid'],
@@ -1339,6 +1348,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                     });
                                   },
                                   uuid: uuid,
+                                  isPost: false,
                                 )
                               ],
                               GestureDetector(
@@ -1434,36 +1444,72 @@ class _ViewRecPostState extends State<ViewRecPost> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            RichText(
-                              text: TextSpan(children: [
-                                TextSpan(
-                                  text: "More recipes from ",
-                                  style: TextStyle(
-                                    // color: kPrimaryColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0,
+                            if (similar.isNotEmpty) ...[
+                              RichText(
+                                text: TextSpan(children: [
+                                  TextSpan(
+                                    text: "More recipes from ",
+                                    style: TextStyle(
+                                      // color: kPrimaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0,
+                                    ),
                                   ),
+                                  TextSpan(
+                                    text: chefName,
+                                    style: TextStyle(
+                                      // color: kPrimaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0,
+                                    ),
+                                  )
+                                ]),
+                                overflow: TextOverflow.clip,
+                              )
+                            ] else ...[
+                              RichText(
+                                text: TextSpan(children: [
+                                  TextSpan(
+                                    text: "Seems like ",
+                                    style: TextStyle(
+                                      // color: kPrimaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: chefName,
+                                    style: TextStyle(
+                                      // color: kPrimaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: " hasn't posted more recipes.",
+                                    style: TextStyle(
+                                      // color: kPrimaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0,
+                                    ),
+                                  ),
+                                ]),
+                                overflow: TextOverflow.clip,
+                              )
+                            ],
+                            Container(
+                              width: size.width,
+                              padding: EdgeInsets.all(kDefaultPadding),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    for (var i = 0; i < similar.length; i++)
+                                      ViewRecSimilarRec(
+                                          recs: similar[i], funcB: (test) {}),
+                                  ],
                                 ),
-                                TextSpan(
-                                  text: "parthnamdev",
-                                  style: TextStyle(
-                                    // color: kPrimaryColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0,
-                                  ),
-                                )
-                              ]),
-                              overflow: TextOverflow.clip,
-                            ),
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  // for (var i = 0; i < 10; i++)
-                                  //   ViewRecSimilarRec(
-                                  //       recs: {}, recostData: {}, funcB: (test) {})
-                                ],
                               ),
                             )
                           ],

@@ -38,25 +38,33 @@ class FeedPost extends StatefulWidget {
 
 class _FeedPostState extends State<FeedPost> {
   // final Map post;
-
+  String? dp;
   AsyncMemoizer memoizer = AsyncMemoizer();
+  AsyncMemoizer memoizer1 = AsyncMemoizer();
   final dio = Dio();
   final storage = FlutterSecureStorage();
-  String _image = "";
-  bool isImage = false;
+  // String _image = "";
+  // bool isImage = false;
+
+  Future<void> getdp() async {
+    dp = await storage.read(key: "profilePic");
+  }
+
   @override
   void initState() {
     // TODO: implement initState
+    getdp();
     memoizer = AsyncMemoizer();
+    memoizer1 = AsyncMemoizer();
     super.initState();
-    loadImg(widget.post['postID'],memoizer).then((result) {
-      // print('hello');
-      // print(result);
-      setState(() {
-        _image = result;
-        isImage = true;
-      });
-    });
+    // loadImg(widget.post['postID'],memoizer).then((result) {
+    //   // print('hello');
+    //   // print(result);
+    //   setState(() {
+    //     _image = result;
+    //     isImage = true;
+    //   });
+    // });
   }
 
   @override
@@ -95,34 +103,39 @@ class _FeedPostState extends State<FeedPost> {
                       ),
                       child: CircleAvatar(
                         child: ClipOval(
-                            child: Image(
-                              height: 50.0,
-                              width: 50.0,
-                              image: NetworkImage(post['url']),
-                              fit: BoxFit.cover,
-                            ),
-                            // child: FutureBuilder(
-                            //     future: loadImg(post['url']),
-                            //     builder:
-                            //         (BuildContext context, AsyncSnapshot text) {
-                            //       if (text.connectionState ==
-                            //           ConnectionState.waiting) {
-                            //         return Image.asset(
-                            //             "assets/images/broken.png");
-                            //       } else {
-                            //         // return Image(
-                            //         //   image: NetworkImage(text.data.toString()),
-                            //         //   fit: BoxFit.cover,
-                            //         // );
-                            //         return Image(
-                            //           height: 50.0,
-                            //           width: 50.0,
-                            //           image: NetworkImage(text.data.toString()),
-                            //           fit: BoxFit.cover,
-                            //         );
-                            //       }
-                                // })
-                                ),
+                          //     child: Image(
+                          //       height: 50.0,
+                          //       width: 50.0,
+                          //       image: NetworkImage(post['url']),
+                          //       fit: BoxFit.cover,
+                          //     ),
+                          child: FutureBuilder(
+                              future: loadImg(post['profilePic'], memoizer1),
+                              builder:
+                                  (BuildContext context, AsyncSnapshot text) {
+                                if (text.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Image(
+                                    height: 50.0,
+                                    width: 50.0,
+                                    image:
+                                        AssetImage("assets/images/broken.png"),
+                                    fit: BoxFit.cover,
+                                  );
+                                } else {
+                                  // return Image(
+                                  //   image: NetworkImage(text.data.toString()),
+                                  //   fit: BoxFit.cover,
+                                  // );
+                                  return Image(
+                                    height: 50.0,
+                                    width: 50.0,
+                                    image: NetworkImage(text.data.toString()),
+                                    fit: BoxFit.cover,
+                                  );
+                                }
+                              }),
+                        ),
                       ),
                     ),
                     title: Text(
@@ -159,22 +172,59 @@ class _FeedPostState extends State<FeedPost> {
                         widget.func(true);
                       }
                     },
-                    child: Container(
-                      margin: EdgeInsets.all(10.0),
-                      width: double.infinity,
-                      height: size.width - 40.0,
-                      // height: 400.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25.0),
-                        image: DecorationImage(
-                          // image: NetworkImage(post['url']),
-                          image: !isImage
-                              ? Image.asset('assets/images/broken.png').image
-                              : Image.network(_image).image,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
+                    // child: Container(
+                    //   margin: EdgeInsets.all(10.0),
+                    //   width: double.infinity,
+                    //   height: size.width - 40.0,
+                    //   // height: 400.0,
+                    //   decoration: BoxDecoration(
+                    //     borderRadius: BorderRadius.circular(25.0),
+                    //     image: DecorationImage(
+                    //       // image: NetworkImage(post['url']),
+                    //       image: Image.network(_image).image,
+                    //       fit: BoxFit.cover,
+                    //     ),
+                    //   ),
+                    // ),
+                    child: FutureBuilder(
+                        future: loadImg(widget.post['postID'], memoizer),
+                        builder: (BuildContext context, AsyncSnapshot text) {
+                          if (text.connectionState == ConnectionState.waiting) {
+                            return Container(
+                              margin: EdgeInsets.all(10.0),
+                              width: double.infinity,
+                              height: size.width - 40.0,
+                              // height: 400.0,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25.0),
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                    'assets/images/broken.png',
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            );
+                          } else {
+                            // return Image(
+                            //   image: NetworkImage(text.data.toString()),
+                            //   fit: BoxFit.cover,
+                            // );
+                            return Container(
+                              margin: EdgeInsets.all(10.0),
+                              width: double.infinity,
+                              height: size.width - 40.0,
+                              // height: 400.0,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25.0),
+                                image: DecorationImage(
+                                  image: NetworkImage(text.data.toString()),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            );
+                          }
+                        }),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.0),
@@ -243,18 +293,19 @@ class _FeedPostState extends State<FeedPost> {
                                   icon: Icon(Icons.chat),
                                   iconSize: 30.0,
                                   onPressed: () {
-                                    Navigator.push(
-                                      context,
+                                    Navigator.of(context,rootNavigator: true).push(
                                       MaterialPageRoute(
                                         builder: (_) => ViewComments(
-                                            post: post,
-                                            noOfComment: widget.noOfComment,
-                                            noOfLike: widget.noOfLike,
-                                            func: widget.func,
-                                            plusComment: widget.plusComment,
-                                            funcB: widget.funcB,
-                                            bookmark: widget.bookmark,
-                                            minusComment: widget.minusComment),
+                                          post: post,
+                                          noOfComment: widget.noOfComment,
+                                          noOfLike: widget.noOfLike,
+                                          func: widget.func,
+                                          plusComment: widget.plusComment,
+                                          funcB: widget.funcB,
+                                          bookmark: widget.bookmark,
+                                          minusComment: widget.minusComment,
+                                          dp: dp,
+                                        ),
                                       ),
                                     );
                                   },
@@ -323,8 +374,8 @@ class _FeedPostState extends State<FeedPost> {
                   Flexible(
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                            context,
+                        Navigator.of(context,rootNavigator: true).push(
+                            
                             MaterialPageRoute(
                               builder: (_) => ViewComments(
                                 post: post,
@@ -335,6 +386,7 @@ class _FeedPostState extends State<FeedPost> {
                                 funcB: widget.funcB,
                                 bookmark: widget.bookmark,
                                 minusComment: widget.minusComment,
+                                dp: dp,
                               ),
                             ));
                       },

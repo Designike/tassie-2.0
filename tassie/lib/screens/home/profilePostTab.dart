@@ -142,8 +142,8 @@ class ProfilePostTabChild extends StatefulWidget {
 }
 
 class _ProfilePostTabChildState extends State<ProfilePostTabChild> {
-  String _image = "";
-  bool isImage = false;
+  // String _image = "";
+  // bool isImage = false;
   AsyncMemoizer memoizer = AsyncMemoizer();
 
   @override
@@ -156,17 +156,17 @@ class _ProfilePostTabChildState extends State<ProfilePostTabChild> {
     // TODO: implement initState
     super.initState();
     memoizer = AsyncMemoizer();
-    _image = "";
-    loadImg(widget.postID,memoizer).then((result) {
-      print('post refresh');
-      if (mounted) {
-        setState(() {
-          print(result);
-          _image = result;
-          isImage = true;
-        });
-      }
-    });
+    // _image = "";
+    // loadImg(widget.postID,memoizer).then((result) {
+    //   print('post refresh');
+    //   if (mounted) {
+    //     setState(() {
+    //       print(result);
+    //       _image = result;
+    //       isImage = true;
+    //     });
+    //   }
+    // });
   }
 
   @override
@@ -177,6 +177,20 @@ class _ProfilePostTabChildState extends State<ProfilePostTabChild> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return !isImage ? Container() : Image.network(_image);
+    // return !isImage ? Container() : Image.network(_image);
+    return FutureBuilder(
+        future: loadImg(widget.postID, memoizer),
+        builder: (BuildContext context, AsyncSnapshot text) {
+          if (text.connectionState == ConnectionState.waiting) {
+            // return Image.asset("assets/images/broken.png",
+            //     fit: BoxFit.cover, height: 128, width: 128);
+            return Container();
+          } else {
+            return Image(
+              image: NetworkImage(text.data.toString()),
+              fit: BoxFit.cover,
+            );
+          }
+        });
   }
 }

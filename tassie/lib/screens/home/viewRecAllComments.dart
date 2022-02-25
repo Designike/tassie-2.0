@@ -238,7 +238,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
                         ? null
                         : _buildProgressIndicator()
                     : CreateComment(
-                        comment: comments[index],
+                        recost: comments[index],
                         index: index,
                         userUuid: widget.userUuid,
                         recipeUuid: widget.recipeUuid,
@@ -248,6 +248,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
                           });
                         },
                         uuid: uuid,
+                        isPost: false,
                       );
               },
               childCount: comments.length,

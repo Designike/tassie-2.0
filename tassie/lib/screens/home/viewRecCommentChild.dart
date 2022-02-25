@@ -8,21 +8,22 @@ import 'package:tassie/constants.dart';
 import 'package:tassie/screens/imgLoader.dart';
 
 class CreateComment extends StatefulWidget {
-  const CreateComment(
-      {Key? key,
-      required this.comment,
-      required this.index,
-      required this.userUuid,
-      required this.recipeUuid,
-      required this.removeComment,
-      required this.uuid})
-      : super(key: key);
-  final Map comment;
+  const CreateComment({
+    Key? key,
+    required this.recost,
+    required this.index,
+    required this.userUuid,
+    required this.recipeUuid,
+    required this.removeComment,
+    required this.uuid,
+required this.isPost  }) : super(key: key);
+  final Map recost;
   final int index;
   final String userUuid;
   final String recipeUuid;
   final void Function(int) removeComment;
   final String? uuid;
+  final bool isPost;
   @override
   _CreateCommentState createState() => _CreateCommentState();
 }
@@ -35,7 +36,7 @@ class _CreateCommentState extends State<CreateComment> {
   void initState() {
     super.initState();
     memoizerComment = AsyncMemoizer();
-    print(widget.comment['profilePic']);
+    print(widget.recost['profilePic']);
   }
 
   @override
@@ -60,7 +61,7 @@ class _CreateCommentState extends State<CreateComment> {
                 // ),
                 child: FutureBuilder(
                     future:
-                        loadImg(widget.comment['profilePic'], memoizerComment),
+                        loadImg(widget.recost['profilePic'], memoizerComment),
                     // future: loadImg('assets/Banana.png',memoizer),
                     builder: (BuildContext context, AsyncSnapshot text) {
                       if (text.connectionState == ConnectionState.waiting) {
@@ -78,13 +79,13 @@ class _CreateCommentState extends State<CreateComment> {
           ),
         ),
         title: Text(
-          widget.comment['username'],
+          widget.recost['username'],
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
         subtitle: Text(
-          widget.comment['comment'],
+          widget.recost['comment'],
           style: TextStyle(
             color: MediaQuery.of(context).platformBrightness == Brightness.dark
                 ? kLight
@@ -92,7 +93,7 @@ class _CreateCommentState extends State<CreateComment> {
           ),
         ),
         trailing: (widget.userUuid == widget.uuid ||
-                widget.comment['uuid'].split('_comment_')[0] == widget.uuid)
+                widget.recost['uuid'].split('_comment_')[0] == widget.uuid)
             ? IconButton(
                 icon: Icon(
                   Icons.delete_rounded,
@@ -100,16 +101,24 @@ class _CreateCommentState extends State<CreateComment> {
                 color: Colors.grey,
                 onPressed: () async {
                   var token = await storage.read(key: "token");
-                  Response response =
-                      await dio.post("http://10.0.2.2:3000/recs/removeComment",
-                          options: Options(headers: {
-                            HttpHeaders.contentTypeHeader: "application/json",
-                            HttpHeaders.authorizationHeader: "Bearer " + token!
-                          }),
-                          data: {
-                        'recipeUuid': widget.recipeUuid,
-                        'commentUuid': widget.comment['uuid'],
-                      });
+                  String url = widget.isPost
+                      ? "http://10.0.2.2:3000/feed/removeComment"
+                      : "http://10.0.2.2:3000/recs/removeComment";
+                  Map data = widget.isPost
+                      ? {
+                          'postUuid': widget.recipeUuid,
+                          'commentUuid': widget.recost['uuid'],
+                        }
+                      : {
+                          'recipeUuid': widget.recipeUuid,
+                          'commentUuid': widget.recost['uuid'],
+                        };
+                  Response response = await dio.post(url,
+                      options: Options(headers: {
+                        HttpHeaders.contentTypeHeader: "application/json",
+                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                      }),
+                      data: data);
 
                   // setState(() {
                   //   widget.comments.remove(widget.index);
