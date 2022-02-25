@@ -1256,6 +1256,13 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                         'uuid': widget.recs['uuid'],
                                         'star': rating,
                                       });
+                                    if(response.data != null){
+                                      if(response.data['status'] == true) {
+                                        showSnack(context, "Thanks for rating!", () {}, 'OK', 3);
+                                      } else {
+                                        showSnack(context, "Unable to update rating!", () {}, 'OK', 3);
+                                      }
+                                    }
                                 },
                               ),
                               IconButton(
@@ -1279,7 +1286,13 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                       rating = 0.0;
                                     });
 
-                                    // if (response.data != null) {
+                                    if(response.data != null){
+                                      if(response.data['status'] == true) {
+                                        showSnack(context, "Rating deleted!", () {}, 'OK', 3);
+                                      } else {
+                                        showSnack(context, "Unable to reset rating!", () {}, 'OK', 3);
+                                      }
+                                    }
                                   },
                                   icon: Icon(Icons.restart_alt))
                             ],

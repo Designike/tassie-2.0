@@ -178,13 +178,13 @@ class _ExploreRecState extends State<ExploreRec> {
               ),
               GestureDetector(
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) =>
-                  //         ViewRecPost(recs: recs, funcB: widget.funcB),
-                  //   ),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ViewRecPost(recs: recs, funcB: widget.funcB),
+                    ),
+                  );
                 },
                 child: ListTile(
                   title: Text(
