@@ -9,6 +9,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/home/advancedSearch.dart';
 import 'package:tassie/screens/home/explorePost.dart';
 import 'package:tassie/screens/home/exploreRec.dart';
 import 'package:tassie/screens/home/exploreSearchHashtagTab.dart';
@@ -33,6 +34,7 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
   static List recosts = [];
   static List recostsData = [];
   static List recosts_toggle = [];
+  int previousLength = 0;
   bool isLazyLoading = false;
   bool isLoading = true;
   bool isEnd = false;
@@ -136,7 +138,7 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
         setState(() {
           isLazyLoading = true;
         });
-        var url = "http://10.0.2.2:3000/search/lazyExplore/" + index.toString();
+        var url = "http://10.0.2.2:3000/search/lazyExplore/" + index.toString()+'/'+previousLength.toString();
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
@@ -165,6 +167,7 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
               // print(noOfLikes);
 
             }
+            previousLength = (response.data['data']['results']).length;
             page++;
           });
           // print(response.data['data']['posts']);
@@ -319,21 +322,31 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                     child: Column(
                       children: [
                         Center(
-                          child: Container(
-                            // padding: EdgeInsets.all(5.0),
-                            margin: EdgeInsets.only(
-                                top: 50.0, bottom: kDefaultPadding),
-                            width: size.width * 0.5,
-                            child: Lottie.asset('assets/images/cooker.json',
-                                fit: BoxFit.cover),
-                            decoration: BoxDecoration(
-                                color:
-                                    MediaQuery.of(context).platformBrightness ==
-                                            Brightness.dark
-                                        ? kDark[900]
-                                        : kLight,
-                                borderRadius:
-                                    BorderRadius.circular(size.width)),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) {
+                                  return AdvancedSearch();
+                                }),
+                              );
+                            },
+                            child: Container(
+                              // padding: EdgeInsets.all(5.0),
+                              margin: EdgeInsets.only(
+                                  top: 50.0, bottom: kDefaultPadding),
+                              width: size.width * 0.5,
+                              child: Lottie.asset('assets/images/cooker.json',
+                                  fit: BoxFit.cover),
+                              decoration: BoxDecoration(
+                                  color: MediaQuery.of(context)
+                                              .platformBrightness ==
+                                          Brightness.dark
+                                      ? kDark[900]
+                                      : kLight,
+                                  borderRadius:
+                                      BorderRadius.circular(size.width)),
+                            ),
                           ),
                         ),
                         Text('Tap to suggest recipe!',

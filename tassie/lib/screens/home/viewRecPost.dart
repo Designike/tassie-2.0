@@ -52,6 +52,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
   int four = 0;
   int five = 0;
   int totalRatings = 11;
+  int estimatedTime = 0;
   // bool isLazyLoading = false;
   double rating = 0.0;
   double meanRating = 4.7;
@@ -83,7 +84,8 @@ class _ViewRecPostState extends State<ViewRecPost> {
   //   'henlo',
   // ];
   List steps = [];
-
+  int hours = 0;
+  int mins = 0;
   // var stepPics = [
   //   {'index': '1', 'fileID': 'https://picsum.photos/200'},
   //   {'index': '3', 'fileID': 'https://picsum.photos/200'}
@@ -139,7 +141,8 @@ class _ViewRecPostState extends State<ViewRecPost> {
         } else {
           rating = 0.0;
         }
-
+        estimatedTime = response.data['data']['recipe']['estimatedTime'];
+        setTime(estimatedTime);
         isSubscribed = response.data['data']['isSubscribed'];
         recipeName = response.data['data']['recipe']['name'];
         chefName = response.data['data']['recipe']['username'];
@@ -166,6 +169,13 @@ class _ViewRecPostState extends State<ViewRecPost> {
         isLoading = false;
       });
     }
+  }
+
+  void setTime(int time) {
+    setState(() {
+      hours = time ~/ 60;
+      mins = time % 60;
+    });
   }
 
   String desc =
@@ -755,19 +765,21 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                   RichText(
                                     text: TextSpan(
                                       children: [
-                                        TextSpan(
-                                          text: '15',
-                                          style: TextStyle(
-                                            fontSize: 18.0,
-                                            color: MediaQuery.of(context)
-                                                        .platformBrightness ==
-                                                    Brightness.dark
-                                                ? kLight
-                                                : kDark[900],
+                                        if (hours != 0) ...[
+                                          TextSpan(
+                                            text: hours.toString() + 'h ',
+                                            style: TextStyle(
+                                              fontSize: 18.0,
+                                              color: MediaQuery.of(context)
+                                                          .platformBrightness ==
+                                                      Brightness.dark
+                                                  ? kLight
+                                                  : kDark[900],
+                                            ),
                                           ),
-                                        ),
+                                        ],
                                         TextSpan(
-                                          text: 'm',
+                                          text: mins.toString() + 'm',
                                           style: TextStyle(
                                             fontSize: 18.0,
                                             color: MediaQuery.of(context)
