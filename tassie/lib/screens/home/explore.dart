@@ -138,7 +138,10 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
         setState(() {
           isLazyLoading = true;
         });
-        var url = "http://10.0.2.2:3000/search/lazyExplore/" + index.toString()+'/'+previousLength.toString();
+        var url = "http://10.0.2.2:3000/search/lazyExplore/" +
+            index.toString() +
+            '/' +
+            previousLength.toString();
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
@@ -251,13 +254,16 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
         : Scaffold(
             appBar: AppBar(
                 backgroundColor: Colors.transparent,
+                foregroundColor: Theme.of(context).brightness == Brightness.dark
+                ? kLight
+                : kDark[900],
                 systemOverlayStyle: SystemUiOverlayStyle(
-                    statusBarColor: Theme.of(context).scaffoldBackgroundColor,
-                    statusBarIconBrightness:
-                        MediaQuery.of(context).platformBrightness ==
-                                Brightness.light
-                            ? Brightness.dark
-                            : Brightness.light),
+                  statusBarColor: Theme.of(context).scaffoldBackgroundColor,
+                  statusBarIconBrightness:
+                      Theme.of(context).brightness == Brightness.light
+                          ? Brightness.dark
+                          : Brightness.light,
+                ),
                 toolbarHeight: kToolbarHeight * 1.2,
                 title: GestureDetector(
                   onTap: () {
@@ -288,8 +294,7 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                     // ),
                     child: const Text('Search', style: TextStyle(color: kDark)),
                     decoration: BoxDecoration(
-                      color: MediaQuery.of(context).platformBrightness ==
-                              Brightness.dark
+                      color: Theme.of(context).brightness == Brightness.dark
                           ? kDark[900]
                           : kLight,
                       borderRadius: BorderRadius.circular(10.0),
@@ -339,8 +344,7 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                               child: Lottie.asset('assets/images/cooker.json',
                                   fit: BoxFit.cover),
                               decoration: BoxDecoration(
-                                  color: MediaQuery.of(context)
-                                              .platformBrightness ==
+                                  color: Theme.of(context).brightness ==
                                           Brightness.dark
                                       ? kDark[900]
                                       : kLight,

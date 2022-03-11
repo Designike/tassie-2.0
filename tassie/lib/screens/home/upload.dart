@@ -140,7 +140,7 @@ class _UploaderState extends State<Uploader> {
             padding: EdgeInsets.symmetric(vertical: 10.0),
             icon: Icon(Icons.cloud_upload),
             iconSize: 30.0,
-            color: MediaQuery.of(context).platformBrightness == Brightness.dark
+            color: Theme.of(context).brightness == Brightness.dark
                 ? kPrimaryColor
                 : kPrimaryColorAccent,
             onPressed: () => {

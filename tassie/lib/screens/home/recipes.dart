@@ -199,8 +199,7 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
               systemOverlayStyle: SystemUiOverlayStyle(
                   statusBarColor: Theme.of(context).scaffoldBackgroundColor,
                   statusBarIconBrightness:
-                      MediaQuery.of(context).platformBrightness ==
-                              Brightness.light
+                      Theme.of(context).brightness == Brightness.light
                           ? Brightness.dark
                           : Brightness.light),
               title: Text(

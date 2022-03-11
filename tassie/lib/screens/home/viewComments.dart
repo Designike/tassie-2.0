@@ -29,7 +29,8 @@ class ViewComments extends StatefulWidget {
       required this.plusComment,
       required this.funcB,
       required this.bookmark,
-      required this.minusComment, required this.dp});
+      required this.minusComment,
+      required this.dp});
 
   @override
   _ViewCommentsState createState() => _ViewCommentsState();
@@ -122,7 +123,7 @@ class _ViewCommentsState extends State<ViewComments> {
         subtitle: Text(
           comments[index]['comment'],
           style: TextStyle(
-            color: MediaQuery.of(context).platformBrightness == Brightness.dark
+            color: Theme.of(context).brightness == Brightness.dark
                 ? kLight
                 : kDark[900],
           ),
@@ -351,8 +352,8 @@ class _ViewCommentsState extends State<ViewComments> {
                                     subtitle: Text(
                                       widget.post['createdAt'],
                                       style: TextStyle(
-                                          color: MediaQuery.of(context)
-                                                      .platformBrightness ==
+                                          color: Theme.of(context)
+                                                      .brightness ==
                                                   Brightness.dark
                                               ? kLight
                                               : kDark[900]),
@@ -604,8 +605,8 @@ class _ViewCommentsState extends State<ViewComments> {
                                       text: widget.post['username'],
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: MediaQuery.of(context)
-                                                    .platformBrightness ==
+                                        color: Theme.of(context)
+                                                    .brightness ==
                                                 Brightness.light
                                             ? kDark[900]
                                             : kLight,
@@ -615,8 +616,8 @@ class _ViewCommentsState extends State<ViewComments> {
                                     TextSpan(
                                       text: widget.post['description'],
                                       style: TextStyle(
-                                        color: MediaQuery.of(context)
-                                                    .platformBrightness ==
+                                        color: Theme.of(context)
+                                                    .brightness ==
                                                 Brightness.light
                                             ? kDark[900]
                                             : kLight,
@@ -671,7 +672,7 @@ class _ViewCommentsState extends State<ViewComments> {
               topLeft: Radius.circular(30.0),
               topRight: Radius.circular(30.0),
             ),
-            color: MediaQuery.of(context).platformBrightness == Brightness.dark
+            color: Theme.of(context).brightness == Brightness.dark
                 ? kDark[900]
                 : kLight,
           ),

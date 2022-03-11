@@ -53,7 +53,7 @@ class _ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
       // height: 300.0,
       // height: ((size.width - 42.0)/2) + 120.0, // minus padding, plus list tile
       decoration: BoxDecoration(
-        color: MediaQuery.of(context).platformBrightness == Brightness.dark
+        color: Theme.of(context).brightness == Brightness.dark
             ? kDark[900]
             : kLight,
         borderRadius: BorderRadius.circular(25.0),
@@ -194,8 +194,7 @@ class _ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
                     recs['username'],
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                        color: MediaQuery.of(context).platformBrightness ==
-                                Brightness.dark
+                        color: Theme.of(context).brightness == Brightness.dark
                             ? kLight
                             : kDark[900]),
                   ),
@@ -295,7 +294,7 @@ class _ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
           //                   style: TextStyle(
           //                     fontWeight: FontWeight.bold,
           //                     color:
-          //                         MediaQuery.of(context).platformBrightness ==
+          //                         Theme.of(context).brightness ==
           //                                 Brightness.light
           //                             ? kDark[900]
           //                             : kLight,
@@ -306,7 +305,7 @@ class _ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
           //                   text: recs[index]['description'],
           //                   style: TextStyle(
           //                     color:
-          //                         MediaQuery.of(context).platformBrightness ==
+          //                         Theme.of(context).brightness ==
           //                                 Brightness.light
           //                             ? kDark[900]
           //                             : kLight,

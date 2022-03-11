@@ -71,7 +71,7 @@ class _ExplorePostState extends State<ExplorePost> {
       width: double.infinity,
       // height: 560.0,
       decoration: BoxDecoration(
-        color: MediaQuery.of(context).platformBrightness == Brightness.dark
+        color: Theme.of(context).brightness == Brightness.dark
             ? kDark[900]
             : kLight,
         borderRadius: BorderRadius.circular(25.0),
@@ -178,35 +178,35 @@ class _ExplorePostState extends State<ExplorePost> {
                   ),
                   child: CircleAvatar(
                     child: ClipOval(
-                        // child: Image(
-                        //   height: (size.width - 42.0) / 12,
-                        //   width: (size.width - 42.0) / 12,
-                        //   image: NetworkImage(post['profilePic']),
-                        //   fit: BoxFit.cover,
-                        // ),
-                        child: FutureBuilder(
-                            future: loadImg(post['profilePic'], memoizer1),
-                            builder:
-                                (BuildContext context, AsyncSnapshot text) {
-                              if (text.connectionState ==
-                                  ConnectionState.waiting) {
-                                // return Image.asset("assets/images/broken.png",
-                                //     fit: BoxFit.cover, height: 128, width: 128);
-                                return Image(
-                                  height: (size.width - 42.0) / 12,
-                                  width: (size.width - 42.0) / 12,
-                                  image: AssetImage("assets/images/broken.png"),
-                                  fit: BoxFit.cover,
-                                );
-                              } else {
-                                return Image(
-                                  height: (size.width - 42.0) / 12,
-                                  width: (size.width - 42.0) / 12,
-                                  image: NetworkImage(text.data.toString()),
-                                  fit: BoxFit.cover,
-                                );
-                              }
-                            }),),
+                      // child: Image(
+                      //   height: (size.width - 42.0) / 12,
+                      //   width: (size.width - 42.0) / 12,
+                      //   image: NetworkImage(post['profilePic']),
+                      //   fit: BoxFit.cover,
+                      // ),
+                      child: FutureBuilder(
+                          future: loadImg(post['profilePic'], memoizer1),
+                          builder: (BuildContext context, AsyncSnapshot text) {
+                            if (text.connectionState ==
+                                ConnectionState.waiting) {
+                              // return Image.asset("assets/images/broken.png",
+                              //     fit: BoxFit.cover, height: 128, width: 128);
+                              return Image(
+                                height: (size.width - 42.0) / 12,
+                                width: (size.width - 42.0) / 12,
+                                image: AssetImage("assets/images/broken.png"),
+                                fit: BoxFit.cover,
+                              );
+                            } else {
+                              return Image(
+                                height: (size.width - 42.0) / 12,
+                                width: (size.width - 42.0) / 12,
+                                image: NetworkImage(text.data.toString()),
+                                fit: BoxFit.cover,
+                              );
+                            }
+                          }),
+                    ),
                   ),
                 ),
                 title: Text(
@@ -219,7 +219,7 @@ class _ExplorePostState extends State<ExplorePost> {
                 // subtitle: Text(
                 //   post['createdAt'],
                 //   style: TextStyle(
-                //       color: MediaQuery.of(context).platformBrightness ==
+                //       color: Theme.of(context).brightness ==
                 //               Brightness.dark
                 //           ? kLight
                 //           : kDark[900]),
@@ -434,7 +434,7 @@ class _ExplorePostState extends State<ExplorePost> {
           //                   style: TextStyle(
           //                     fontWeight: FontWeight.bold,
           //                     color:
-          //                         MediaQuery.of(context).platformBrightness ==
+          //                         Theme.of(context).brightness ==
           //                                 Brightness.light
           //                             ? kDark[900]
           //                             : kLight,
@@ -445,7 +445,7 @@ class _ExplorePostState extends State<ExplorePost> {
           //                   text: post['description'],
           //                   style: TextStyle(
           //                     color:
-          //                         MediaQuery.of(context).platformBrightness ==
+          //                         Theme.of(context).brightness ==
           //                                 Brightness.light
           //                             ? kDark[900]
           //                             : kLight,

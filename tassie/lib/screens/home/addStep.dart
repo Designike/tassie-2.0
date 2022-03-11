@@ -56,28 +56,32 @@ class _StepTextFieldState extends State<StepTextField> {
       controller: _stepController,
       onChanged: (v) => widget.stepsList[widget.index!] = v,
       decoration: InputDecoration(
-                            labelText: 'Add Step',
-                            
-                            labelStyle: TextStyle(
-                              // fontFamily: 'Raleway',
-                              fontSize: 16.0,
-                              color: MediaQuery.of(context).platformBrightness == Brightness.dark
-                      ? kPrimaryColor
-                      : kDark[900],
-                            ),
-                            contentPadding: EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), ),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: MediaQuery.of(context).platformBrightness == Brightness.dark
-                      ? kPrimaryColor
-                      : kDark[900]!),borderRadius: BorderRadius.circular(15.0),),
-                                ),
+        labelText: 'Add Step',
+        labelStyle: TextStyle(
+          // fontFamily: 'Raleway',
+          fontSize: 16.0,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? kPrimaryColor
+              : kDark[900],
+        ),
+        contentPadding:
+            EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? kPrimaryColor
+                  : kDark[900]!),
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+      ),
       validator: (v) {
         if (v!.trim().isEmpty) return 'Please enter something';
         return null;
       },
     );
-    
   }
 }

@@ -126,7 +126,7 @@ class _AddRecipeState extends State<AddRecipe> {
     //             padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
     //             icon: Icon(Icons.cloud_upload),
     //             iconSize: 30.0,
-    //             color: MediaQuery.of(context).platformBrightness == Brightness.dark
+    //             color: Theme.of(context).brightness == Brightness.dark
     //                 ? kPrimaryColor
     //                 : kPrimaryColorAccent,
     //             onPressed: () {
@@ -218,7 +218,7 @@ class _AddRecipeState extends State<AddRecipe> {
                         onPressed: () => _pickImage(ImageSource.camera, key, index),
                         ),
                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(size.width),
-                        color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                        color: Theme.of(context).brightness == Brightness.dark
                         ? kDark[900]
                         : kLight,),
                       ),
@@ -232,7 +232,7 @@ class _AddRecipeState extends State<AddRecipe> {
                     onPressed: () => _pickImage(ImageSource.gallery, key,index),
                     ),
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(size.width),
-                    color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                    color: Theme.of(context).brightness == Brightness.dark
                     ? kDark[900]
                     : kLight,),
                   ),
@@ -365,7 +365,7 @@ class _AddRecipeState extends State<AddRecipe> {
             child: Column(
               children: [
                 TextFormField(
-                  // style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                  // style: TextStyle(color: Theme.of(context).brightness == Brightness.dark
                   //     ? kLight
                   //     : kDark[900]),
                         initialValue: recipeName.isNotEmpty ? recipeName : '',
@@ -375,7 +375,7 @@ class _AddRecipeState extends State<AddRecipe> {
                             labelStyle: TextStyle(
                               // fontFamily: 'Raleway',
                               fontSize: 16.0,
-                              color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                              color: Theme.of(context).brightness == Brightness.dark
                       ? kPrimaryColor
                       : kDark[900],
                             ),
@@ -383,7 +383,7 @@ class _AddRecipeState extends State<AddRecipe> {
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), ),
                             focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                                borderSide: BorderSide(color: Theme.of(context).brightness == Brightness.dark
                       ? kPrimaryColor
                       : kDark[900]!),borderRadius: BorderRadius.circular(15.0),),
                                 ),
@@ -408,7 +408,7 @@ class _AddRecipeState extends State<AddRecipe> {
           state: _currentStep > 1 ? StepState.complete : StepState.indexed,
           title: Text('Tags'),
           // subtitle: Text('Images are optional', 
-          //           style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
+          //           style: TextStyle(color: Theme.of(context).brightness == Brightness.dark
           //             ? kDark
           //             : kDark[700]),),
           content: Column(
@@ -604,7 +604,7 @@ class _AddRecipeState extends State<AddRecipe> {
           state: _currentStep > 2 ? StepState.complete : StepState.indexed,
           title: Text('Ingredients'),
           subtitle: Text('Images are optional', 
-                    style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                    style: TextStyle(color: Theme.of(context).brightness == Brightness.dark
                       ? kDark
                       : kDark[700]),),
           content: Column(
@@ -618,7 +618,7 @@ class _AddRecipeState extends State<AddRecipe> {
           state: _currentStep > 3 ? StepState.complete : StepState.indexed,
           title: Text('Steps'),
           subtitle: Text('Images are optional', 
-                    style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                    style: TextStyle(color: Theme.of(context).brightness == Brightness.dark
                       ? kDark
                       : kDark[700]),),
           content: Column(
@@ -631,7 +631,7 @@ class _AddRecipeState extends State<AddRecipe> {
           isActive: _currentStep >= 4,
           title: Text('Description'),
           subtitle: Text('You can also add hashtags and mentions', 
-                    style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                    style: TextStyle(color: Theme.of(context).brightness == Brightness.dark
                       ? kDark
                       : kDark[700]),),
           content: Padding(
@@ -659,7 +659,7 @@ class _AddRecipeState extends State<AddRecipe> {
                           labelStyle: TextStyle(
                             // fontFamily: 'Raleway',
                             fontSize: 16.0,
-                            color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                            color: Theme.of(context).brightness == Brightness.dark
                                 ? kPrimaryColor
                                 : kDark[900],
                           ),
@@ -672,7 +672,7 @@ class _AddRecipeState extends State<AddRecipe> {
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                                 color:
-                                    MediaQuery.of(context).platformBrightness == Brightness.dark
+                                    Theme.of(context).brightness == Brightness.dark
                                         ? kPrimaryColor
                                         : kDark[900]!),
                             borderRadius: BorderRadius.circular(15.0),
@@ -705,7 +705,7 @@ class _AddRecipeState extends State<AddRecipe> {
           isActive: _currentStep >= 5,
           title: Text('Youtube link'),
           subtitle: Text('Namak Swaad Anusaar!  (Optional)', 
-                    style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                    style: TextStyle(color: Theme.of(context).brightness == Brightness.dark
                       ? kDark
                       : kDark[700]),),
           content: Padding(
@@ -713,7 +713,7 @@ class _AddRecipeState extends State<AddRecipe> {
             child: Column(
               children: [
                 TextFormField(
-                    // style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                    // style: TextStyle(color: Theme.of(context).brightness == Brightness.dark
                     //     ? kLight
                     //     : kDark[900]),
                           initialValue: youtubeLink.isNotEmpty ? youtubeLink : '',
@@ -723,7 +723,7 @@ class _AddRecipeState extends State<AddRecipe> {
                               labelStyle: TextStyle(
                                 // fontFamily: 'Raleway',
                                 fontSize: 16.0,
-                                color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                                color: Theme.of(context).brightness == Brightness.dark
                         ? kPrimaryColor
                         : kDark[900],
                               ),
@@ -731,7 +731,7 @@ class _AddRecipeState extends State<AddRecipe> {
                               floatingLabelBehavior: FloatingLabelBehavior.always,
                               border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), ),
                               focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                                  borderSide: BorderSide(color: Theme.of(context).brightness == Brightness.dark
                         ? kPrimaryColor
                         : kDark[900]!),borderRadius: BorderRadius.circular(15.0),),
                                   ),
@@ -883,7 +883,7 @@ List<Widget> _getRecipe(size) {
         androidUiSettings: AndroidUiSettings(
           toolbarTitle: 'Garnish it'
           toolbarColor: Theme.of(context).scaffoldBackgroundColor,
-          toolbarWidgetColor: MediaQuery.of(context).platformBrightness == Brightness.dark
+          toolbarWidgetColor: Theme.of(context).brightness == Brightness.dark
                     ? kDark
                     : kDark[900],
         ),
@@ -1089,10 +1089,13 @@ List<Widget> _getRecipe(size) {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
+          foregroundColor: Theme.of(context).brightness == Brightness.dark
+                ? kLight
+                : kDark[900],
           systemOverlayStyle: SystemUiOverlayStyle(
               statusBarColor: Theme.of(context).scaffoldBackgroundColor,
               statusBarIconBrightness:
-                  MediaQuery.of(context).platformBrightness == Brightness.light
+                  Theme.of(context).brightness == Brightness.light
                       ? Brightness.dark
                       : Brightness.light),
           title: Text(
@@ -1122,11 +1125,11 @@ List<Widget> _getRecipe(size) {
                       child: Text(_isLastStep ? 'UPLOAD' : 'NEXT'),
                       style: TextButton.styleFrom(
                           backgroundColor:
-                              MediaQuery.of(context).platformBrightness ==
+                              Theme.of(context).brightness ==
                                       Brightness.dark
                                   ? kDark[900]
                                   : kPrimaryColor,
-                          primary: MediaQuery.of(context).platformBrightness ==
+                          primary: Theme.of(context).brightness ==
                                   Brightness.dark
                               ? kPrimaryColor
                               : kLight),

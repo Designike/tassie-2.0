@@ -60,8 +60,7 @@ class _ExploreSearchRecipeTabState extends State<ExploreSearchRecipeTab> {
                 subtitle: Text(
                   recipes[index]['username'],
                   style: TextStyle(
-                      color: MediaQuery.of(context).platformBrightness ==
-                              Brightness.dark
+                      color: Theme.of(context).brightness == Brightness.dark
                           ? kLight
                           : kDark[900]),
                 ),

@@ -143,6 +143,9 @@ class _ViewRecAllRatingsState extends State<ViewRecAllRatings> {
         title: Text("Ratings"),
         centerTitle: false,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        foregroundColor: Theme.of(context).brightness == Brightness.dark
+            ? kLight
+            : kDark[900],
       ),
       // backgroundColor: Color(0xFFEDF0F6),
       body: CustomScrollView(
@@ -182,7 +185,7 @@ class _ViewRecAllRatingsState extends State<ViewRecAllRatings> {
       //         topLeft: Radius.circular(30.0),
       //         topRight: Radius.circular(30.0),
       //       ),
-      //       color: MediaQuery.of(context).platformBrightness == Brightness.dark
+      //       color: Theme.of(context).brightness == Brightness.dark
       //           ? kDark[900]
       //           : kLight,
       //     ),

@@ -237,7 +237,7 @@
 //           systemOverlayStyle: SystemUiOverlayStyle(
 //               statusBarColor: Theme.of(context).scaffoldBackgroundColor,
 //               statusBarIconBrightness:
-//                   MediaQuery.of(context).platformBrightness == Brightness.light
+//                   Theme.of(context).brightness == Brightness.light
 //                       ? Brightness.dark
 //                       : Brightness.light),
 //           toolbarHeight: kToolbarHeight * 1.2,
@@ -266,7 +266,7 @@
 //               child: const Text('Search', style: TextStyle(color: kDark)),
 //               decoration: BoxDecoration(
 //                 color:
-//                     MediaQuery.of(context).platformBrightness == Brightness.dark
+//                     Theme.of(context).brightness == Brightness.dark
 //                         ? kDark[900]
 //                         : kLight,
 //                 borderRadius: BorderRadius.circular(10.0),
@@ -301,7 +301,7 @@
 //                       child: Lottie.asset('assets/images/cooker.json',
 //                           fit: BoxFit.cover),
 //                       decoration: BoxDecoration(
-//                           color: MediaQuery.of(context).platformBrightness ==
+//                           color: Theme.of(context).brightness ==
 //                                   Brightness.dark
 //                               ? kDark[900]
 //                               : kLight,

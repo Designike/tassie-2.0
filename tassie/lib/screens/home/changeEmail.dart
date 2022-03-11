@@ -5,45 +5,69 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/authenticate/otp2.dart';
 import 'package:tassie/screens/home/snackbar.dart';
 
-class ChangeUsername extends StatefulWidget {
-  const ChangeUsername({Key? key}) : super(key: key);
+class ChangeEmail extends StatefulWidget {
+  const ChangeEmail({Key? key}) : super(key: key);
 
   @override
-  _ChangeUsernameState createState() => _ChangeUsernameState();
+  _ChangeEmailState createState() => _ChangeEmailState();
 }
 
-class _ChangeUsernameState extends State<ChangeUsername> {
-  bool uniqueUsername = false;
+class _ChangeEmailState extends State<ChangeEmail> {
+  // bool uniqueUsername = false;
   final _formKey = GlobalKey<FormState>();
-  String username = "";
+  String email = "";
+  String newpass = "";
+  bool uniqueEmail = true;
   String notUniqText = "";
-  Future<void> checkUsername(username) async {
+  // Future<void> checkUsername(username) async {
+  //   var dio = Dio();
+  //   // print(username);
+  //   try {
+  //     // print('');
+  //     Response response =
+  //         await dio.get("http://10.0.2.2:3000/user/username/" + username);
+  //     // var res = jsonDecode(response.toString());
+
+  //     // if(response)
+  //     // return res.status;
+  //     // print(response);
+  //     setState(() {
+  //       uniqueUsername = response.data['status'];
+  //     });
+  //   } on DioError catch (e) {
+  //     if (e.response != null) {
+  //       setState(() {
+  //         uniqueUsername = e.response!.data['status'];
+  //       });
+  //     }
+  //   }
+  //   print(uniqueUsername);
+  // }
+
+  Future<void> checkEmail(email) async {
     var dio = Dio();
-    // print(username);
     try {
-      // print('');
       Response response =
-          await dio.get("http://10.0.2.2:3000/user/username/" + username);
+          await dio.get("http://10.0.2.2:3000/user/checkEmail/" + email);
       // var res = jsonDecode(response.toString());
 
       // if(response)
       // return res.status;
-      // print(response);
       setState(() {
-        uniqueUsername = response.data['status'];
+        uniqueEmail = response.data['status'];
         notUniqText = response.data['message'];
       });
     } on DioError catch (e) {
       if (e.response != null) {
         setState(() {
-          uniqueUsername = e.response!.data['status'];
+          uniqueEmail = e.response!.data['status'];
           notUniqText = e.response!.data['message'];
         });
       }
     }
-    print(uniqueUsername);
   }
 
   @override
@@ -51,9 +75,6 @@ class _ChangeUsernameState extends State<ChangeUsername> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        foregroundColor: Theme.of(context).brightness == Brightness.dark
-              ? kLight
-              : kDark[900],
         // elevation: 1,
         systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Theme.of(context).scaffoldBackgroundColor,
@@ -62,39 +83,48 @@ class _ChangeUsernameState extends State<ChangeUsername> {
                     ? Brightness.dark
                     : Brightness.light),
         title: Text(
-          "Change Username",
+          "Change Email",
           // style: TextStyle(fontWeight: FontWeight.w500),
         ),
         actions: [
-          uniqueUsername
+          uniqueEmail
               ? IconButton(
                   icon: Icon(
                     Icons.done_rounded,
                     // color: Colors.green,
                   ),
                   onPressed: () async {
+                    FocusScope.of(context).unfocus();
                     var dio = Dio();
                     var storage = FlutterSecureStorage();
                     var token = await storage.read(key: "token");
                     if (_formKey.currentState!.validate()) {
-                      print(username);
-                      Response response = await dio.post(
-                          "http://10.0.2.2:3000/profile/updateUsername",
-                          options: Options(headers: {
-                            HttpHeaders.contentTypeHeader: "application/json",
-                            HttpHeaders.authorizationHeader: "Bearer " + token!
-                          }),
-                          // data: jsonEncode(value),
-                          data: {
-                            "username": username,
+                      print(email);
+                      Response response =
+                          await dio.post("http://10.0.2.2:3000/user/email",
+                              options: Options(headers: {
+                                HttpHeaders.contentTypeHeader:
+                                    "application/json",
+                                HttpHeaders.authorizationHeader:
+                                    "Bearer " + token!
+                              }),
+                              // data: jsonEncode(value),
+                              data: {
+                            "email": email,
                           });
                       if (response.data != null) {
+                        print(response.data);
                         if (response.data['status'] == true) {
-                          Navigator.pop(context);
-                          showSnack(context, 'Username update in progress',
-                              () {}, 'OK', 3);
+                          Navigator.of(context, rootNavigator: true).push(
+                            MaterialPageRoute(builder: (context) {
+                              return OTP2(
+                                  uuid: response.data['data']['uuid'],
+                                  time: response.data['data']['time']);
+                            }),
+                          );
                         } else {
-                          showSnack(context, 'Server error', () {}, 'OK', 4);
+                          showSnack(context, response.data['message'], () {},
+                              'OK', 4);
                         }
                       } else {
                         showSnack(context, 'Server error', () {}, 'OK', 4);
@@ -123,32 +153,45 @@ class _ChangeUsernameState extends State<ChangeUsername> {
                   height: 15.0,
                 ),
                 buildTextField(
-                  "Name",
-                  username,
+                  "New Email",
+                  '',
                   false,
-                  TextInputType.text,
+                  TextInputType.emailAddress,
                   (val) async {
-                    username = val;
-                    // print(username);
-                    if (val.length > 4) {
-                      // print('1');
-                      await checkUsername(val);
-                      // print('2');
+                    email = val;
+                    if (val.contains('@') && val.length > 8) {
+                      await checkEmail(val);
                     }
+                    // print(username);
                   },
                   (val) {
-                    if (!RegExp(r"^(?=[a-zA-Z0-9._]{6,32}$)").hasMatch(val!)) {
-                      return 'Please enter a valid Username';
+                    if (!RegExp(
+                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                        .hasMatch(val!)) {
+                      return 'Please enter a valid Email';
                     }
-                    if (!uniqueUsername) {
-                      return "Username already exists";
+                    if (!uniqueEmail) {
+                      return "Email already exists";
                     }
                     return null;
                   },
                 ),
+                // buildTextField(
+                //   "New password",
+                //   '',
+                //   true,
+                //   TextInputType.text,
+                //   (val) async {
+                //     newpass = val;
+                //     // print(username);
+                //   },
+                //   (val) => val!.length < 6
+                //       ? 'Enter password 6+ characters long'
+                //       : null,
+                // ),
                 SizedBox(height: 20.0),
                 Text(
-                    'Type your new username, if it is available the save button on corner will be enabled.'),
+                    'Type your new email, if it is available the save button on corner will be enabled.'),
                 SizedBox(height: 20.0),
                 Text(notUniqText, style: TextStyle(color: kPrimaryColor)),
               ],
@@ -162,7 +205,7 @@ class _ChangeUsernameState extends State<ChangeUsername> {
   Widget buildTextField(
       String labelText,
       String initialValue,
-      bool isMultiline,
+      bool isPassword,
       TextInputType inputType,
       Function(String) onChange,
       String? Function(String?) validator) {
@@ -171,7 +214,7 @@ class _ChangeUsernameState extends State<ChangeUsername> {
       child: TextFormField(
         initialValue: initialValue,
         keyboardType: inputType,
-        maxLines: isMultiline ? null : 1,
+        obscureText: isPassword ? true : false,
         decoration: InputDecoration(
           labelText: labelText,
           labelStyle: TextStyle(

@@ -200,7 +200,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
         systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Theme.of(context).scaffoldBackgroundColor,
             statusBarIconBrightness:
-                MediaQuery.of(context).platformBrightness == Brightness.light
+                Theme.of(context).brightness == Brightness.light
                     ? Brightness.dark
                     : Brightness.light),
         title: Text(
@@ -423,8 +423,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                         labelStyle: TextStyle(
                           // fontFamily: 'Raleway',
                           fontSize: 16.0,
-                          color: MediaQuery.of(context).platformBrightness ==
-                                  Brightness.dark
+                          color: Theme.of(context).brightness == Brightness.dark
                               ? kPrimaryColor
                               : kDark[900],
                         ),
@@ -436,11 +435,10 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color:
-                                  MediaQuery.of(context).platformBrightness ==
-                                          Brightness.dark
-                                      ? kPrimaryColor
-                                      : kDark[900]!),
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? kPrimaryColor
+                                  : kDark[900]!),
                           borderRadius: BorderRadius.circular(15.0),
                         ),
                       ),
@@ -499,8 +497,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                         child: TextLiquidFill(
                           text: 'Tassie',
                           waveColor: kPrimaryColor,
-                          boxBackgroundColor:
-                              kDark[900]!,
+                          boxBackgroundColor: kDark[900]!,
                           textStyle: TextStyle(
                             fontSize: 50.0,
                             fontWeight: FontWeight.bold,
@@ -530,7 +527,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                       'ingredients': ingredients,
                       'meal': meal,
                     });
-                print(response);
+                // print(response);
                 var id = response.data['data']['id'];
                 print(id);
                 await Future.delayed(Duration(seconds: 1));
@@ -559,14 +556,12 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
               },
               child: Text('Find Recipes'),
               style: TextButton.styleFrom(
-                backgroundColor:
-                    MediaQuery.of(context).platformBrightness == Brightness.dark
-                        ? kDark[900]
-                        : kPrimaryColor,
-                primary:
-                    MediaQuery.of(context).platformBrightness == Brightness.dark
-                        ? kPrimaryColor
-                        : kLight,
+                backgroundColor: Theme.of(context).brightness == Brightness.dark
+                    ? kDark[900]
+                    : kPrimaryColor,
+                primary: Theme.of(context).brightness == Brightness.dark
+                    ? kPrimaryColor
+                    : kLight,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                 ),

@@ -83,7 +83,7 @@ class _FeedPostState extends State<FeedPost> {
         width: double.infinity,
         // height: 560.0,
         decoration: BoxDecoration(
-          color: MediaQuery.of(context).platformBrightness == Brightness.dark
+          color: Theme.of(context).brightness == Brightness.dark
               ? kDark[900]
               : kLight,
           borderRadius: BorderRadius.circular(25.0),
@@ -147,8 +147,7 @@ class _FeedPostState extends State<FeedPost> {
                     subtitle: Text(
                       post['createdAt'],
                       style: TextStyle(
-                          color: MediaQuery.of(context).platformBrightness ==
-                                  Brightness.dark
+                          color: Theme.of(context).brightness == Brightness.dark
                               ? kLight
                               : kDark[900]),
                     ),
@@ -293,7 +292,8 @@ class _FeedPostState extends State<FeedPost> {
                                   icon: Icon(Icons.chat),
                                   iconSize: 30.0,
                                   onPressed: () {
-                                    Navigator.of(context,rootNavigator: true).push(
+                                    Navigator.of(context, rootNavigator: true)
+                                        .push(
                                       MaterialPageRoute(
                                         builder: (_) => ViewComments(
                                           post: post,
@@ -374,21 +374,20 @@ class _FeedPostState extends State<FeedPost> {
                   Flexible(
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.of(context,rootNavigator: true).push(
-                            
-                            MaterialPageRoute(
-                              builder: (_) => ViewComments(
-                                post: post,
-                                noOfComment: widget.noOfComment,
-                                noOfLike: widget.noOfLike,
-                                func: widget.func,
-                                plusComment: widget.plusComment,
-                                funcB: widget.funcB,
-                                bookmark: widget.bookmark,
-                                minusComment: widget.minusComment,
-                                dp: dp,
-                              ),
-                            ));
+                        Navigator.of(context, rootNavigator: true)
+                            .push(MaterialPageRoute(
+                          builder: (_) => ViewComments(
+                            post: post,
+                            noOfComment: widget.noOfComment,
+                            noOfLike: widget.noOfLike,
+                            func: widget.func,
+                            plusComment: widget.plusComment,
+                            funcB: widget.funcB,
+                            bookmark: widget.bookmark,
+                            minusComment: widget.minusComment,
+                            dp: dp,
+                          ),
+                        ));
                       },
                       child: RichText(
                         overflow: TextOverflow.ellipsis,
@@ -398,22 +397,20 @@ class _FeedPostState extends State<FeedPost> {
                               text: post['username'],
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color:
-                                    MediaQuery.of(context).platformBrightness ==
-                                            Brightness.light
-                                        ? kDark[900]
-                                        : kLight,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? kDark[900]
+                                    : kLight,
                               ),
                             ),
                             TextSpan(text: " "),
                             TextSpan(
                               text: post['description'],
                               style: TextStyle(
-                                color:
-                                    MediaQuery.of(context).platformBrightness ==
-                                            Brightness.light
-                                        ? kDark[900]
-                                        : kLight,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? kDark[900]
+                                    : kLight,
                               ),
                             )
                           ],

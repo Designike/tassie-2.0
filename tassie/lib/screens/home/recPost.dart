@@ -56,7 +56,7 @@ class _RecPostState extends State<RecPost> {
         height:
             ((size.width - 40.0) / 2) + 50.0, // minus padding, plus list tile
         decoration: BoxDecoration(
-          color: MediaQuery.of(context).platformBrightness == Brightness.dark
+          color: Theme.of(context).brightness == Brightness.dark
               ? kDark[900]
               : kLight,
           borderRadius: BorderRadius.circular(25.0),
@@ -65,66 +65,69 @@ class _RecPostState extends State<RecPost> {
           children: [
             Column(
               children: [
-                InkWell(
-                  // onDoubleTap: () => print('Bookmark recipe'),
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  // child: Container(
-                  //   margin: EdgeInsets.all(10.0),
-                  //   width: double.infinity,
-                  //   height: ((size.width - 40.0) / 2) -
-                  //       20, // minus padding, minus margin
-                  //   decoration: BoxDecoration(
-                  //     borderRadius: BorderRadius.circular(25.0),
-                  //     image: DecorationImage(
-                  //       image: !isImage
-                  //           ? Image.asset('assets/images/broken.png',
-                  //                   fit: BoxFit.cover)
-                  //               .image
-                  //           : Image.network(_image, fit: BoxFit.cover).image,
-                  //       fit: BoxFit.cover,
-                  //     ),
-                  //   ),
-                  // ),
-                  child: FutureBuilder(
-                      future: loadImg(widget.recs['recipeImageID'], memoizer),
-                      builder: (BuildContext context, AsyncSnapshot text) {
-                        if (text.connectionState == ConnectionState.waiting) {
-                          return Container(
-                            margin: EdgeInsets.all(10.0),
-                            width: double.infinity,
-                            height: ((size.width - 40.0) / 2) - 20.0,
-                            // height: 400.0,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25.0),
-                              image: DecorationImage(
-                                image: AssetImage(
-                                  'assets/images/broken.png',
+                Hero(
+                  tag: widget.recs['uuid'],
+                  child: InkWell(
+                    // onDoubleTap: () => print('Bookmark recipe'),
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    // child: Container(
+                    //   margin: EdgeInsets.all(10.0),
+                    //   width: double.infinity,
+                    //   height: ((size.width - 40.0) / 2) -
+                    //       20, // minus padding, minus margin
+                    //   decoration: BoxDecoration(
+                    //     borderRadius: BorderRadius.circular(25.0),
+                    //     image: DecorationImage(
+                    //       image: !isImage
+                    //           ? Image.asset('assets/images/broken.png',
+                    //                   fit: BoxFit.cover)
+                    //               .image
+                    //           : Image.network(_image, fit: BoxFit.cover).image,
+                    //       fit: BoxFit.cover,
+                    //     ),
+                    //   ),
+                    // ),
+                    child: FutureBuilder(
+                        future: loadImg(widget.recs['recipeImageID'], memoizer),
+                        builder: (BuildContext context, AsyncSnapshot text) {
+                          if (text.connectionState == ConnectionState.waiting) {
+                            return Container(
+                              margin: EdgeInsets.all(10.0),
+                              width: double.infinity,
+                              height: ((size.width - 40.0) / 2) - 20.0,
+                              // height: 400.0,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25.0),
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                    'assets/images/broken.png',
+                                  ),
+                                  fit: BoxFit.cover,
                                 ),
-                                fit: BoxFit.cover,
                               ),
-                            ),
-                          );
-                        } else {
-                          // return Image(
-                          //   image: NetworkImage(text.data.toString()),
-                          //   fit: BoxFit.cover,
-                          // );
-                          return Container(
-                            margin: EdgeInsets.all(10.0),
-                            width: double.infinity,
-                            height: ((size.width - 40.0) / 2) - 20.0,
-                            // height: 400.0,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25.0),
-                              image: DecorationImage(
-                                image: NetworkImage(text.data.toString()),
-                                fit: BoxFit.cover,
+                            );
+                          } else {
+                            // return Image(
+                            //   image: NetworkImage(text.data.toString()),
+                            //   fit: BoxFit.cover,
+                            // );
+                            return Container(
+                              margin: EdgeInsets.all(10.0),
+                              width: double.infinity,
+                              height: ((size.width - 40.0) / 2) - 20.0,
+                              // height: 400.0,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25.0),
+                                image: DecorationImage(
+                                  image: NetworkImage(text.data.toString()),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            ),
-                          );
-                        }
-                      }),
+                            );
+                          }
+                        }),
+                  ),
                 ),
                 ListTile(
                   dense: true,
@@ -228,8 +231,7 @@ class _RecPostState extends State<RecPost> {
                       recs['username'],
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                          color: MediaQuery.of(context).platformBrightness ==
-                                  Brightness.dark
+                          color: Theme.of(context).brightness == Brightness.dark
                               ? kLight
                               : kDark[900]),
                     ),
@@ -329,7 +331,7 @@ class _RecPostState extends State<RecPost> {
             //                   style: TextStyle(
             //                     fontWeight: FontWeight.bold,
             //                     color:
-            //                         MediaQuery.of(context).platformBrightness ==
+            //                         Theme.of(context).brightness ==
             //                                 Brightness.light
             //                             ? kDark[900]
             //                             : kLight,
@@ -340,7 +342,7 @@ class _RecPostState extends State<RecPost> {
             //                   text: recs[index]['description'],
             //                   style: TextStyle(
             //                     color:
-            //                         MediaQuery.of(context).platformBrightness ==
+            //                         Theme.of(context).brightness ==
             //                                 Brightness.light
             //                             ? kDark[900]
             //                             : kLight,

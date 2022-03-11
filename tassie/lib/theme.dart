@@ -24,6 +24,7 @@ ThemeData lightThemeData(BuildContext context) {
       selectedIconTheme: IconThemeData(color: kPrimaryColor),
       showUnselectedLabels: true,
     ),
+    brightness: Brightness.light,
   );
 }
 
@@ -49,6 +50,7 @@ ThemeData darkThemeData(BuildContext context) {
       selectedIconTheme: IconThemeData(color: kPrimaryColor),
       showUnselectedLabels: true,
     ),
+    brightness: Brightness.dark,
   );
 }
 

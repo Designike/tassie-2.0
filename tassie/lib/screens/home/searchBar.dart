@@ -159,6 +159,9 @@ class _SearchBarState extends State<SearchBar> {
                 elevation: 0,
                 // forceElevated: isScrollable,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                foregroundColor: Theme.of(context).brightness == Brightness.dark
+                ? kLight
+                : kDark[900],
                 pinned: true,
                 // backgroundColor: Colors.transparent,
                 title: TextFormField(
@@ -201,6 +204,10 @@ class _SearchBarState extends State<SearchBar> {
                 ],
                 bottom: TabBar(
                   indicatorColor: kPrimaryColor,
+                  unselectedLabelColor: kDark,
+                  labelColor: Theme.of(context).brightness == Brightness.dark
+                ? kLight
+                : kDark[900],
                   tabs: [
                     Tab(
                       icon: Icon(Icons.fastfood_rounded),

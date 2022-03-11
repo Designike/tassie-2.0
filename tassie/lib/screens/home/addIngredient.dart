@@ -67,7 +67,7 @@ class _IngredientTextFieldState extends State<IngredientTextField> {
           labelStyle: TextStyle(
             // fontFamily: 'Raleway',
             fontSize: 16.0,
-            color: MediaQuery.of(context).platformBrightness == Brightness.dark
+            color: Theme.of(context).brightness == Brightness.dark
                 ? kPrimaryColor
                 : kDark[900],
           ),
@@ -79,10 +79,9 @@ class _IngredientTextFieldState extends State<IngredientTextField> {
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-                color:
-                    MediaQuery.of(context).platformBrightness == Brightness.dark
-                        ? kPrimaryColor
-                        : kDark[900]!),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? kPrimaryColor
+                    : kDark[900]!),
             borderRadius: BorderRadius.circular(15.0),
           ),
         ),
