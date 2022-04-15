@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/home/viewRecPost.dart';
 import 'package:tassie/screens/imgLoader.dart';
 
 class RecipeTab extends StatefulWidget {
@@ -70,12 +71,15 @@ class _RecipeTabState extends State<RecipeTab> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    print(widget.recipes);
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     List recs = widget.recipes;
+    print('1');
+    print(recs);
     return RefreshIndicator(
       onRefresh: widget.refreshPage,
       child: ListView(
@@ -98,8 +102,17 @@ class _RecipeTabState extends State<RecipeTab> {
                             ? _endMessage()
                             : _buildProgressIndicator()
                         // : FeedPost(index: index, posts: posts);
-                        : ProfileRecipeTabChild(
-                            recID: recs[index]['recipeImageID']);
+                        : GestureDetector(
+                          onTap: () {
+                            Navigator.of(context,rootNavigator: true).push(
+                                      MaterialPageRoute(
+                                        builder: (_) => ViewRecPost(recs: recs[index], funcB: (isBookmarked){})
+                                      ),
+                                    );
+                          },
+                          child: ProfileRecipeTabChild(
+                              recID: recs[index]['recipeImageID']),
+                        );
                     // return Container(
                     //   color: Colors.red,
                     // );

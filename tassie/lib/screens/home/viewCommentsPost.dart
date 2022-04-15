@@ -11,31 +11,23 @@ import 'package:tassie/screens/imgLoader.dart';
 
 import '../../constants.dart';
 
-class ViewComments extends StatefulWidget {
+class ViewCommentsPost extends StatefulWidget {
   final Map post;
-  final Map noOfComment;
-  final Map noOfLike;
-  final Map bookmark;
-  final void Function(bool) func;
-  final void Function(bool) funcB;
-  final void Function() plusComment;
-  final void Function() minusComment;
-  final String? dp;
-  ViewComments(
-      {required this.post,
-      required this.noOfComment,
-      required this.noOfLike,
-      required this.func,
-      required this.plusComment,
-      required this.funcB,
-      required this.bookmark,
-      required this.minusComment, required this.dp});
+  // final Map noOfComment;
+  // final Map noOfLike;
+  // final Map bookmark;
+  // final void Function(bool) func;
+  // final void Function(bool) funcB;
+  // final void Function() plusComment;
+  // final void Function() minusComment;
+  // final String? dp;
+  ViewCommentsPost({required this.post});
 
   @override
-  _ViewCommentsState createState() => _ViewCommentsState();
+  _ViewCommentsPostState createState() => _ViewCommentsPostState();
 }
 
-class _ViewCommentsState extends State<ViewComments> {
+class _ViewCommentsPostState extends State<ViewCommentsPost> {
   final ScrollController _sc = ScrollController();
   final TextEditingController _tc = TextEditingController();
   AsyncMemoizer memoizer = AsyncMemoizer();
@@ -51,6 +43,61 @@ class _ViewCommentsState extends State<ViewComments> {
   final storage = FlutterSecureStorage();
   String comment = '';
   String? uuid;
+
+  void func(bool islike) {
+    setState(() {
+      if (islike) {
+        noOfLikes['count'] += 1;
+      } else {
+        noOfLikes['count'] -= 1;
+      }
+      noOfLikes[index]['isLiked'] = !noOfLikes[index]['isLiked'];
+    });
+  }
+
+  void funcB(bool isBook) {
+    setState(() {
+      bookmark[index]['isBookmarked'] = !bookmark[index]['isBookmarked'];
+    });
+  }
+
+  void plusComment() {
+    setState(() {
+      noOfComment[index]['count'] += 1;
+    });
+  }
+
+  void minusComment() {
+    setState(() {
+      noOfComment[index]['count'] -= 1;
+    });
+  }
+
+  void getStats() async {
+    var url =
+            "http://10.0.2.2:3000/profile/getStats/";
+        var token = await storage.read(key: "token");
+        Response response = await dio.post(
+          url,
+          options: Options(headers: {
+            HttpHeaders.contentTypeHeader: "application/json",
+            HttpHeaders.authorizationHeader: "Bearer " + token!
+          }),
+          data: {
+            "postUuid": widget.post["uuid"],
+          },
+        );
+        if(response.length != 0)
+        {
+          setState(() {
+            noOfComment = response.data.beta[0]['comments'];
+            noOfLikes = response.data.beta[0]['likes'];
+            bookmark = response.data.beta[0]['bookmark'];
+          });
+        }
+      
+  }
+
   // List<Map> comments = [
   //   {
   //     "image": "https://picsum.photos/200",
@@ -136,13 +183,13 @@ class _ViewCommentsState extends State<ViewComments> {
                 color: Colors.grey,
                 onPressed: () async {
                   var token = await storage.read(key: "token");
-                  Response response =
-                      await dio.post("https://api-tassie.herokuapp.com/feed/removeComment",
-                          options: Options(headers: {
-                            HttpHeaders.contentTypeHeader: "application/json",
-                            HttpHeaders.authorizationHeader: "Bearer " + token!
-                          }),
-                          data: {
+                  Response response = await dio.post(
+                      "https://api-tassie.herokuapp.com/feed/removeComment",
+                      options: Options(headers: {
+                        HttpHeaders.contentTypeHeader: "application/json",
+                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                      }),
+                      data: {
                         'postUuid': widget.post['uuid'],
                         'commentUuid': comments[index]['uuid'],
                       });
@@ -370,7 +417,8 @@ class _ViewCommentsState extends State<ViewComments> {
                               onDoubleTap: () async {
                                 if (!liked) {
                                   var token = await storage.read(key: "token");
-                                  dio.post("https://api-tassie.herokuapp.com/feed/like",
+                                  dio.post(
+                                      "https://api-tassie.herokuapp.com/feed/like",
                                       options: Options(headers: {
                                         HttpHeaders.contentTypeHeader:
                                             "application/json",

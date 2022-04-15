@@ -166,7 +166,7 @@ class _SignInState extends State<SignIn> {
                       onTap: () async {
                         if (_formKey.currentState!.validate()) {
                           Response response = await dio.post(
-                            "http://10.0.2.2:3000/user/login/",
+                            "https://api-tassie.herokuapp.com/user/login/",
                             options: Options(headers: {
                               HttpHeaders.contentTypeHeader: "application/json",
                             }),
@@ -185,7 +185,7 @@ class _SignInState extends State<SignIn> {
                                   key: "uuid",
                                   value: response.data['data']['uuid']);
                               // Response response1 = await dio.get(
-                              //     "http://10.0.2.2:3000/user/getProfilePic/",
+                              //     "https://api-tassie.herokuapp.com/user/getProfilePic/",
                               //     options: Options(headers: {
                               //       HttpHeaders.contentTypeHeader:
                               //           "application/json",

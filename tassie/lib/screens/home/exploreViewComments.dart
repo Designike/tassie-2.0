@@ -11,20 +11,22 @@ import 'package:tassie/screens/imgLoader.dart';
 
 import '../../constants.dart';
 
-class ViewComments extends StatefulWidget {
+class ExploreViewComments extends StatefulWidget {
   final Map post;
-  final Map noOfComment;
-  final Map noOfLike;
-  final Map bookmark;
+  final int noOfComment;
+  final int noOfLike;
+  final bool bookmark;
+  final bool isLiked;
   final void Function(bool) func;
   final void Function(bool) funcB;
   final void Function() plusComment;
   final void Function() minusComment;
   final String? dp;
-  ViewComments(
+  ExploreViewComments(
       {required this.post,
       required this.noOfComment,
       required this.noOfLike,
+      required this.isLiked,
       required this.func,
       required this.plusComment,
       required this.funcB,
@@ -32,10 +34,10 @@ class ViewComments extends StatefulWidget {
       required this.minusComment, required this.dp});
 
   @override
-  _ViewCommentsState createState() => _ViewCommentsState();
+  _ExploreViewCommentsState createState() => _ExploreViewCommentsState();
 }
 
-class _ViewCommentsState extends State<ViewComments> {
+class _ExploreViewCommentsState extends State<ExploreViewComments> {
   final ScrollController _sc = ScrollController();
   final TextEditingController _tc = TextEditingController();
   AsyncMemoizer memoizer = AsyncMemoizer();
@@ -251,10 +253,10 @@ class _ViewCommentsState extends State<ViewComments> {
 
   @override
   Widget build(BuildContext context) {
-    bool liked = widget.noOfLike['isLiked'];
+    bool liked = widget.isLiked;
     int no_of_comments = comments.length;
     Size size = MediaQuery.of(context).size;
-    bool isBookmarked = widget.bookmark['isBookmarked'];
+    bool isBookmarked = widget.bookmark;
     return Scaffold(
       // backgroundColor: Color(0xFFEDF0F6),
       body: CustomScrollView(
@@ -508,7 +510,7 @@ class _ViewCommentsState extends State<ViewComments> {
                                             },
                                           ),
                                           Text(
-                                            widget.noOfLike['count'].toString(),
+                                            widget.noOfLike.toString(),
                                             style: TextStyle(
                                               fontSize: 14.0,
                                               fontWeight: FontWeight.w600,
@@ -527,7 +529,7 @@ class _ViewCommentsState extends State<ViewComments> {
                                             },
                                           ),
                                           Text(
-                                            widget.noOfComment['count']
+                                            widget.noOfComment
                                                 .toString(),
                                             style: TextStyle(
                                               fontSize: 14.0,

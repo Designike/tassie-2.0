@@ -7,6 +7,8 @@ import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/profile.dart';
+import 'package:tassie/screens/home/viewComments.dart';
+import 'package:tassie/screens/home/viewCommentsPost.dart';
 import 'package:tassie/screens/imgLoader.dart';
 
 class PostTab extends StatefulWidget {
@@ -106,7 +108,18 @@ class _PostTabState extends State<PostTab> with AutomaticKeepAliveClientMixin {
                             ? _endMessage()
                             : _buildProgressIndicator()
                         // : FeedPost(index: index, posts: posts);
-                        : ProfilePostTabChild(postID: posts[index]['postID']);
+                        : GestureDetector(
+                            onTap: () {
+                              Navigator.of(context, rootNavigator: true).push(
+                                MaterialPageRoute(
+                                  builder: (_) => ViewCommentsPost(
+                                    post: posts[index],
+                                  ),
+                                ),
+                              );
+                            },
+                            child: ProfilePostTabChild(
+                                postID: posts[index]['postID']));
                     // return Container(
                     //   color: Colors.red,
                     // );

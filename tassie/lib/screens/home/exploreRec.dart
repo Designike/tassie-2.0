@@ -179,7 +179,7 @@ class _ExploreRecState extends State<ExploreRec> {
                     if (!isBookmarked) {
                       var token = await storage.read(key: "token");
                       Response response =
-                          await dio.post("http://10.0.2.2:3000/recs/bookmark",
+                          await dio.post("https://api-tassie.herokuapp.com/recs/bookmark",
                               options: Options(headers: {
                                 HttpHeaders.contentTypeHeader:
                                     "application/json",
@@ -191,7 +191,7 @@ class _ExploreRecState extends State<ExploreRec> {
                     } else {
                       var token = await storage.read(key: "token");
                       Response response = await dio.post(
-                          "http://10.0.2.2:3000/recs/removeBookmark",
+                          "https://api-tassie.herokuapp.com/recs/removeBookmark",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
                             HttpHeaders.authorizationHeader: "Bearer " + token!

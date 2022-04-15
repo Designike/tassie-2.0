@@ -8,28 +8,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/home/exploreViewComments.dart';
+import 'package:tassie/screens/home/viewComments%20copy.dart';
 import 'package:tassie/screens/home/viewComments.dart';
+import 'package:tassie/screens/home/viewRecPost.dart';
 import 'package:tassie/screens/imgLoader.dart';
 
 class ExplorePost extends StatefulWidget {
-  const ExplorePost({
-    required this.post,
-    // required this.noOfComment,
-    // required this.noOfLike,
-    // required this.func,
-    // required this.plusComment,
-    // required this.bookmark,
-    // required this.funcB,
-    // required this.minusComment
-  });
+  const ExplorePost(
+      {required this.post,
+      // required this.recostData, required this.funcB
+      required this.noOfComment,
+      required this.noOfLike,
+      required this.isLiked,
+      required this.func,
+      required this.plusComment,
+      required this.bookmark,
+      required this.funcB,
+      required this.minusComment});
   final Map post;
-  // final Map noOfComment;
-  // final Map noOfLike;
-  // final Map bookmark;
-  // final void Function(bool) func;
+  // final Map recostData;
   // final void Function(bool) funcB;
-  // final void Function() plusComment;
-  // final void Function() minusComment;
+  final int noOfComment;
+  final int noOfLike;
+  final bool bookmark;
+  final bool isLiked;
+  final void Function(bool) func;
+  final void Function(bool) funcB;
+  final void Function() plusComment;
+  final void Function() minusComment;
   @override
   _ExplorePostState createState() => _ExplorePostState();
 }
@@ -39,12 +46,19 @@ class _ExplorePostState extends State<ExplorePost> {
   final storage = FlutterSecureStorage();
   AsyncMemoizer memoizer = AsyncMemoizer();
   AsyncMemoizer memoizer1 = AsyncMemoizer();
+  String? dp;
   // String _image = "";
   // bool isImage = false;
+
+  Future<void> getdp() async {
+    dp = await storage.read(key: "profilePic");
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getdp();
     memoizer = AsyncMemoizer();
     memoizer1 = AsyncMemoizer();
 
@@ -84,7 +98,7 @@ class _ExplorePostState extends State<ExplorePost> {
                 // onDoubleTap: () async {
                 //   if (!liked) {
                 //     var token = await storage.read(key: "token");
-                //     dio.post("http://10.0.2.2:3000/feed/like",
+                //     dio.post("https://api-tassie.herokuapp.com/feed/like",
                 //         options: Options(headers: {
                 //           HttpHeaders.contentTypeHeader: "application/json",
                 //           HttpHeaders.authorizationHeader:
@@ -95,21 +109,21 @@ class _ExplorePostState extends State<ExplorePost> {
                 //   }
                 // },
                 onTap: () {
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //       builder: (_) => ViewComments(
-                  //         post: post,
-                  //         noOfComment: widget.noOfComment,
-                  //         noOfLike: widget.noOfLike,
-                  //         func: widget.func,
-                  //         plusComment: widget.plusComment,
-                  //         funcB: widget.funcB,
-                  //         bookmark: widget.bookmark,
-                  //         minusComment: widget.minusComment,
-                  //       ),
-                  //     )
-                  //     );
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ExploreViewComments(
+                            post: post,
+                            noOfComment: widget.noOfComment,
+                            noOfLike: widget.noOfLike,
+                            isLiked: widget.isLiked,
+                            func: widget.func,
+                            plusComment: widget.plusComment,
+                            funcB: widget.funcB,
+                            bookmark: widget.bookmark,
+                            minusComment: widget.minusComment,
+                            dp: dp),
+                      ));
                 },
                 // child: Container(
                 //   margin: EdgeInsets.all(10.0),
@@ -168,16 +182,34 @@ class _ExplorePostState extends State<ExplorePost> {
                       }
                     }),
               ),
-              ListTile(
-                minLeadingWidth: (size.width - 42.0) / 12,
-                leading: Container(
-                  width: (size.width - 42.0) / 12,
-                  height: (size.width - 42.0) / 12,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
-                  child: CircleAvatar(
-                    child: ClipOval(
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context, rootNavigator: true).push(
+                    MaterialPageRoute(builder: (context) {
+                      return ExploreViewComments(
+                          post: post,
+                          noOfComment: widget.noOfComment,
+                          noOfLike: widget.noOfLike,
+                          isLiked: widget.isLiked,
+                          func: widget.func,
+                          plusComment: widget.plusComment,
+                          funcB: widget.funcB,
+                          bookmark: widget.bookmark,
+                          minusComment: widget.minusComment,
+                          dp: dp);
+                    }),
+                  );
+                },
+                child: ListTile(
+                  minLeadingWidth: (size.width - 42.0) / 12,
+                  leading: Container(
+                    width: (size.width - 42.0) / 12,
+                    height: (size.width - 42.0) / 12,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                    child: CircleAvatar(
+                      child: ClipOval(
                         // child: Image(
                         //   height: (size.width - 42.0) / 12,
                         //   width: (size.width - 42.0) / 12,
@@ -206,62 +238,64 @@ class _ExplorePostState extends State<ExplorePost> {
                                   fit: BoxFit.cover,
                                 );
                               }
-                            }),),
+                            }),
+                      ),
+                    ),
                   ),
-                ),
-                title: Text(
-                  post['username'],
-                  style: TextStyle(
-                    overflow: TextOverflow.ellipsis,
-                    fontWeight: FontWeight.bold,
+                  title: Text(
+                    post['username'],
+                    style: TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
+                  // subtitle: Text(
+                  //   post['createdAt'],
+                  //   style: TextStyle(
+                  //       color: MediaQuery.of(context).platformBrightness ==
+                  //               Brightness.dark
+                  //           ? kLight
+                  //           : kDark[900]),
+                  // ),
+                  // trailing: IconButton(
+                  //   icon: Icon(Icons.more_horiz),
+                  //   // color: Colors.black,
+                  //   onPressed: () => print('More'),
+                  // ),
+                  // trailing: IconButton(
+                  //       icon: (isBookmarked)
+                  //           ? Icon(Icons.bookmark)
+                  //           : Icon(Icons.bookmark_border),
+                  //       iconSize: 30.0,
+                  //       onPressed: () async {
+                  //         if (!isBookmarked) {
+                  //           var token = await storage.read(key: "token");
+                  //           Response response = await dio
+                  //               .post("https://api-tassie.herokuapp.com/feed/bookmark",
+                  //                   options: Options(headers: {
+                  //                     HttpHeaders.contentTypeHeader:
+                  //                         "application/json",
+                  //                     HttpHeaders.authorizationHeader:
+                  //                         "Bearer " + token!
+                  //                   }),
+                  //                   data: {'uuid': post['uuid']});
+                  //           widget.funcB(true);
+                  //         } else {
+                  //           var token = await storage.read(key: "token");
+                  //           Response response = await dio.post(
+                  //               "https://api-tassie.herokuapp.com/feed/removeBookmark",
+                  //               options: Options(headers: {
+                  //                 HttpHeaders.contentTypeHeader:
+                  //                     "application/json",
+                  //                 HttpHeaders.authorizationHeader:
+                  //                     "Bearer " + token!
+                  //               }),
+                  //               data: {'uuid': post['uuid']});
+                  //           widget.funcB(false);
+                  //         }
+                  //       },
+                  //     ),
                 ),
-                // subtitle: Text(
-                //   post['createdAt'],
-                //   style: TextStyle(
-                //       color: MediaQuery.of(context).platformBrightness ==
-                //               Brightness.dark
-                //           ? kLight
-                //           : kDark[900]),
-                // ),
-                // trailing: IconButton(
-                //   icon: Icon(Icons.more_horiz),
-                //   // color: Colors.black,
-                //   onPressed: () => print('More'),
-                // ),
-                // trailing: IconButton(
-                //       icon: (isBookmarked)
-                //           ? Icon(Icons.bookmark)
-                //           : Icon(Icons.bookmark_border),
-                //       iconSize: 30.0,
-                //       onPressed: () async {
-                //         if (!isBookmarked) {
-                //           var token = await storage.read(key: "token");
-                //           Response response = await dio
-                //               .post("http://10.0.2.2:3000/feed/bookmark",
-                //                   options: Options(headers: {
-                //                     HttpHeaders.contentTypeHeader:
-                //                         "application/json",
-                //                     HttpHeaders.authorizationHeader:
-                //                         "Bearer " + token!
-                //                   }),
-                //                   data: {'uuid': post['uuid']});
-                //           widget.funcB(true);
-                //         } else {
-                //           var token = await storage.read(key: "token");
-                //           Response response = await dio.post(
-                //               "http://10.0.2.2:3000/feed/removeBookmark",
-                //               options: Options(headers: {
-                //                 HttpHeaders.contentTypeHeader:
-                //                     "application/json",
-                //                 HttpHeaders.authorizationHeader:
-                //                     "Bearer " + token!
-                //               }),
-                //               data: {'uuid': post['uuid']});
-                //           widget.funcB(false);
-                //         }
-                //       },
-                //     ),
               ),
               // Padding(
               //   padding: EdgeInsets.symmetric(horizontal: 20.0),
@@ -287,7 +321,7 @@ class _ExplorePostState extends State<ExplorePost> {
               //                     var token =
               //                         await storage.read(key: "token");
               //                     dio.post(
-              //                         "http://10.0.2.2:3000/feed/unlike",
+              //                         "https://api-tassie.herokuapp.com/feed/unlike",
               //                         options: Options(headers: {
               //                           HttpHeaders.contentTypeHeader:
               //                               "application/json",
@@ -301,7 +335,7 @@ class _ExplorePostState extends State<ExplorePost> {
 
               //                     var token =
               //                         await storage.read(key: "token");
-              //                     dio.post("http://10.0.2.2:3000/feed/like",
+              //                     dio.post("https://api-tassie.herokuapp.com/feed/like",
               //                         options: Options(headers: {
               //                           HttpHeaders.contentTypeHeader:
               //                               "application/json",
@@ -366,7 +400,7 @@ class _ExplorePostState extends State<ExplorePost> {
               //           if (!isBookmarked) {
               //             var token = await storage.read(key: "token");
               //             Response response = await dio
-              //                 .post("http://10.0.2.2:3000/feed/bookmark",
+              //                 .post("https://api-tassie.herokuapp.com/feed/bookmark",
               //                     options: Options(headers: {
               //                       HttpHeaders.contentTypeHeader:
               //                           "application/json",
@@ -378,7 +412,7 @@ class _ExplorePostState extends State<ExplorePost> {
               //           } else {
               //             var token = await storage.read(key: "token");
               //             Response response = await dio.post(
-              //                 "http://10.0.2.2:3000/feed/removeBookmark",
+              //                 "https://api-tassie.herokuapp.com/feed/removeBookmark",
               //                 options: Options(headers: {
               //                   HttpHeaders.contentTypeHeader:
               //                       "application/json",

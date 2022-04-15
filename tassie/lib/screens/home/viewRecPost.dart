@@ -111,8 +111,8 @@ class _ViewRecPostState extends State<ViewRecPost> {
     uuid = await storage.read(key: "uuid");
     dp = await storage.read(key: "profilePic");
     Response response = await dio.post(
-        // 'http://10.0.2.2:3000/drive/upload',
-        'http://10.0.2.2:3000/recs/getRecipe/',
+        // 'https://api-tassie.herokuapp.com/drive/upload',
+        'https://api-tassie.herokuapp.com/recs/getRecipe/',
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Bearer " + token!
@@ -228,7 +228,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                 onPressed: () async {
                   var token = await storage.read(key: "token");
                   Response response =
-                      await dio.post("http://10.0.2.2:3000/recs/removeComment",
+                      await dio.post("https://api-tassie.herokuapp.com/recs/removeComment",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
                             HttpHeaders.authorizationHeader: "Bearer " + token!
@@ -393,7 +393,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                           if (!isBookmarked) {
                             var token = await storage.read(key: "token");
                             Response response = await dio
-                                .post("http://10.0.2.2:3000/recs/bookmark",
+                                .post("https://api-tassie.herokuapp.com/recs/bookmark",
                                     options: Options(headers: {
                                       HttpHeaders.contentTypeHeader:
                                           "application/json",
@@ -408,7 +408,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                           } else {
                             var token = await storage.read(key: "token");
                             Response response = await dio.post(
-                                "http://10.0.2.2:3000/recs/removeBookmark",
+                                "https://api-tassie.herokuapp.com/recs/removeBookmark",
                                 options: Options(headers: {
                                   HttpHeaders.contentTypeHeader:
                                       "application/json",
@@ -442,7 +442,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                             // print(post);
 
                             var token = await storage.read(key: "token");
-                            dio.post("http://10.0.2.2:3000/recs/unlike",
+                            dio.post("https://api-tassie.herokuapp.com/recs/unlike",
                                 options: Options(headers: {
                                   HttpHeaders.contentTypeHeader:
                                       "application/json",
@@ -456,7 +456,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                             });
                           } else {
                             var token = await storage.read(key: "token");
-                            dio.post("http://10.0.2.2:3000/recs/like",
+                            dio.post("https://api-tassie.herokuapp.com/recs/like",
                                 options: Options(headers: {
                                   HttpHeaders.contentTypeHeader:
                                       "application/json",
@@ -834,7 +834,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                           var token =
                                               await storage.read(key: "token");
                                           Response response = await dio.post(
-                                              "http://10.0.2.2:3000/profile/unsubscribe/",
+                                              "https://api-tassie.herokuapp.com/profile/unsubscribe/",
                                               options: Options(headers: {
                                                 HttpHeaders.contentTypeHeader:
                                                     "application/json",
@@ -867,7 +867,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                           var token =
                                               await storage.read(key: "token");
                                           Response response = await dio.post(
-                                              "http://10.0.2.2:3000/profile/subscribe/",
+                                              "https://api-tassie.herokuapp.com/profile/subscribe/",
                                               options: Options(headers: {
                                                 HttpHeaders.contentTypeHeader:
                                                     "application/json",
@@ -1254,7 +1254,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                   //to update user rating
                                   var token = await storage.read(key: "token");
                                   Response response = await dio.post(
-                                      "http://10.0.2.2:3000/recs/addRating",
+                                      "https://api-tassie.herokuapp.com/recs/addRating",
                                       options: Options(headers: {
                                         HttpHeaders.contentTypeHeader:
                                             "application/json",
@@ -1286,7 +1286,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                     var token =
                                         await storage.read(key: "token");
                                     Response response = await dio.post(
-                                        "http://10.0.2.2:3000/recs/resetRating",
+                                        "https://api-tassie.herokuapp.com/recs/resetRating",
                                         options: Options(headers: {
                                           HttpHeaders.contentTypeHeader:
                                               "application/json",

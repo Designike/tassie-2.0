@@ -138,7 +138,7 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
         setState(() {
           isLazyLoading = true;
         });
-        var url = "http://10.0.2.2:3000/search/lazyExplore/" + index.toString()+'/'+previousLength.toString();
+        var url = "https://api-tassie.herokuapp.com/search/lazyExplore/" + index.toString()+'/'+previousLength.toString();
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
@@ -226,8 +226,8 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
     //   var token = await storage.read(key: "token");
     //   // print(formData.files[0]);
     //   Response response = await dio.post(
-    //       // 'http://10.0.2.2:3000/drive/upload',
-    //       'http://10.0.2.2:3000/search/guess/',
+    //       // 'https://api-tassie.herokuapp.com/drive/upload',
+    //       'https://api-tassie.herokuapp.com/search/guess/',
     //       options: Options(headers: {
     //         HttpHeaders.contentTypeHeader: "application/json",
     //         HttpHeaders.authorizationHeader: "Bearer " + token!
@@ -366,6 +366,7 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                           // crossAxisSpacing: 10,
                           itemCount: recosts.length,
                           itemBuilder: (context, index) {
+                            print(recostsData[recosts_toggle[index]]);
                             return recosts[recosts_toggle[index]]['isPost'] ==
                                     false
                                 // ? Container(
@@ -392,7 +393,48 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                                 // : ExplorePost(post: post, noOfComment: noOfComment, noOfLike: noOfLike, func: func, plusComment: plusComment, bookmark: bookmark, funcB: funcB, minusComment: minusComment);
                                 : Container(
                                     child: ExplorePost(
-                                        post: recosts[recosts_toggle[index]]),
+                                        post: recosts[recosts_toggle[index]], 
+                                        // recostData:
+                                        //   recostsData[recosts_toggle[index]],
+                                        noOfLike: recostsData[recosts_toggle[index]]['likes'],
+                                        noOfComment: recostsData[recosts_toggle[index]]['comments'],isLiked: recostsData[recosts_toggle[index]]['isLiked'],
+                                      funcB: (isBook) {
+                                        setState(() {
+                                          recostsData[recosts_toggle[index]]
+                                              ['isBookmarked'] = !recostsData[
+                                                  recosts_toggle[index]]
+                                              ['isBookmarked'];
+                                        });
+                                      },
+                                      plusComment: () {
+                                    setState(() {
+                                      recostsData[recosts_toggle[index]]['comments'] += 1;
+                                    });
+                                  },
+                                  func: (islike) {
+                                    setState(() {
+                                      if (islike) {
+                                        recostsData[recosts_toggle[index]]['likes'] += 1;
+                                      } else {
+                                        recostsData[recosts_toggle[index]]['likes'] -= 1;
+                                      }
+                                      recostsData[recosts_toggle[index]]['isLiked'] =
+                                          !recostsData[recosts_toggle[index]]['isLiked'];
+                                    });
+                                  },
+                                  bookmark: recostsData[recosts_toggle[index]]['isBookmarked'],
+                                  // funcB: (isBook) {
+                                  //   setState(() {
+                                  //     recostsData[recosts_toggle[index]]['isBookmarked'] =
+                                  //         !recostsData[recosts_toggle[index]]['isBookmarked'];
+                                  //   });
+                                  // },
+                                  minusComment: () {
+                                    setState(() {
+                                      recostsData[recosts_toggle[index]]['comments'] -= 1;
+                                    });
+                                  },
+                                  ),
                                     margin: EdgeInsets.all(7.0),
                                   );
                           }),
@@ -426,7 +468,7 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
 //         // showSuggestions(context);
 //         isLazyLoading = true;
 //         print(query);
-//         var url = "http://10.0.2.2:3000/search/lazySearch/" +
+//         var url = "https://api-tassie.herokuapp.com/search/lazySearch/" +
 //             index.toString() +
 //             '/' +
 //             query;

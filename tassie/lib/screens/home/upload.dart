@@ -44,8 +44,8 @@ class _UploaderState extends State<Uploader> {
     var token = await storage.read(key: "token");
     print(formData.files[0]);
     Response response = await dio.post(
-      // 'http://10.0.2.2:3000/drive/upload',
-      'http://10.0.2.2:3000/feed/newpost',
+      // 'https://api-tassie.herokuapp.com/drive/upload',
+      'https://api-tassie.herokuapp.com/feed/newpost',
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "multipart/form-data",
         HttpHeaders.authorizationHeader: "Bearer " + token!

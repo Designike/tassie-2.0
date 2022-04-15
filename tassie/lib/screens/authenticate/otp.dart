@@ -198,7 +198,7 @@ class _OTPFormState extends State<OTPForm> {
             onTap: () async {
               // if (_formKey.currentState!.validate()) {
               //   final response = await dio.post(
-              //     "http://10.0.2.2:3000/user/login/",
+              //     "https://api-tassie.herokuapp.com/user/login/",
               //     options: Options(headers: {
               //       HttpHeaders.contentTypeHeader: "application/json",
               //     }),
@@ -214,8 +214,8 @@ class _OTPFormState extends State<OTPForm> {
                 print(totp);
                 print(otp);
                 Response response = await dio.post(
-                    // "http://10.0.2.2:3000/user/tsa/" + widget.uuid,
-                    "http://10.0.2.2:3000/user/tsa/" + widget.uuid,
+                    // "https://api-tassie.herokuapp.com/user/tsa/" + widget.uuid,
+                    "https://api-tassie.herokuapp.com/user/tsa/" + widget.uuid,
                     options: Options(headers: {
                       HttpHeaders.contentTypeHeader: "application/json",
                     }),
@@ -229,7 +229,7 @@ class _OTPFormState extends State<OTPForm> {
                         key: "uuid", value: response.data['data']['uuid']);
                     print('2');
                     // Response response1 = await dio.get(
-                    //     "http://10.0.2.2:3000/user/getProfilePic/",
+                    //     "https://api-tassie.herokuapp.com/user/getProfilePic/",
                     //     options: Options(headers: {
                     //       HttpHeaders.contentTypeHeader: "application/json",
                     //       HttpHeaders.authorizationHeader:
@@ -298,8 +298,8 @@ class _OTPFormState extends State<OTPForm> {
               // widget.func!();
               try {
                 Response response = await dio.get(
-                  // "http://10.0.2.2:3000/user/",
-                  "http://10.0.2.2:3000/user/mail/" + widget.uuid,
+                  // "https://api-tassie.herokuapp.com/user/",
+                  "https://api-tassie.herokuapp.com/user/mail/" + widget.uuid,
                   options: Options(headers: {
                     HttpHeaders.contentTypeHeader: "application/json",
                   }),
