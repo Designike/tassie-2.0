@@ -182,7 +182,6 @@ class _ExplorePostState extends State<ExplorePost> {
                       }
                     }),
               ),
-<<<<<<< HEAD
               GestureDetector(
                 onTap: () {
                   Navigator.of(context, rootNavigator: true).push(
@@ -241,46 +240,6 @@ class _ExplorePostState extends State<ExplorePost> {
                               }
                             }),
                       ),
-=======
-              ListTile(
-                minLeadingWidth: (size.width - 42.0) / 12,
-                leading: Container(
-                  width: (size.width - 42.0) / 12,
-                  height: (size.width - 42.0) / 12,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
-                  child: CircleAvatar(
-                    child: ClipOval(
-                      // child: Image(
-                      //   height: (size.width - 42.0) / 12,
-                      //   width: (size.width - 42.0) / 12,
-                      //   image: NetworkImage(post['profilePic']),
-                      //   fit: BoxFit.cover,
-                      // ),
-                      child: FutureBuilder(
-                          future: loadImg(post['profilePic'], memoizer1),
-                          builder: (BuildContext context, AsyncSnapshot text) {
-                            if (text.connectionState ==
-                                ConnectionState.waiting) {
-                              // return Image.asset("assets/images/broken.png",
-                              //     fit: BoxFit.cover, height: 128, width: 128);
-                              return Image(
-                                height: (size.width - 42.0) / 12,
-                                width: (size.width - 42.0) / 12,
-                                image: AssetImage("assets/images/broken.png"),
-                                fit: BoxFit.cover,
-                              );
-                            } else {
-                              return Image(
-                                height: (size.width - 42.0) / 12,
-                                width: (size.width - 42.0) / 12,
-                                image: NetworkImage(text.data.toString()),
-                                fit: BoxFit.cover,
-                              );
-                            }
-                          }),
->>>>>>> 802f69550ba7ddef76bc77fcff5a62cefd8128c4
                     ),
                   ),
                   title: Text(
@@ -337,55 +296,6 @@ class _ExplorePostState extends State<ExplorePost> {
                   //       },
                   //     ),
                 ),
-<<<<<<< HEAD
-=======
-                // subtitle: Text(
-                //   post['createdAt'],
-                //   style: TextStyle(
-                //       color: Theme.of(context).brightness ==
-                //               Brightness.dark
-                //           ? kLight
-                //           : kDark[900]),
-                // ),
-                // trailing: IconButton(
-                //   icon: Icon(Icons.more_horiz),
-                //   // color: Colors.black,
-                //   onPressed: () => print('More'),
-                // ),
-                // trailing: IconButton(
-                //       icon: (isBookmarked)
-                //           ? Icon(Icons.bookmark)
-                //           : Icon(Icons.bookmark_border),
-                //       iconSize: 30.0,
-                //       onPressed: () async {
-                //         if (!isBookmarked) {
-                //           var token = await storage.read(key: "token");
-                //           Response response = await dio
-                //               .post("http://10.0.2.2:3000/feed/bookmark",
-                //                   options: Options(headers: {
-                //                     HttpHeaders.contentTypeHeader:
-                //                         "application/json",
-                //                     HttpHeaders.authorizationHeader:
-                //                         "Bearer " + token!
-                //                   }),
-                //                   data: {'uuid': post['uuid']});
-                //           widget.funcB(true);
-                //         } else {
-                //           var token = await storage.read(key: "token");
-                //           Response response = await dio.post(
-                //               "http://10.0.2.2:3000/feed/removeBookmark",
-                //               options: Options(headers: {
-                //                 HttpHeaders.contentTypeHeader:
-                //                     "application/json",
-                //                 HttpHeaders.authorizationHeader:
-                //                     "Bearer " + token!
-                //               }),
-                //               data: {'uuid': post['uuid']});
-                //           widget.funcB(false);
-                //         }
-                //       },
-                //     ),
->>>>>>> 802f69550ba7ddef76bc77fcff5a62cefd8128c4
               ),
               // Padding(
               //   padding: EdgeInsets.symmetric(horizontal: 20.0),

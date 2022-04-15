@@ -46,13 +46,8 @@ class _RegisterState extends State<Register> {
   Future<void> checkEmail(email) async {
     // var dio = Dio();
     try {
-<<<<<<< HEAD
       Response response = await dio
           .get("https://api-tassie.herokuapp.com/user/checkEmail/" + email);
-=======
-      Response response =
-          await dio.get("http://10.0.2.2:3000/user/checkEmail/" + email);
->>>>>>> 802f69550ba7ddef76bc77fcff5a62cefd8128c4
       // var res = jsonDecode(response.toString());
 
       // if(response)

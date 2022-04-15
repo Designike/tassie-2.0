@@ -79,11 +79,7 @@ class _ChangeUsernameState extends State<ChangeUsername> {
                     if (_formKey.currentState!.validate()) {
                       print(username);
                       Response response = await dio.post(
-<<<<<<< HEAD
                           "https://api-tassie.herokuapp.com/profile/updateUsername/",
-=======
-                          "http://10.0.2.2:3000/profile/updateUsername",
->>>>>>> 802f69550ba7ddef76bc77fcff5a62cefd8128c4
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
                             HttpHeaders.authorizationHeader: "Bearer " + token!

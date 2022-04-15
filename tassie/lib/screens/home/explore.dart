@@ -138,14 +138,7 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
         setState(() {
           isLazyLoading = true;
         });
-<<<<<<< HEAD
         var url = "https://api-tassie.herokuapp.com/search/lazyExplore/" + index.toString()+'/'+previousLength.toString();
-=======
-        var url = "http://10.0.2.2:3000/search/lazyExplore/" +
-            index.toString() +
-            '/' +
-            previousLength.toString();
->>>>>>> 802f69550ba7ddef76bc77fcff5a62cefd8128c4
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
