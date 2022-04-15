@@ -43,59 +43,67 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
   final storage = FlutterSecureStorage();
   String comment = '';
   String? uuid;
+  int noOfComment = 0;
+  int noOfLikes = 0;
+  bool isLiked = false;
+  bool isBookmarked = false;
 
   void func(bool islike) {
     setState(() {
       if (islike) {
-        noOfLikes['count'] += 1;
+        noOfLikes += 1;
       } else {
-        noOfLikes['count'] -= 1;
+        noOfLikes -= 1;
       }
-      noOfLikes[index]['isLiked'] = !noOfLikes[index]['isLiked'];
+      isLiked = !isLiked;
     });
   }
 
   void funcB(bool isBook) {
     setState(() {
-      bookmark[index]['isBookmarked'] = !bookmark[index]['isBookmarked'];
+      isBookmarked = !isBookmarked;
     });
   }
 
   void plusComment() {
     setState(() {
-      noOfComment[index]['count'] += 1;
+      noOfComment += 1;
     });
   }
 
   void minusComment() {
     setState(() {
-      noOfComment[index]['count'] -= 1;
+      noOfComment -= 1;
     });
   }
 
   void getStats() async {
-    var url =
-            "http://10.0.2.2:3000/profile/getStats/";
-        var token = await storage.read(key: "token");
-        Response response = await dio.post(
-          url,
-          options: Options(headers: {
-            HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer " + token!
-          }),
-          data: {
-            "postUuid": widget.post["uuid"],
-          },
-        );
-        if(response.length != 0)
-        {
-          setState(() {
-            noOfComment = response.data.beta[0]['comments'];
-            noOfLikes = response.data.beta[0]['likes'];
-            bookmark = response.data.beta[0]['bookmark'];
-          });
-        }
-      
+    var url = "http://10.0.2.2:3000/profile/getStats/";
+    var token = await storage.read(key: "token");
+    Response response = await dio.post(
+      url,
+      options: Options(headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+        HttpHeaders.authorizationHeader: "Bearer " + token!
+      }),
+      data: {
+        "postUuid": widget.post["uuid"],
+      },
+    );
+    if (response.data["beta"].length != 0) {
+      setState(() {
+        noOfComment = response.data.beta[0]['comments'];
+        noOfLikes = response.data.beta[0]['likes'];
+        isBookmarked = response.data.beta[0]['isBookmarked'];
+        isLiked = response.data.beta[0]['isLiked'];
+        getdp();
+        isLoading = true;
+      });
+    }
+  }
+
+  Future<void> getdp() async {
+    dp = await storage.read(key: "profilePic");
   }
 
   // List<Map> comments = [
@@ -196,7 +204,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                   setState(() {
                     comments.remove(index);
                   });
-                  widget.minusComment();
+                  minusComment();
                 },
               )
             : null,
@@ -277,6 +285,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
   void initState() {
     page = 1;
     comments = [];
+    getStats();
     _getMoreData(page);
     super.initState();
     // load();
@@ -298,10 +307,10 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
 
   @override
   Widget build(BuildContext context) {
-    bool liked = widget.noOfLike['isLiked'];
-    int no_of_comments = comments.length;
+    // bool liked = widget.noOfLike;
+    // int no_of_comments = comments.length;
     Size size = MediaQuery.of(context).size;
-    bool isBookmarked = widget.bookmark['isBookmarked'];
+    // bool isBookmarked = widget.bookmark['isBookmarked'];
     return Scaffold(
       // backgroundColor: Color(0xFFEDF0F6),
       body: CustomScrollView(
@@ -415,7 +424,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                             ),
                             InkWell(
                               onDoubleTap: () async {
-                                if (!liked) {
+                                if (!isLiked) {
                                   var token = await storage.read(key: "token");
                                   dio.post(
                                       "https://api-tassie.herokuapp.com/feed/like",
@@ -426,7 +435,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                             "Bearer " + token!
                                       }),
                                       data: {'uuid': widget.post['uuid']});
-                                  widget.func(true);
+                                  func(true);
                                   setState(() {});
                                 }
                               },
@@ -502,7 +511,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                       Row(
                                         children: <Widget>[
                                           IconButton(
-                                            icon: (!liked)
+                                            icon: (!isLiked)
                                                 ? Icon(Icons.favorite_border)
                                                 : Icon(
                                                     Icons.favorite,
@@ -510,7 +519,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                   ),
                                             iconSize: 30.0,
                                             onPressed: () async {
-                                              if (liked) {
+                                              if (isLiked) {
                                                 // print(post);
 
                                                 var token = await storage.read(
@@ -529,7 +538,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                       'uuid':
                                                           widget.post['uuid']
                                                     });
-                                                widget.func(false);
+                                                func(false);
                                               } else {
                                                 // print(post);
 
@@ -549,14 +558,14 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                       'uuid':
                                                           widget.post['uuid']
                                                     });
-                                                widget.func(true);
+                                                func(true);
                                               }
                                               setState(() {});
                                               // print(likeNumber.toString());
                                             },
                                           ),
                                           Text(
-                                            widget.noOfLike['count'].toString(),
+                                            noOfLikes.toString(),
                                             style: TextStyle(
                                               fontSize: 14.0,
                                               fontWeight: FontWeight.w600,
@@ -575,8 +584,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                             },
                                           ),
                                           Text(
-                                            widget.noOfComment['count']
-                                                .toString(),
+                                            noOfComment.toString(),
                                             style: TextStyle(
                                               fontSize: 14.0,
                                               fontWeight: FontWeight.w600,
@@ -606,7 +614,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                             data: {
                                               'uuid': widget.post['uuid']
                                             });
-                                        widget.funcB(true);
+                                        funcB(true);
                                       } else {
                                         var token =
                                             await storage.read(key: "token");
@@ -621,7 +629,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                             data: {
                                               'uuid': widget.post['uuid']
                                             });
-                                        widget.funcB(false);
+                                        funcB(false);
                                       }
                                       setState(() {});
                                     },
@@ -705,7 +713,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                         isPost: true,
                       );
               },
-              childCount: no_of_comments,
+              childCount: noOfComment,
             ),
           )
         ],
@@ -758,7 +766,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                       //   fit: BoxFit.cover,
                       // ),
                       child: FutureBuilder(
-                          future: loadImg(widget.dp, memoizer2),
+                          future: loadImg(dp, memoizer2),
                           builder: (BuildContext context, AsyncSnapshot text) {
                             if (text.connectionState ==
                                 ConnectionState.waiting) {
@@ -805,7 +813,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                             'postUuid': widget.post['uuid']
                           });
                       if (response.data['status'] == true) {
-                        widget.plusComment();
+                        plusComment();
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
