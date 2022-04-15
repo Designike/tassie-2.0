@@ -71,10 +71,9 @@ class _ExploreSearchUserTabState extends State<ExploreSearchUserTab> {
           subtitle: Text(
             users[index]['name'],
             style: TextStyle(
-                color:
-                    MediaQuery.of(context).platformBrightness == Brightness.dark
-                        ? kLight
-                        : kDark[900]),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? kLight
+                    : kDark[900]),
           ),
           leading: CircleAvatar(
             child: ClipOval(

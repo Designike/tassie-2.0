@@ -38,8 +38,8 @@ class RecImageUploader extends StatefulWidget {
 class _RecImageUploaderState extends State<RecImageUploader> {
   double progress = 0.0;
   bool isUploaded = false;
-  Future<void> _startUpload(File? file, String keyValue, String keyName,
-      String imgName
+  Future<void> _startUpload(
+      File? file, String keyValue, String keyName, String imgName
       // , String folder
       ) async {
     var dio = Dio();
@@ -180,7 +180,7 @@ class _RecImageUploaderState extends State<RecImageUploader> {
       //       padding: EdgeInsets.symmetric(vertical: 10.0),
       //       icon: Icon(Icons.cloud_upload),
       //       iconSize: 30.0,
-      //       color: MediaQuery.of(context).platformBrightness == Brightness.dark
+      //       color: Theme.of(context).brightness == Brightness.dark
       //           ? kPrimaryColor
       //           : kPrimaryColorAccent,
       //       onPressed: () => {
@@ -210,10 +210,9 @@ class _RecImageUploaderState extends State<RecImageUploader> {
               padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
               icon: Icon(Icons.cloud_upload),
               iconSize: 30.0,
-              color:
-                  MediaQuery.of(context).platformBrightness == Brightness.dark
-                      ? kPrimaryColor
-                      : kPrimaryColorAccent,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? kPrimaryColor
+                  : kPrimaryColorAccent,
               onPressed: () {
                 // print('1');
 
@@ -238,8 +237,8 @@ class _RecImageUploaderState extends State<RecImageUploader> {
                 // if (recipeName!='') {
 
                 // // print(isClicked);
-                _startUpload(widget.file, widget.keyValue, widget.keyName,
-                    widget.imgName
+                _startUpload(
+                    widget.file, widget.keyValue, widget.keyName, widget.imgName
                     // , widget.folder
                     );
 
@@ -406,7 +405,7 @@ class _RecImageUploaderState extends State<RecImageUploader> {
 //             padding: EdgeInsets.symmetric(vertical: 10.0),
 //             icon: Icon(Icons.cloud_upload),
 //             iconSize: 30.0,
-//             color: MediaQuery.of(context).platformBrightness == Brightness.dark
+//             color: Theme.of(context).brightness == Brightness.dark
 //                 ? kPrimaryColor
 //                 : kPrimaryColorAccent,
 //             onPressed: () => {

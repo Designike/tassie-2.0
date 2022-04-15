@@ -8,15 +8,16 @@ import 'package:tassie/constants.dart';
 import 'package:tassie/screens/imgLoader.dart';
 
 class CreateComment extends StatefulWidget {
-  const CreateComment({
-    Key? key,
-    required this.recost,
-    required this.index,
-    required this.userUuid,
-    required this.recipeUuid,
-    required this.removeComment,
-    required this.uuid,
-required this.isPost  }) : super(key: key);
+  const CreateComment(
+      {Key? key,
+      required this.recost,
+      required this.index,
+      required this.userUuid,
+      required this.recipeUuid,
+      required this.removeComment,
+      required this.uuid,
+      required this.isPost})
+      : super(key: key);
   final Map recost;
   final int index;
   final String userUuid;
@@ -87,7 +88,7 @@ class _CreateCommentState extends State<CreateComment> {
         subtitle: Text(
           widget.recost['comment'],
           style: TextStyle(
-            color: MediaQuery.of(context).platformBrightness == Brightness.dark
+            color: Theme.of(context).brightness == Brightness.dark
                 ? kLight
                 : kDark[900],
           ),

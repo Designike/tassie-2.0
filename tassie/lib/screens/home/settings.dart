@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/home/changeEmail.dart';
+import 'package:tassie/screens/home/changePassword.dart';
+import 'package:tassie/screens/home/changeTheme.dart';
 import 'package:tassie/screens/home/changeUsername.dart';
 import 'package:tassie/screens/wrapper.dart';
 
@@ -22,11 +25,14 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        foregroundColor: Theme.of(context).brightness == Brightness.dark
+              ? kLight
+              : kDark[900],
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Theme.of(context).scaffoldBackgroundColor,
             statusBarIconBrightness:
-                MediaQuery.of(context).platformBrightness == Brightness.light
+                Theme.of(context).brightness == Brightness.light
                     ? Brightness.dark
                     : Brightness.light),
         title: Text(
@@ -75,8 +81,22 @@ class _SettingsPageState extends State<SettingsPage> {
                 }),
               );
             }),
-            buildAccountOptionRow("Password", () {}),
-            buildAccountOptionRow("Update Email", () {}),
+            buildAccountOptionRow("Password", () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) {
+                  return ChangePassword();
+                }),
+              );
+            }),
+            buildAccountOptionRow("Update Email", () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) {
+                  return ChangeEmail();
+                }),
+              );
+            }),
             SizedBox(
               height: 40,
             ),
@@ -104,7 +124,14 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
 
             buildNotificationOptionRow("Notifications", true),
-            buildAccountOptionRow("Theme", () {}),
+            buildAccountOptionRow("Theme", () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) {
+                  return ChangeTheme();
+                }),
+              );
+            }),
             buildAccountOptionRow("Opportunity", () {}),
 
             SizedBox(

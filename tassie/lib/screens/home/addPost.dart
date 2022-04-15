@@ -58,7 +58,7 @@ class _AddPostState extends State<AddPost> {
         androidUiSettings: AndroidUiSettings(
           toolbarTitle: 'Garnish it,'
           toolbarColor: Theme.of(context).scaffoldBackgroundColor,
-          toolbarWidgetColor: MediaQuery.of(context).platformBrightness == Brightness.dark
+          toolbarWidgetColor: Theme.of(context).brightness == Brightness.dark
                     ? kDark
                     : kDark[900],
         ),
@@ -114,7 +114,7 @@ class _AddPostState extends State<AddPost> {
     return Scaffold(
       // Select an image from the camera or gallery
       // bottomNavigationBar: BottomAppBar(
-      //   color: MediaQuery.of(context).platformBrightness == Brightness.dark
+      //   color: Theme.of(context).brightness == Brightness.dark
       //       ? kDark[900]
       //       : kLight,
       //   child: Container(
@@ -200,7 +200,7 @@ class _AddPostState extends State<AddPost> {
               key: _formKey,
               child: Column(children: [
               // TextFormField(
-              //   // style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark
+              //   // style: TextStyle(color: Theme.of(context).brightness == Brightness.dark
               //   //     ? kLight
               //   //     : kDark[900]),
               //         initialValue: desc.isNotEmpty ? desc : '',
@@ -210,7 +210,7 @@ class _AddPostState extends State<AddPost> {
               //             labelStyle: TextStyle(
               //               // fontFamily: 'Raleway',
               //               fontSize: 16.0,
-              //               color: MediaQuery.of(context).platformBrightness == Brightness.dark
+              //               color: Theme.of(context).brightness == Brightness.dark
               //       ? kPrimaryColor
               //       : kDark[900],
               //             ),
@@ -218,7 +218,7 @@ class _AddPostState extends State<AddPost> {
               //             floatingLabelBehavior: FloatingLabelBehavior.always,
               //             border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), ),
               //             focusedBorder: OutlineInputBorder(
-              //                 borderSide: BorderSide(color: MediaQuery.of(context).platformBrightness == Brightness.dark
+              //                 borderSide: BorderSide(color: Theme.of(context).brightness == Brightness.dark
               //       ? kPrimaryColor
               //       : kDark[900]!),borderRadius: BorderRadius.circular(15.0),),
               //                 ),
@@ -251,7 +251,7 @@ class _AddPostState extends State<AddPost> {
                           labelStyle: TextStyle(
                             // fontFamily: 'Raleway',
                             fontSize: 16.0,
-                            color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                            color: Theme.of(context).brightness == Brightness.dark
                                 ? kPrimaryColor
                                 : kDark[900],
                           ),
@@ -264,7 +264,7 @@ class _AddPostState extends State<AddPost> {
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                                 color:
-                                    MediaQuery.of(context).platformBrightness == Brightness.dark
+                                    Theme.of(context).brightness == Brightness.dark
                                         ? kPrimaryColor
                                         : kDark[900]!),
                             borderRadius: BorderRadius.circular(15.0),
@@ -345,7 +345,7 @@ class _AddPostState extends State<AddPost> {
                     onPressed: () => _pickImage(ImageSource.camera),
                     ),
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(size.width),
-                    color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                    color: Theme.of(context).brightness == Brightness.dark
                     ? kDark[900]
                     : kLight,),
                   ),
@@ -358,7 +358,7 @@ class _AddPostState extends State<AddPost> {
                     onPressed: () => _pickImage(ImageSource.gallery),
                     ),
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(size.width),
-                    color: MediaQuery.of(context).platformBrightness == Brightness.dark
+                    color: Theme.of(context).brightness == Brightness.dark
                     ? kDark[900]
                     : kLight,),
                   ),

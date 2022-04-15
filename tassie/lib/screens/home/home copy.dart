@@ -267,10 +267,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             // ),
             bottomNavigationBar: BottomAppBar(
               shape: CircularNotchedRectangle(),
-              color:
-                  MediaQuery.of(context).platformBrightness == Brightness.dark
-                      ? kDark[900]
-                      : kLight,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? kDark[900]
+                  : kLight,
               notchMargin: 6.0,
               child: Container(
                 height: 65.0,

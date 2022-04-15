@@ -213,9 +213,10 @@ class _ViewRecPostState extends State<ViewRecPost> {
         subtitle: Text(
           comment['comment'],
           style: TextStyle(
-            color: MediaQuery.of(context).platformBrightness == Brightness.dark
+            color: Theme.of(context).brightness == Brightness.dark
                 ? kLight
                 : kDark[900],
+            // color:Colors.red,
           ),
         ),
         trailing: (widget.recs['userUuid'] == uuid ||
@@ -351,8 +352,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
             systemOverlayStyle: SystemUiOverlayStyle(
                 statusBarColor: Theme.of(context).scaffoldBackgroundColor,
                 statusBarIconBrightness:
-                    MediaQuery.of(context).platformBrightness ==
-                            Brightness.light
+                    Theme.of(context).brightness == Brightness.light
                         ? Brightness.dark
                         : Brightness.light),
             leading: ClipOval(
@@ -488,7 +488,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
               //   decoration: BoxDecoration(
               //     borderRadius: BorderRadius.circular(100.0),
               //     color:
-              //         MediaQuery.of(context).platformBrightness == Brightness.dark
+              //         Theme.of(context).brightness == Brightness.dark
               //             ? kLight
               //             : kDark[900],
               //   ),
@@ -512,28 +512,32 @@ class _ViewRecPostState extends State<ViewRecPost> {
               : ListView(
                   padding: EdgeInsets.only(top: 0),
                   children: [
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        width: size.width,
-                        height: size.width,
-                        // child: recipeImageID != " "
-                        //     ? Image(
-                        //         image: NetworkImage(getImage(recipeImageID)),
-                        //         fit: BoxFit.cover,
-                        //       )
-                        //     : null,
-                        child: FutureBuilder(
-                            future: loadImg(recipeImageID, memoizer),
-                            builder:
-                                (BuildContext context, AsyncSnapshot text) {
-                              if (text.connectionState ==
-                                  ConnectionState.waiting) {
-                                return Image.asset("assets/images/broken.png");
-                              } else {
-                                return Image.network(text.data.toString());
-                              }
-                            }),
+                    Hero(
+                      tag: widget.recs['uuid'],
+                      child: GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                          width: size.width,
+                          height: size.width,
+                          // child: recipeImageID != " "
+                          //     ? Image(
+                          //         image: NetworkImage(getImage(recipeImageID)),
+                          //         fit: BoxFit.cover,
+                          //       )
+                          //     : null,
+                          child: FutureBuilder(
+                              future: loadImg(recipeImageID, memoizer),
+                              builder:
+                                  (BuildContext context, AsyncSnapshot text) {
+                                if (text.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Image.asset(
+                                      "assets/images/broken.png");
+                                } else {
+                                  return Image.network(text.data.toString());
+                                }
+                              }),
+                        ),
                       ),
                     ),
                     Transform.translate(
@@ -1189,7 +1193,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                   ],
                                 ),
                                 decoration: BoxDecoration(
-                                    // color: MediaQuery.of(context).platformBrightness ==
+                                    // color: Theme.of(context).brightness ==
                                     //         Brightness.dark
                                     //     ? kDark[900]
                                     //     : kLight,
@@ -1239,8 +1243,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                     EdgeInsets.symmetric(horizontal: 4.0),
                                 itemBuilder: (context, _) => Icon(
                                   Icons.star,
-                                  color: MediaQuery.of(context)
-                                              .platformBrightness ==
+                                  color: Theme.of(context).brightness ==
                                           Brightness.dark
                                       ? kDark[200]
                                       : kDark[700],
@@ -1386,7 +1389,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                     ],
                                   ),
                                   decoration: BoxDecoration(
-                                      // color: MediaQuery.of(context).platformBrightness ==
+                                      // color: Theme.of(context).brightness ==
                                       //         Brightness.dark
                                       //     ? kDark[900]
                                       //     : kLight,
@@ -1462,7 +1465,10 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                   TextSpan(
                                     text: "More recipes from ",
                                     style: TextStyle(
-                                      // color: kPrimaryColor,
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? kLight
+                                          : kDark[900],
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20.0,
                                     ),
@@ -1470,7 +1476,10 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                   TextSpan(
                                     text: chefName,
                                     style: TextStyle(
-                                      // color: kPrimaryColor,
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? kLight
+                                          : kDark[900],
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20.0,
                                     ),
@@ -1484,7 +1493,10 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                   TextSpan(
                                     text: "Seems like ",
                                     style: TextStyle(
-                                      // color: kPrimaryColor,
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? kLight
+                                          : kDark[900],
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20.0,
                                     ),
@@ -1492,7 +1504,10 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                   TextSpan(
                                     text: chefName,
                                     style: TextStyle(
-                                      // color: kPrimaryColor,
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? kLight
+                                          : kDark[900],
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20.0,
                                     ),
@@ -1500,7 +1515,10 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                   TextSpan(
                                     text: " hasn't posted more recipes.",
                                     style: TextStyle(
-                                      // color: kPrimaryColor,
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? kLight
+                                          : kDark[900],
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20.0,
                                     ),

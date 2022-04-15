@@ -46,8 +46,13 @@ class _RegisterState extends State<Register> {
   Future<void> checkEmail(email) async {
     // var dio = Dio();
     try {
+<<<<<<< HEAD
       Response response = await dio
           .get("https://api-tassie.herokuapp.com/user/checkEmail/" + email);
+=======
+      Response response =
+          await dio.get("http://10.0.2.2:3000/user/checkEmail/" + email);
+>>>>>>> 802f69550ba7ddef76bc77fcff5a62cefd8128c4
       // var res = jsonDecode(response.toString());
 
       // if(response)
@@ -144,7 +149,7 @@ class _RegisterState extends State<Register> {
                         }
                       },
                       validator: (val) {
-                        if (!RegExp(r"^(?=[a-zA-Z0-9._]{5,32}$)")
+                        if (!RegExp(r"^(?=[a-zA-Z0-9._]{6,32}$)")
                             .hasMatch(val!)) {
                           return 'Please enter a valid Username';
                         }
@@ -199,8 +204,8 @@ class _RegisterState extends State<Register> {
                       onChanged: (value) {
                         password = value;
                       },
-                      validator: (val) => val!.length < 7
-                          ? 'Enter password 7+ characters long'
+                      validator: (val) => val!.length < 6
+                          ? 'Enter password 6+ characters long'
                           : null,
                     ),
                     SizedBox(height: 50.0),
@@ -292,11 +297,10 @@ class _RegisterState extends State<Register> {
                         child: Container(
                           decoration: BoxDecoration(
                               border: Border.all(
-                                color:
-                                    MediaQuery.of(context).platformBrightness ==
-                                            Brightness.light
-                                        ? kDark[800]!
-                                        : kLight,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? kDark[800]!
+                                    : kLight,
                                 style: BorderStyle.solid,
                                 width: 2.0,
                               ),

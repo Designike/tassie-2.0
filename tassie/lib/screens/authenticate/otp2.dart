@@ -10,15 +10,15 @@ import 'package:tassie/screens/home/snackbar.dart';
 
 import '../../constants.dart';
 
-class OTPForm extends StatefulWidget {
-  const OTPForm({required this.uuid});
+class OTP2Form extends StatefulWidget {
+  const OTP2Form({required this.uuid});
   final String uuid;
 
   @override
-  _OTPFormState createState() => _OTPFormState();
+  _OTP2FormState createState() => _OTP2FormState();
 }
 
-class _OTPFormState extends State<OTPForm> {
+class _OTP2FormState extends State<OTP2Form> {
   FocusNode? pin2FocusNode;
   FocusNode? pin3FocusNode;
   FocusNode? pin4FocusNode;
@@ -198,7 +198,7 @@ class _OTPFormState extends State<OTPForm> {
             onTap: () async {
               // if (_formKey.currentState!.validate()) {
               //   final response = await dio.post(
-              //     "https://api-tassie.herokuapp.com/user/login/",
+              //     "http://10.0.2.2:3000/user/login/",
               //     options: Options(headers: {
               //       HttpHeaders.contentTypeHeader: "application/json",
               //     }),
@@ -213,32 +213,34 @@ class _OTPFormState extends State<OTPForm> {
               try {
                 print(totp);
                 print(otp);
+                var token = await storage.read(key: "token");
                 Response response = await dio.post(
-                    // "https://api-tassie.herokuapp.com/user/tsa/" + widget.uuid,
-                    "https://api-tassie.herokuapp.com/user/tsa/" + widget.uuid,
+                    // "http://10.0.2.2:3000/user/tsa/" + widget.uuid,
+                    "http://10.0.2.2:3000/user/verifyEmail",
                     options: Options(headers: {
                       HttpHeaders.contentTypeHeader: "application/json",
+                      HttpHeaders.authorizationHeader: "Bearer " + token!,
                     }),
                     data: {"totp": otp});
                 if (response.data != null) {
                   if (response.data['status'] == true) {
                     print('1');
-                    await storage.write(
-                        key: "token", value: response.data['data']['token']);
-                    await storage.write(
-                        key: "uuid", value: response.data['data']['uuid']);
+                    // await storage.write(
+                    //     key: "token", value: response.data['data']['token']);
+                    // await storage.write(
+                    //     key: "uuid", value: response.data['data']['uuid']);
                     print('2');
                     // Response response1 = await dio.get(
-                    //     "https://api-tassie.herokuapp.com/user/getProfilePic/",
+                    //     "http://10.0.2.2:3000/user/getProfilePic/",
                     //     options: Options(headers: {
                     //       HttpHeaders.contentTypeHeader: "application/json",
                     //       HttpHeaders.authorizationHeader:
                     //           "Bearer " + response.data['data']['token']
                     //     }));
                     // if (response.data['data']['profilePic'] != "") {
-                    await storage.write(
-                        key: "profilePic",
-                        value: response.data['data']['profilePic']);
+                    // await storage.write(
+                    //     key: "profilePic",
+                    //     value: response.data['data']['profilePic']);
                     // } else {
                     //   List option = [
                     //     'assets/Avacado.png',
@@ -250,12 +252,8 @@ class _OTPFormState extends State<OTPForm> {
                     //   String randomItem = (option..shuffle()).first;
                     //   await storage.write(key: "profilePic", value: randomItem);
                     // }
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) {
-                        return Home();
-                      }),
-                    );
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
                   } else {
                     showSnack(
                         context, response.data['message'], () {}, 'OK', 4);
@@ -298,8 +296,8 @@ class _OTPFormState extends State<OTPForm> {
               // widget.func!();
               try {
                 Response response = await dio.get(
-                  // "https://api-tassie.herokuapp.com/user/",
-                  "https://api-tassie.herokuapp.com/user/mail/" + widget.uuid,
+                  // "http://10.0.2.2:3000/user/",
+                  "http://10.0.2.2:3000/user/mail/" + widget.uuid,
                   options: Options(headers: {
                     HttpHeaders.contentTypeHeader: "application/json",
                   }),
@@ -310,7 +308,7 @@ class _OTPFormState extends State<OTPForm> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) {
-                        return OTP(
+                        return OTP2(
                             uuid: response.data['data']['uuid'],
                             time: response.data['data']['time']);
                       }),
@@ -368,16 +366,16 @@ class _OTPFormState extends State<OTPForm> {
   }
 }
 
-class OTP extends StatefulWidget {
+class OTP2 extends StatefulWidget {
   final String uuid;
   final int time;
-  const OTP({required this.uuid, required this.time});
+  const OTP2({required this.uuid, required this.time});
 
   @override
-  _OTPState createState() => _OTPState();
+  _OTP2State createState() => _OTP2State();
 }
 
-class _OTPState extends State<OTP> {
+class _OTP2State extends State<OTP2> {
   final _formKey = GlobalKey<FormState>();
   String? value;
   var dio = Dio();
@@ -425,7 +423,7 @@ class _OTPState extends State<OTP> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'One Last\nStep!',
+                    'Verify your\nemail!',
                     style: TextStyle(
                       fontSize: 60.0,
                       fontWeight: FontWeight.bold,
@@ -449,7 +447,7 @@ class _OTPState extends State<OTP> {
                       )
                     ],
                   ),
-                  OTPForm(uuid: widget.uuid),
+                  OTP2Form(uuid: widget.uuid),
                 ],
               ),
             ),

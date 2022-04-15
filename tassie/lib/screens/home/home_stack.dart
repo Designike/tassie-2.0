@@ -297,7 +297,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       // ),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
-        color: MediaQuery.of(context).platformBrightness == Brightness.dark
+        color: Theme.of(context).brightness == Brightness.dark
             ? kDark[900]
             : kLight,
         notchMargin: 6.0,
@@ -325,8 +325,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       'Feed',
                       style: TextStyle(
                           color: _selectedIndex == 0
-                              ? MediaQuery.of(context).platformBrightness ==
-                                      Brightness.light
+                              ? Theme.of(context).brightness == Brightness.light
                                   ? kDark[900]
                                   : kLight
                               : kDark),
@@ -352,8 +351,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       'Recs',
                       style: TextStyle(
                           color: _selectedIndex == 1
-                              ? MediaQuery.of(context).platformBrightness ==
-                                      Brightness.light
+                              ? Theme.of(context).brightness == Brightness.light
                                   ? kDark[900]
                                   : kLight
                               : kDark),
@@ -382,8 +380,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       'Explore',
                       style: TextStyle(
                           color: _selectedIndex == 2
-                              ? MediaQuery.of(context).platformBrightness ==
-                                      Brightness.light
+                              ? Theme.of(context).brightness == Brightness.light
                                   ? kDark[900]
                                   : kLight
                               : kDark),
@@ -406,8 +403,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       'Profile',
                       style: TextStyle(
                           color: _selectedIndex == 3
-                              ? MediaQuery.of(context).platformBrightness ==
-                                      Brightness.light
+                              ? Theme.of(context).brightness == Brightness.light
                                   ? kDark[900]
                                   : kLight
                               : kDark),

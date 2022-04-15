@@ -87,7 +87,8 @@ class _AdvancedSearchResultsState extends State<AdvancedSearchResults>
             HttpHeaders.authorizationHeader: "Bearer " + token!
           }),
         );
-        // print(response);
+        print('data');
+        print(response);
         // print(response.data);
         if (response.data['data'] != null) {
           setState(() {
@@ -208,8 +209,7 @@ class _AdvancedSearchResultsState extends State<AdvancedSearchResults>
               systemOverlayStyle: SystemUiOverlayStyle(
                   statusBarColor: Theme.of(context).scaffoldBackgroundColor,
                   statusBarIconBrightness:
-                      MediaQuery.of(context).platformBrightness ==
-                              Brightness.light
+                      Theme.of(context).brightness == Brightness.light
                           ? Brightness.dark
                           : Brightness.light),
               title: Text(

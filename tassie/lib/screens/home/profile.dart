@@ -6,6 +6,7 @@ import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/editProfile.dart';
@@ -15,7 +16,9 @@ import 'package:tassie/screens/home/settings.dart';
 import 'package:tassie/screens/home/showMoreText.dart';
 import 'package:tassie/screens/home/snackbar.dart';
 import 'package:tassie/screens/imgLoader.dart';
+import 'package:tassie/theme_model.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
 
 import '../wrapper.dart';
 import 'profileRecipeTab.dart';
@@ -425,11 +428,24 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.transparent,
+          foregroundColor: Theme.of(context).brightness == Brightness.dark
+              ? kLight
+              : kDark[900],
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Theme.of(context).scaffoldBackgroundColor,
+            statusBarIconBrightness:
+                Theme.of(context).brightness == Brightness.light
+                    ? Brightness.dark
+                    : Brightness.light,
+          ),
           title: Text(
             username,
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 24,
+              // color: Theme.of(context).brightness == Brightness.dark
+              //     ? kLight
+              //     : kDark[900],
             ),
           ),
           actions: [
@@ -483,7 +499,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                               // ),
                               child: (!isLoading)
                                   ? FutureBuilder(
-                                      future: loadImg(profilePic,memoizer),
+                                      future: loadImg(profilePic, memoizer),
                                       builder: (BuildContext context,
                                           AsyncSnapshot text) {
                                         if (text.connectionState ==
@@ -506,11 +522,10 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                           );
                                         }
                                       })
-                                  : Image.asset(
-                                              "assets/images/broken.png",
-                                              fit: BoxFit.cover,
-                                              height: 128,
-                                              width: 128),
+                                  : Image.asset("assets/images/broken.png",
+                                      fit: BoxFit.cover,
+                                      height: 128,
+                                      width: 128),
                             ),
                           ),
                           if (widget.uuid == "user") ...[
@@ -702,11 +717,11 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                                 ? Text('Loading ...')
                                                 : Text('Edit Profile')),
                                         decoration: BoxDecoration(
-                                            color: MediaQuery.of(context)
-                                                        .platformBrightness ==
-                                                    Brightness.dark
-                                                ? kDark[900]
-                                                : kLight,
+                                            color:
+                                                Theme.of(context).brightness ==
+                                                        Brightness.dark
+                                                    ? kDark[900]
+                                                    : kLight,
                                             borderRadius:
                                                 BorderRadius.circular(10.0)),
                                       ),
@@ -835,8 +850,8 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                                   : Text('Subscribe'),
                                         ),
                                         decoration: BoxDecoration(
-                                            color: MediaQuery.of(context)
-                                                        .platformBrightness ==
+                                            color: Theme.of(context)
+                                                        .brightness ==
                                                     Brightness.dark
                                                 ? kDark[900]
                                                 : kLight,
@@ -873,6 +888,11 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
 
                     TabBar(
                       indicatorColor: kPrimaryColor,
+                      unselectedLabelColor: kDark,
+                      labelColor:
+                          Theme.of(context).brightness == Brightness.dark
+                              ? kLight
+                              : kDark[900],
                       tabs: [
                         Tab(icon: Icon(Icons.photo_rounded)),
                         Tab(

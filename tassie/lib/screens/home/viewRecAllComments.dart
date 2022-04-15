@@ -108,7 +108,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
   //       subtitle: Text(
   //         comment['comment'],
   //         style: TextStyle(
-  //           color: MediaQuery.of(context).platformBrightness == Brightness.dark
+  //           color: Theme.of(context).brightness == Brightness.dark
   //               ? kLight
   //               : kDark[900],
   //         ),
@@ -247,6 +247,9 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
         title: Text("Comments"),
         centerTitle: false,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        foregroundColor: Theme.of(context).brightness == Brightness.dark
+            ? kLight
+            : kDark[900],
       ),
       // backgroundColor: Color(0xFFEDF0F6),
       body: CustomScrollView(
@@ -281,7 +284,6 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
               childCount: comments.length,
             ),
           ),
-          
         ],
       ),
       bottomNavigationBar: Transform.translate(
@@ -293,7 +295,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
               topLeft: Radius.circular(30.0),
               topRight: Radius.circular(30.0),
             ),
-            color: MediaQuery.of(context).platformBrightness == Brightness.dark
+            color: Theme.of(context).brightness == Brightness.dark
                 ? kDark[900]
                 : kLight,
           ),

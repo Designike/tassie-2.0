@@ -155,6 +155,9 @@ class _ProfileBookmarksState extends State<ProfileBookmarks> {
                 // forceElevated: isScrollable,
                 pinned: true,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                foregroundColor: Theme.of(context).brightness == Brightness.dark
+                    ? kLight
+                    : kDark[900],
                 title: Text('Your bookmarks'),
                 // actions: [
                 //   IconButton(
@@ -167,6 +170,10 @@ class _ProfileBookmarksState extends State<ProfileBookmarks> {
                 // ],
                 bottom: TabBar(
                   indicatorColor: kPrimaryColor,
+                  unselectedLabelColor: kDark,
+                  labelColor: Theme.of(context).brightness == Brightness.dark
+                ? kLight
+                : kDark[900],
                   tabs: [
                     Tab(icon: Icon(Icons.photo_rounded)),
                     Tab(

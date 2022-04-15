@@ -57,7 +57,7 @@ class _ExploreRecState extends State<ExploreRec> {
       width: double.infinity,
       // height: ((size.width - 42.0)/2) + 120.0, // minus padding, plus list tile
       decoration: BoxDecoration(
-        color: MediaQuery.of(context).platformBrightness == Brightness.dark
+        color: Theme.of(context).brightness == Brightness.dark
             ? kDark[900]
             : kLight,
         borderRadius: BorderRadius.circular(25.0),
@@ -225,10 +225,9 @@ class _ExploreRecState extends State<ExploreRec> {
                     recs['username'],
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                        color: MediaQuery.of(context).platformBrightness ==
-                                Brightness.dark
+                        color: Theme.of(context).brightness == Brightness.dark
                             ? kLight
-                            : kDark[900]),
+                            : kDark[900],),
                   ),
                   isThreeLine: true,
                 ),
@@ -326,7 +325,7 @@ class _ExploreRecState extends State<ExploreRec> {
           //                   style: TextStyle(
           //                     fontWeight: FontWeight.bold,
           //                     color:
-          //                         MediaQuery.of(context).platformBrightness ==
+          //                         Theme.of(context).brightness ==
           //                                 Brightness.light
           //                             ? kDark[900]
           //                             : kLight,
@@ -337,7 +336,7 @@ class _ExploreRecState extends State<ExploreRec> {
           //                   text: recs[index]['description'],
           //                   style: TextStyle(
           //                     color:
-          //                         MediaQuery.of(context).platformBrightness ==
+          //                         Theme.of(context).brightness ==
           //                                 Brightness.light
           //                             ? kDark[900]
           //                             : kLight,

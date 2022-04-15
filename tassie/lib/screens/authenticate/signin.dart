@@ -255,11 +255,10 @@ class _SignInState extends State<SignIn> {
                         child: Container(
                           decoration: BoxDecoration(
                               border: Border.all(
-                                color:
-                                    MediaQuery.of(context).platformBrightness ==
-                                            Brightness.light
-                                        ? kDark[800]!
-                                        : kLight,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? kDark[800]!
+                                    : kLight,
                                 style: BorderStyle.solid,
                                 width: 2.0,
                               ),

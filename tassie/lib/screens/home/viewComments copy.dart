@@ -70,7 +70,7 @@ class _ViewCommentsState extends State<ViewComments> {
         subtitle: Text(
           post['comments'][index]['comment'],
           style: TextStyle(
-            color: MediaQuery.of(context).platformBrightness == Brightness.dark
+            color: Theme.of(context).brightness == Brightness.dark
                 ? kLight
                 : kDark[900],
           ),
@@ -335,7 +335,7 @@ class _ViewCommentsState extends State<ViewComments> {
               topLeft: Radius.circular(30.0),
               topRight: Radius.circular(30.0),
             ),
-            color: MediaQuery.of(context).platformBrightness == Brightness.dark
+            color: Theme.of(context).brightness == Brightness.dark
                 ? kDark[900]
                 : kLight,
           ),
