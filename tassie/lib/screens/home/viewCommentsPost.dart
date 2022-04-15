@@ -6,6 +6,7 @@ import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tassie/screens/home/viewRecCommentChild.dart';
 import 'package:tassie/screens/imgLoader.dart';
 
@@ -36,7 +37,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
   String? dp;
   static List comments = [];
   bool isLazyLoading = false;
-  static bool isLoading = true;
+  bool isLoading = true;
   static int page = 1;
   bool isEnd = false;
   final dio = Dio();
@@ -47,6 +48,8 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
   int noOfLikes = 0;
   bool isLiked = false;
   bool isBookmarked = false;
+  String username = "";
+  String createdAt = "";
 
   void func(bool islike) {
     setState(() {
@@ -78,7 +81,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
   }
 
   void getStats() async {
-    var url = "http://10.0.2.2:3000/profile/getStats/";
+    var url = "http://10.0.2.2:3000/profile/postStats/";
     var token = await storage.read(key: "token");
     Response response = await dio.post(
       url,
@@ -90,20 +93,24 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
         "postUuid": widget.post["uuid"],
       },
     );
-    if (response.data["beta"].length != 0) {
+    if (response.data["status"] == true) {
+      print(response.data);
       setState(() {
-        noOfComment = response.data.beta[0]['comments'];
-        noOfLikes = response.data.beta[0]['likes'];
-        isBookmarked = response.data.beta[0]['isBookmarked'];
-        isLiked = response.data.beta[0]['isLiked'];
-        getdp();
-        isLoading = true;
+        noOfComment = response.data['data']['comments'];
+        noOfLikes = response.data['data']['likes'];
+        isBookmarked = response.data['data']['isBookmarked'];
+        isLiked = response.data['data']['isLiked'];
+        username = response.data['data']['username'];
+        createdAt = response.data['data']['createdAt'];
+        // getdp();
+        isLoading = false;
       });
     }
   }
 
   Future<void> getdp() async {
     dp = await storage.read(key: "profilePic");
+    print(dp);
   }
 
   // List<Map> comments = [
@@ -147,7 +154,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
 
   Widget _createComment(int index) {
     Map post = widget.post;
-    // print(post);
+    print(comments[index]);
     return Padding(
       padding: EdgeInsets.all(10.0),
       child: ListTile(
@@ -162,7 +169,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
               child: Image(
                 height: 50.0,
                 width: 50.0,
-                image: NetworkImage(post['profilePic']),
+                image: NetworkImage(comments[index]['profilePic']),
                 fit: BoxFit.cover,
               ),
             ),
@@ -233,7 +240,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
         setState(() {
           isLazyLoading = true;
         });
-        var url = "https://api-tassie.herokuapp.com/feed/lazycomment/" +
+        var url = "http://10.0.2.2:3000/feed/lazycomment/" +
             widget.post['uuid'] +
             '/' +
             widget.post['userUuid'] +
@@ -285,6 +292,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
   void initState() {
     page = 1;
     comments = [];
+    getdp();
     getStats();
     _getMoreData(page);
     super.initState();
@@ -311,300 +319,142 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
     // int no_of_comments = comments.length;
     Size size = MediaQuery.of(context).size;
     // bool isBookmarked = widget.bookmark['isBookmarked'];
-    return Scaffold(
-      // backgroundColor: Color(0xFFEDF0F6),
-      body: CustomScrollView(
-        controller: _sc,
-        slivers: [
-          SliverToBoxAdapter(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  padding: EdgeInsets.only(top: 40.0),
-                  width: double.infinity,
-                  // height: 600.0,
-                  decoration: BoxDecoration(
-                    // color: Colors.white,
-                    borderRadius: BorderRadius.circular(25.0),
-                  ),
+    return isLoading
+        ? Scaffold(
+            // backgroundColor: Colors.white,
+            body: Center(
+              child: SpinKitThreeBounce(
+                color: kPrimaryColor,
+                size: 50.0,
+              ),
+            ),
+          )
+        : Scaffold(
+            // backgroundColor: Color(0xFFEDF0F6),
+            body: CustomScrollView(
+              controller: _sc,
+              slivers: [
+                SliverToBoxAdapter(
                   child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.0),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(top: 40.0),
+                        width: double.infinity,
+                        // height: 600.0,
+                        decoration: BoxDecoration(
+                          // color: Colors.white,
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
                         child: Column(
                           children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                IconButton(
-                                  icon: Icon(Icons.arrow_back),
-                                  iconSize: 30.0,
-                                  // color: Colors.black,
-                                  onPressed: () {
-                                    print('henlo');
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.8,
-                                  child: ListTile(
-                                    leading: Container(
-                                      width: 50.0,
-                                      height: 50.0,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: CircleAvatar(
-                                        child: ClipOval(
-                                          // child: Image(
-                                          //   height: 50.0,
-                                          //   width: 50.0,
-                                          //   image: NetworkImage(
-                                          //       widget.post['url']),
-                                          //   fit: BoxFit.cover,
-                                          // ),
-                                          child: FutureBuilder(
-                                              future: loadImg(
-                                                  widget.post['profilePic'],
-                                                  memoizer1),
-                                              builder: (BuildContext context,
-                                                  AsyncSnapshot text) {
-                                                if (text.connectionState ==
-                                                    ConnectionState.waiting) {
-                                                  return Image(
-                                                    height: 50.0,
-                                                    width: 50.0,
-                                                    image: AssetImage(
-                                                        "assets/images/broken.png"),
-                                                    fit: BoxFit.cover,
-                                                  );
-                                                } else {
-                                                  // return Image(
-                                                  //   image: NetworkImage(text.data.toString()),
-                                                  //   fit: BoxFit.cover,
-                                                  // );
-                                                  return Image(
-                                                    height: 50.0,
-                                                    width: 50.0,
-                                                    image: NetworkImage(
-                                                        text.data.toString()),
-                                                    fit: BoxFit.cover,
-                                                  );
-                                                }
-                                              }),
-                                        ),
-                                      ),
-                                    ),
-                                    title: Text(
-                                      widget.post['username'],
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    subtitle: Text(
-                                      widget.post['createdAt'],
-                                      style: TextStyle(
-                                          color: MediaQuery.of(context)
-                                                      .platformBrightness ==
-                                                  Brightness.dark
-                                              ? kLight
-                                              : kDark[900]),
-                                    ),
-                                    trailing: IconButton(
-                                      icon: Icon(Icons.more_horiz),
-                                      // color: Colors.black,
-                                      onPressed: () => print('More'),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            InkWell(
-                              onDoubleTap: () async {
-                                if (!isLiked) {
-                                  var token = await storage.read(key: "token");
-                                  dio.post(
-                                      "https://api-tassie.herokuapp.com/feed/like",
-                                      options: Options(headers: {
-                                        HttpHeaders.contentTypeHeader:
-                                            "application/json",
-                                        HttpHeaders.authorizationHeader:
-                                            "Bearer " + token!
-                                      }),
-                                      data: {'uuid': widget.post['uuid']});
-                                  func(true);
-                                  setState(() {});
-                                }
-                              },
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              // child: Container(
-                              //   margin: EdgeInsets.all(10.0),
-                              //   width: double.infinity,
-                              //   height: 400.0,
-                              //   decoration: BoxDecoration(
-                              //     borderRadius: BorderRadius.circular(25.0),
-                              //     image: DecorationImage(
-                              //       image:
-                              //           NetworkImage(widget.post['profilePic']),
-                              //       fit: BoxFit.cover,
-                              //     ),
-                              //   ),
-                              // ),
-                              child: FutureBuilder(
-                                  future:
-                                      loadImg(widget.post['postID'], memoizer),
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot text) {
-                                    if (text.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return Container(
-                                        margin: EdgeInsets.all(10.0),
-                                        width: double.infinity,
-                                        height: size.width - 40.0,
-                                        // height: 400.0,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(25.0),
-                                          image: DecorationImage(
-                                            image: AssetImage(
-                                              'assets/images/broken.png',
-                                            ),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      );
-                                    } else {
-                                      // return Image(
-                                      //   image: NetworkImage(text.data.toString()),
-                                      //   fit: BoxFit.cover,
-                                      // );
-                                      return Container(
-                                        margin: EdgeInsets.all(10.0),
-                                        width: double.infinity,
-                                        height: size.width - 40.0,
-                                        // height: 400.0,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(25.0),
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                                text.data.toString()),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  }),
-                            ),
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                              padding: EdgeInsets.symmetric(vertical: 10.0),
+                              child: Column(
                                 children: <Widget>[
                                   Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      Row(
-                                        children: <Widget>[
-                                          IconButton(
-                                            icon: (!isLiked)
-                                                ? Icon(Icons.favorite_border)
-                                                : Icon(
-                                                    Icons.favorite,
-                                                    color: kPrimaryColor,
-                                                  ),
-                                            iconSize: 30.0,
-                                            onPressed: () async {
-                                              if (isLiked) {
-                                                // print(post);
-
-                                                var token = await storage.read(
-                                                    key: "token");
-                                                dio.post(
-                                                    "https://api-tassie.herokuapp.com/feed/unlike",
-                                                    options: Options(headers: {
-                                                      HttpHeaders
-                                                              .contentTypeHeader:
-                                                          "application/json",
-                                                      HttpHeaders
-                                                              .authorizationHeader:
-                                                          "Bearer " + token!
-                                                    }),
-                                                    data: {
-                                                      'uuid':
-                                                          widget.post['uuid']
-                                                    });
-                                                func(false);
-                                              } else {
-                                                // print(post);
-
-                                                var token = await storage.read(
-                                                    key: "token");
-                                                dio.post(
-                                                    "https://api-tassie.herokuapp.com/feed/like",
-                                                    options: Options(headers: {
-                                                      HttpHeaders
-                                                              .contentTypeHeader:
-                                                          "application/json",
-                                                      HttpHeaders
-                                                              .authorizationHeader:
-                                                          "Bearer " + token!
-                                                    }),
-                                                    data: {
-                                                      'uuid':
-                                                          widget.post['uuid']
-                                                    });
-                                                func(true);
-                                              }
-                                              setState(() {});
-                                              // print(likeNumber.toString());
-                                            },
-                                          ),
-                                          Text(
-                                            noOfLikes.toString(),
-                                            style: TextStyle(
-                                              fontSize: 14.0,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ],
+                                      IconButton(
+                                        icon: Icon(Icons.arrow_back),
+                                        iconSize: 30.0,
+                                        // color: Colors.black,
+                                        onPressed: () {
+                                          print('henlo');
+                                          Navigator.pop(context);
+                                        },
                                       ),
-                                      SizedBox(width: 20.0),
-                                      Row(
-                                        children: <Widget>[
-                                          IconButton(
-                                            icon: Icon(Icons.chat),
-                                            iconSize: 30.0,
-                                            onPressed: () {
-                                              print('Chat');
-                                            },
-                                          ),
-                                          Text(
-                                            noOfComment.toString(),
-                                            style: TextStyle(
-                                              fontSize: 14.0,
-                                              fontWeight: FontWeight.w600,
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.8,
+                                        child: ListTile(
+                                          leading: Container(
+                                            width: 50.0,
+                                            height: 50.0,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: CircleAvatar(
+                                              child: ClipOval(
+                                                // child: Image(
+                                                //   height: 50.0,
+                                                //   width: 50.0,
+                                                //   image: NetworkImage(
+                                                //       widget.post['url']),
+                                                //   fit: BoxFit.cover,
+                                                // ),
+                                                child: FutureBuilder(
+                                                    future: loadImg(
+                                                        // widget.post['profilePic'],
+                                                        dp,
+                                                        memoizer1),
+                                                    builder: (BuildContext
+                                                            context,
+                                                        AsyncSnapshot text) {
+                                                      if (text.connectionState ==
+                                                          ConnectionState
+                                                              .waiting) {
+                                                        return Image(
+                                                          height: 50.0,
+                                                          width: 50.0,
+                                                          image: AssetImage(
+                                                              "assets/images/broken.png"),
+                                                          fit: BoxFit.cover,
+                                                        );
+                                                      } else {
+                                                        // return Image(
+                                                        //   image: NetworkImage(text.data.toString()),
+                                                        //   fit: BoxFit.cover,
+                                                        // );
+                                                        print(text.data
+                                                            .toString());
+                                                        return Image(
+                                                          height: 50.0,
+                                                          width: 50.0,
+                                                          image: NetworkImage(
+                                                              text.data
+                                                                  .toString()),
+                                                          fit: BoxFit.cover,
+                                                        );
+                                                      }
+                                                    }),
+                                              ),
                                             ),
                                           ),
-                                        ],
+                                          title: Text(
+                                            username,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          subtitle: Text(
+                                            createdAt,
+                                            style: TextStyle(
+                                                color: MediaQuery.of(context)
+                                                            .platformBrightness ==
+                                                        Brightness.dark
+                                                    ? kLight
+                                                    : kDark[900]),
+                                          ),
+                                          trailing: IconButton(
+                                            icon: Icon(Icons.more_horiz),
+                                            // color: Colors.black,
+                                            onPressed: () => print('More'),
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),
-                                  IconButton(
-                                    icon: (isBookmarked)
-                                        ? Icon(Icons.bookmark)
-                                        : Icon(Icons.bookmark_border),
-                                    iconSize: 30.0,
-                                    onPressed: () async {
-                                      if (!isBookmarked) {
+                                  InkWell(
+                                    onDoubleTap: () async {
+                                      if (!isLiked) {
                                         var token =
                                             await storage.read(key: "token");
-                                        Response response = await dio.post(
-                                            "https://api-tassie.herokuapp.com/feed/bookmark",
+                                        dio.post(
+                                            "https://api-tassie.herokuapp.com/feed/like",
                                             options: Options(headers: {
                                               HttpHeaders.contentTypeHeader:
                                                   "application/json",
@@ -614,225 +464,420 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                             data: {
                                               'uuid': widget.post['uuid']
                                             });
-                                        funcB(true);
-                                      } else {
-                                        var token =
-                                            await storage.read(key: "token");
-                                        Response response = await dio.post(
-                                            "https://api-tassie.herokuapp.com/feed/removeBookmark",
-                                            options: Options(headers: {
-                                              HttpHeaders.contentTypeHeader:
-                                                  "application/json",
-                                              HttpHeaders.authorizationHeader:
-                                                  "Bearer " + token!
-                                            }),
-                                            data: {
-                                              'uuid': widget.post['uuid']
-                                            });
-                                        funcB(false);
+                                        func(true);
+                                        setState(() {});
                                       }
-                                      setState(() {});
                                     },
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    // child: Container(
+                                    //   margin: EdgeInsets.all(10.0),
+                                    //   width: double.infinity,
+                                    //   height: 400.0,
+                                    //   decoration: BoxDecoration(
+                                    //     borderRadius: BorderRadius.circular(25.0),
+                                    //     image: DecorationImage(
+                                    //       image:
+                                    //           NetworkImage(widget.post['profilePic']),
+                                    //       fit: BoxFit.cover,
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                    child: FutureBuilder(
+                                        future: loadImg(
+                                            widget.post['postID'], memoizer),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot text) {
+                                          if (text.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return Container(
+                                              margin: EdgeInsets.all(10.0),
+                                              width: double.infinity,
+                                              height: size.width - 40.0,
+                                              // height: 400.0,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(25.0),
+                                                image: DecorationImage(
+                                                  image: AssetImage(
+                                                    'assets/images/broken.png',
+                                                  ),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            );
+                                          } else {
+                                            // return Image(
+                                            //   image: NetworkImage(text.data.toString()),
+                                            //   fit: BoxFit.cover,
+                                            // );
+                                            print(text.data.toString());
+                                            return Container(
+                                              margin: EdgeInsets.all(10.0),
+                                              width: double.infinity,
+                                              height: size.width - 40.0,
+                                              // height: 400.0,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(25.0),
+                                                image: DecorationImage(
+                                                  image: NetworkImage(
+                                                      text.data.toString()),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        }),
                                   ),
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 20.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Row(
+                                          children: <Widget>[
+                                            Row(
+                                              children: <Widget>[
+                                                IconButton(
+                                                  icon: (!isLiked)
+                                                      ? Icon(
+                                                          Icons.favorite_border)
+                                                      : Icon(
+                                                          Icons.favorite,
+                                                          color: kPrimaryColor,
+                                                        ),
+                                                  iconSize: 30.0,
+                                                  onPressed: () async {
+                                                    if (isLiked) {
+                                                      // print(post);
+
+                                                      var token = await storage
+                                                          .read(key: "token");
+                                                      dio.post(
+                                                          "https://api-tassie.herokuapp.com/feed/unlike",
+                                                          options: Options(headers: {
+                                                            HttpHeaders
+                                                                    .contentTypeHeader:
+                                                                "application/json",
+                                                            HttpHeaders
+                                                                    .authorizationHeader:
+                                                                "Bearer " +
+                                                                    token!
+                                                          }),
+                                                          data: {
+                                                            'uuid': widget
+                                                                .post['uuid']
+                                                          });
+                                                      func(false);
+                                                    } else {
+                                                      // print(post);
+
+                                                      var token = await storage
+                                                          .read(key: "token");
+                                                      dio.post(
+                                                          "https://api-tassie.herokuapp.com/feed/like",
+                                                          options: Options(headers: {
+                                                            HttpHeaders
+                                                                    .contentTypeHeader:
+                                                                "application/json",
+                                                            HttpHeaders
+                                                                    .authorizationHeader:
+                                                                "Bearer " +
+                                                                    token!
+                                                          }),
+                                                          data: {
+                                                            'uuid': widget
+                                                                .post['uuid']
+                                                          });
+                                                      func(true);
+                                                    }
+                                                    setState(() {});
+                                                    // print(likeNumber.toString());
+                                                  },
+                                                ),
+                                                Text(
+                                                  noOfLikes.toString(),
+                                                  style: TextStyle(
+                                                    fontSize: 14.0,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(width: 20.0),
+                                            Row(
+                                              children: <Widget>[
+                                                IconButton(
+                                                  icon: Icon(Icons.chat),
+                                                  iconSize: 30.0,
+                                                  onPressed: () {
+                                                    print('Chat');
+                                                  },
+                                                ),
+                                                Text(
+                                                  noOfComment.toString(),
+                                                  style: TextStyle(
+                                                    fontSize: 14.0,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        IconButton(
+                                          icon: (isBookmarked)
+                                              ? Icon(Icons.bookmark)
+                                              : Icon(Icons.bookmark_border),
+                                          iconSize: 30.0,
+                                          onPressed: () async {
+                                            if (!isBookmarked) {
+                                              var token = await storage.read(
+                                                  key: "token");
+                                              Response response = await dio.post(
+                                                  "https://api-tassie.herokuapp.com/feed/bookmark",
+                                                  options: Options(headers: {
+                                                    HttpHeaders
+                                                            .contentTypeHeader:
+                                                        "application/json",
+                                                    HttpHeaders
+                                                            .authorizationHeader:
+                                                        "Bearer " + token!
+                                                  }),
+                                                  data: {
+                                                    'uuid': widget.post['uuid']
+                                                  });
+                                              funcB(true);
+                                            } else {
+                                              var token = await storage.read(
+                                                  key: "token");
+                                              Response response = await dio.post(
+                                                  "https://api-tassie.herokuapp.com/feed/removeBookmark",
+                                                  options: Options(headers: {
+                                                    HttpHeaders
+                                                            .contentTypeHeader:
+                                                        "application/json",
+                                                    HttpHeaders
+                                                            .authorizationHeader:
+                                                        "Bearer " + token!
+                                                  }),
+                                                  data: {
+                                                    'uuid': widget.post['uuid']
+                                                  });
+                                              funcB(false);
+                                            }
+                                            setState(() {});
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 25.0, right: 25.0, bottom: 20.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  // Text(
+                                  //   posts[index]['description'],
+                                  //   overflow: TextOverflow.ellipsis,
+                                  //   textAlign: TextAlign.start,
+                                  // ),
+                                  Flexible(
+                                    child: RichText(
+                                      overflow: TextOverflow.clip,
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: widget.post['username'],
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: MediaQuery.of(context)
+                                                          .platformBrightness ==
+                                                      Brightness.light
+                                                  ? kDark[900]
+                                                  : kLight,
+                                            ),
+                                          ),
+                                          TextSpan(text: " "),
+                                          TextSpan(
+                                            text: widget.post['description'],
+                                            style: TextStyle(
+                                              color: MediaQuery.of(context)
+                                                          .platformBrightness ==
+                                                      Brightness.light
+                                                  ? kDark[900]
+                                                  : kLight,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      textAlign: TextAlign.start,
+                                    ),
+                                  )
                                 ],
                               ),
                             ),
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 25.0, right: 25.0, bottom: 20.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            // Text(
-                            //   posts[index]['description'],
-                            //   overflow: TextOverflow.ellipsis,
-                            //   textAlign: TextAlign.start,
-                            // ),
-                            Flexible(
-                              child: RichText(
-                                overflow: TextOverflow.clip,
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: widget.post['username'],
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: MediaQuery.of(context)
-                                                    .platformBrightness ==
-                                                Brightness.light
-                                            ? kDark[900]
-                                            : kLight,
-                                      ),
-                                    ),
-                                    TextSpan(text: " "),
-                                    TextSpan(
-                                      text: widget.post['description'],
-                                      style: TextStyle(
-                                        color: MediaQuery.of(context)
-                                                    .platformBrightness ==
-                                                Brightness.light
-                                            ? kDark[900]
-                                            : kLight,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                textAlign: TextAlign.start,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
                     ],
                   ),
                 ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      return index == comments.length
+                          ? isEnd
+                              ? _endMessage()
+                              : _buildProgressIndicator()
+                          : CreateComment(
+                              recost: comments[index],
+                              index: index,
+                              userUuid: widget.post['userUuid'],
+                              recipeUuid: widget.post['uuid'],
+                              removeComment: (ind) {
+                                setState(() {
+                                  comments.remove(ind);
+                                });
+                              },
+                              uuid: uuid,
+                              isPost: true,
+                            );
+                    },
+                    childCount: noOfComment,
+                  ),
+                )
               ],
             ),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return index == comments.length
-                    ? isEnd
-                        ? _endMessage()
-                        : _buildProgressIndicator()
-                    : CreateComment(
-                        recost: comments[index],
-                        index: index,
-                        userUuid: widget.post['userUuid'],
-                        recipeUuid: widget.post['uuid'],
-                        removeComment: (ind) {
-                          setState(() {
-                            comments.remove(ind);
-                          });
-                        },
-                        uuid: uuid,
-                        isPost: true,
-                      );
-              },
-              childCount: noOfComment,
-            ),
-          )
-        ],
-      ),
-      bottomNavigationBar: Transform.translate(
-        offset: Offset(0.0, -1 * MediaQuery.of(context).viewInsets.bottom),
-        child: Container(
-          height: 100.0,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30.0),
-              topRight: Radius.circular(30.0),
-            ),
-            color: MediaQuery.of(context).platformBrightness == Brightness.dark
-                ? kDark[900]
-                : kLight,
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(12.0),
-            child: TextField(
-              onChanged: (val) {
-                comment = val;
-              },
-              controller: _tc,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                  borderSide: BorderSide(color: Colors.grey),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                  borderSide: BorderSide(color: Colors.grey),
-                ),
-                contentPadding: EdgeInsets.all(20.0),
-                hintText: 'Add a comment',
-                prefixIcon: Container(
-                  margin: EdgeInsets.all(4.0),
-                  width: 48.0,
-                  height: 48.0,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
+            bottomNavigationBar: Transform.translate(
+              offset:
+                  Offset(0.0, -1 * MediaQuery.of(context).viewInsets.bottom),
+              child: Container(
+                height: 100.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30.0),
+                    topRight: Radius.circular(30.0),
                   ),
-                  child: CircleAvatar(
-                    child: ClipOval(
-                      // child: Image(
-                      //   height: 48.0,
-                      //   width: 48.0,
-                      //   image: NetworkImage(widget.post['url']),
-                      //   fit: BoxFit.cover,
-                      // ),
-                      child: FutureBuilder(
-                          future: loadImg(dp, memoizer2),
-                          builder: (BuildContext context, AsyncSnapshot text) {
-                            if (text.connectionState ==
-                                ConnectionState.waiting) {
-                              return Image(
-                                height: 48.0,
-                                width: 48.0,
-                                image: AssetImage("assets/images/broken.png"),
-                                fit: BoxFit.cover,
-                              );
-                            } else {
-                              // return Image(
-                              //   image: NetworkImage(text.data.toString()),
-                              //   fit: BoxFit.cover,
-                              // );
-                              return Image(
-                                height: 48.0,
-                                width: 48.0,
-                                image: NetworkImage(text.data.toString()),
-                                fit: BoxFit.cover,
-                              );
-                            }
-                          }),
-                    ),
-                  ),
+                  color: MediaQuery.of(context).platformBrightness ==
+                          Brightness.dark
+                      ? kDark[900]
+                      : kLight,
                 ),
-                suffixIcon: Container(
-                  margin: EdgeInsets.only(right: 4.0),
-                  width: 70.0,
-                  child: IconButton(
-                    // shape: RoundedRectangleBorder(
-                    //   borderRadius: BorderRadius.circular(30.0),
-                    // ),
-                    // color: Color(0xFF23B66F),
-                    onPressed: () async {
-                      var token = await storage.read(key: "token");
-                      Response response = await dio.post(
-                          "https://api-tassie.herokuapp.com/feed/addComment",
-                          options: Options(headers: {
-                            HttpHeaders.contentTypeHeader: "application/json",
-                            HttpHeaders.authorizationHeader: "Bearer " + token!
-                          }),
-                          data: {
-                            'comment': comment,
-                            'postUuid': widget.post['uuid']
-                          });
-                      if (response.data['status'] == true) {
-                        plusComment();
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    super.widget));
-                      }
+                child: Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: TextField(
+                    onChanged: (val) {
+                      comment = val;
                     },
-                    icon: Icon(
-                      Icons.send,
-                      size: 25.0,
-                      // color: Colors.white,
+                    controller: _tc,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      contentPadding: EdgeInsets.all(20.0),
+                      hintText: 'Add a comment',
+                      prefixIcon: Container(
+                        margin: EdgeInsets.all(4.0),
+                        width: 48.0,
+                        height: 48.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: CircleAvatar(
+                          child: ClipOval(
+                            // child: Image(
+                            //   height: 48.0,
+                            //   width: 48.0,
+                            //   image: NetworkImage(widget.post['url']),
+                            //   fit: BoxFit.cover,
+                            // ),
+                            child: FutureBuilder(
+                                future: loadImg(dp, memoizer2),
+                                builder:
+                                    (BuildContext context, AsyncSnapshot text) {
+                                  if (text.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return Image(
+                                      height: 48.0,
+                                      width: 48.0,
+                                      image: AssetImage(
+                                          "assets/images/broken.png"),
+                                      fit: BoxFit.cover,
+                                    );
+                                  } else {
+                                    print(text.data.toString());
+                                    // return Image(
+                                    //   image: NetworkImage(text.data.toString()),
+                                    //   fit: BoxFit.cover,
+                                    // );
+                                    return Image(
+                                      height: 48.0,
+                                      width: 48.0,
+                                      image: NetworkImage(text.data.toString()),
+                                      fit: BoxFit.cover,
+                                    );
+                                  }
+                                }),
+                          ),
+                        ),
+                      ),
+                      suffixIcon: Container(
+                        margin: EdgeInsets.only(right: 4.0),
+                        width: 70.0,
+                        child: IconButton(
+                          // shape: RoundedRectangleBorder(
+                          //   borderRadius: BorderRadius.circular(30.0),
+                          // ),
+                          // color: Color(0xFF23B66F),
+                          onPressed: () async {
+                            var token = await storage.read(key: "token");
+                            Response response = await dio.post(
+                                "https://api-tassie.herokuapp.com/feed/addComment",
+                                options: Options(headers: {
+                                  HttpHeaders.contentTypeHeader:
+                                      "application/json",
+                                  HttpHeaders.authorizationHeader:
+                                      "Bearer " + token!
+                                }),
+                                data: {
+                                  'comment': comment,
+                                  'postUuid': widget.post['uuid']
+                                });
+                            if (response.data['status'] == true) {
+                              plusComment();
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          super.widget));
+                            }
+                          },
+                          icon: Icon(
+                            Icons.send,
+                            size: 25.0,
+                            // color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
-      ),
-    );
+          );
   }
 }
