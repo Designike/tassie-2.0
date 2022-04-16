@@ -72,7 +72,7 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
         setState(() {
           isLazyLoading = true;
         });
-        var url = "https://api-tassie.herokuapp.com/recs/lazyrecs/" + index.toString();
+        var url = "http://10.0.2.2:3000/recs/lazyrecs/" + index.toString();
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,

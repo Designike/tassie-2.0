@@ -98,7 +98,7 @@ class _ExplorePostState extends State<ExplorePost> {
                 // onDoubleTap: () async {
                 //   if (!liked) {
                 //     var token = await storage.read(key: "token");
-                //     dio.post("https://api-tassie.herokuapp.com/feed/like",
+                //     dio.post("http://10.0.2.2:3000/feed/like",
                 //         options: Options(headers: {
                 //           HttpHeaders.contentTypeHeader: "application/json",
                 //           HttpHeaders.authorizationHeader:
@@ -271,7 +271,7 @@ class _ExplorePostState extends State<ExplorePost> {
                   //         if (!isBookmarked) {
                   //           var token = await storage.read(key: "token");
                   //           Response response = await dio
-                  //               .post("https://api-tassie.herokuapp.com/feed/bookmark",
+                  //               .post("http://10.0.2.2:3000/feed/bookmark",
                   //                   options: Options(headers: {
                   //                     HttpHeaders.contentTypeHeader:
                   //                         "application/json",
@@ -283,7 +283,7 @@ class _ExplorePostState extends State<ExplorePost> {
                   //         } else {
                   //           var token = await storage.read(key: "token");
                   //           Response response = await dio.post(
-                  //               "https://api-tassie.herokuapp.com/feed/removeBookmark",
+                  //               "http://10.0.2.2:3000/feed/removeBookmark",
                   //               options: Options(headers: {
                   //                 HttpHeaders.contentTypeHeader:
                   //                     "application/json",
@@ -321,7 +321,7 @@ class _ExplorePostState extends State<ExplorePost> {
               //                     var token =
               //                         await storage.read(key: "token");
               //                     dio.post(
-              //                         "https://api-tassie.herokuapp.com/feed/unlike",
+              //                         "http://10.0.2.2:3000/feed/unlike",
               //                         options: Options(headers: {
               //                           HttpHeaders.contentTypeHeader:
               //                               "application/json",
@@ -335,7 +335,7 @@ class _ExplorePostState extends State<ExplorePost> {
 
               //                     var token =
               //                         await storage.read(key: "token");
-              //                     dio.post("https://api-tassie.herokuapp.com/feed/like",
+              //                     dio.post("http://10.0.2.2:3000/feed/like",
               //                         options: Options(headers: {
               //                           HttpHeaders.contentTypeHeader:
               //                               "application/json",
@@ -400,7 +400,7 @@ class _ExplorePostState extends State<ExplorePost> {
               //           if (!isBookmarked) {
               //             var token = await storage.read(key: "token");
               //             Response response = await dio
-              //                 .post("https://api-tassie.herokuapp.com/feed/bookmark",
+              //                 .post("http://10.0.2.2:3000/feed/bookmark",
               //                     options: Options(headers: {
               //                       HttpHeaders.contentTypeHeader:
               //                           "application/json",
@@ -412,7 +412,7 @@ class _ExplorePostState extends State<ExplorePost> {
               //           } else {
               //             var token = await storage.read(key: "token");
               //             Response response = await dio.post(
-              //                 "https://api-tassie.herokuapp.com/feed/removeBookmark",
+              //                 "http://10.0.2.2:3000/feed/removeBookmark",
               //                 options: Options(headers: {
               //                   HttpHeaders.contentTypeHeader:
               //                       "application/json",

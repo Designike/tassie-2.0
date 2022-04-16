@@ -68,7 +68,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 var storage = FlutterSecureStorage();
                 var token = await storage.read(key: "token");
                 //         Response response =
-                //             await dio.post("https://api-tassie.herokuapp.com/recs/bookmark",
+                //             await dio.post("http://10.0.2.2:3000/recs/bookmark",
                 //                 options: Options(headers: {
                 //                   HttpHeaders.contentTypeHeader:
                 //                       "application/json",
@@ -78,7 +78,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 //                 data: {'uuid': recs['uuid']});
                 if (_formKey.currentState!.validate()) {
                   Response response = await dio.post(
-                      "https://api-tassie.herokuapp.com/profile/updateProfile/",
+                      "http://10.0.2.2:3000/profile/updateProfile/",
                       options: Options(headers: {
                         HttpHeaders.contentTypeHeader: "application/json",
                         HttpHeaders.authorizationHeader: "Bearer " + token!
@@ -219,7 +219,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 //   onTap: () async {
                 //     // if (_formKey.currentState!.validate()) {
                 //     //   Response response = await dio.post(
-                //     //     "https://api-tassie.herokuapp.com/user/login/",
+                //     //     "http://10.0.2.2:3000/user/login/",
                 //     //     options: Options(headers: {
                 //     //       HttpHeaders.contentTypeHeader: "application/json",
                 //     //     }),

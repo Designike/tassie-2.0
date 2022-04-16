@@ -43,7 +43,7 @@ class _SearchBarState extends State<SearchBar> {
         });
 
         print(query);
-        var url = "https://api-tassie.herokuapp.com/search/lazySearch/" +
+        var url = "http://10.0.2.2:3000/search/lazySearch/" +
             index.toString() +
             '/' +
             query;

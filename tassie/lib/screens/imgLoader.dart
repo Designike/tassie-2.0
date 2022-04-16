@@ -11,8 +11,8 @@ Future loadImg(key, AsyncMemoizer memoizer) async {
   // if (memoizer != "comment") {
   return memoizer.runOnce(() async {
     Response response = await dio.post(
-        // "https://api-tassie.herokuapp.com/user/",
-        "https://api-tassie.herokuapp.com/drive/file",
+        // "http://10.0.2.2:3000/user/",
+        "http://10.0.2.2:3000/drive/file",
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
         }),
@@ -22,8 +22,8 @@ Future loadImg(key, AsyncMemoizer memoizer) async {
   });
   // } else {
   //   Response response = await dio.post(
-  //       // "https://api-tassie.herokuapp.com/user/",
-  //       "https://api-tassie.herokuapp.com/drive/file",
+  //       // "http://10.0.2.2:3000/user/",
+  //       "http://10.0.2.2:3000/drive/file",
   //       options: Options(headers: {
   //         HttpHeaders.contentTypeHeader: "application/json",
   //       }),

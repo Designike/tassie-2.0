@@ -47,6 +47,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   final dio = Dio();
   final storage = FlutterSecureStorage();
   final LocalStorage lstorage = LocalStorage('tassie');
+  int currentPage = 0;
   // bool isFetching = true;
 
   Future<void> getIng() async {
@@ -66,7 +67,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       if ((lstorage.getItem('ingreds') == null) ||
           DateTime.parse(date!).isBefore(DateTime.now())) {
         print('thai che');
-        var url = "https://api-tassie.herokuapp.com/recs/getIng/";
+        var url = "http://10.0.2.2:3000/recs/getIng/";
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
@@ -224,7 +225,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         );
                       }),
                     );
-                    var url = "https://api-tassie.herokuapp.com/recs/createRecipe/";
+                    var url = "http://10.0.2.2:3000/recs/createRecipe/";
 
                     var token = await storage.read(key: "token");
                     Response response = await dio.get(
@@ -454,8 +455,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           // ),
           body: PageView(
             controller: _pageController,
-            physics: NeverScrollableScrollPhysics(),
+            physics: currentPage > 1 ? NeverScrollableScrollPhysics() : AlwaysScrollableScrollPhysics(),
+            scrollDirection: Axis.horizontal,
             children: _screens,
+            onPageChanged: (page) {
+              setState(() {
+                currentPage = page;
+              });
+            },
           )),
     );
   }

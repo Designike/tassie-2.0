@@ -42,8 +42,8 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
   final storage = FlutterSecureStorage();
   // Future<void> load() async {
   //   var token = await storage.read(key: "token");
-  //   // try {https://api-tassie.herokuapp.com/feed/
-  //   Response response = await dio.post("https://api-tassie.herokuapp.com/feed/",
+  //   // try {http://10.0.2.2:3000/feed/
+  //   Response response = await dio.post("http://10.0.2.2:3000/feed/",
   //       options: Options(headers: {
   //         HttpHeaders.contentTypeHeader: "application/json",
   //         HttpHeaders.authorizationHeader: "Bearer " + token!
@@ -91,9 +91,9 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
         setState(() {
           isLazyLoading = true;
         });
-        // var url = "https://api-tassie.herokuapp.com/feed/lazyfeed/" +
+        // var url = "http://10.0.2.2:3000/feed/lazyfeed/" +
         //     index.toString();
-        var url = "https://api-tassie.herokuapp.com/feed/lazyfeed/" + index.toString();
+        var url = "http://10.0.2.2:3000/feed/lazyfeed/" + index.toString();
 
         var token = await storage.read(key: "token");
         // print(token);

@@ -25,8 +25,8 @@ class Hashtags {
       var dio = Dio();
       var token = await storage.read(key: "token");
       Response response = await dio.post(
-        // 'https://api-tassie.herokuapp.com/drive/upload',
-        'https://api-tassie.herokuapp.com/recs/getHashtag',
+        // 'http://10.0.2.2:3000/drive/upload',
+        'http://10.0.2.2:3000/recs/getHashtag',
         options: Options(
           headers: {
             HttpHeaders.contentTypeHeader: "application/json",

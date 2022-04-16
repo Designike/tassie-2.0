@@ -24,7 +24,7 @@ class EditPost extends StatefulWidget {
 }
 
 class _EditPostState extends State<EditPost> {
-  File? _imageFile;
+  // File? _imageFile;
   static String desc = "";
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _tagController = TextEditingController();
@@ -38,8 +38,8 @@ class _EditPostState extends State<EditPost> {
     var dio = Dio();
     var token = await storage.read(key: "token");
     Response response = await dio.get(
-        // "https://api-tassie.herokuapp.com/user/",
-        "https://api-tassie.herokuapp.com/profile/getPost/"+widget.uuid,
+        // "http://10.0.2.2:3000/user/",
+        "http://10.0.2.2:3000/profile/getPost/"+widget.uuid,
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Bearer " + token!,
@@ -65,47 +65,47 @@ class _EditPostState extends State<EditPost> {
     return false;
   }
   /// Cropper plugin
-  Future<void> _cropImage() async {
-    File? cropped = await ImageCropper.cropImage(
-        sourcePath: _imageFile!.path,
-        // ratioX: 1.0,
-        // ratioY: 1.0,
-        // maxWidth: 512,
-        // maxHeight: 512,
-        aspectRatioPresets: [CropAspectRatioPreset.square],
-        aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
-        compressQuality: 80,
-        androidUiSettings: AndroidUiSettings(
-          toolbarTitle: 'Garnish it,'
-          toolbarColor: Theme.of(context).scaffoldBackgroundColor,
-          toolbarWidgetColor: Theme.of(context).brightness == Brightness.dark
-                    ? kDark
-                    : kDark[900],
-        ),
-        iosUiSettings: IOSUiSettings(
-          title: 'Garnish it,'
-        )
-        );
+  // Future<void> _cropImage() async {
+  //   File? cropped = await ImageCropper.cropImage(
+  //       sourcePath: _imageFile!.path,
+  //       // ratioX: 1.0,
+  //       // ratioY: 1.0,
+  //       // maxWidth: 512,
+  //       // maxHeight: 512,
+  //       aspectRatioPresets: [CropAspectRatioPreset.square],
+  //       aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
+  //       compressQuality: 80,
+  //       androidUiSettings: AndroidUiSettings(
+  //         toolbarTitle: 'Garnish it,'
+  //         toolbarColor: Theme.of(context).scaffoldBackgroundColor,
+  //         toolbarWidgetColor: Theme.of(context).brightness == Brightness.dark
+  //                   ? kDark
+  //                   : kDark[900],
+  //       ),
+  //       iosUiSettings: IOSUiSettings(
+  //         title: 'Garnish it,'
+  //       )
+  //       );
 
-    setState(() {
-      _imageFile = cropped;
-    });
-  }
+  //   setState(() {
+  //     _imageFile = cropped;
+  //   });
+  // }
 
-  /// Select an image via gallery or camera
-  Future<void> _pickImage(ImageSource source) async {
-    await Permission.photos.request();
-    var permissionStatus = await Permission.photos.status;
+  // /// Select an image via gallery or camera
+  // Future<void> _pickImage(ImageSource source) async {
+  //   await Permission.photos.request();
+  //   var permissionStatus = await Permission.photos.status;
 
-    if (permissionStatus.isGranted) {
-      XFile? selected = await ImagePicker().pickImage(source: source);
-      if (selected == null) return;
-      setState(() {
-        _imageFile = File(selected.path);
-        _cropImage();
-      });
-    }
-  }
+  //   if (permissionStatus.isGranted) {
+  //     XFile? selected = await ImagePicker().pickImage(source: source);
+  //     if (selected == null) return;
+  //     setState(() {
+  //       _imageFile = File(selected.path);
+  //       _cropImage();
+  //     });
+  //   }
+  // }
 
   String _appendHashtag(desc1, tag) {
     print(desc1);
@@ -121,9 +121,9 @@ class _EditPostState extends State<EditPost> {
   }
 
   /// Remove image
-  void _clear() {
-    setState(() => _imageFile = null);
-  }
+  // void _clear() {
+  //   setState(() => _imageFile = null);
+  // }
 
   @override
   void initState() {
@@ -233,22 +233,24 @@ class _EditPostState extends State<EditPost> {
           }
         }),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  TextButton(
-                    child: Icon(Icons.crop),
-                    onPressed: _cropImage,
-                  ),
-                  TextButton(
-                    child: Icon(Icons.refresh),
-                    onPressed: _clear,
-                  ),
-                ],
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: <Widget>[
+            //       // TextButton(
+            //       //   child: Icon(Icons.crop),
+            //       //   onPressed: _cropImage,
+            //       // ),
+            //       TextButton(
+            //         child: Icon(Icons.refresh),
+            //         onPressed: () => {
+                      
+            //         },
+            //       ),
+            //     ],
+            //   ),
+            // ),
             Padding(padding: EdgeInsets.all(kDefaultPadding * 1.5),
             child: Form(
               key: _formKey,
@@ -350,7 +352,7 @@ class _EditPostState extends State<EditPost> {
             // onTap: () async {
             //             if (_formKey.currentState!.validate()) {
             //               Response response = await dio.post(
-            //                 "https://api-tassie.herokuapp.com/user/login/",
+            //                 "http://10.0.2.2:3000/user/login/",
             //                 options: Options(headers: {
             //                   HttpHeaders.contentTypeHeader: "application/json",
             //                 }),
@@ -374,7 +376,7 @@ class _EditPostState extends State<EditPost> {
             //             }
             //           },
 
-            Uploader(file: _imageFile, desc: desc, formKey: _formKey)
+            Uploader(desc: desc, formKey: _formKey, edit: true, postUuid: widget.uuid) 
           // ] else ... [
             // Container(
             //   padding: EdgeInsets.symmetric(vertical: 50.0),

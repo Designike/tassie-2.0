@@ -80,7 +80,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
 
   //       // print(query);
   //       var url =
-  //           "https://api-tassie.herokuapp.com/profile/lazyProfile/" + index.toString();
+  //           "http://10.0.2.2:3000/profile/lazyProfile/" + index.toString();
   //       var token = await storage.read(key: "token");
   //       Response response = await dio.get(
   //         url,
@@ -140,7 +140,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
   // }
 
   Future<void> _getProfile() async {
-    var url = "https://api-tassie.herokuapp.com/profile/getProfile/" + widget.uuid;
+    var url = "http://10.0.2.2:3000/profile/getProfile/" + widget.uuid;
     var token = await storage.read(key: "token");
     Response response = await dio.get(
       url,
@@ -180,7 +180,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
         });
 
         // print(query);
-        var url = "https://api-tassie.herokuapp.com/profile/lazyProfileRecs/" +
+        var url = "http://10.0.2.2:3000/profile/lazyProfileRecs/" +
             widget.uuid +
             "/" +
             index.toString();
@@ -246,7 +246,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
         });
 
         // print(query);
-        var url = "https://api-tassie.herokuapp.com/profile/lazyProfilePost/" +
+        var url = "http://10.0.2.2:3000/profile/lazyProfilePost/" +
             widget.uuid +
             "/" +
             index.toString();
@@ -402,7 +402,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
     //           var token = await storage.read(key: "token");
     //           print('1');
     //           Response response = await dio.get(
-    //             "https://api-tassie.herokuapp.com/user/logout/",
+    //             "http://10.0.2.2:3000/user/logout/",
     //             options: Options(headers: {
     //               HttpHeaders.contentTypeHeader: "application/json",
     //               HttpHeaders.authorizationHeader: "Bearer " + token!
@@ -679,7 +679,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                         var token =
                                             await storage.read(key: "token");
                                         Response response = await dio.post(
-                                            "https://api-tassie.herokuapp.com/profile/currentProfile/",
+                                            "http://10.0.2.2:3000/profile/currentProfile/",
                                             options: Options(headers: {
                                               HttpHeaders.contentTypeHeader:
                                                   "application/json",
@@ -735,7 +735,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                           var token =
                                               await storage.read(key: "token");
                                           Response response = await dio.post(
-                                              "https://api-tassie.herokuapp.com/profile/unsubscribe/",
+                                              "http://10.0.2.2:3000/profile/unsubscribe/",
                                               options: Options(headers: {
                                                 HttpHeaders.contentTypeHeader:
                                                     "application/json",
@@ -767,7 +767,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                           var token =
                                               await storage.read(key: "token");
                                           Response response = await dio.post(
-                                              "https://api-tassie.herokuapp.com/profile/subscribe/",
+                                              "http://10.0.2.2:3000/profile/subscribe/",
                                               options: Options(headers: {
                                                 HttpHeaders.contentTypeHeader:
                                                     "application/json",
@@ -796,7 +796,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                         // var token =
                                         //     await storage.read(key: "token");
                                         // Response response = await dio.post(
-                                        //     "https://api-tassie.herokuapp.com/profile/currentProfile/",
+                                        //     "http://10.0.2.2:3000/profile/currentProfile/",
                                         //     options: Options(headers: {
                                         //       HttpHeaders.contentTypeHeader:
                                         //           "application/json",

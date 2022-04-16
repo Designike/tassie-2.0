@@ -25,7 +25,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   //   try {
   //     // print('');
   //     Response response =
-  //         await dio.get("https://api-tassie.herokuapp.com/user/username/" + username);
+  //         await dio.get("http://10.0.2.2:3000/user/username/" + username);
   //     // var res = jsonDecode(response.toString());
 
   //     // if(response)
@@ -77,7 +77,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                 if (_formKey.currentState!.validate()) {
                   print(oldpass);
                   Response response =
-                      await dio.post("https://api-tassie.herokuapp.com/user/updatePassword",
+                      await dio.post("http://10.0.2.2:3000/user/updatePassword",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
                             HttpHeaders.authorizationHeader: "Bearer " + token!

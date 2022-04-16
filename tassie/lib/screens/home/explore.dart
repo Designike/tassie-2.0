@@ -138,7 +138,7 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
         setState(() {
           isLazyLoading = true;
         });
-        var url = "https://api-tassie.herokuapp.com/search/lazyExplore/" + index.toString()+'/'+previousLength.toString();
+        var url = "http://10.0.2.2:3000/search/lazyExplore/" + index.toString()+'/'+previousLength.toString();
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
@@ -226,8 +226,8 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
     //   var token = await storage.read(key: "token");
     //   // print(formData.files[0]);
     //   Response response = await dio.post(
-    //       // 'https://api-tassie.herokuapp.com/drive/upload',
-    //       'https://api-tassie.herokuapp.com/search/guess/',
+    //       // 'http://10.0.2.2:3000/drive/upload',
+    //       'http://10.0.2.2:3000/search/guess/',
     //       options: Options(headers: {
     //         HttpHeaders.contentTypeHeader: "application/json",
     //         HttpHeaders.authorizationHeader: "Bearer " + token!
@@ -469,7 +469,7 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
 //         // showSuggestions(context);
 //         isLazyLoading = true;
 //         print(query);
-//         var url = "https://api-tassie.herokuapp.com/search/lazySearch/" +
+//         var url = "http://10.0.2.2:3000/search/lazySearch/" +
 //             index.toString() +
 //             '/' +
 //             query;

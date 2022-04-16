@@ -123,7 +123,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
   //               onPressed: () async {
   //                 var token = await storage.read(key: "token");
   //                 Response response =
-  //                     await dio.post("https://api-tassie.herokuapp.com/recs/removeComment",
+  //                     await dio.post("http://10.0.2.2:3000/recs/removeComment",
   //                         options: Options(headers: {
   //                           HttpHeaders.contentTypeHeader: "application/json",
   //                           HttpHeaders.authorizationHeader: "Bearer " + token!
@@ -151,7 +151,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
         setState(() {
           isLazyLoading = true;
         });
-        var url = "https://api-tassie.herokuapp.com/recs/lazyreccomment/" +
+        var url = "http://10.0.2.2:3000/recs/lazyreccomment/" +
             widget.recipeUuid +
             '/' +
             widget.userUuid +
@@ -366,7 +366,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
                     onPressed: () async {
                       var token = await storage.read(key: "token");
                       Response response = await dio.post(
-                          "https://api-tassie.herokuapp.com/recs/addComment",
+                          "http://10.0.2.2:3000/recs/addComment",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
                             HttpHeaders.authorizationHeader: "Bearer " + token!

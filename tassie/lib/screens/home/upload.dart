@@ -8,12 +8,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/home.dart';
+import 'package:tassie/screens/home/profile.dart';
 
 class Uploader extends StatefulWidget {
   final File? file;
   final String desc;
+  final bool edit;
+  final String? postUuid;
   final GlobalKey<FormState> formKey;
-  const Uploader({this.file, required this.desc, required this.formKey});
+  const Uploader(
+      {this.file,
+      required this.desc,
+      required this.formKey,
+      required this.edit,
+      this.postUuid,});
 
   @override
   _UploaderState createState() => _UploaderState();
@@ -35,41 +43,84 @@ class _UploaderState extends State<Uploader> {
   Future<void> _startUpload() async {
     var dio = Dio();
     var storage = FlutterSecureStorage();
-    var formData = FormData();
-    print(widget.file!.path);
-    formData = FormData.fromMap({
-      "media": await MultipartFile.fromFile(widget.file!.path),
-      "desc": widget.desc
-    });
     var token = await storage.read(key: "token");
-    print(formData.files[0]);
-    Response response = await dio.post(
-      // 'https://api-tassie.herokuapp.com/drive/upload',
-      'https://api-tassie.herokuapp.com/feed/newpost',
-      options: Options(headers: {
-        HttpHeaders.contentTypeHeader: "multipart/form-data",
-        HttpHeaders.authorizationHeader: "Bearer " + token!
-      }),
-      data: formData,
-      onSendProgress: (int sent, int total) {
-        setState(() {
-          print(progress);
-          progress = (sent / total * 100);
-          print(progress);
-        });
-      },
-    );
-    if (response.data['status'] == true) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) {
-          return Home();
+    if (widget.edit) {
+
+      // edit post - start
+      Response response = await dio.post(
+        // 'http://10.0.2.2:3000/drive/upload',
+        'http://10.0.2.2:3000/feed/editpost',
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.authorizationHeader: "Bearer " + token!
         }),
+        data: {
+          "desc": widget.desc,
+          "postUuid": widget.postUuid,
+        },
+        onSendProgress: (int sent, int total) {
+          setState(() {
+            print(progress);
+            progress = (sent / total * 100);
+            print(progress);
+          });
+        },
       );
+      if (response.data['status'] == true) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) {
+            return Profile(uuid: 'user',);
+          }),
+        );
+      } else {
+        // handle error
+        print(response.data['message']);
+        print(response.data['error']);
+      }
+
+      // edit post - end
     } else {
-      // handle error
-      print(response.data['message']);
-      print(response.data['error']);
+
+      // new post - start
+      var formData = FormData();
+      print(widget.file!.path);
+      formData = FormData.fromMap({
+        "media": await MultipartFile.fromFile(widget.file!.path),
+        "desc": widget.desc,
+      });
+
+      print(formData.files[0]);
+      Response response = await dio.post(
+        // 'http://10.0.2.2:3000/drive/upload',
+        'http://10.0.2.2:3000/feed/newpost',
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "multipart/form-data",
+          HttpHeaders.authorizationHeader: "Bearer " + token!
+        }),
+        data: formData,
+        onSendProgress: (int sent, int total) {
+          setState(() {
+            print(progress);
+            progress = (sent / total * 100);
+            print(progress);
+          });
+        },
+      );
+      if (response.data['status'] == true) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) {
+            return Home();
+          }),
+        );
+      } else {
+        // handle error
+        print(response.data['message']);
+        print(response.data['error']);
+      }
+
+      // new post - end
     }
   }
 

@@ -152,7 +152,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   var token = await storage.read(key: "token");
                   print('1');
                   Response response = await dio.get(
-                    "https://api-tassie.herokuapp.com/user/logout/",
+                    "http://10.0.2.2:3000/user/logout/",
                     options: Options(headers: {
                       HttpHeaders.contentTypeHeader: "application/json",
                       HttpHeaders.authorizationHeader: "Bearer " + token!
