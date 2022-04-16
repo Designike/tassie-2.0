@@ -7,6 +7,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:tassie/screens/home/addPost.dart';
+import 'package:tassie/screens/home/editPost.dart';
 import 'package:tassie/screens/home/viewRecCommentChild.dart';
 import 'package:tassie/screens/imgLoader.dart';
 
@@ -51,6 +53,11 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
   String username = "";
   String createdAt = "";
 
+  var items = [
+    "edit",
+    "delete"
+  ];
+
   void func(bool islike) {
     setState(() {
       if (islike) {
@@ -81,7 +88,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
   }
 
   void getStats() async {
-    var url = "http://10.0.2.2:3000/profile/postStats/";
+    var url = "https://api-tassie.herokuapp.com/profile/postStats/";
     var token = await storage.read(key: "token");
     Response response = await dio.post(
       url,
@@ -240,7 +247,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
         setState(() {
           isLazyLoading = true;
         });
-        var url = "http://10.0.2.2:3000/feed/lazycomment/" +
+        var url = "https://api-tassie.herokuapp.com/feed/lazycomment/" +
             widget.post['uuid'] +
             '/' +
             widget.post['userUuid'] +
@@ -439,10 +446,21 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                     ? kLight
                                                     : kDark[900]),
                                           ),
-                                          trailing: IconButton(
+                                          trailing: DropdownButton(
                                             icon: Icon(Icons.more_horiz),
+                                            items: items.map((String items){
+                                              return DropdownMenuItem(child: Text(items),value: items);
+                                            }).toList(),
                                             // color: Colors.black,
-                                            onPressed: () => print('More'),
+                                            onChanged: (value) {
+                                              if(value == "edit"){
+                                                Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) {
+                                                  return EditPost(uuid:widget.post['uuid']);
+                                                }));
+                                              }
+                                            },
                                           ),
                                         ),
                                       ),
