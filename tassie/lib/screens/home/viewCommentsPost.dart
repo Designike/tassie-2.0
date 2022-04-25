@@ -54,11 +54,9 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
   bool isBookmarked = false;
   String username = "";
   String createdAt = "";
+  String description = "";
 
-  var items = [
-    "edit",
-    "delete"
-  ];
+  var items = ["Edit", "Delete"];
 
   void func(bool islike) {
     setState(() {
@@ -111,6 +109,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
         isLiked = response.data['data']['isLiked'];
         username = response.data['data']['username'];
         createdAt = response.data['data']['createdAt'];
+        description = response.data['data']['description'];
         // getdp();
         isLoading2 = false;
       });
@@ -208,13 +207,13 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                 color: Colors.grey,
                 onPressed: () async {
                   var token = await storage.read(key: "token");
-                  Response response = await dio.post(
-                      "http://10.0.2.2:3000/feed/removeComment",
-                      options: Options(headers: {
-                        HttpHeaders.contentTypeHeader: "application/json",
-                        HttpHeaders.authorizationHeader: "Bearer " + token!
-                      }),
-                      data: {
+                  Response response =
+                      await dio.post("http://10.0.2.2:3000/feed/removeComment",
+                          options: Options(headers: {
+                            HttpHeaders.contentTypeHeader: "application/json",
+                            HttpHeaders.authorizationHeader: "Bearer " + token!
+                          }),
+                          data: {
                         'postUuid': widget.post['uuid'],
                         'commentUuid': comments[index]['uuid'],
                       });
@@ -450,22 +449,49 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                     ? kLight
                                                     : kDark[900]),
                                           ),
-                                          trailing: DropdownButton(
+                                          // trailing: DropdownButton(
+                                          //   underline: null,
+                                          //   icon: Icon(Icons.more_horiz),
+                                          //   items: items.map((String items) {
+                                          //     return DropdownMenuItem(
+                                          //         child: Text(items),
+                                          //         value: items);
+                                          //   }).toList(),
+                                          //   // color: Colors.black,
+                                          //   onChanged: (value) {
+                                          //     if (value == "Edit") {
+                                          //       Navigator.push(context,
+                                          //           MaterialPageRoute(
+                                          //               builder: (context) {
+                                          //         return EditPost(
+                                          //             uuid:
+                                          //                 widget.post['uuid']);
+                                          //       }));
+                                          //     }
+                                          //   },
+                                          // ),
+                                          trailing: PopupMenuButton(
                                             icon: Icon(Icons.more_horiz),
-                                            items: items.map((String items){
-                                              return DropdownMenuItem(child: Text(items),value: items);
-                                            }).toList(),
-                                            // color: Colors.black,
-                                            onChanged: (value) {
-                                              if(value == "edit"){
-                                                Navigator.push(
-                                                context,
-                                                MaterialPageRoute(builder: (context) {
-                                                  return EditPost(uuid:widget.post['uuid']);
-                                                }));
-                                              }
-                                            },
-                                          ),
+                        elevation: 20,
+                        enabled: true,
+                        onSelected: (value) {
+                          if (value == "edit") {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => EditPost(uuid: widget.post['uuid'])));
+                          } else if (value == "delete") {}
+                        },
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            child: Text("Edit"),
+                            value: "edit",
+                          ),
+                          PopupMenuItem(
+                            child: Text("Delete"),
+                            value: "delete",
+                          ),
+                        ],
+                      ),
+
                                         ),
                                       ),
                                     ],
@@ -700,7 +726,6 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                 ],
                               ),
                             ),
-                            Container(height: 20.0, width: 100.0, color: Colors.red),
                             Padding(
                               padding: const EdgeInsets.only(
                                   left: 25.0, right: 25.0, bottom: 20.0),
@@ -730,7 +755,8 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                           ),
                                           TextSpan(text: " "),
                                           TextSpan(
-                                            text: widget.post['description'],
+                                            // text: widget.post['description'],
+                                            text: description,
                                             style: TextStyle(
                                               color: MediaQuery.of(context)
                                                           .platformBrightness ==

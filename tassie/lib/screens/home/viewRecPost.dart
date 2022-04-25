@@ -8,6 +8,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 // import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/home/editRecipe.dart';
 import 'package:tassie/screens/home/showMoreText.dart';
 import 'package:tassie/screens/home/snackbar.dart';
 import 'package:tassie/screens/home/viewRecAllRatings.dart';
@@ -92,6 +93,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
   // ];
   List stepPics = [];
   List similar = [];
+  var items = ["Edit", "Delete"];
   // String getImage(img) {
   //   String x = "";
   //   print(img);
@@ -482,6 +484,38 @@ class _ViewRecPostState extends State<ViewRecPost> {
                   ),
                 ),
               ),
+              ClipOval(
+                child: Container(
+                  padding: EdgeInsets.all(8.0),
+                  color: Colors.transparent,
+                  child: ClipOval(
+                    child: Container(
+                      width: (kToolbarHeight * 1.1) - 16.0,
+                      color: kPrimaryColor,
+                      child: PopupMenuButton(
+                        elevation: 20,
+                        enabled: true,
+                        onSelected: (value) {
+                          if (value == "edit") {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => EditRecipe(uuid: "")));
+                          } else if (value == "delete") {}
+                        },
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            child: Text("Edit"),
+                            value: "edit",
+                          ),
+                          PopupMenuItem(
+                            child: Text("Delete"),
+                            value: "delete",
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               // Container(
               //   width: kToolbarHeight * 1.1,
               //   height: kToolbarHeight * 1.1,
@@ -830,74 +864,84 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                trailing: isSubscribed
-                                    ? TextButton.icon(
-                                        icon: Icon(Icons.check_circle),
-                                        label: Text('SUBSCRIBED'),
-                                        onPressed: () async {
-                                          var token =
-                                              await storage.read(key: "token");
-                                          Response response = await dio.post(
-                                              "http://10.0.2.2:3000/profile/unsubscribe/",
-                                              options: Options(headers: {
-                                                HttpHeaders.contentTypeHeader:
-                                                    "application/json",
-                                                HttpHeaders.authorizationHeader:
-                                                    "Bearer " + token!
-                                              }),
-                                              // data: jsonEncode(value),
-                                              data: {
-                                                'uuid': widget.recs['userUuid']
-                                              });
-                                          if (response.data['status'] == true) {
-                                            setState(() {
-                                              isSubscribed = false;
-                                            });
-                                          } else {
-                                            showSnack(
-                                                context,
-                                                "Unable to unsubscribe, try again!",
-                                                () {},
-                                                "OK",
-                                                3);
-                                          }
-                                        },
-                                        style: TextButton.styleFrom(
-                                            primary: kPrimaryColor),
-                                      )
-                                    : TextButton(
-                                        child: Text('SUBSCRIBE'),
-                                        onPressed: () async {
-                                          var token =
-                                              await storage.read(key: "token");
-                                          Response response = await dio.post(
-                                              "http://10.0.2.2:3000/profile/subscribe/",
-                                              options: Options(headers: {
-                                                HttpHeaders.contentTypeHeader:
-                                                    "application/json",
-                                                HttpHeaders.authorizationHeader:
-                                                    "Bearer " + token!
-                                              }),
-                                              // data: jsonEncode(value),
-                                              data: {
-                                                'uuid': widget.recs['userUuid']
-                                              });
-                                          if (response.data['status'] == true) {
-                                            setState(() {
-                                              isSubscribed = true;
-                                            });
-                                          } else {
-                                            showSnack(
-                                                context,
-                                                "Unable to subscribe, try again!",
-                                                () {},
-                                                "OK",
-                                                3);
-                                          }
-                                        },
-                                        style: TextButton.styleFrom(
-                                            primary: kPrimaryColor),
-                                      ),
+                                trailing: uuid == widget.recs['userUuid']
+                                    ? null
+                                    : isSubscribed
+                                        ? TextButton.icon(
+                                            icon: Icon(Icons.check_circle),
+                                            label: Text('SUBSCRIBED'),
+                                            onPressed: () async {
+                                              var token = await storage.read(
+                                                  key: "token");
+                                              Response response = await dio.post(
+                                                  "http://10.0.2.2:3000/profile/unsubscribe/",
+                                                  options: Options(headers: {
+                                                    HttpHeaders
+                                                            .contentTypeHeader:
+                                                        "application/json",
+                                                    HttpHeaders
+                                                            .authorizationHeader:
+                                                        "Bearer " + token!
+                                                  }),
+                                                  // data: jsonEncode(value),
+                                                  data: {
+                                                    'uuid':
+                                                        widget.recs['userUuid']
+                                                  });
+                                              if (response.data['status'] ==
+                                                  true) {
+                                                setState(() {
+                                                  isSubscribed = false;
+                                                });
+                                              } else {
+                                                showSnack(
+                                                    context,
+                                                    "Unable to unsubscribe, try again!",
+                                                    () {},
+                                                    "OK",
+                                                    3);
+                                              }
+                                            },
+                                            style: TextButton.styleFrom(
+                                                primary: kPrimaryColor),
+                                          )
+                                        : TextButton(
+                                            child: Text('SUBSCRIBE'),
+                                            onPressed: () async {
+                                              var token = await storage.read(
+                                                  key: "token");
+                                              Response response = await dio.post(
+                                                  "http://10.0.2.2:3000/profile/subscribe/",
+                                                  options: Options(headers: {
+                                                    HttpHeaders
+                                                            .contentTypeHeader:
+                                                        "application/json",
+                                                    HttpHeaders
+                                                            .authorizationHeader:
+                                                        "Bearer " + token!
+                                                  }),
+                                                  // data: jsonEncode(value),
+                                                  data: {
+                                                    'uuid':
+                                                        widget.recs['userUuid']
+                                                  });
+                                              if (response.data['status'] ==
+                                                  true) {
+                                                setState(() {
+                                                  isSubscribed = true;
+                                                });
+                                              } else {
+                                                showSnack(
+                                                    context,
+                                                    "Unable to subscribe, try again!",
+                                                    () {},
+                                                    "OK",
+                                                    3);
+                                              }
+                                            },
+                                            style: TextButton.styleFrom(
+                                                primary: kPrimaryColor),
+                                          ),
                               ),
                             ]),
                       ),
