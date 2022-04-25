@@ -137,13 +137,13 @@ class _ViewCommentsState extends State<ViewComments> {
                 color: Colors.grey,
                 onPressed: () async {
                   var token = await storage.read(key: "token");
-                  Response response =
-                      await dio.post("http://10.0.2.2:3000/feed/removeComment",
-                          options: Options(headers: {
-                            HttpHeaders.contentTypeHeader: "application/json",
-                            HttpHeaders.authorizationHeader: "Bearer " + token!
-                          }),
-                          data: {
+                  Response response = await dio.post(
+                      "https://api-tassie-alt.herokuapp.com/feed/removeComment",
+                      options: Options(headers: {
+                        HttpHeaders.contentTypeHeader: "application/json",
+                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                      }),
+                      data: {
                         'postUuid': widget.post['uuid'],
                         'commentUuid': comments[index]['uuid'],
                       });
@@ -179,7 +179,7 @@ class _ViewCommentsState extends State<ViewComments> {
         setState(() {
           isLazyLoading = true;
         });
-        var url = "http://10.0.2.2:3000/feed/lazycomment/" +
+        var url = "https://api-tassie-alt.herokuapp.com/feed/lazycomment/" +
             widget.post['uuid'] +
             '/' +
             widget.post['userUuid'] +
@@ -352,8 +352,7 @@ class _ViewCommentsState extends State<ViewComments> {
                                     subtitle: Text(
                                       widget.post['createdAt'],
                                       style: TextStyle(
-                                          color: Theme.of(context)
-                                                      .brightness ==
+                                          color: Theme.of(context).brightness ==
                                                   Brightness.dark
                                               ? kLight
                                               : kDark[900]),
@@ -371,7 +370,8 @@ class _ViewCommentsState extends State<ViewComments> {
                               onDoubleTap: () async {
                                 if (!liked) {
                                   var token = await storage.read(key: "token");
-                                  dio.post("http://10.0.2.2:3000/feed/like",
+                                  dio.post(
+                                      "https://api-tassie-alt.herokuapp.com/feed/like",
                                       options: Options(headers: {
                                         HttpHeaders.contentTypeHeader:
                                             "application/json",
@@ -469,7 +469,7 @@ class _ViewCommentsState extends State<ViewComments> {
                                                 var token = await storage.read(
                                                     key: "token");
                                                 dio.post(
-                                                    "http://10.0.2.2:3000/feed/unlike",
+                                                    "https://api-tassie-alt.herokuapp.com/feed/unlike",
                                                     options: Options(headers: {
                                                       HttpHeaders
                                                               .contentTypeHeader:
@@ -489,7 +489,7 @@ class _ViewCommentsState extends State<ViewComments> {
                                                 var token = await storage.read(
                                                     key: "token");
                                                 dio.post(
-                                                    "http://10.0.2.2:3000/feed/like",
+                                                    "https://api-tassie-alt.herokuapp.com/feed/like",
                                                     options: Options(headers: {
                                                       HttpHeaders
                                                               .contentTypeHeader:
@@ -549,7 +549,7 @@ class _ViewCommentsState extends State<ViewComments> {
                                         var token =
                                             await storage.read(key: "token");
                                         Response response = await dio.post(
-                                            "http://10.0.2.2:3000/feed/bookmark",
+                                            "https://api-tassie-alt.herokuapp.com/feed/bookmark",
                                             options: Options(headers: {
                                               HttpHeaders.contentTypeHeader:
                                                   "application/json",
@@ -564,7 +564,7 @@ class _ViewCommentsState extends State<ViewComments> {
                                         var token =
                                             await storage.read(key: "token");
                                         Response response = await dio.post(
-                                            "http://10.0.2.2:3000/feed/removeBookmark",
+                                            "https://api-tassie-alt.herokuapp.com/feed/removeBookmark",
                                             options: Options(headers: {
                                               HttpHeaders.contentTypeHeader:
                                                   "application/json",
@@ -605,8 +605,7 @@ class _ViewCommentsState extends State<ViewComments> {
                                       text: widget.post['username'],
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: Theme.of(context)
-                                                    .brightness ==
+                                        color: Theme.of(context).brightness ==
                                                 Brightness.light
                                             ? kDark[900]
                                             : kLight,
@@ -616,8 +615,7 @@ class _ViewCommentsState extends State<ViewComments> {
                                     TextSpan(
                                       text: widget.post['description'],
                                       style: TextStyle(
-                                        color: Theme.of(context)
-                                                    .brightness ==
+                                        color: Theme.of(context).brightness ==
                                                 Brightness.light
                                             ? kDark[900]
                                             : kLight,
@@ -748,7 +746,7 @@ class _ViewCommentsState extends State<ViewComments> {
                     onPressed: () async {
                       var token = await storage.read(key: "token");
                       Response response = await dio.post(
-                          "http://10.0.2.2:3000/feed/addComment",
+                          "https://api-tassie-alt.herokuapp.com/feed/addComment",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
                             HttpHeaders.authorizationHeader: "Bearer " + token!

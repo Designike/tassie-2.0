@@ -25,7 +25,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   //   try {
   //     // print('');
   //     Response response =
-  //         await dio.get("http://10.0.2.2:3000/user/username/" + username);
+  //         await dio.get("https://api-tassie-alt.herokuapp.com/user/username/" + username);
   //     // var res = jsonDecode(response.toString());
 
   //     // if(response)
@@ -50,8 +50,8 @@ class _ChangePasswordState extends State<ChangePassword> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         foregroundColor: Theme.of(context).brightness == Brightness.dark
-              ? kLight
-              : kDark[900],
+            ? kLight
+            : kDark[900],
         // elevation: 1,
         systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Theme.of(context).scaffoldBackgroundColor,
@@ -76,14 +76,14 @@ class _ChangePasswordState extends State<ChangePassword> {
                 var token = await storage.read(key: "token");
                 if (_formKey.currentState!.validate()) {
                   print(oldpass);
-                  Response response =
-                      await dio.post("http://10.0.2.2:3000/user/updatePassword",
-                          options: Options(headers: {
-                            HttpHeaders.contentTypeHeader: "application/json",
-                            HttpHeaders.authorizationHeader: "Bearer " + token!
-                          }),
-                          // data: jsonEncode(value),
-                          data: {
+                  Response response = await dio.post(
+                      "https://api-tassie-alt.herokuapp.com/user/updatePassword",
+                      options: Options(headers: {
+                        HttpHeaders.contentTypeHeader: "application/json",
+                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                      }),
+                      // data: jsonEncode(value),
+                      data: {
                         "oldpass": oldpass,
                         "newpass": newpass,
                       });

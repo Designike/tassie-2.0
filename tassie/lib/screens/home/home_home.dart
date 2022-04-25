@@ -30,7 +30,8 @@ class HomeHome extends StatefulWidget {
   _HomeHomeState createState() => _HomeHomeState();
 }
 
-class _HomeHomeState extends State<HomeHome> with SingleTickerProviderStateMixin {
+class _HomeHomeState extends State<HomeHome>
+    with SingleTickerProviderStateMixin {
   // String _currentPage = "Page1";
   // List<String> pageKeys = ["Page1", "Page2", "Page3"];
 
@@ -67,7 +68,7 @@ class _HomeHomeState extends State<HomeHome> with SingleTickerProviderStateMixin
       if ((lstorage.getItem('ingreds') == null) ||
           DateTime.parse(date!).isBefore(DateTime.now())) {
         print('thai che');
-        var url = "http://10.0.2.2:3000/recs/getIng/";
+        var url = "https://api-tassie-alt.herokuapp.com/recs/getIng/";
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
@@ -225,7 +226,8 @@ class _HomeHomeState extends State<HomeHome> with SingleTickerProviderStateMixin
                         );
                       }),
                     );
-                    var url = "http://10.0.2.2:3000/recs/createRecipe/";
+                    var url =
+                        "https://api-tassie-alt.herokuapp.com/recs/createRecipe/";
 
                     var token = await storage.read(key: "token");
                     Response response = await dio.get(

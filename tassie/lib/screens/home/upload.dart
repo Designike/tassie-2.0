@@ -16,12 +16,13 @@ class Uploader extends StatefulWidget {
   final bool edit;
   final String? postUuid;
   final GlobalKey<FormState> formKey;
-  const Uploader(
-      {this.file,
-      required this.desc,
-      required this.formKey,
-      required this.edit,
-      this.postUuid,});
+  const Uploader({
+    this.file,
+    required this.desc,
+    required this.formKey,
+    required this.edit,
+    this.postUuid,
+  });
 
   @override
   _UploaderState createState() => _UploaderState();
@@ -45,11 +46,10 @@ class _UploaderState extends State<Uploader> {
     var storage = FlutterSecureStorage();
     var token = await storage.read(key: "token");
     if (widget.edit) {
-
       // edit post - start
       Response response = await dio.post(
-        // 'http://10.0.2.2:3000/drive/upload',
-        'http://10.0.2.2:3000/feed/editpost',
+        // 'https://api-tassie-alt.herokuapp.com/drive/upload',
+        'https://api-tassie-alt.herokuapp.com/feed/editpost',
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Bearer " + token!
@@ -70,7 +70,9 @@ class _UploaderState extends State<Uploader> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) {
-            return Profile(uuid: 'user',);
+            return Profile(
+              uuid: 'user',
+            );
           }),
         );
       } else {
@@ -81,7 +83,6 @@ class _UploaderState extends State<Uploader> {
 
       // edit post - end
     } else {
-
       // new post - start
       var formData = FormData();
       print(widget.file!.path);
@@ -92,8 +93,8 @@ class _UploaderState extends State<Uploader> {
 
       print(formData.files[0]);
       Response response = await dio.post(
-        // 'http://10.0.2.2:3000/drive/upload',
-        'http://10.0.2.2:3000/feed/newpost',
+        // 'https://api-tassie-alt.herokuapp.com/drive/upload',
+        'https://api-tassie-alt.herokuapp.com/feed/newpost',
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "multipart/form-data",
           HttpHeaders.authorizationHeader: "Bearer " + token!

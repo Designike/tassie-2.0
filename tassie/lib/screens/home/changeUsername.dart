@@ -24,8 +24,8 @@ class _ChangeUsernameState extends State<ChangeUsername> {
     // print(username);
     try {
       // print('');
-      Response response =
-          await dio.get("http://10.0.2.2:3000/user/username/" + username);
+      Response response = await dio.get(
+          "https://api-tassie-alt.herokuapp.com/user/username/" + username);
       // var res = jsonDecode(response.toString());
 
       // if(response)
@@ -52,8 +52,8 @@ class _ChangeUsernameState extends State<ChangeUsername> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         foregroundColor: Theme.of(context).brightness == Brightness.dark
-              ? kLight
-              : kDark[900],
+            ? kLight
+            : kDark[900],
         // elevation: 1,
         systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Theme.of(context).scaffoldBackgroundColor,
@@ -79,7 +79,7 @@ class _ChangeUsernameState extends State<ChangeUsername> {
                     if (_formKey.currentState!.validate()) {
                       print(username);
                       Response response = await dio.post(
-                          "http://10.0.2.2:3000/profile/updateUsername/",
+                          "https://api-tassie-alt.herokuapp.com/profile/updateUsername/",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
                             HttpHeaders.authorizationHeader: "Bearer " + token!

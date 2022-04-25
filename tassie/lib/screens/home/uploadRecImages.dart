@@ -58,8 +58,8 @@ class _RecImageUploaderState extends State<RecImageUploader> {
     var token = await storage.read(key: "token");
     print(formData.files[0]);
     Response response = await dio.post(
-      // 'http://10.0.2.2:3000/drive/upload',
-      'http://10.0.2.2:3000/recs/updateRecipe/',
+      // 'https://api-tassie-alt.herokuapp.com/drive/upload',
+      'https://api-tassie-alt.herokuapp.com/recs/updateRecipe/',
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "multipart/form-data",
         HttpHeaders.authorizationHeader: "Bearer " + token!
@@ -319,8 +319,8 @@ class _RecImageUploaderState extends State<RecImageUploader> {
 //     var token = await storage.read(key: "token");
 //     print(formData.files[0]);
 //     Response response = await dio.post(
-//       // 'http://10.0.2.2:3000/drive/upload',
-//       'http://10.0.2.2:3000/feed/newpost',
+//       // 'https://api-tassie-alt.herokuapp.com/drive/upload',
+//       'https://api-tassie-alt.herokuapp.com/feed/newpost',
 //       options: Options(headers: {
 //         HttpHeaders.contentTypeHeader: "multipart/form-data",
 //         HttpHeaders.authorizationHeader: "Bearer " + token!

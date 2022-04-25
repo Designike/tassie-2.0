@@ -98,7 +98,7 @@ class _EditRecipeState extends State<EditRecipe> {
     //         // onTap: () async {
     //         //             if (_formKey.currentState!.validate()) {
     //         //               Response response = await dio.post(
-    //         //                 "http://10.0.2.2:3000/user/login/",
+    //         //                 "https://api-tassie-alt.herokuapp.com/user/login/",
     //         //                 options: Options(headers: {
     //         //                   HttpHeaders.contentTypeHeader: "application/json",
     //         //                 }),
@@ -934,8 +934,8 @@ List<Widget> _getRecipe(size) {
           var token = await storage.read(key: "token");
     // print(formData.files[0]);
     Response response = await dio.post(
-      // 'http://10.0.2.2:3000/drive/upload',
-      'http://10.0.2.2:3000/recs/resetImage/',
+      // 'https://api-tassie-alt.herokuapp.com/drive/upload',
+      'https://api-tassie-alt.herokuapp.com/recs/resetImage/',
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "application/json",
         HttpHeaders.authorizationHeader: "Bearer " + token!
@@ -950,8 +950,8 @@ List<Widget> _getRecipe(size) {
           var token = await storage.read(key: "token");
     // print(formData.files[0]);
     Response response = await dio.post(
-      // 'http://10.0.2.2:3000/drive/upload',
-      'http://10.0.2.2:3000/recs/resetImage/',
+      // 'https://api-tassie-alt.herokuapp.com/drive/upload',
+      'https://api-tassie-alt.herokuapp.com/recs/resetImage/',
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "application/json",
         HttpHeaders.authorizationHeader: "Bearer " + token!
@@ -967,8 +967,8 @@ List<Widget> _getRecipe(size) {
           var token = await storage.read(key: "token");
     // print(formData.files[0]);
     Response response = await dio.post(
-      // 'http://10.0.2.2:3000/drive/upload',
-      'http://10.0.2.2:3000/recs/resetImage/',
+      // 'https://api-tassie-alt.herokuapp.com/drive/upload',
+      'https://api-tassie-alt.herokuapp.com/recs/resetImage/',
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "application/json",
         HttpHeaders.authorizationHeader: "Bearer " + token!
@@ -995,8 +995,8 @@ List<Widget> _getRecipe(size) {
     var token = await storage.read(key: "token");
     print(formData.files[0]);
     Response response = await dio.post(
-      // 'http://10.0.2.2:3000/drive/upload',
-      'http://10.0.2.2:3000/recs/updateRecipe/',
+      // 'https://api-tassie-alt.herokuapp.com/drive/upload',
+      'https://api-tassie-alt.herokuapp.com/recs/updateRecipe/',
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "multipart/form-data",
         HttpHeaders.authorizationHeader: "Bearer " + token!
@@ -1066,7 +1066,7 @@ List<Widget> _getRecipe(size) {
               GestureDetector(
                 onTap: () async {
                   Navigator.of(context).popUntil((route) => route.isFirst);
-                  var url = "http://10.0.2.2:3000/recs/deleteRecipe";
+                  var url = "https://api-tassie-alt.herokuapp.com/recs/deleteRecipe";
                   var token = await storage.read(key: "token");
                   Response response = await dio.post(url,
                       options: Options(headers: {
@@ -1161,7 +1161,7 @@ List<Widget> _getRecipe(size) {
                         showSnack(context, 'Cooking time cannot be 0:00, Are you cooking at light\'s speed xD?', () {}, 'OK', 4);
                       } else {
                   // to submit here
-                  var url = "http://10.0.2.2:3000/recs/updateRecipe";
+                  var url = "https://api-tassie-alt.herokuapp.com/recs/updateRecipe";
                   var token = await storage.read(key: "token");
                   Response response = await dio.post(url,
                       options: Options(headers: {
@@ -1194,7 +1194,7 @@ List<Widget> _getRecipe(size) {
                   });
                   print('2.d');
                   if(_currentStep == 1){
-                  var url = "http://10.0.2.2:3000/recs/updateRecipe";
+                  var url = "https://api-tassie-alt.herokuapp.com/recs/updateRecipe";
                   var token = await storage.read(key: "token");
                   Response response = await dio.post(url,
                       options: Options(headers: {
@@ -1211,7 +1211,7 @@ List<Widget> _getRecipe(size) {
                         showSnack(context, 'Cooking time cannot be 0:00, Are you cooking at light\'s speed xD?', () {}, 'OK', 4);
                       } else {
                     
-                  var url = "http://10.0.2.2:3000/recs/updateRecipe";
+                  var url = "https://api-tassie-alt.herokuapp.com/recs/updateRecipe";
                   var token = await storage.read(key: "token");
                   var time = int.parse(hour!)*60 + int.parse(min!);
                   print('should print');
@@ -1232,7 +1232,7 @@ List<Widget> _getRecipe(size) {
                     }
                   }
                   if(_currentStep == 3){
-                  var url = "http://10.0.2.2:3000/recs/updateRecipe";
+                  var url = "https://api-tassie-alt.herokuapp.com/recs/updateRecipe";
                   var token = await storage.read(key: "token");
                   Response response = await dio.post(url,
                       options: Options(headers: {
@@ -1244,7 +1244,7 @@ List<Widget> _getRecipe(size) {
                       'ingredients': ingredientsList});
                   }
                   if(_currentStep == 4){
-                  var url = "http://10.0.2.2:3000/recs/updateRecipe";
+                  var url = "https://api-tassie-alt.herokuapp.com/recs/updateRecipe";
                   var token = await storage.read(key: "token");
                   Response response = await dio.post(url,
                       options: Options(headers: {
@@ -1256,7 +1256,7 @@ List<Widget> _getRecipe(size) {
                       'steps': stepsList}); // 'folder': widget.folder, 
                   }
                   if(_currentStep == 5){
-                  var url = "http://10.0.2.2:3000/recs/addHashtag";
+                  var url = "https://api-tassie-alt.herokuapp.com/recs/addHashtag";
                   var token = await storage.read(key: "token");
                   Response response = await dio.post(url,
                       options: Options(headers: {

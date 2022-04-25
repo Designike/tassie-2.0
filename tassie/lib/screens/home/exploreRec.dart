@@ -178,20 +178,18 @@ class _ExploreRecState extends State<ExploreRec> {
                   onPressed: () async {
                     if (!isBookmarked) {
                       var token = await storage.read(key: "token");
-                      Response response =
-                          await dio.post("http://10.0.2.2:3000/recs/bookmark",
-                              options: Options(headers: {
-                                HttpHeaders.contentTypeHeader:
-                                    "application/json",
-                                HttpHeaders.authorizationHeader:
-                                    "Bearer " + token!
-                              }),
-                              data: {'uuid': recs['uuid']});
+                      Response response = await dio.post(
+                          "https://api-tassie-alt.herokuapp.com/recs/bookmark",
+                          options: Options(headers: {
+                            HttpHeaders.contentTypeHeader: "application/json",
+                            HttpHeaders.authorizationHeader: "Bearer " + token!
+                          }),
+                          data: {'uuid': recs['uuid']});
                       widget.funcB(true);
                     } else {
                       var token = await storage.read(key: "token");
                       Response response = await dio.post(
-                          "http://10.0.2.2:3000/recs/removeBookmark",
+                          "https://api-tassie-alt.herokuapp.com/recs/removeBookmark",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
                             HttpHeaders.authorizationHeader: "Bearer " + token!
@@ -225,9 +223,10 @@ class _ExploreRecState extends State<ExploreRec> {
                     recs['username'],
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? kLight
-                            : kDark[900],),
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? kLight
+                          : kDark[900],
+                    ),
                   ),
                   isThreeLine: true,
                 ),

@@ -26,8 +26,8 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         foregroundColor: Theme.of(context).brightness == Brightness.dark
-              ? kLight
-              : kDark[900],
+            ? kLight
+            : kDark[900],
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Theme.of(context).scaffoldBackgroundColor,
@@ -152,7 +152,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   var token = await storage.read(key: "token");
                   print('1');
                   Response response = await dio.get(
-                    "http://10.0.2.2:3000/user/logout/",
+                    "https://api-tassie-alt.herokuapp.com/user/logout/",
                     options: Options(headers: {
                       HttpHeaders.contentTypeHeader: "application/json",
                       HttpHeaders.authorizationHeader: "Bearer " + token!

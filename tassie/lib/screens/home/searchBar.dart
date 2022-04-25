@@ -43,7 +43,7 @@ class _SearchBarState extends State<SearchBar> {
         });
 
         print(query);
-        var url = "http://10.0.2.2:3000/search/lazySearch/" +
+        var url = "https://api-tassie-alt.herokuapp.com/search/lazySearch/" +
             index.toString() +
             '/' +
             query;
@@ -160,8 +160,8 @@ class _SearchBarState extends State<SearchBar> {
                 // forceElevated: isScrollable,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 foregroundColor: Theme.of(context).brightness == Brightness.dark
-                ? kLight
-                : kDark[900],
+                    ? kLight
+                    : kDark[900],
                 pinned: true,
                 // backgroundColor: Colors.transparent,
                 title: TextFormField(
@@ -206,8 +206,8 @@ class _SearchBarState extends State<SearchBar> {
                   indicatorColor: kPrimaryColor,
                   unselectedLabelColor: kDark,
                   labelColor: Theme.of(context).brightness == Brightness.dark
-                ? kLight
-                : kDark[900],
+                      ? kLight
+                      : kDark[900],
                   tabs: [
                     Tab(
                       icon: Icon(Icons.fastfood_rounded),

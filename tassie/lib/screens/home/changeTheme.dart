@@ -30,7 +30,7 @@ class _ChangeThemeState extends State<ChangeTheme> {
   //   try {
   //     // print('');
   //     Response response =
-  //         await dio.get("http://10.0.2.2:3000/user/username/" + username);
+  //         await dio.get("https://api-tassie-alt.herokuapp.com/user/username/" + username);
   //     // var res = jsonDecode(response.toString());
 
   //     // if(response)
@@ -89,7 +89,7 @@ class _ChangeThemeState extends State<ChangeTheme> {
                 // if (_formKey.currentState!.validate()) {
                 // print(oldpass);
                 // Response response = await dio
-                //     .post("http://10.0.2.2:3000/user/updatePassword",
+                //     .post("https://api-tassie-alt.herokuapp.com/user/updatePassword",
                 //         options: Options(headers: {
                 //           HttpHeaders.contentTypeHeader: "application/json",
                 //           HttpHeaders.authorizationHeader: "Bearer " + token!

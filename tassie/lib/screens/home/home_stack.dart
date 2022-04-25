@@ -81,7 +81,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       if ((lstorage.getItem('ingreds') == null) ||
           DateTime.parse(date!).isBefore(DateTime.now())) {
         print('thai che');
-        var url = "http://10.0.2.2:3000/recs/getIng/";
+        var url = "https://api-tassie-alt.herokuapp.com/recs/getIng/";
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
@@ -224,7 +224,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     );
                   }),
                 );
-                var url = "http://10.0.2.2:3000/recs/createRecipe/";
+                var url =
+                    "https://api-tassie-alt.herokuapp.com/recs/createRecipe/";
 
                 var token = await storage.read(key: "token");
                 Response response = await dio.get(

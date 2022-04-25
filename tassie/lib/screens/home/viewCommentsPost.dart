@@ -88,7 +88,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
   }
 
   void getStats() async {
-    var url = "http://10.0.2.2:3000/profile/postStats/";
+    var url = "https://api-tassie-alt.herokuapp.com/profile/postStats/";
     var token = await storage.read(key: "token");
     Response response = await dio.post(
       url,
@@ -207,13 +207,13 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                 color: Colors.grey,
                 onPressed: () async {
                   var token = await storage.read(key: "token");
-                  Response response =
-                      await dio.post("http://10.0.2.2:3000/feed/removeComment",
-                          options: Options(headers: {
-                            HttpHeaders.contentTypeHeader: "application/json",
-                            HttpHeaders.authorizationHeader: "Bearer " + token!
-                          }),
-                          data: {
+                  Response response = await dio.post(
+                      "https://api-tassie-alt.herokuapp.com/feed/removeComment",
+                      options: Options(headers: {
+                        HttpHeaders.contentTypeHeader: "application/json",
+                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                      }),
+                      data: {
                         'postUuid': widget.post['uuid'],
                         'commentUuid': comments[index]['uuid'],
                       });
@@ -249,7 +249,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
         setState(() {
           isLazyLoading = true;
         });
-        var url = "http://10.0.2.2:3000/feed/lazycomment/" +
+        var url = "https://api-tassie-alt.herokuapp.com/feed/lazycomment/" +
             widget.post['uuid'] +
             '/' +
             widget.post['userUuid'] +
@@ -472,26 +472,30 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                           // ),
                                           trailing: PopupMenuButton(
                                             icon: Icon(Icons.more_horiz),
-                        elevation: 20,
-                        enabled: true,
-                        onSelected: (value) {
-                          if (value == "edit") {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => EditPost(uuid: widget.post['uuid'])));
-                          } else if (value == "delete") {}
-                        },
-                        itemBuilder: (context) => [
-                          PopupMenuItem(
-                            child: Text("Edit"),
-                            value: "edit",
-                          ),
-                          PopupMenuItem(
-                            child: Text("Delete"),
-                            value: "delete",
-                          ),
-                        ],
-                      ),
-
+                                            elevation: 20,
+                                            enabled: true,
+                                            onSelected: (value) {
+                                              if (value == "edit") {
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            EditPost(
+                                                                uuid: widget
+                                                                        .post[
+                                                                    'uuid'])));
+                                              } else if (value == "delete") {}
+                                            },
+                                            itemBuilder: (context) => [
+                                              PopupMenuItem(
+                                                child: Text("Edit"),
+                                                value: "edit",
+                                              ),
+                                              PopupMenuItem(
+                                                child: Text("Delete"),
+                                                value: "delete",
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -502,7 +506,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                         var token =
                                             await storage.read(key: "token");
                                         dio.post(
-                                            "http://10.0.2.2:3000/feed/like",
+                                            "https://api-tassie-alt.herokuapp.com/feed/like",
                                             options: Options(headers: {
                                               HttpHeaders.contentTypeHeader:
                                                   "application/json",
@@ -605,7 +609,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                       var token = await storage
                                                           .read(key: "token");
                                                       dio.post(
-                                                          "http://10.0.2.2:3000/feed/unlike",
+                                                          "https://api-tassie-alt.herokuapp.com/feed/unlike",
                                                           options: Options(headers: {
                                                             HttpHeaders
                                                                     .contentTypeHeader:
@@ -626,7 +630,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                       var token = await storage
                                                           .read(key: "token");
                                                       dio.post(
-                                                          "http://10.0.2.2:3000/feed/like",
+                                                          "https://api-tassie-alt.herokuapp.com/feed/like",
                                                           options: Options(headers: {
                                                             HttpHeaders
                                                                     .contentTypeHeader:
@@ -686,7 +690,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                               var token = await storage.read(
                                                   key: "token");
                                               Response response = await dio.post(
-                                                  "http://10.0.2.2:3000/feed/bookmark",
+                                                  "https://api-tassie-alt.herokuapp.com/feed/bookmark",
                                                   options: Options(headers: {
                                                     HttpHeaders
                                                             .contentTypeHeader:
@@ -703,7 +707,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                               var token = await storage.read(
                                                   key: "token");
                                               Response response = await dio.post(
-                                                  "http://10.0.2.2:3000/feed/removeBookmark",
+                                                  "https://api-tassie-alt.herokuapp.com/feed/removeBookmark",
                                                   options: Options(headers: {
                                                     HttpHeaders
                                                             .contentTypeHeader:
@@ -895,7 +899,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                           onPressed: () async {
                             var token = await storage.read(key: "token");
                             Response response = await dio.post(
-                                "http://10.0.2.2:3000/feed/addComment",
+                                "https://api-tassie-alt.herokuapp.com/feed/addComment",
                                 options: Options(headers: {
                                   HttpHeaders.contentTypeHeader:
                                       "application/json",

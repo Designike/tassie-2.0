@@ -65,7 +65,7 @@ class _ViewRecAllRatingsState extends State<ViewRecAllRatings> {
         setState(() {
           isLazyLoading = true;
         });
-        var url = "http://10.0.2.2:3000/recs/lazyrating/" +
+        var url = "https://api-tassie-alt.herokuapp.com/recs/lazyrating/" +
             widget.recipeUuid +
             '/' +
             widget.userUuid +
@@ -256,7 +256,7 @@ class _ViewRecAllRatingsState extends State<ViewRecAllRatings> {
       //               onPressed: () async {
       //                 var token = await storage.read(key: "token");
       //                 Response response = await dio.post(
-      //                     "http://10.0.2.2:3000/recs/addComment",
+      //                     "https://api-tassie-alt.herokuapp.com/recs/addComment",
       //                     options: Options(headers: {
       //                       HttpHeaders.contentTypeHeader: "application/json",
       //                       HttpHeaders.authorizationHeader: "Bearer " + token!
