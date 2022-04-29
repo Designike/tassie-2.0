@@ -4,6 +4,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_circular_text/circular_text.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -326,6 +327,7 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                   SliverToBoxAdapter(
                     child: Column(
                       children: [
+                        SizedBox(height: 50.0),
                         Center(
                           child: GestureDetector(
                             onTap: () {
@@ -336,25 +338,95 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                                 }),
                               );
                             },
-                            child: Container(
-                              // padding: EdgeInsets.all(5.0),
-                              margin: EdgeInsets.only(
-                                  top: 50.0, bottom: kDefaultPadding),
-                              width: size.width * 0.5,
-                              child: Lottie.asset('assets/images/cooker.json',
-                                  fit: BoxFit.cover),
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? kDark[900]
-                                      : kLight,
-                                  borderRadius:
-                                      BorderRadius.circular(size.width)),
+                            // child: Container(
+                            //   // padding: EdgeInsets.all(5.0),
+                            //   margin: EdgeInsets.only(
+                            //       top: 50.0, bottom: kDefaultPadding),
+                            //   width: size.width * 0.5,
+                            //   child: Lottie.asset(
+                            //       Theme.of(context).brightness ==
+                            //               Brightness.dark
+                            //           ? 'assets/images/cooker_dark.json'
+                            //           : 'assets/images/cooker_light.json',
+                            //       fit: BoxFit.cover),
+                            //   decoration: BoxDecoration(
+                            //       color: Theme.of(context).brightness ==
+                            //               Brightness.dark
+                            //           ? kDark[900]
+                            //           : kLight,
+                            //       borderRadius:
+                            //           BorderRadius.circular(size.width)),
+                            // ),
+
+                            //
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                CircularText(
+                                  children: [
+                                    TextItem(
+                                      text: Text(
+                                        "Confused what to cook? --"
+                                            .toUpperCase(),
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: kDark.withOpacity(0.6),
+                                          // fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      space: 6,
+                                      startAngle: -90,
+                                      startAngleAlignment:
+                                          StartAngleAlignment.center,
+                                      direction:
+                                          CircularTextDirection.clockwise,
+                                    ),
+                                    TextItem(
+                                      text: Text(
+                                        "-- Tap to suggest recipe ".toUpperCase(),
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: kDark.withOpacity(0.6),
+                                          // fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      space: 6,
+                                      startAngle: 90,
+                                      startAngleAlignment:
+                                          StartAngleAlignment.center,
+                                      direction:
+                                          CircularTextDirection.anticlockwise,
+                                    ),
+                                  ],
+                                  radius: 108,
+                                  position: CircularTextPosition.inside,
+                                  // backgroundPaint: Paint()..color = Colors.grey.shade200,
+                                ),
+                                Container(
+                                  // padding: EdgeInsets.all(5.0),
+                                  margin: EdgeInsets.all(kDefaultPadding),
+                                  width: size.width * 0.4,
+                                  child: Lottie.asset(
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? 'assets/images/cooker_dark.json'
+                                          : 'assets/images/cooker_light.json',
+                                      fit: BoxFit.cover),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? kDark[900]
+                                          : kLight,
+                                      borderRadius:
+                                          BorderRadius.circular(size.width)),
+                                ),
+                              ],
                             ),
+                            //
                           ),
                         ),
-                        Text('Tap to suggest recipe!',
-                            style: TextStyle(fontSize: 16.0)),
+                        // Text('Tap to suggest recipe!',
+                        //     style: TextStyle(fontSize: 16.0)),
                       ],
                     ),
                   ),

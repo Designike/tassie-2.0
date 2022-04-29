@@ -30,8 +30,8 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
   List<bool> meal = [true, false, false, false];
   List<String> hours = ['0', '1', '2', '3'];
   final minutes = ['00', '15', '30', '45'];
-  String? hour;
-  String? min;
+  String hour = '1';
+  String min = '00';
   List ingredients = [];
   final storage = FlutterSecureStorage();
   final dio = Dio();
@@ -523,7 +523,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                       'veg': isVeg,
                       'flavour': flavour,
                       'course': course,
-                      'maxTime': int.parse(hour!) * 60 + int.parse(min!),
+                      'maxTime': int.parse(hour) * 60 + int.parse(min),
                       'ingredients': ingredients,
                       'meal': meal,
                     });

@@ -498,16 +498,16 @@ class _ViewRecPostState extends State<ViewRecPost> {
                         elevation: 20,
                         enabled: true,
                         onSelected: (value) {
-                          if (value == "edit") {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => EditRecipe(uuid: "")));
-                          } else if (value == "delete") {}
+                          // if (value == "edit") {
+                          //   Navigator.of(context).push(MaterialPageRoute(
+                          //       builder: (context) => EditRecipe(uuid: "")));
+                          // } else if (value == "delete") {}
                         },
                         itemBuilder: (context) => [
-                          PopupMenuItem(
-                            child: Text("Edit"),
-                            value: "edit",
-                          ),
+                          // PopupMenuItem(
+                          //   child: Text("Edit"),
+                          //   value: "edit",
+                          // ),
                           PopupMenuItem(
                             child: Text("Delete"),
                             value: "delete",

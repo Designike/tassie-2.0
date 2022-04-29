@@ -107,9 +107,15 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   // double _angle = 0;
   Widget _buildOffstageNavigator(int index) {
     return TabNavigator2(
-      navigatorKey: _navigatorKeys[index]!,
-      tabItem: index,
-    );
+        navigatorKey: _navigatorKeys[index]!,
+        tabItem: index,
+        rightSwipe: () {
+          print('yup2');
+          setState(() {
+            _selectedIndex = 1;
+            _pageController.jumpToPage(1);
+          });
+        });
   }
 
   void _selectTab(int index) {
