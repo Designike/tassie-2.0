@@ -46,12 +46,14 @@ class StepIngImage extends StatefulWidget {
       required this.text,
       required this.count,
       // required this.size,
+      required this.isImage,
       required this.url,
       required this.storedFuture})
       : super(key: key);
   final int index;
   final int count;
   final String text;
+  final bool isImage;
   // final Size size;
   final String Function(int) url;
   final Future Function(int) storedFuture;
@@ -66,9 +68,12 @@ class _StepIngImageState extends State<StepIngImage> {
   bool _isLoading1 = true;
   Future<void> _getImage() async {
     // _storedFuture1 = loadImg(widget.url(widget.index), _memoizer1);
-    _storedFuture1 = widget.storedFuture(widget.index);
+    // _storedFuture1 = widget.storedFuture(widget.index);
     if (mounted) {
       setState(() {
+        _storedFuture1 = widget.storedFuture(widget.index);
+        print("stored future");
+        print(_storedFuture1);
         _isLoading1 = false;
       });
     }
@@ -86,7 +91,7 @@ class _StepIngImageState extends State<StepIngImage> {
   void dispose() {
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -104,7 +109,7 @@ class _StepIngImageState extends State<StepIngImage> {
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
               ),
-              widget.url == ""
+              !widget.isImage
                   ? SizedBox(
                       height: 0,
                     )
