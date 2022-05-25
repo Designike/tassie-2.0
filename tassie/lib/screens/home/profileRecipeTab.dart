@@ -104,7 +104,7 @@ class _RecipeTabState extends State<RecipeTab> {
                         // : FeedPost(index: index, posts: posts);
                         : GestureDetector(
                             onTap: () {
-                              Navigator.of(context, rootNavigator: true).push(
+                              Navigator.of(context).push(
                                 MaterialPageRoute(
                                     builder: (_) => ViewRecPost(
                                         recs: recs[index],

@@ -17,7 +17,11 @@ import 'home_home.dart';
 // }
 
 class TabNavigator2 extends StatefulWidget {
-  TabNavigator2({required this.navigatorKey, required this.tabItem, required this.rightSwipe});
+  TabNavigator2({
+    required this.navigatorKey,
+    required this.tabItem,
+    required this.rightSwipe,
+  });
   final GlobalKey<NavigatorState> navigatorKey;
   final int tabItem;
   final void Function() rightSwipe;

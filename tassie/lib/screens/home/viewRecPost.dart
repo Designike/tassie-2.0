@@ -147,8 +147,8 @@ class _ViewRecPostState extends State<ViewRecPost> {
 
     if (response.data != null) {
       setState(() {
-        print("ertyu");
-        print(response.data['data']['recipe']);
+        // print("ertyu");
+        // print(response.data['data']['recipe']);
         stepPics.addAll(response.data['data']['recipe']['stepPics']);
         steps.addAll(response.data['data']['recipe']['steps']);
         ingredients.addAll(response.data['data']['recipe']['ingredients']);
@@ -486,7 +486,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
     Size size = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
-        Navigator.of(context).pop();
+        Navigator.of(context, rootNavigator: false).pop(true);
         return false;
       },
       child: Scaffold(
@@ -512,7 +512,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                     color: kPrimaryColor,
                     child: IconButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        Navigator.of(context, rootNavigator: false).pop();
                       },
                       icon: Icon(Icons.chevron_left_rounded),
                     ),
@@ -711,8 +711,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                   (BuildContext context, AsyncSnapshot text) {
                                 if (text.connectionState ==
                                     ConnectionState.waiting) {
-                                  return Image.asset(
-                                      "assets/images/broken.png");
+                                  return Image.asset("assets/images/broken.png");
                                 } else {
                                   return Image.network(text.data.toString());
                                 }
@@ -749,8 +748,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                 height: 15.0,
                               ),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
@@ -759,8 +757,8 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                       runSpacing: 10.0,
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: 10.0),
+                                          padding:
+                                              const EdgeInsets.only(right: 10.0),
                                           child: OutlinedButton(
                                             onPressed: () {},
                                             child: Text(
@@ -777,14 +775,13 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                 color: kDark,
                                                 width: 1,
                                               ),
-                                              backgroundColor:
-                                                  Colors.transparent,
+                                              backgroundColor: Colors.transparent,
                                             ),
                                           ),
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: 10.0),
+                                          padding:
+                                              const EdgeInsets.only(right: 10.0),
                                           child: OutlinedButton(
                                             onPressed: () {},
                                             child: Text(
@@ -801,8 +798,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                 color: kDark,
                                                 width: 1,
                                               ),
-                                              backgroundColor:
-                                                  Colors.transparent,
+                                              backgroundColor: Colors.transparent,
                                             ),
                                           ),
                                         ),
@@ -919,8 +915,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                     margin: EdgeInsets.only(top: 8.0),
                                     padding: EdgeInsets.all(10.0),
                                     decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
+                                        borderRadius: BorderRadius.circular(5.0),
                                         border: Border.all(
                                             color: isVeg
                                                 ? Colors.green
@@ -928,8 +923,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                     child: ClipOval(
                                       child: Container(
                                         // padding: EdgeInsets.all(10.0),
-                                        color:
-                                            isVeg ? Colors.green : Colors.red,
+                                        color: isVeg ? Colors.green : Colors.red,
                                         // height: 10.0,
                                         // width: 10.0,
                                       ),
@@ -1022,8 +1016,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                               Response response = await dio.post(
                                                   "https://api-tassie-alt.herokuapp.com/profile/unsubscribe/",
                                                   options: Options(headers: {
-                                                    HttpHeaders
-                                                            .contentTypeHeader:
+                                                    HttpHeaders.contentTypeHeader:
                                                         "application/json",
                                                     HttpHeaders
                                                             .authorizationHeader:
@@ -1059,8 +1052,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                               Response response = await dio.post(
                                                   "https://api-tassie-alt.herokuapp.com/profile/subscribe/",
                                                   options: Options(headers: {
-                                                    HttpHeaders
-                                                            .contentTypeHeader:
+                                                    HttpHeaders.contentTypeHeader:
                                                         "application/json",
                                                     HttpHeaders
                                                             .authorizationHeader:
@@ -1132,10 +1124,9 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                         });
                                       },
                                       icon: isExpandedIng
-                                          ? Icon(
-                                              Icons.keyboard_arrow_up_rounded)
-                                          : Icon(Icons
-                                              .keyboard_arrow_down_rounded),
+                                          ? Icon(Icons.keyboard_arrow_up_rounded)
+                                          : Icon(
+                                              Icons.keyboard_arrow_down_rounded),
                                       iconSize: 35.0,
                                       padding: EdgeInsets.all(0.0),
                                       color: kDark,
@@ -1212,10 +1203,9 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                         });
                                       },
                                       icon: isExpandedSteps
-                                          ? Icon(
-                                              Icons.keyboard_arrow_up_rounded)
-                                          : Icon(Icons
-                                              .keyboard_arrow_down_rounded),
+                                          ? Icon(Icons.keyboard_arrow_up_rounded)
+                                          : Icon(
+                                              Icons.keyboard_arrow_down_rounded),
                                       iconSize: 35.0,
                                       padding: EdgeInsets.all(0.0),
                                       color: kDark,
@@ -1269,8 +1259,8 @@ class _ViewRecPostState extends State<ViewRecPost> {
                           ),
                           if (totalRatings != 0) ...[
                             Container(
-                              margin: EdgeInsets.symmetric(
-                                  vertical: kDefaultPadding),
+                              margin:
+                                  EdgeInsets.symmetric(vertical: kDefaultPadding),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -1286,8 +1276,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                 TextSpan(
                                                   text: meanRating.toString(),
                                                   style: TextStyle(
-                                                    color: MediaQuery.of(
-                                                                    context)
+                                                    color: MediaQuery.of(context)
                                                                 .platformBrightness ==
                                                             Brightness.dark
                                                         ? kDark
@@ -1298,8 +1287,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                 TextSpan(
                                                   text: '/ 5',
                                                   style: TextStyle(
-                                                    color: MediaQuery.of(
-                                                                    context)
+                                                    color: MediaQuery.of(context)
                                                                 .platformBrightness ==
                                                             Brightness.dark
                                                         ? kDark
@@ -1313,8 +1301,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                           // SizedBox(height: 10.0),
                                           RatingBarIndicator(
                                             rating: meanRating,
-                                            itemBuilder: (context, index) =>
-                                                Icon(
+                                            itemBuilder: (context, index) => Icon(
                                               Icons.star,
                                               color: kPrimaryColor,
                                             ),
@@ -1482,8 +1469,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                               IconButton(
                                   onPressed: () async {
                                     // to reset user rating
-                                    var token =
-                                        await storage.read(key: "token");
+                                    var token = await storage.read(key: "token");
                                     Response response = await dio.post(
                                         "https://api-tassie-alt.herokuapp.com/recs/resetRating",
                                         options: Options(headers: {
@@ -1568,8 +1554,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                               // ],
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .push(
+                                  Navigator.of(context, rootNavigator: true).push(
                                     MaterialPageRoute(
                                       builder: (context) => ViewRecAllComments(
                                           userUuid: widget.recs['userUuid'],
@@ -1594,8 +1579,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                       //     ? kDark[900]
                                       //     : kLight,
                                       border: Border.all(color: kDark),
-                                      borderRadius:
-                                          BorderRadius.circular(10.0)),
+                                      borderRadius: BorderRadius.circular(10.0)),
                                 ),
                               ),
                             ] else ...[
@@ -1608,15 +1592,12 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                           ? kDark[900]
                                           : kLight,
                                       // border: Border.all(color: kDark),
-                                      borderRadius:
-                                          BorderRadius.circular(10.0)),
-                                  padding:
-                                      EdgeInsets.all(kDefaultPadding * 1.5),
+                                      borderRadius: BorderRadius.circular(10.0)),
+                                  padding: EdgeInsets.all(kDefaultPadding * 1.5),
                                   margin: EdgeInsets.only(top: 20.0),
                                   width: double.infinity,
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Icon(Icons.question_answer_rounded,
                                           size: 35.0, color: kDark),
@@ -1638,8 +1619,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                               ViewRecAllComments(
                                                   userUuid:
                                                       widget.recs['userUuid'],
-                                                  recipeUuid:
-                                                      widget.recs['uuid'],
+                                                  recipeUuid: widget.recs['uuid'],
                                                   dp: dp),
                                         ),
                                       );
@@ -1752,6 +1732,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                   ],
                 )),
     );
+    // );
   }
 }
 
