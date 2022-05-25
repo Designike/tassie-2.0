@@ -13,6 +13,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:tassie/screens/home/home_home.dart';
 import 'package:tassie/screens/home/snackbar.dart';
 import 'package:tassie/screens/home/upload.dart';
 import 'package:tassie/screens/home/uploadRecImages.dart';
@@ -1057,7 +1058,13 @@ List<Widget> _getRecipe(size) {
               SizedBox(height: 16),
               GestureDetector(
                 onTap: () async {
-                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  print("henlooooooooo");
+                  // Navigator.of(context, rootNavigator: true).popUntil((route) => route.isFirst);
+                  Navigator.of(context,rootNavigator: true).pop();
+                  Navigator.of(context,rootNavigator: true).pushReplacement
+                    (MaterialPageRoute(builder: (context) {
+                          return HomeHome();
+                        }));
                   var url = "https://api-tassie-alt.herokuapp.com/recs/deleteRecipe";
                   var token = await storage.read(key: "token");
                   Response response = await dio.post(url,
