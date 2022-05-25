@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:convert';
-import 'dart:ffi';
+// import 'dart:ffi';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -28,8 +28,8 @@ class _RegisterState extends State<Register> {
   Future<void> checkUsername(username) async {
     // var dio = Dio();
     try {
-      Response response = await dio
-          .get("http://api-tassie.herokuapp.com/user/username/" + username);
+      Response response = await dio.get(
+          "https://api-tassie-alt.herokuapp.com/user/username/" + username);
       // var res = jsonDecode(response.toString());
 
       // if(response)

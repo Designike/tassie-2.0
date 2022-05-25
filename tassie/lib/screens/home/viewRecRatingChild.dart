@@ -31,11 +31,13 @@ class CreateRating extends StatefulWidget {
 class _CreateRatingState extends State<CreateRating> {
   final storage = FlutterSecureStorage();
   AsyncMemoizer memoizerComment = AsyncMemoizer();
+  late Future storedFuture;
 
   @override
   void initState() {
     super.initState();
     memoizerComment = AsyncMemoizer();
+    storedFuture = loadImg(widget.rating['profilePic'], memoizerComment);
     print(widget.rating['profilePic']);
   }
 
@@ -61,7 +63,7 @@ class _CreateRatingState extends State<CreateRating> {
                 // ),
                 child: FutureBuilder(
                     future:
-                        loadImg(widget.rating['profilePic'], memoizerComment),
+                        storedFuture,
                     // future: loadImg('assets/Banana.png',memoizer),
                     builder: (BuildContext context, AsyncSnapshot text) {
                       if (text.connectionState == ConnectionState.waiting) {

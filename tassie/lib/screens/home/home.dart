@@ -112,8 +112,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         rightSwipe: () {
           print('yup2');
           setState(() {
-            _selectedIndex = 1;
-            _pageController.jumpToPage(1);
+            _selectedIndex = 0;
+            _pageController.jumpToPage(0);
           });
         });
   }

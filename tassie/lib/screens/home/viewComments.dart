@@ -42,8 +42,12 @@ class _ViewCommentsState extends State<ViewComments> {
   AsyncMemoizer memoizer = AsyncMemoizer();
   AsyncMemoizer memoizer1 = AsyncMemoizer();
   AsyncMemoizer memoizer2 = AsyncMemoizer();
+  late Future storedFuture;
+  late Future storedFuture1;
+  late Future storedFuture2;
   String? dp;
   static List comments = [];
+  static List commentStoredFutures = [];
   bool isLazyLoading = false;
   static bool isLoading = true;
   static int page = 1;
@@ -213,6 +217,11 @@ class _ViewCommentsState extends State<ViewComments> {
             }
             isLazyLoading = false;
             comments.addAll(tList);
+            for (int i = 0; i < tList.length; i++) {
+              AsyncMemoizer memoizer4 = AsyncMemoizer();
+              Future storedFuture = loadImg(tList[i]['profilePic'], memoizer4);
+              commentStoredFutures.add(storedFuture);
+            }
             page++;
           });
           if (response.data['data']['comments']['results']['comments'].length ==
@@ -237,6 +246,9 @@ class _ViewCommentsState extends State<ViewComments> {
     memoizer = AsyncMemoizer();
     memoizer1 = AsyncMemoizer();
     memoizer2 = AsyncMemoizer();
+    storedFuture = loadImg(widget.post['postID'], memoizer);
+    storedFuture1 = loadImg(widget.post['profilePic'], memoizer1);
+    storedFuture2 = loadImg(widget.dp, memoizer2);
     _sc.addListener(() {
       if (_sc.position.pixels == _sc.position.maxScrollExtent) {
         _getMoreData(page);
@@ -312,9 +324,7 @@ class _ViewCommentsState extends State<ViewComments> {
                                           //   fit: BoxFit.cover,
                                           // ),
                                           child: FutureBuilder(
-                                              future: loadImg(
-                                                  widget.post['profilePic'],
-                                                  memoizer1),
+                                              future: storedFuture1,
                                               builder: (BuildContext context,
                                                   AsyncSnapshot text) {
                                                 if (text.connectionState ==
@@ -399,8 +409,7 @@ class _ViewCommentsState extends State<ViewComments> {
                               //   ),
                               // ),
                               child: FutureBuilder(
-                                  future:
-                                      loadImg(widget.post['postID'], memoizer),
+                                  future: storedFuture,
                                   builder: (BuildContext context,
                                       AsyncSnapshot text) {
                                     if (text.connectionState ==
@@ -647,6 +656,7 @@ class _ViewCommentsState extends State<ViewComments> {
                         index: index,
                         userUuid: widget.post['userUuid'],
                         recipeUuid: widget.post['uuid'],
+                        storedFuture: commentStoredFutures[index],
                         removeComment: (ind) {
                           setState(() {
                             comments.remove(ind);
@@ -709,7 +719,7 @@ class _ViewCommentsState extends State<ViewComments> {
                       //   fit: BoxFit.cover,
                       // ),
                       child: FutureBuilder(
-                          future: loadImg(widget.dp, memoizer2),
+                          future: storedFuture2,
                           builder: (BuildContext context, AsyncSnapshot text) {
                             if (text.connectionState ==
                                 ConnectionState.waiting) {

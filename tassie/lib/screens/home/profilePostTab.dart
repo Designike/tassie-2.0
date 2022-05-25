@@ -158,6 +158,7 @@ class _ProfilePostTabChildState extends State<ProfilePostTabChild> {
   // String _image = "";
   // bool isImage = false;
   AsyncMemoizer memoizer = AsyncMemoizer();
+  late Future storedFuture;
 
   @override
   void didUpdateWidget(covariant ProfilePostTabChild oldWidget) {
@@ -169,6 +170,7 @@ class _ProfilePostTabChildState extends State<ProfilePostTabChild> {
     // TODO: implement initState
     super.initState();
     memoizer = AsyncMemoizer();
+    storedFuture = loadImg(widget.postID, memoizer);
     // _image = "";
     // loadImg(widget.postID,memoizer).then((result) {
     //   print('post refresh');
@@ -192,7 +194,7 @@ class _ProfilePostTabChildState extends State<ProfilePostTabChild> {
     Size size = MediaQuery.of(context).size;
     // return !isImage ? Container() : Image.network(_image);
     return FutureBuilder(
-        future: loadImg(widget.postID, memoizer),
+        future: storedFuture,
         builder: (BuildContext context, AsyncSnapshot text) {
           if (text.connectionState == ConnectionState.waiting) {
             // return Image.asset("assets/images/broken.png",

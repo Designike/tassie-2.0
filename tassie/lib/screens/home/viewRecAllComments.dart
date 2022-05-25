@@ -24,10 +24,12 @@ class ViewRecAllComments extends StatefulWidget {
 
 class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
   List comments = [];
+  List commentStoredFutures = [];
   String? uuid;
   final dio = Dio();
   final storage = FlutterSecureStorage();
   AsyncMemoizer memoizer = AsyncMemoizer();
+  late Future storedFuture;
   Animation<double>? animation;
   // AsyncMemoizer memoizer1 = AsyncMemoizer();
   // String? dp;
@@ -186,6 +188,11 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
             }
             isLazyLoading = false;
             comments.addAll(tList);
+            for (int i = 0; i < tList.length; i++) {
+              AsyncMemoizer memoizer4 = AsyncMemoizer();
+              Future storedFuture = loadImg(tList[i]['profilePic'], memoizer4);
+              commentStoredFutures.add(storedFuture);
+            }
             page++;
           });
           if (response.data['data']['comments']['results']['comments'].length ==
@@ -223,6 +230,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
     super.initState();
     // load();
     memoizer = AsyncMemoizer();
+    storedFuture = loadImg(widget.dp, memoizer);
     // memoizer1 = AsyncMemoizer();
 
     _sc.addListener(() {
@@ -267,6 +275,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
                         index: index,
                         userUuid: widget.userUuid,
                         recipeUuid: widget.recipeUuid,
+                        storedFuture: commentStoredFutures[index],
                         removeComment: (ind) {
                           setState(() {
                             comments.removeAt(ind);
@@ -334,7 +343,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
                         //   fit: BoxFit.cover,
                         // ),
                         child: FutureBuilder(
-                            future: loadImg(widget.dp, memoizer),
+                            future: storedFuture,
                             // future: loadImg('assets/Banana.png'),
                             builder:
                                 (BuildContext context, AsyncSnapshot text) {

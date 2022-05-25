@@ -18,6 +18,8 @@ class ExploreSearchRecipeTab extends StatefulWidget {
 
 class _ExploreSearchRecipeTabState extends State<ExploreSearchRecipeTab> {
   // AsyncMemoizer memoizer = AsyncMemoizer();
+
+
   Widget _buildProgressIndicator() {
     return Padding(
       padding: const EdgeInsets.all(kDefaultPadding),
@@ -89,12 +91,14 @@ class exploreRecipeAvatar extends StatefulWidget {
 
 class _exploreRecipeAvatarState extends State<exploreRecipeAvatar> {
   AsyncMemoizer memoizer = AsyncMemoizer();
+  late Future storedFuture;
   // String _image = "";
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     memoizer = AsyncMemoizer();
+    storedFuture = loadImg(widget.recipeImageID, memoizer);
     // loadImg(widget.recipeImageID,memoizer).then((result) {
     //   setState(() {
     //     _image = result;
@@ -114,7 +118,7 @@ class _exploreRecipeAvatarState extends State<exploreRecipeAvatar> {
     //       : Image.network(_image, fit: BoxFit.cover).image,
     // );
     return FutureBuilder(
-        future: loadImg(widget.recipeImageID, memoizer),
+        future: storedFuture,
         builder: (BuildContext context, AsyncSnapshot text) {
           if (text.connectionState == ConnectionState.waiting) {
             return Image(

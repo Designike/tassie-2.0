@@ -35,6 +35,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   AsyncMemoizer memoizer = AsyncMemoizer();
+  late Future storedFuture;
   var dio = Dio();
   final storage = FlutterSecureStorage();
   static int pageR = 1;
@@ -139,7 +140,8 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
   //   }
   // }
 
-  Future<void> _getProfile() async {
+  Future<void> _getProfile(memoizer) async {
+    print("profile func calling ...");
     var url = "https://api-tassie-alt.herokuapp.com/profile/getProfile/" +
         widget.uuid;
     var token = await storage.read(key: "token");
@@ -163,8 +165,10 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
         name = response.data['data']['userData']['name'];
         profilePic = response.data['data']['userData']['profilePic'];
         isLoading = false;
+        storedFuture = loadImg(profilePic, memoizer);
       });
-      print(isSubscribed);
+      print("profile data");
+      print(response.data['data']);
     } else {
       showSnack(context, "Unable to update", () {}, "OK", 3);
     }
@@ -329,6 +333,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
 
   Future<void> _refreshPostPage() async {
     if (mounted) {
+      memoizer = AsyncMemoizer();
       setState(() {
         pageP = 1;
         // recipes = [];
@@ -339,7 +344,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
         isLoadingP = true;
         // isLazyLoadingR = false;
         isLazyLoadingP = false;
-        _getProfile();
+        _getProfile(memoizer);
         _getPosts(pageP);
         memoizer = AsyncMemoizer();
       });
@@ -377,9 +382,10 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
     isLazyLoadingR = false;
     isLazyLoadingP = false;
     memoizer = AsyncMemoizer();
-    _getProfile();
+    _getProfile(memoizer);
     _getPosts(pageP);
     _getRecipes(pageR);
+    
     super.initState();
     // load();
 
@@ -502,7 +508,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                               // ),
                               child: (!isLoading)
                                   ? FutureBuilder(
-                                      future: loadImg(profilePic, memoizer),
+                                      future: storedFuture,
                                       builder: (BuildContext context,
                                           AsyncSnapshot text) {
                                         if (text.connectionState ==

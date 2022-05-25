@@ -47,6 +47,8 @@ class _ExplorePostState extends State<ExplorePost> {
   AsyncMemoizer memoizer = AsyncMemoizer();
   AsyncMemoizer memoizer1 = AsyncMemoizer();
   String? dp;
+  late Future storedFuture;
+  late Future storedFuture1;
   // String _image = "";
   // bool isImage = false;
 
@@ -61,7 +63,9 @@ class _ExplorePostState extends State<ExplorePost> {
     getdp();
     memoizer = AsyncMemoizer();
     memoizer1 = AsyncMemoizer();
-
+    storedFuture = loadImg(widget.post['postID'], memoizer);
+    storedFuture1 = loadImg(widget.post['profilePic'], memoizer1);
+    // super.initState();
     // loadImg(widget.post['postID']).then((result) {
     //   setState(() {
     //     _image = result;
@@ -143,7 +147,7 @@ class _ExplorePostState extends State<ExplorePost> {
                 //   ),
                 // ),
                 child: FutureBuilder(
-                    future: loadImg(widget.post['postID'], memoizer),
+                    future: storedFuture,
                     builder: (BuildContext context, AsyncSnapshot text) {
                       if (text.connectionState == ConnectionState.waiting) {
                         return Container(
@@ -217,7 +221,7 @@ class _ExplorePostState extends State<ExplorePost> {
                         //   fit: BoxFit.cover,
                         // ),
                         child: FutureBuilder(
-                            future: loadImg(post['profilePic'], memoizer1),
+                            future: storedFuture1,
                             builder:
                                 (BuildContext context, AsyncSnapshot text) {
                               if (text.connectionState ==

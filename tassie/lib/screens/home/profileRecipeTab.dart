@@ -103,16 +103,17 @@ class _RecipeTabState extends State<RecipeTab> {
                             : _buildProgressIndicator()
                         // : FeedPost(index: index, posts: posts);
                         : GestureDetector(
-                          onTap: () {
-                            Navigator.of(context,rootNavigator: true).push(
-                                      MaterialPageRoute(
-                                        builder: (_) => ViewRecPost(recs: recs[index], funcB: (isBookmarked){})
-                                      ),
-                                    );
-                          },
-                          child: ProfileRecipeTabChild(
-                              recID: recs[index]['recipeImageID']),
-                        );
+                            onTap: () {
+                              Navigator.of(context, rootNavigator: true).push(
+                                MaterialPageRoute(
+                                    builder: (_) => ViewRecPost(
+                                        recs: recs[index],
+                                        funcB: (isBookmarked) {})),
+                              );
+                            },
+                            child: ProfileRecipeTabChild(
+                                recID: recs[index]['recipeImageID']),
+                          );
                     // return Container(
                     //   color: Colors.red,
                     // );
@@ -153,6 +154,7 @@ class _ProfileRecipeTabChildState extends State<ProfileRecipeTabChild>
   // bool isImage = false;
   // String _image = "";
   AsyncMemoizer memoizer = AsyncMemoizer();
+  late Future storedFuture;
   @override
   void didUpdateWidget(covariant ProfileRecipeTabChild oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -163,6 +165,8 @@ class _ProfileRecipeTabChildState extends State<ProfileRecipeTabChild>
     // TODO: implement initState
     super.initState();
     memoizer = AsyncMemoizer();
+    print(widget.recID);
+    storedFuture = loadImg(widget.recID, memoizer);
     // _image = "";
     // loadImg(widget.recID,memoizer).then((result) {
     //   print('recs refresh');
@@ -186,7 +190,7 @@ class _ProfileRecipeTabChildState extends State<ProfileRecipeTabChild>
     Size size = MediaQuery.of(context).size;
     // return !isImage ? Container() : Image.network(_image);
     return FutureBuilder(
-        future: loadImg(widget.recID, memoizer),
+        future: storedFuture,
         builder: (BuildContext context, AsyncSnapshot text) {
           if (text.connectionState == ConnectionState.waiting) {
             // return Image.asset("assets/images/broken.png",

@@ -12,11 +12,13 @@ import 'package:tassie/screens/imgLoader.dart';
 import '../../constants.dart';
 
 class ViewRecSimilarRec extends StatefulWidget {
-  const ViewRecSimilarRec({required this.recs, required this.funcB});
+  const ViewRecSimilarRec(
+      {required this.recs, required this.funcB, required this.storedFuture});
 
   final Map recs;
   // final Map recostData;
   final void Function(bool) funcB;
+  final Future storedFuture;
   // final int index;
 
   @override
@@ -26,12 +28,15 @@ class ViewRecSimilarRec extends StatefulWidget {
 class _ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
   // String _image = "";
   AsyncMemoizer memoizer = AsyncMemoizer();
+  late Future storedFuture;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     print(widget.recs);
     memoizer = AsyncMemoizer();
+    // storedFuture = loadImg(widget.recs['recipeImageID'], memoizer);
+    storedFuture = widget.storedFuture;
     // loadImg(widget.recs['recipeImageID'], memoizer).then((result) {
     //   setState(() {
     //     _image = result;
@@ -84,7 +89,7 @@ class _ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
                   //   ),
                   // ),
                   child: FutureBuilder(
-                      future: loadImg(widget.recs['recipeImageID'], memoizer),
+                      future: storedFuture,
                       builder: (BuildContext context, AsyncSnapshot text) {
                         if (text.connectionState == ConnectionState.waiting) {
                           // return Image.asset("assets/images/broken.png",

@@ -102,11 +102,14 @@ class ExploreUserAvatar extends StatefulWidget {
 class _ExploreUserAvatarState extends State<ExploreUserAvatar> {
   // String _image = "";
   AsyncMemoizer memoizer = AsyncMemoizer();
+  late Future storedFuture;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     memoizer = AsyncMemoizer();
+    storedFuture = loadImg(widget.profilePic, memoizer);
     // loadImg(widget.profilePic).then((result) {
     //   setState(() {
     //     _image = result;
@@ -127,7 +130,7 @@ class _ExploreUserAvatarState extends State<ExploreUserAvatar> {
     //   fit: BoxFit.cover,
     // );
     return FutureBuilder(
-        future: loadImg(widget.profilePic, memoizer),
+        future: storedFuture,
         builder: (BuildContext context, AsyncSnapshot text) {
           if (text.connectionState == ConnectionState.waiting) {
             return Image(

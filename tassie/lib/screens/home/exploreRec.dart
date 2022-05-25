@@ -29,12 +29,17 @@ class _ExploreRecState extends State<ExploreRec> {
   bool isImage = false;
   AsyncMemoizer memoizer = AsyncMemoizer();
   AsyncMemoizer memoizer1 = AsyncMemoizer();
+  late Future storedFuture;
+  late Future storedFuture1;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     memoizer = AsyncMemoizer();
     memoizer1 = AsyncMemoizer();
+    storedFuture = loadImg(widget.recs['recipeImageID'], memoizer);
+    storedFuture1 = loadImg(widget.recs['profilePic'], memoizer1);
     // loadImg(widget.recs['recipeImageID']).then((result) {
     //   setState(() {
     //     _image = result;
@@ -44,6 +49,7 @@ class _ExploreRecState extends State<ExploreRec> {
     if (widget.recs['recipeImageID'] != "") {
       isImage = true;
     }
+    // super.initState();
   }
 
   @override
@@ -88,7 +94,7 @@ class _ExploreRecState extends State<ExploreRec> {
                 //   ),
                 // ),
                 child: FutureBuilder(
-                    future: loadImg(widget.recs['recipeImageID'], memoizer),
+                    future: storedFuture,
                     builder: (BuildContext context, AsyncSnapshot text) {
                       if (text.connectionState == ConnectionState.waiting) {
                         return Container(
@@ -106,6 +112,23 @@ class _ExploreRecState extends State<ExploreRec> {
                             ),
                           ),
                         );
+                      } else if(text.error != null){
+                        return Container(
+                          margin: EdgeInsets.all(10.0),
+                          width: double.infinity,
+                          height: (size.width / 2) - 20.0 - 14.0,
+                          // height: 400.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25.0),
+                            image: DecorationImage(
+                              image: AssetImage(
+                                'assets/images/broken.png',
+                              ),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      
                       } else {
                         // return Image(
                         //   image: NetworkImage(text.data.toString()),
@@ -144,7 +167,7 @@ class _ExploreRecState extends State<ExploreRec> {
                       //   fit: BoxFit.cover,
                       // ),
                       child: FutureBuilder(
-                          future: loadImg(recs['profilePic'], memoizer1),
+                          future: storedFuture1,
                           builder: (BuildContext context, AsyncSnapshot text) {
                             if (text.connectionState ==
                                 ConnectionState.waiting) {

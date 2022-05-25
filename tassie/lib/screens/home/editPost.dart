@@ -31,6 +31,7 @@ class _EditPostState extends State<EditPost> {
   final storage = FlutterSecureStorage();
   bool isLoading = true;
   Map post = {};
+  late Future storedFuture;
 
   AsyncMemoizer memoizer = AsyncMemoizer();
 
@@ -131,6 +132,7 @@ class _EditPostState extends State<EditPost> {
     super.initState();
     getPost();
     memoizer = AsyncMemoizer();
+    storedFuture = loadImg(post['postID'], memoizer);
   }
 
   @override
@@ -214,7 +216,7 @@ class _EditPostState extends State<EditPost> {
                   padding: const EdgeInsets.all(kDefaultPadding * 1.5),
                   // child: Image.file(_imageFile!),
                   child: FutureBuilder(
-                      future: loadImg(post['postID'], memoizer),
+                      future: storedFuture,
                       builder: (BuildContext context, AsyncSnapshot text) {
                         if (text.connectionState == ConnectionState.waiting) {
                           print(post['postID']);

@@ -16,7 +16,8 @@ class CreateComment extends StatefulWidget {
       required this.recipeUuid,
       required this.removeComment,
       required this.uuid,
-      required this.isPost})
+      required this.isPost,
+      required this.storedFuture})
       : super(key: key);
   final Map recost;
   final int index;
@@ -25,6 +26,7 @@ class CreateComment extends StatefulWidget {
   final void Function(int) removeComment;
   final String? uuid;
   final bool isPost;
+  final Future storedFuture;
   @override
   _CreateCommentState createState() => _CreateCommentState();
 }
@@ -32,12 +34,20 @@ class CreateComment extends StatefulWidget {
 class _CreateCommentState extends State<CreateComment> {
   final storage = FlutterSecureStorage();
   AsyncMemoizer memoizerComment = AsyncMemoizer();
+  late Future storedFuture;
 
   @override
   void initState() {
     super.initState();
     memoizerComment = AsyncMemoizer();
     print(widget.recost['profilePic']);
+    // storedFuture = loadImg(widget.recost['profilePic'], memoizerComment);
+    storedFuture = widget.storedFuture;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -61,8 +71,7 @@ class _CreateCommentState extends State<CreateComment> {
                 //   fit: BoxFit.cover,
                 // ),
                 child: FutureBuilder(
-                    future:
-                        loadImg(widget.recost['profilePic'], memoizerComment),
+                    future: storedFuture,
                     // future: loadImg('assets/Banana.png',memoizer),
                     builder: (BuildContext context, AsyncSnapshot text) {
                       if (text.connectionState == ConnectionState.waiting) {

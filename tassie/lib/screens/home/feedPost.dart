@@ -41,6 +41,8 @@ class _FeedPostState extends State<FeedPost> {
   String? dp;
   AsyncMemoizer memoizer = AsyncMemoizer();
   AsyncMemoizer memoizer1 = AsyncMemoizer();
+  late Future storedFuture;
+  late Future storedFuture1;
   final dio = Dio();
   final storage = FlutterSecureStorage();
   // String _image = "";
@@ -56,6 +58,8 @@ class _FeedPostState extends State<FeedPost> {
     getdp();
     memoizer = AsyncMemoizer();
     memoizer1 = AsyncMemoizer();
+    storedFuture = loadImg(widget.post['postID'], memoizer);
+    storedFuture1 = loadImg(widget.post['profilePic'], memoizer1);
     super.initState();
     // loadImg(widget.post['postID'],memoizer).then((result) {
     //   // print('hello');
@@ -110,7 +114,7 @@ class _FeedPostState extends State<FeedPost> {
                           //       fit: BoxFit.cover,
                           //     ),
                           child: FutureBuilder(
-                              future: loadImg(post['profilePic'], memoizer1),
+                              future: storedFuture1,
                               builder:
                                   (BuildContext context, AsyncSnapshot text) {
                                 if (text.connectionState ==
@@ -187,7 +191,7 @@ class _FeedPostState extends State<FeedPost> {
                     //   ),
                     // ),
                     child: FutureBuilder(
-                        future: loadImg(widget.post['postID'], memoizer),
+                        future: storedFuture,
                         builder: (BuildContext context, AsyncSnapshot text) {
                           if (text.connectionState == ConnectionState.waiting) {
                             return Container(

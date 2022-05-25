@@ -13,6 +13,7 @@ import 'package:tassie/screens/home/showMoreText.dart';
 import 'package:tassie/screens/home/snackbar.dart';
 import 'package:tassie/screens/home/viewRecAllRatings.dart';
 import 'package:tassie/screens/home/viewRecCommentChild.dart';
+import 'package:tassie/screens/home/viewRecPostChild.dart';
 import 'package:tassie/screens/home/viewRecSimilarRec.dart';
 import 'package:tassie/screens/imgLoader.dart';
 
@@ -61,6 +62,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
   final dio = Dio();
   final storage = FlutterSecureStorage();
   AsyncMemoizer memoizer = AsyncMemoizer();
+  late Future storedFuture;
   // Future<String> myFuture = "" as Future<String>;
   // var ingredientPics = [
   //   {'index': '1', 'fileID': 'https://picsum.photos/200'},
@@ -94,6 +96,18 @@ class _ViewRecPostState extends State<ViewRecPost> {
   List stepPics = [];
   List similar = [];
   var items = ["Edit", "Delete"];
+
+  int checker = 0;
+
+  List<Widget> ingWidgetList = [];
+  List<Widget> stepsWidgetList = [];
+  List<Widget> commentsWidgetList = [];
+  List<Widget> similarWidgetList = [];
+
+  Map ingStoredFutures = {};
+  Map stepStoredFutures = {};
+  Map commentStoredFutures = {};
+  Map similarStoredFutures = {};
   // String getImage(img) {
   //   String x = "";
   //   print(img);
@@ -106,6 +120,13 @@ class _ViewRecPostState extends State<ViewRecPost> {
   //   });
   //   return x;
   // }
+
+  Future<void> getImage() async {
+    storedFuture = loadImg(recipeImageID, memoizer);
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   Future<void> getRecipe() async {
     // isLazyLoading = true;
@@ -126,6 +147,8 @@ class _ViewRecPostState extends State<ViewRecPost> {
 
     if (response.data != null) {
       setState(() {
+        print("ertyu");
+        print(response.data['data']['recipe']);
         stepPics.addAll(response.data['data']['recipe']['stepPics']);
         steps.addAll(response.data['data']['recipe']['steps']);
         ingredients.addAll(response.data['data']['recipe']['ingredients']);
@@ -168,8 +191,17 @@ class _ViewRecPostState extends State<ViewRecPost> {
         } else {
           meanRating = 0;
         }
-        isLoading = false;
+
+        // stepsWidgetList = generateList(steps, stepPics);
+        // commentsWidgetList = generateCommentList();
+        // similarWidgetList = generateSimilarList();
+        // isLoading = false;
       });
+      ingWidgetList = await generateList(ingredients, ingredientPics, true);
+      stepsWidgetList = await generateList(steps, stepPics, false);
+      commentsWidgetList = await generateCommentList();
+      similarWidgetList = await generateSimilarList();
+      getImage();
     }
   }
 
@@ -183,97 +215,122 @@ class _ViewRecPostState extends State<ViewRecPost> {
   String desc =
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
-  Widget _createComment(Map comment, int index) {
-    // Map post = widget.post;
-    // print(post);
-    return Padding(
-      padding: EdgeInsets.all(10.0),
-      child: ListTile(
-        leading: Container(
-          width: 50.0,
-          height: 50.0,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-          ),
-          child: CircleAvatar(
-            child: ClipOval(
-              child: Image(
-                height: 50.0,
-                width: 50.0,
-                image: NetworkImage(comment['profilePic']),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        ),
-        title: Text(
-          comment['username'],
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        subtitle: Text(
-          comment['comment'],
-          style: TextStyle(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? kLight
-                : kDark[900],
-            // color:Colors.red,
-          ),
-        ),
-        trailing: (widget.recs['userUuid'] == uuid ||
-                comment['uuid'].split('_comment_')[0] == uuid)
-            ? IconButton(
-                icon: Icon(
-                  Icons.delete_rounded,
-                ),
-                color: Colors.grey,
-                onPressed: () async {
-                  var token = await storage.read(key: "token");
-                  Response response = await dio.post(
-                      "https://api-tassie-alt.herokuapp.com/recs/removeComment",
-                      options: Options(headers: {
-                        HttpHeaders.contentTypeHeader: "application/json",
-                        HttpHeaders.authorizationHeader: "Bearer " + token!
-                      }),
-                      data: {
-                        'recipeUuid': widget.recs['uuid'],
-                        'commentUuid': comment['uuid'],
-                      });
-                  setState(() {
-                    comments.remove(index);
-                  });
-                  // widget.minusComment();
-                },
-              )
-            : null,
-      ),
-    );
-  }
+  // Widget _createComment(Map comment, int index) {
+  //   // Map post = widget.post;
+  //   // print(post);
+  //   return Padding(
+  //     padding: EdgeInsets.all(10.0),
+  //     child: ListTile(
+  //       leading: Container(
+  //         width: 50.0,
+  //         height: 50.0,
+  //         decoration: BoxDecoration(
+  //           shape: BoxShape.circle,
+  //         ),
+  //         child: CircleAvatar(
+  //           child: ClipOval(
+  //             child: Image(
+  //               height: 50.0,
+  //               width: 50.0,
+  //               image: NetworkImage(comment['profilePic']),
+  //               fit: BoxFit.cover,
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //       title: Text(
+  //         comment['username'],
+  //         style: TextStyle(
+  //           fontWeight: FontWeight.bold,
+  //         ),
+  //       ),
+  //       subtitle: Text(
+  //         comment['comment'],
+  //         style: TextStyle(
+  //           color: Theme.of(context).brightness == Brightness.dark
+  //               ? kLight
+  //               : kDark[900],
+  //           // color:Colors.red,
+  //         ),
+  //       ),
+  //       trailing: (widget.recs['userUuid'] == uuid ||
+  //               comment['uuid'].split('_comment_')[0] == uuid)
+  //           ? IconButton(
+  //               icon: Icon(
+  //                 Icons.delete_rounded,
+  //               ),
+  //               color: Colors.grey,
+  //               onPressed: () async {
+  //                 var token = await storage.read(key: "token");
+  //                 Response response = await dio.post(
+  //                     "https://api-tassie-alt.herokuapp.com/recs/removeComment",
+  //                     options: Options(headers: {
+  //                       HttpHeaders.contentTypeHeader: "application/json",
+  //                       HttpHeaders.authorizationHeader: "Bearer " + token!
+  //                     }),
+  //                     data: {
+  //                       'recipeUuid': widget.recs['uuid'],
+  //                       'commentUuid': comment['uuid'],
+  //                     });
+  //                 setState(() {
+  //                   comments.remove(index);
+  //                 });
+  //                 // widget.minusComment();
+  //               },
+  //             )
+  //           : null,
+  //     ),
+  //   );
+  // }
 
-  Column myList(size, listItems, listImages, showMoreBtn, isIng) {
+  // Column myList(size, listItems, listImages, showMoreBtn, isIng) {
+  Column myList(showMoreBtn, isIng) {
+    print(checker);
+    checker++;
     return Column(
       children: [
-        ListView.builder(
-            padding: EdgeInsets.all(0.0),
-            itemCount: listItems.length,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              String url = "";
-              for (var i = 0; i < listImages.length; i++) {
-                if (listImages[i]["index"] == (index + 1).toString()) {
-                  url = listImages[i]['fileID'];
-                }
-              }
-              return StepIngImage(
-                index: index,
-                text: listItems[index],
-                count: listImages.length,
-                size: size,
-                url: url,
-              );
-            }),
+        // ListView.builder(
+        //     padding: EdgeInsets.all(0.0),
+        //     itemCount: listItems.length,
+        //     shrinkWrap: true,
+        //     cacheExtent: 20.0,
+        //     physics: NeverScrollableScrollPhysics(),
+        //     itemBuilder: (context, index) {
+        //       String url = "";
+        //       for (var i = 0; i < listImages.length; i++) {
+        //         if (listImages[i]["index"] == (index + 1).toString()) {
+        //           url = listImages[i]['fileID'];
+        //         }
+        //       }
+        //       return StepIngImage(
+        //         index: index,
+        //         text: listItems[index],
+        //         count: listImages.length,
+        //         size: size,
+        //         url: url,
+        //       );
+        //     }),
+
+        // for (int k = 0; k < listImages.length; k++) ...[
+        //   StepIngImage(
+        //     index: k,
+        //     text: listItems[k],
+        //     count: listImages.length,
+        //     size: size,
+        //     url: (k) {
+        //       for (var i = 0; i < listImages.length; i++) {
+        //         if (listImages[i]["index"] == (k + 1).toString()) {
+        //           return listImages[i]['fileID'];
+        //         }
+        //       }
+        //       return "";
+        //     },
+        //   )
+        // ],
+
+        Column(
+            children:
+                showMoreBtn ? ingWidgetList.sublist(0, 2) : ingWidgetList),
         showMoreBtn
             ? TextButton.icon(
                 icon: isIng
@@ -308,6 +365,92 @@ class _ViewRecPostState extends State<ViewRecPost> {
     );
   }
 
+  Future<List<Widget>> generateList(listItems, listImages, isIng) async {
+    for (int k = 0; k < listImages.length; k++) {
+      AsyncMemoizer memoizer = AsyncMemoizer();
+      Future storedFuture = loadImg(listImages[k]['fileID'], memoizer);
+      if (isIng) {
+        ingStoredFutures[(k + 1).toString()] = storedFuture;
+      } else {
+        stepStoredFutures[(k + 1).toString()] = storedFuture;
+      }
+    }
+    return [
+      for (int k = 0; k < listImages.length; k++) ...[
+        // storedFuture = loadImg();
+        StepIngImage(
+          index: k,
+          text: listItems[k],
+          count: listImages.length,
+          storedFuture: (k) async {
+            for (var i = 0; i < listImages.length; i++) {
+              if (listImages[i]["index"] == (k + 1).toString()) {
+                if (isIng) {
+                  return ingStoredFutures[(k + 1).toString()];
+                } else {
+                  return stepStoredFutures[(k + 1).toString()];
+                }
+              }
+            }
+            return "";
+          },
+          // size: size,
+          url: (k) {
+            for (var i = 0; i < listImages.length; i++) {
+              if (listImages[i]["index"] == (k + 1).toString()) {
+                return listImages[i]['fileID'];
+              }
+            }
+            return "";
+          },
+        )
+      ],
+    ];
+  }
+
+  Future<List<Widget>> generateCommentList() async {
+    if (comments.length == 0) return [];
+    for (int k = 0; k < 2; k++) {
+      AsyncMemoizer memoizer1 = AsyncMemoizer();
+      Future storedFuture1 = loadImg(comments[k]['profilePic'], memoizer1);
+      commentStoredFutures[(k + 1).toString()] = storedFuture1;
+    }
+    return [
+      for (var i = 0; i < 2; i++) ...[
+        // createComment(comment: comments[i],index: i, )
+        CreateComment(
+          recost: comments[i],
+          index: i,
+          userUuid: widget.recs['userUuid'],
+          recipeUuid: widget.recs['uuid'],
+          storedFuture: commentStoredFutures[(i + 1).toString()],
+          removeComment: (ind) {
+            setState(() {
+              comments.remove(ind);
+            });
+          },
+          uuid: uuid,
+          isPost: false,
+        )
+      ],
+    ];
+  }
+
+  Future<List<Widget>> generateSimilarList() async {
+    for (int k = 0; k < similar.length; k++) {
+      AsyncMemoizer memoizer2 = AsyncMemoizer();
+      Future storedFuture2 = loadImg(similar[k]['recipeImageID'], memoizer2);
+      similarStoredFutures[(k + 1).toString()] = storedFuture2;
+    }
+    return [
+      for (var i = 0; i < similar.length; i++)
+        ViewRecSimilarRec(
+            recs: similar[i],
+            funcB: (test) {},
+            storedFuture: similarStoredFutures[(i + 1).toString()]),
+    ];
+  }
+
   Widget _createRatingPercentBar(Size size, int star, int rating, Color color) {
     return Row(children: [
       Text(star.toString()),
@@ -325,11 +468,12 @@ class _ViewRecPostState extends State<ViewRecPost> {
 
   @override
   void initState() {
-    isLoading = true;
+    super.initState();
+    memoizer = AsyncMemoizer();
     getRecipe();
     // myFuture = loadImg(x);
-    memoizer = AsyncMemoizer();
-    super.initState();
+
+    // getImage();
   }
 
   @override
@@ -562,7 +706,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                           //       )
                           //     : null,
                           child: FutureBuilder(
-                              future: loadImg(recipeImageID, memoizer),
+                              future: storedFuture,
                               builder:
                                   (BuildContext context, AsyncSnapshot text) {
                                 if (text.connectionState ==
@@ -1014,12 +1158,15 @@ class _ViewRecPostState extends State<ViewRecPost> {
 
                           ingredients.length > 2
                               ? !isExpandedIng
-                                  ? myList(size, ingredients.sublist(0, 2),
-                                      ingredientPics, true, true)
-                                  : myList(size, ingredients, ingredientPics,
-                                      true, true)
-                              : myList(size, ingredients, ingredientPics, false,
-                                  true),
+                                  // ? myList(size, ingredients.sublist(0, 2),
+                                  //     ingredientPics, true, true)
+                                  // : myList(size, ingredients, ingredientPics,
+                                  //     true, true)
+                                  ? myList(true, true)
+                                  : myList(true, true)
+                              // : myList(size, ingredients, ingredientPics, false,
+                              //     true),
+                              : myList(false, true),
                           // MyList(listItems: ingredients, listImages: ingredientPics)
                           // ListView.builder(
                           //     padding: EdgeInsets.only(bottom: 30.0),
@@ -1090,10 +1237,13 @@ class _ViewRecPostState extends State<ViewRecPost> {
 
                           steps.length > 2
                               ? !isExpandedSteps
-                                  ? myList(size, steps.sublist(0, 2), stepPics,
-                                      true, false)
-                                  : myList(size, steps, stepPics, true, false)
-                              : myList(size, steps, stepPics, false, false),
+                                  // ? myList(size, steps.sublist(0, 2), stepPics,
+                                  //     true, false)
+                                  // : myList(size, steps, stepPics, true, false)
+                                  ? myList(true, false)
+                                  : myList(true, false)
+                              // : myList(size, steps, stepPics, false, false),
+                              : myList(false, false)
                         ],
                       ),
                     ),
@@ -1395,23 +1545,27 @@ class _ViewRecPostState extends State<ViewRecPost> {
                             //   },
                             //   itemCount: comments.length,
                             // ),
+
                             if (comments.isNotEmpty) ...[
-                              for (var i = 0; i < comments.length; i++) ...[
-                                // createComment(comment: comments[i],index: i, )
-                                CreateComment(
-                                  recost: comments[i],
-                                  index: i,
-                                  userUuid: widget.recs['userUuid'],
-                                  recipeUuid: widget.recs['uuid'],
-                                  removeComment: (ind) {
-                                    setState(() {
-                                      comments.remove(ind);
-                                    });
-                                  },
-                                  uuid: uuid,
-                                  isPost: false,
-                                )
-                              ],
+                              Column(
+                                children: commentsWidgetList,
+                              ),
+                              // for (var i = 0; i < comments.length; i++) ...[
+                              //   // createComment(comment: comments[i],index: i, )
+                              //   CreateComment(
+                              //     recost: comments[i],
+                              //     index: i,
+                              //     userUuid: widget.recs['userUuid'],
+                              //     recipeUuid: widget.recs['uuid'],
+                              //     removeComment: (ind) {
+                              //       setState(() {
+                              //         comments.remove(ind);
+                              //       });
+                              //     },
+                              //     uuid: uuid,
+                              //     isPost: false,
+                              //   )
+                              // ],
                               GestureDetector(
                                 onTap: () {
                                   Navigator.of(context, rootNavigator: true)
@@ -1581,11 +1735,12 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                 scrollDirection: Axis.horizontal,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    for (var i = 0; i < similar.length; i++)
-                                      ViewRecSimilarRec(
-                                          recs: similar[i], funcB: (test) {}),
-                                  ],
+                                  // children: [
+                                  //   for (var i = 0; i < similar.length; i++)
+                                  //     ViewRecSimilarRec(
+                                  //         recs: similar[i], funcB: (test) {}),
+                                  // ],
+                                  children: similarWidgetList,
                                 ),
                               ),
                             )
@@ -1737,87 +1892,103 @@ class MyBullet extends StatelessWidget {
   }
 }
 
-class StepIngImage extends StatefulWidget {
-  const StepIngImage(
-      {Key? key,
-      required this.index,
-      required this.text,
-      required this.count,
-      required this.size,
-      required this.url})
-      : super(key: key);
-  final int index;
-  final int count;
-  final String text;
-  final Size size;
-  final String url;
-  @override
-  _StepIngImageState createState() => _StepIngImageState();
-}
+// class StepIngImage extends StatefulWidget {
+//   const StepIngImage(
+//       {Key? key,
+//       required this.index,
+//       required this.text,
+//       required this.count,
+//       required this.size,
+//       required this.url})
+//       : super(key: key);
+//   final int index;
+//   final int count;
+//   final String text;
+//   final Size size;
+//   final String url;
+//   @override
+//   _StepIngImageState createState() => _StepIngImageState();
+// }
 
-class _StepIngImageState extends State<StepIngImage> {
-  AsyncMemoizer memoizer = AsyncMemoizer();
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    memoizer = AsyncMemoizer();
-  }
+// class _StepIngImageState extends State<StepIngImage> {
+//   AsyncMemoizer _memoizer1 = AsyncMemoizer();
+//   late Future _storedFuture1;
+//   bool _isLoading1 = true;
+//   Future<void> _getImage() async {
+//     _storedFuture1 = loadImg(widget.url, _memoizer1);
+//     _isLoading1 = false;
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListTile(
-          leading: MyBullet(index: (widget.index + 1).toString()),
-          title: Text(widget.text),
-          contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
-        ),
-        widget.url == ""
-            ? SizedBox(
-                height: 0,
-              )
-            : Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: GestureDetector(
-                  onTap: () {},
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15.0),
-                    child: SizedBox(
-                      width: widget.size.width - (2 * kDefaultPadding),
-                      height: widget.size.width - (2 * kDefaultPadding),
-                      // child: Image(
-                      //   // image: NetworkImage(url),
-                      //   image:
-                      //       NetworkImage('https://picsum.photos/200'),
-                      //   fit: BoxFit.cover,
-                      // ),
-                      child: FutureBuilder(
-                          future: loadImg(widget.url, memoizer),
-                          builder: (BuildContext context, AsyncSnapshot text) {
-                            if (text.connectionState ==
-                                ConnectionState.waiting) {
-                              return Image.asset("assets/images/broken.png");
-                            } else {
-                              return Image(
-                                image: NetworkImage(text.data.toString()),
-                                fit: BoxFit.cover,
-                              );
-                            }
-                          }),
-                    ),
-                  ),
-                ),
-              ),
-        if (widget.index != widget.count - 1) ...[
-          SizedBox(
-            height: 15.0,
-          ),
-          Divider(
-            thickness: 1.0,
-          )
-        ],
-      ],
-    );
-  }
-}
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     _memoizer1 = AsyncMemoizer();
+//     _getImage();
+//     super.initState();
+    
+    
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return (_isLoading1)
+//               ? Center(
+//                   child: CircularProgressIndicator(
+//                     strokeWidth: 2.0,
+//                   ),
+//                 )
+//               :  Column(
+//       children: [
+//         ListTile(
+//           leading: MyBullet(index: (widget.index + 1).toString()),
+//           title: Text(widget.text),
+//           contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
+//         ),
+//         widget.url == ""
+//             ? SizedBox(
+//                 height: 0,
+//               )
+//             : Padding(
+//                 padding: const EdgeInsets.only(top: 10.0),
+//                 child: GestureDetector(
+//                   onTap: () {},
+//                   child: ClipRRect(
+//                     borderRadius: BorderRadius.circular(15.0),
+//                     child: SizedBox(
+//                       width: widget.size.width - (2 * kDefaultPadding),
+//                       height: widget.size.width - (2 * kDefaultPadding),
+//                       // child: Image(
+//                       //   // image: NetworkImage(url),
+//                       //   image:
+//                       //       NetworkImage('https://picsum.photos/200'),
+//                       //   fit: BoxFit.cover,
+//                       // ),
+//                       child: FutureBuilder(
+//                           future: _storedFuture1,
+//                           builder: (BuildContext context, AsyncSnapshot text) {
+//                             if (text.connectionState ==
+//                                 ConnectionState.waiting) {
+//                               return Image.asset("assets/images/broken.png");
+//                             } else {
+//                               return Image(
+//                                 image: NetworkImage(text.data.toString()),
+//                                 fit: BoxFit.cover,
+//                               );
+//                             }
+//                           }),
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//         if (widget.index != widget.count - 1) ...[
+//           SizedBox(
+//             height: 15.0,
+//           ),
+//           Divider(
+//             thickness: 1.0,
+//           )
+//         ],
+//       ],
+//     );
+//   }
+// }
