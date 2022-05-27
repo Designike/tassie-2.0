@@ -170,14 +170,27 @@ class _AddRecipeState extends State<AddRecipe> {
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
               child: RecImageUploader(file: image, keyValue: recipeName,keyName: 'name', imgName: key+'_'+(index+1).toString(),
               // folder: widget.folder, 
-              uuid: widget.uuid,trueResp: () {
-                  _imageFile = null;
+              uuid: widget.uuid,falseResp: () {
+                  print("working");
+                  setState(() {
+                  if(key=='r'){
+                      recipePic = null;
+                      _imageFile = null;
+                    }else if(key=='i'){
+                      ingredientPics[(index).toString()]= null;
+                      _imageFile = null;
+                      
+                    }else{
+                      stepPics[(index).toString()]= null;
+                      _imageFile = null;
+                    }
+                });
                   if (key+'_'+(index+1).toString() == 'r_1') {
                     setState(() {
                       isUpload = false;
                     });
                   }
-                }, falseResp: () {
+                }, trueResp: () {
                   if (key+'_'+(index+1).toString() == 'r_1') {
                     setState(() {
                       isUpload = true;

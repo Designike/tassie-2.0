@@ -7,6 +7,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/snackbar.dart';
 
+import '../home/home.dart';
+
 class GoogleRegister extends StatefulWidget {
   const GoogleRegister(
       {Key? key,
@@ -83,29 +85,50 @@ class _GoogleRegisterState extends State<GoogleRegister> {
                   onPressed: () async {
                     var dio = Dio();
                     var storage = FlutterSecureStorage();
-                    var token = await storage.read(key: "token");
+                    // var token = await storage.read(key: "token");
                     if (_formKey.currentState!.validate()) {
                       print(username);
                       Response response = await dio.post(
                           "https://api-tassie-alt.herokuapp.com/user/googleRegister/",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
-                            HttpHeaders.authorizationHeader: "Bearer " + token!
+                            // HttpHeaders.authorizationHeader: "Bearer " + token!
                           }),
                           // data: jsonEncode(value),
                           data: {
                             "username": username,
+                            "name": widget.name,
+                            "password": widget.password,
+                            "email": widget.email
                           });
                       if (response.data != null) {
                         if (response.data['status'] == true) {
                           Navigator.pop(context);
-                          showSnack(context, 'Username update in progress',
-                              () {}, 'OK', 3);
+                          await storage.write(
+                              key: "token",
+                              value: response.data['data']['token']);
+                          await storage.write(
+                              key: "uuid",
+                              value: response.data['data']['uuid']);
+                          await storage.write(
+                              key: "profilePic",
+                              value: response.data['data']['profilePic']);
+
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) {
+                              return Home();
+                            }),
+                          );
+                          // showSnack(context, 'Username update in progress',
+                          //     () {}, 'OK', 3);
                         } else {
                           showSnack(context, 'Server error', () {}, 'OK', 4);
+                          Navigator.pop(context);
                         }
                       } else {
                         showSnack(context, 'Server error', () {}, 'OK', 4);
+                        Navigator.pop(context);
                       }
                     }
                   })
@@ -156,7 +179,7 @@ class _GoogleRegisterState extends State<GoogleRegister> {
                 ),
                 SizedBox(height: 20.0),
                 Text(
-                    'Type your new username, if it is available the save button on corner will be enabled.'),
+                    'Type your username, if it is available the save button on corner will be enabled.'),
                 SizedBox(height: 20.0),
                 Text(notUniqText, style: TextStyle(color: kPrimaryColor)),
               ],

@@ -75,7 +75,7 @@ class _RecImageUploaderState extends State<RecImageUploader> {
     );
 
     if (response.data['status'] == false) {
-      widget.trueResp();
+      widget.falseResp();
       showSnack(context, response.data['message'], () {}, 'OK', 5);
       // _imageFile = null;
       // if (imgName == 'r_1') {
@@ -86,7 +86,7 @@ class _RecImageUploaderState extends State<RecImageUploader> {
       // showSnack(context, response.data['message'], () {}, 'OK', 5);
     }
     if (response.data['status'] == true) {
-      widget.falseResp();
+      widget.trueResp();
       setState(() {
         isUploaded = true;
       });

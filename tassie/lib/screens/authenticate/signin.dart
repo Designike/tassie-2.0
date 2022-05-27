@@ -34,18 +34,19 @@ class _SignInState extends State<SignIn> {
 
   // Future<GoogleSignInAuthentication?> login()
   Future<GoogleSignInAccount?> login() => google.signIn().then((result) {
-        print(result);
+        // print(result);
         result?.authentication.then((googleKey) async {
           print(googleKey.accessToken);
+          // print(result);
           // print(googleKey.idToken);
           // print(google.currentUser?.displayName);
-          var token = await storage.read(key: "token");
+          // var token = await storage.read(key: "token");
           Response response = await dio.post(
               // "https://api-tassie-alt.herokuapp.com/user/tsa/" + widget.uuid,
               "https://api-tassie-alt.herokuapp.com/user/googleSignin",
               options: Options(headers: {
                 HttpHeaders.contentTypeHeader: "application/json",
-                HttpHeaders.authorizationHeader: "Bearer " + token!,
+                // HttpHeaders.authorizationHeader: "Bearer " + token!,
               }),
               data: {"email": result.email});
           if (response.data != null) {
@@ -65,6 +66,9 @@ class _SignInState extends State<SignIn> {
                 }),
               );
             } else {
+              // String name = result.displayName!;
+              // print(result);
+              // print(result.displayName);
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) {
@@ -80,6 +84,7 @@ class _SignInState extends State<SignIn> {
           }
         }).catchError((err) {
           print('inner error');
+          print(err);
         });
       }).catchError((err) {
         print('error occured');
