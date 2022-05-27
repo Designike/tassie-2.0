@@ -35,7 +35,7 @@ class _CreateCommentState extends State<CreateComment> {
   final storage = FlutterSecureStorage();
   AsyncMemoizer memoizerComment = AsyncMemoizer();
   late Future storedFuture;
-
+  final dio = Dio();
   @override
   void initState() {
     super.initState();
