@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:tassie/screens/authenticate/googleRegister.dart';
 import 'package:tassie/screens/home/home.dart';
 import 'package:tassie/screens/home/snackbar.dart';
 import '../../constants.dart';
@@ -34,10 +35,49 @@ class _SignInState extends State<SignIn> {
   // Future<GoogleSignInAuthentication?> login()
   Future<GoogleSignInAccount?> login() => google.signIn().then((result) {
         print(result);
-        result?.authentication.then((googleKey) {
+        result?.authentication.then((googleKey) async {
           print(googleKey.accessToken);
           // print(googleKey.idToken);
           // print(google.currentUser?.displayName);
+          var token = await storage.read(key: "token");
+          Response response = await dio.post(
+              // "https://api-tassie-alt.herokuapp.com/user/tsa/" + widget.uuid,
+              "https://api-tassie-alt.herokuapp.com/user/googleSignin",
+              options: Options(headers: {
+                HttpHeaders.contentTypeHeader: "application/json",
+                HttpHeaders.authorizationHeader: "Bearer " + token!,
+              }),
+              data: {"email": result.email});
+          if (response.data != null) {
+            if (response.data['status'] == true) {
+              await storage.write(
+                  key: "token", value: response.data['data']['token']);
+              await storage.write(
+                  key: "uuid", value: response.data['data']['uuid']);
+              await storage.write(
+                  key: "profilePic",
+                  value: response.data['data']['profilePic']);
+
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) {
+                  return Home();
+                }),
+              );
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) {
+                  return GoogleRegister(
+                      name: result.displayName!,
+                      email: result.email,
+                      password: result.id);
+                }),
+              );
+            }
+          } else {
+            showSnack(context, 'Unable to connect', () {}, 'OK', 4);
+          }
         }).catchError((err) {
           print('inner error');
         });
@@ -248,13 +288,70 @@ class _SignInState extends State<SignIn> {
                                     ),
                                   )
                                 : Text(
-                              'LOGIN',
-                              style: TextStyle(
-                                fontFamily: 'Raleway',
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
+                                    'LOGIN',
+                                    style: TextStyle(
+                                      fontFamily: 'Raleway',
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 20.0),
+                    GestureDetector(
+                      onTap: () async {
+                        try {
+                          await login();
+                          // print(x);
+                        } catch (e) {
+                          print(e);
+                        }
+                      },
+                      child: Container(
+                        height: 50.0,
+                        color: Colors.transparent,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? kDark[800]!
+                                    : kLight,
+                                style: BorderStyle.solid,
+                                width: 2.0,
                               ),
-                            ),
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(25.0)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            // ignore: prefer_const_literals_to_create_immutables
+                            children: [
+                              Center(
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 10.0),
+                                      child: Image(
+                                        image: AssetImage(
+                                            'assets/images/google.png'),
+                                        height: 40.0,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Continue with Google',
+                                      style: TextStyle(
+                                        fontFamily: 'Raleway',
+                                        // color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -297,17 +394,17 @@ class _SignInState extends State<SignIn> {
                         ),
                       ),
                     ),
-                    IconButton(
-                      onPressed: () async {
-                        try {
-                          await login();
-                          // print(x);
-                        } catch (e) {
-                          print(e);
-                        }
-                      },
-                      icon: Icon(Icons.login_rounded),
-                    ),
+                    // IconButton(
+                    //   onPressed: () async {
+                    //     try {
+                    //       await login();
+                    //       // print(x);
+                    //     } catch (e) {
+                    //       print(e);
+                    //     }
+                    //   },
+                    //   icon: Icon(Icons.login_rounded),
+                    // ),
                     SizedBox(height: 20.0),
                     Center(
                       child: Text(

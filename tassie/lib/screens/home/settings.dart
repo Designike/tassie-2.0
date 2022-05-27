@@ -10,6 +10,7 @@ import 'package:tassie/screens/home/changeEmail.dart';
 import 'package:tassie/screens/home/changePassword.dart';
 import 'package:tassie/screens/home/changeTheme.dart';
 import 'package:tassie/screens/home/changeUsername.dart';
+import 'package:tassie/screens/home/snackbar.dart';
 import 'package:tassie/screens/wrapper.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -20,6 +21,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   var dio = Dio();
   final storage = FlutterSecureStorage();
+  bool isClicked = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -149,38 +151,57 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 onPressed: () async {
-                  var token = await storage.read(key: "token");
-                  print('1');
-                  Response response = await dio.get(
-                    "https://api-tassie-alt.herokuapp.com/user/logout/",
-                    options: Options(headers: {
-                      HttpHeaders.contentTypeHeader: "application/json",
-                      HttpHeaders.authorizationHeader: "Bearer " + token!
-                    }),
-                  );
-                  await storage.delete(key: "token");
-                  Navigator.pop(context);
-                  Navigator.of(
-                    context,
-                    rootNavigator: true,
-                  ).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (_) => Wrapper()),
-                      (route) => false);
-                  // Navigator.pushReplacement(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) {
-                  //     return Wrapper();
-                  //   }),
-                  // );
+                  try {
+                    setState(() {
+                      isClicked = true;
+                    });
+                    var token = await storage.read(key: "token");
+                    print('1');
+                    Response response = await dio.get(
+                      "https://api-tassie-alt.herokuapp.com/user/logout/",
+                      options: Options(headers: {
+                        HttpHeaders.contentTypeHeader: "application/json",
+                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                      }),
+                    );
+                    await storage.delete(key: "token");
+                    Navigator.pop(context);
+                    Navigator.of(
+                      context,
+                      rootNavigator: true,
+                    ).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (_) => Wrapper()),
+                        (route) => false);
+                    // Navigator.pushReplacement(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) {
+                    //     return Wrapper();
+                    //   }),
+                    // );
+                  } catch (e) {
+                    showSnack(context, "Oops! Something went wrong. Try again.",
+                        () {}, 'OK', 4);
+                    // setState(() {
+                    //   isClicked = false;
+                    // });
+                  }
                 },
-                child: Text(
-                  "SIGN OUT",
-                  style: TextStyle(
-                    fontSize: 16,
-                    letterSpacing: 2,
-                    // color: Colors.black,
-                  ),
-                ),
+                child: isClicked
+                    ? Transform.scale(
+                        scale: 0.6,
+                        child: CircularProgressIndicator(
+                          color: kPrimaryColor,
+                          strokeWidth: 3.0,
+                        ),
+                      )
+                    : Text(
+                        "SIGN OUT",
+                        style: TextStyle(
+                          fontSize: 16,
+                          letterSpacing: 2,
+                          // color: Colors.black,
+                        ),
+                      ),
               ),
             )
           ],

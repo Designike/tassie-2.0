@@ -60,14 +60,14 @@ class _AddRecipeState extends State<AddRecipe> {
   bool isVeg = true;
   int selectedFlavour = 0;
   int selectedCourse = 0;
-  String flavour = "";
-  String course = "";
+  String flavour = "Spicy";
+  String course = "Snack";
   List<bool> mealType = [false, false, false, false];
   List<String> hours=['0', '1', '2', '3'];
   final minutes=['00', '15', '30', '45'];
   bool isUpload = false;
-  String? hour;
-  String? min;
+  String hour = '0';
+  String min = '15';
   // RangeValues _currentRangeValues = RangeValues(0, 15);
   //ane tassie mathi leto avje code plus vado e page ma bov kayi che nayi ena sivayi
   List<Widget> _UploadImg(size,key,index,image) {
@@ -1212,7 +1212,7 @@ List<Widget> _getRecipe(size) {
                     
                   var url = "https://api-tassie-alt.herokuapp.com/recs/updateRecipe";
                   var token = await storage.read(key: "token");
-                  var time = int.parse(hour!)*60 + int.parse(min!);
+                  var time = int.parse(hour)*60 + int.parse(min);
                   print('should print');
                   print(flavour);
                   print(course);
