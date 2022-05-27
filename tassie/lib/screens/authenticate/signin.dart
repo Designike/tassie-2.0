@@ -29,6 +29,7 @@ class _SignInState extends State<SignIn> {
   final storage = FlutterSecureStorage();
   var dio = Dio();
   final google = GoogleSignIn();
+  bool isClicked = false;
 
   // Future<GoogleSignInAuthentication?> login()
   Future<GoogleSignInAccount?> login() => google.signIn().then((result) {
@@ -165,6 +166,9 @@ class _SignInState extends State<SignIn> {
                       // },
                       onTap: () async {
                         if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            isClicked = true;
+                          });
                           Response response = await dio.post(
                             "https://api-tassie-alt.herokuapp.com/user/login/",
                             options: Options(headers: {
@@ -220,6 +224,9 @@ class _SignInState extends State<SignIn> {
                               print(response.toString());
                               showSnack(context, response.data['message'],
                                   () {}, 'OK', 4);
+                              setState(() {
+                                isClicked = false;
+                              });
                             }
                           }
                         }
@@ -232,7 +239,15 @@ class _SignInState extends State<SignIn> {
                           color: kPrimaryColor,
                           elevation: 5.0,
                           child: Center(
-                            child: Text(
+                            child: isClicked
+                                ? Transform.scale(
+                                    scale: 0.6,
+                                    child: CircularProgressIndicator(
+                                      color: kLight,
+                                      strokeWidth: 3.0,
+                                    ),
+                                  )
+                                : Text(
                               'LOGIN',
                               style: TextStyle(
                                 fontFamily: 'Raleway',

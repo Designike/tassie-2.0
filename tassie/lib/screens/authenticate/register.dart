@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:tassie/screens/authenticate/otp.dart';
+import 'package:tassie/screens/home/snackbar.dart';
 
 import '../../constants.dart';
 
@@ -24,6 +25,7 @@ class _RegisterState extends State<Register> {
   bool uniqueUsername = true;
   bool uniqueEmail = true;
   var dio = Dio();
+  bool isClicked = false;
 
   Future<void> checkUsername(username) async {
     // var dio = Dio();
@@ -230,29 +232,40 @@ class _RegisterState extends State<Register> {
                           //       : {"username": username, "password": password},
                           // );
                           // print(response.toString());
+                          setState(() {
+                            isClicked = true;
+                          });
                           try {
-                            Response response = await dio.post(
-                                // "https://api-tassie-alt.herokuapp.com/user/",
-                                "https://api-tassie-alt.herokuapp.com/user/",
-                                options: Options(headers: {
-                                  HttpHeaders.contentTypeHeader:
-                                      "application/json",
-                                }),
-                                data: {
-                                  "name": name,
-                                  "username": username,
-                                  "email": email,
-                                  "password": password,
-                                });
-                            print(response.data['data']['uuid']);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) {
-                                return OTP(
-                                    uuid: response.data['data']['uuid'],
-                                    time: response.data['data']['time']);
-                              }),
-                            );
+                            // Response response = await dio.post(
+                            //     // "https://api-tassie-alt.herokuapp.com/user/",
+                            //     "https://api-tassie-alt.herokuapp.com/user/",
+                            //     options: Options(headers: {
+                            //       HttpHeaders.contentTypeHeader:
+                            //           "application/json",
+                            //     }),
+                            //     data: {
+                            //       "name": name,
+                            //       "username": username,
+                            //       "email": email,
+                            //       "password": password,
+                            //     });
+                            // print(response.data['data']['uuid']);
+                            // if (response.data['status' == true]) {
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(builder: (context) {
+                            //       return OTP(
+                            //           uuid: response.data['data']['uuid'],
+                            //           time: response.data['data']['time']);
+                            //     }),
+                            //   );
+                            // } else {
+                            //   showSnack(context, response.data['message'],
+                            //       () {}, 'OK', 4);
+                            //   setState(() {
+                            //     isClicked = false;
+                            //   });
+                            // }
                           } on DioError catch (e) {
                             if (e.response != null) {
                               var errorMessage = e.response!.data;
@@ -269,14 +282,22 @@ class _RegisterState extends State<Register> {
                           color: kPrimaryColor,
                           elevation: 5.0,
                           child: Center(
-                            child: Text(
-                              'REGISTER',
-                              style: TextStyle(
-                                fontFamily: 'Raleway',
-                                color: kLight,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            child: isClicked
+                                ? Transform.scale(
+                                    scale: 0.6,
+                                    child: CircularProgressIndicator(
+                                      color: kLight,
+                                      strokeWidth: 3.0,
+                                    ),
+                                  )
+                                : Text(
+                                    'REGISTER',
+                                    style: TextStyle(
+                                      fontFamily: 'Raleway',
+                                      color: kLight,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                           ),
                         ),
                       ),

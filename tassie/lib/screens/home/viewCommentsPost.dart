@@ -9,6 +9,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tassie/screens/home/addPost.dart';
 import 'package:tassie/screens/home/editPost.dart';
+import 'package:tassie/screens/home/snackbar.dart';
 import 'package:tassie/screens/home/viewRecCommentChild.dart';
 import 'package:tassie/screens/imgLoader.dart';
 
@@ -22,9 +23,9 @@ class ViewCommentsPost extends StatefulWidget {
   // final void Function(bool) func;
   // final void Function(bool) funcB;
   // final void Function() plusComment;
-  // final void Function() minusComment;
+  final Future<void> Function() refreshPage;
   // final String? dp;
-  ViewCommentsPost({required this.post});
+  ViewCommentsPost({required this.post, required this.refreshPage});
 
   @override
   _ViewCommentsPostState createState() => _ViewCommentsPostState();
@@ -92,7 +93,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
   }
 
   void getStats() async {
-    var url = "https://api-tassie-alt.herokuapp.com/profile/postStats/";
+    var url = "https://api-tassie-alt.herokuapp.com/profile/postStats";
     var token = await storage.read(key: "token");
     Response response = await dio.post(
       url,
@@ -483,7 +484,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                             icon: Icon(Icons.more_horiz),
                                             elevation: 20,
                                             enabled: true,
-                                            onSelected: (value) {
+                                            onSelected: (value) async {
                                               if (value == "edit") {
                                                 Navigator.of(context).push(
                                                     MaterialPageRoute(
@@ -492,7 +493,52 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                                 uuid: widget
                                                                         .post[
                                                                     'uuid'])));
-                                              } else if (value == "delete") {}
+                                              } else if (value == "delete") {
+                                                try {
+                                                  var token = await storage
+                                                      .read(key: "token");
+                                                  Response response =
+                                                      await dio.get(
+                                                    "https://api-tassie-alt.herokuapp.com/feed/deletePost/" +
+                                                        widget.post['uuid'],
+                                                    options: Options(headers: {
+                                                      HttpHeaders
+                                                              .contentTypeHeader:
+                                                          "application/json",
+                                                      HttpHeaders
+                                                              .authorizationHeader:
+                                                          "Bearer " + token!
+                                                    }),
+                                                  );
+
+                                                  if (response.data != null) {
+                                                    if (response
+                                                            .data['status'] ==
+                                                        true) {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      widget.refreshPage();
+                                                    } else {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      showSnack(
+                                                          context,
+                                                          response
+                                                              .data['message'],
+                                                          () {},
+                                                          'OK',
+                                                          4);
+                                                    }
+                                                  }
+                                                } catch (e) {
+                                                  showSnack(
+                                                      context,
+                                                      "Oops something went wrong! Try After some time",
+                                                      () {},
+                                                      'OK',
+                                                      3);
+                                                }
+                                              }
                                             },
                                             itemBuilder: (context) => [
                                               PopupMenuItem(

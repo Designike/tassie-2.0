@@ -108,6 +108,7 @@ class _RecipeTabState extends State<RecipeTab> {
                                 MaterialPageRoute(
                                     builder: (_) => ViewRecPost(
                                         recs: recs[index],
+                                        refreshPage: widget.refreshPage,
                                         funcB: (isBookmarked) {})),
                               );
                             },

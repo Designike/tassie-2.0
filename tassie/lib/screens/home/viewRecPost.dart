@@ -20,9 +20,10 @@ import 'package:tassie/screens/imgLoader.dart';
 import 'viewRecAllComments.dart';
 
 class ViewRecPost extends StatefulWidget {
-  const ViewRecPost({required this.recs, required this.funcB});
+  const ViewRecPost({required this.recs, required this.funcB, this.refreshPage});
   final Map recs;
   final void Function(bool) funcB;
+  final void Function()? refreshPage;
   @override
   _ViewRecPostState createState() => _ViewRecPostState();
 }
@@ -381,7 +382,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
       } else {
         stepStoredFutures[(k + 1).toString()] = storedFuture;
       }
-      isImage[int.parse(listImages[k]['index'])-1] = true;
+      isImage[int.parse(listImages[k]['index']) - 1] = true;
     }
     print(isImage);
     print(ingStoredFutures);
@@ -654,16 +655,72 @@ class _ViewRecPostState extends State<ViewRecPost> {
                         elevation: 20,
                         enabled: true,
                         onSelected: (value) {
-                          // if (value == "edit") {
-                          //   Navigator.of(context).push(MaterialPageRoute(
-                          //       builder: (context) => EditRecipe(uuid: "")));
-                          // } else if (value == "delete") {}
+                          if (value == "edit") {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => EditRecipe(uuid: "")));
+                          } else if (value == "delete") {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text("Delete"),
+                                    content: Text("Are you sure?"),
+                                    actions: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 20.0),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).pop(false);
+                                          },
+                                          child: Text("No"),
+                                        ),
+                                      ),
+                                      SizedBox(height: 16),
+                                      GestureDetector(
+                                        onTap: () async {
+                                          Navigator.of(context).pop();
+                                          Navigator.of(context).pop();
+                                          var url =
+                                              "https://api-tassie-alt.herokuapp.com/recs/deleteRecipe";
+                                          var token =
+                                              await storage.read(key: "token");
+                                          Response response = await dio.post(
+                                              url,
+                                              options: Options(headers: {
+                                                HttpHeaders.contentTypeHeader:
+                                                    "application/json",
+                                                HttpHeaders.authorizationHeader:
+                                                    "Bearer " + token!
+                                              }),
+                                              data: {
+                                                'uuid': widget.recs['uuid'],
+                                                // 'folder': widget.folder
+                                              });
+                                          if (response.data['status'] == true) {
+                                            print('deleted');
+                                          } else {
+                                            print('not deleted');
+                                            showSnack(
+                                                context,
+                                                response.data['message'],
+                                                () {},
+                                                'OK',
+                                                4);
+                                          }
+                                        },
+                                        child: Text("Yes"),
+                                      ),
+                                    ],
+                                  );
+                                });
+                          }
                         },
                         itemBuilder: (context) => [
-                          // PopupMenuItem(
-                          //   child: Text("Edit"),
-                          //   value: "edit",
-                          // ),
+                          PopupMenuItem(
+                            child: Text("Edit"),
+                            value: "edit",
+                          ),
                           PopupMenuItem(
                             child: Text("Delete"),
                             value: "delete",

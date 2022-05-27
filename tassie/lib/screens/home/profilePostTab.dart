@@ -113,8 +113,8 @@ class _PostTabState extends State<PostTab> with AutomaticKeepAliveClientMixin {
                               Navigator.of(context, rootNavigator: true).push(
                                 MaterialPageRoute(
                                   builder: (_) => ViewCommentsPost(
-                                    post: posts[index],
-                                  ),
+                                      post: posts[index],
+                                      refreshPage: widget.refreshPage),
                                 ),
                               );
                             },
