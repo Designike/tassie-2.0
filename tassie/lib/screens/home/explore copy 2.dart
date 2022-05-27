@@ -71,7 +71,7 @@
 //         setState(() {
 //           isLazyLoading = true;
 //         });
-//         var url = "https://api-tassie-alt.herokuapp.com/recs/lazyrecs/" + index.toString();
+//         var url = "https://api-tassie.herokuapp.com/recs/lazyrecs/" + index.toString();
 //         var token = await storage.read(key: "token");
 //         Response response = await dio.get(
 //           url,
@@ -188,7 +188,7 @@
 //   // }
 
 //   Future<void> getRecosts() async {
-//     var url = "https://api-tassie-alt.herokuapp.com/search/lazyExplore/" + page.toString();
+//     var url = "https://api-tassie.herokuapp.com/search/lazyExplore/" + page.toString();
 
 //     var token = await storage.read(key: "token");
 //     Response response = await dio.get(
@@ -214,8 +214,8 @@
 //     //   var token = await storage.read(key: "token");
 //     //   // print(formData.files[0]);
 //     //   Response response = await dio.post(
-//     //       // 'https://api-tassie-alt.herokuapp.com/drive/upload',
-//     //       'https://api-tassie-alt.herokuapp.com/search/guess/',
+//     //       // 'https://api-tassie.herokuapp.com/drive/upload',
+//     //       'https://api-tassie.herokuapp.com/search/guess/',
 //     //       options: Options(headers: {
 //     //         HttpHeaders.contentTypeHeader: "application/json",
 //     //         HttpHeaders.authorizationHeader: "Bearer " + token!

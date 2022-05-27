@@ -39,8 +39,8 @@ class _EditPostState extends State<EditPost> {
     var dio = Dio();
     var token = await storage.read(key: "token");
     Response response = await dio.get(
-      // "https://api-tassie-alt.herokuapp.com/user/",
-      "https://api-tassie-alt.herokuapp.com/profile/getPost/" + widget.uuid,
+      // "https://api-tassie.herokuapp.com/user/",
+      "https://api-tassie.herokuapp.com/profile/getPost/" + widget.uuid,
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "application/json",
         HttpHeaders.authorizationHeader: "Bearer " + token!,
@@ -358,7 +358,7 @@ class _EditPostState extends State<EditPost> {
                 // onTap: () async {
                 //             if (_formKey.currentState!.validate()) {
                 //               Response response = await dio.post(
-                //                 "https://api-tassie-alt.herokuapp.com/user/login/",
+                //                 "https://api-tassie.herokuapp.com/user/login/",
                 //                 options: Options(headers: {
                 //                   HttpHeaders.contentTypeHeader: "application/json",
                 //                 }),

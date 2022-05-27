@@ -28,7 +28,7 @@ class _ChangeEmailState extends State<ChangeEmail> {
   //   try {
   //     // print('');
   //     Response response =
-  //         await dio.get("https://api-tassie-alt.herokuapp.com/user/username/" + username);
+  //         await dio.get("https://api-tassie.herokuapp.com/user/username/" + username);
   //     // var res = jsonDecode(response.toString());
 
   //     // if(response)
@@ -51,7 +51,7 @@ class _ChangeEmailState extends State<ChangeEmail> {
     var dio = Dio();
     try {
       Response response = await dio
-          .get("https://api-tassie-alt.herokuapp.com/user/checkEmail/" + email);
+          .get("https://api-tassie.herokuapp.com/user/checkEmail/" + email);
       // var res = jsonDecode(response.toString());
 
       // if(response)
@@ -101,7 +101,7 @@ class _ChangeEmailState extends State<ChangeEmail> {
                     if (_formKey.currentState!.validate()) {
                       print(email);
                       Response response = await dio.post(
-                          "https://api-tassie-alt.herokuapp.com/user/email",
+                          "https://api-tassie.herokuapp.com/user/email",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
                             HttpHeaders.authorizationHeader: "Bearer " + token!

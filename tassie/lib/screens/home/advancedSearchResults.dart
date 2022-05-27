@@ -75,7 +75,7 @@ class _AdvancedSearchResultsState extends State<AdvancedSearchResults>
         setState(() {
           isLazyLoading = true;
         });
-        var url = "https://api-tassie-alt.herokuapp.com/search/lazyguess/" +
+        var url = "https://api-tassie.herokuapp.com/search/lazyguess/" +
             index.toString() +
             "/" +
             widget.suggestionID;

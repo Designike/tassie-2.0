@@ -204,7 +204,7 @@ class _RecPostState extends State<RecPost> {
                               if (!isBookmarked) {
                                 var token = await storage.read(key: "token");
                                 Response response = await dio.post(
-                                    "https://api-tassie-alt.herokuapp.com/recs/bookmark",
+                                    "https://api-tassie.herokuapp.com/recs/bookmark",
                                     options: Options(headers: {
                                       HttpHeaders.contentTypeHeader:
                                           "application/json",
@@ -216,7 +216,7 @@ class _RecPostState extends State<RecPost> {
                               } else {
                                 var token = await storage.read(key: "token");
                                 Response response = await dio.post(
-                                    "https://api-tassie-alt.herokuapp.com/recs/removeBookmark",
+                                    "https://api-tassie.herokuapp.com/recs/removeBookmark",
                                     options: Options(headers: {
                                       HttpHeaders.contentTypeHeader:
                                           "application/json",

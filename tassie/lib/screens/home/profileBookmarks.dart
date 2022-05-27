@@ -47,7 +47,7 @@ class _ProfileBookmarksState extends State<ProfileBookmarks> {
   }
 
   Future<void> getBookmarks() async {
-    var url = "https://api-tassie-alt.herokuapp.com/profile/lazyBookmark/" +
+    var url = "https://api-tassie.herokuapp.com/profile/lazyBookmark/" +
         page.toString();
     var token = await storage.read(key: "token");
     Response response = await dio.get(

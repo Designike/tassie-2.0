@@ -139,7 +139,7 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
         setState(() {
           isLazyLoading = true;
         });
-        var url = "https://api-tassie-alt.herokuapp.com/search/lazyExplore/" +
+        var url = "https://api-tassie.herokuapp.com/search/lazyExplore/" +
             index.toString() +
             '/' +
             previousLength.toString();
@@ -230,8 +230,8 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
     //   var token = await storage.read(key: "token");
     //   // print(formData.files[0]);
     //   Response response = await dio.post(
-    //       // 'https://api-tassie-alt.herokuapp.com/drive/upload',
-    //       'https://api-tassie-alt.herokuapp.com/search/guess/',
+    //       // 'https://api-tassie.herokuapp.com/drive/upload',
+    //       'https://api-tassie.herokuapp.com/search/guess/',
     //       options: Options(headers: {
     //         HttpHeaders.contentTypeHeader: "application/json",
     //         HttpHeaders.authorizationHeader: "Bearer " + token!
@@ -560,7 +560,7 @@ class _ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
 //         // showSuggestions(context);
 //         isLazyLoading = true;
 //         print(query);
-//         var url = "https://api-tassie-alt.herokuapp.com/search/lazySearch/" +
+//         var url = "https://api-tassie.herokuapp.com/search/lazySearch/" +
 //             index.toString() +
 //             '/' +
 //             query;

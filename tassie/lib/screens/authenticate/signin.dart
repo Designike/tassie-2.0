@@ -42,8 +42,8 @@ class _SignInState extends State<SignIn> {
           // print(google.currentUser?.displayName);
           // var token = await storage.read(key: "token");
           Response response = await dio.post(
-              // "https://api-tassie-alt.herokuapp.com/user/tsa/" + widget.uuid,
-              "https://api-tassie-alt.herokuapp.com/user/googleSignin",
+              // "https://api-tassie.herokuapp.com/user/tsa/" + widget.uuid,
+              "https://api-tassie.herokuapp.com/user/googleSignin",
               options: Options(headers: {
                 HttpHeaders.contentTypeHeader: "application/json",
                 // HttpHeaders.authorizationHeader: "Bearer " + token!,
@@ -215,7 +215,7 @@ class _SignInState extends State<SignIn> {
                             isClicked = true;
                           });
                           Response response = await dio.post(
-                            "https://api-tassie-alt.herokuapp.com/user/login/",
+                            "https://api-tassie.herokuapp.com/user/login/",
                             options: Options(headers: {
                               HttpHeaders.contentTypeHeader: "application/json",
                             }),
@@ -234,7 +234,7 @@ class _SignInState extends State<SignIn> {
                                   key: "uuid",
                                   value: response.data['data']['uuid']);
                               // Response response1 = await dio.get(
-                              //     "https://api-tassie-alt.herokuapp.com/user/getProfilePic/",
+                              //     "https://api-tassie.herokuapp.com/user/getProfilePic/",
                               //     options: Options(headers: {
                               //       HttpHeaders.contentTypeHeader:
                               //           "application/json",
