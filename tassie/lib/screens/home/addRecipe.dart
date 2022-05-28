@@ -998,11 +998,12 @@ List<Widget> _getRecipe(size) {
   }
 
   Future<Map> _adjustImages(int index,Map x,bool isIngredient,String key) async {
-
+    print('hfsdjsndfsdkfj');
+    print(x['0'].path);
     int l = x.length;
     Map send = {};
     print(x);
-    for(int j=index; j<l; j++) {
+    for(int j=index+1; j<l; j++) {
       x[j.toString()]=x[(j+1).toString()];
       if(x[(j+1).toString()]!=null){
       send[key+j.toString()+p.extension(x[j.toString()].path)]=key+(j+1).toString()+p.extension(x[(j+1).toString()].path);
@@ -1019,6 +1020,7 @@ List<Widget> _getRecipe(size) {
     print(l);
     print("send");
     print(send);
+    if(send.length!=0){
     Response response = await dio.post(
       // 'https://api-tassie.herokuapp.com/drive/upload',
       'https://api-tassie.herokuapp.com/recs/renameImages/',
@@ -1030,7 +1032,8 @@ List<Widget> _getRecipe(size) {
       if(response.data["status"] == false) {
         showSnack(context, "Oops something went wrong. Please try again!", (){}, "OK", 4);
       }
-      return x;
+    }
+    return x;
     } catch (e) {
       print(e);
       showSnack(context, "Oops something went wrong. Please try again!", (){}, "OK", 4);
