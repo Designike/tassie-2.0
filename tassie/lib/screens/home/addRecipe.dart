@@ -1003,10 +1003,14 @@ List<Widget> _getRecipe(size) {
     int l = x.length;
     Map send = {};
     print(x);
-    for(int j=index+1; j<l; j++) {
+    print("index");
+    print(index+1);
+    for(int j=index; j<l-1; j++) {
+      print('----------------------------------');
       x[j.toString()]=x[(j+1).toString()];
-      if(x[(j+1).toString()]!=null){
-      send[key+j.toString()+p.extension(x[j.toString()].path)]=key+(j+1).toString()+p.extension(x[(j+1).toString()].path);
+      if(x[(j+1).toString()] != ''){
+      print(x[(j+1).toString()]);
+      send[key+(j+1).toString()+p.extension(x[(j).toString()].path)]=key+(j+2).toString()+p.extension(x[(j+1).toString()].path);
       }
       print(x);
     }
@@ -1023,9 +1027,9 @@ List<Widget> _getRecipe(size) {
     if(send.length!=0){
     Response response = await dio.post(
       // 'https://api-tassie.herokuapp.com/drive/upload',
-      'https://api-tassie.herokuapp.com/recs/renameImages/',
+      'https://api-tassie.herokuapp.com/recs/renameImages',
       options: Options(headers: {
-        HttpHeaders.contentTypeHeader: "multipart/form-data",
+        HttpHeaders.contentTypeHeader: "application/json",
         HttpHeaders.authorizationHeader: "Bearer " + token!
       }),
       data: {"index":index+1,"isIngredient": isIngredient,"recipeUuid":widget.uuid,"length":l,"renameMap":send},);
