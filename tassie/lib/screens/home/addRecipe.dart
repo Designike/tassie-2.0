@@ -17,7 +17,7 @@ import 'package:tassie/screens/home/home_home.dart';
 import 'package:tassie/screens/home/snackbar.dart';
 import 'package:tassie/screens/home/upload.dart';
 import 'package:tassie/screens/home/uploadRecImages.dart';
-
+import 'package:path/path.dart' as p;
 import '../../constants.dart';
 import 'addIngredient.dart';
 import 'addStep.dart';
@@ -200,8 +200,8 @@ class _AddRecipeState extends State<AddRecipe> {
                _imageFile = null;
 
             },
-            onClear: () {
-              _clear(key, index, key + '_' + (index + 1).toString());
+            onClear: () async {
+              await _clear(key, index, key + '_' + (index + 1).toString());
             },
             onCrop: () {
               _cropImage(key, index);
@@ -799,14 +799,16 @@ List<Widget> _getRecipe(size) {
 
   Widget _addRemoveButtonR(bool add, int index, int i) {
     return InkWell(
-      onTap: () {
+      onTap: () async{
         if (add) {
           stepsList.insert(index + 1, "");
           stepPics[(index + 1).toString()] = '';
         } else {
           stepsList.removeAt(i);
           stepPics[i.toString()] = '';
-          _clear('s',i,'s_'+(i+1).toString());
+          await _clear('s',i,'s_'+(i+1).toString());
+          stepPics = await _adjustImages(i,stepPics,false,"s_");
+          setState(() {});
         }
         if (mounted) {
           setState(() {});
@@ -853,14 +855,17 @@ List<Widget> _getRecipe(size) {
 
   Widget _addRemoveButtonI(bool add, int index, int i) {
     return InkWell(
-      onTap: () {
+      onTap: () async {
         if (add) {
           ingredientsList.insert(index + 1, "");
           ingredientPics[(index+1).toString()] = '';
         } else{
           ingredientsList.removeAt(i);
           ingredientPics[i.toString()] = '';
-          _clear('i',i,'i_'+(i+1).toString());
+          await _clear('i',i,'i_'+(i+1).toString());
+          ingredientPics = await _adjustImages(i,ingredientPics,true,"i_");
+          setState(() {});
+
         }
         if (mounted) {
           setState(() {});
@@ -938,7 +943,7 @@ List<Widget> _getRecipe(size) {
   }
 
   /// Remove image
-  void _clear(key, index,imgName) async {
+  Future<void> _clear(key, index,imgName) async {
     print(widget.uuid);
       if(key=='r'){
         setState(() {
@@ -990,6 +995,48 @@ List<Widget> _getRecipe(size) {
       data: {'uuid':widget.uuid,'imgName':imgName});
         }
     
+  }
+
+  Future<Map> _adjustImages(int index,Map x,bool isIngredient,String key) async {
+
+    int l = x.length;
+    Map send = {};
+    print(x);
+    for(int j=index; j<l; j++) {
+      x[j.toString()]=x[(j+1).toString()];
+      if(x[(j+1).toString()]!=null){
+      send[key+j.toString()+p.extension(x[j.toString()].path)]=key+(j+1).toString()+p.extension(x[(j+1).toString()].path);
+      }
+      print(x);
+    }
+    x.remove((l-1).toString());
+    print(x);
+    try {
+    var token = await storage.read(key: "token");
+    print("index");
+    print(index+1);
+    print("length");
+    print(l);
+    print("send");
+    print(send);
+    Response response = await dio.post(
+      // 'https://api-tassie.herokuapp.com/drive/upload',
+      'https://api-tassie.herokuapp.com/recs/renameImages/',
+      options: Options(headers: {
+        HttpHeaders.contentTypeHeader: "multipart/form-data",
+        HttpHeaders.authorizationHeader: "Bearer " + token!
+      }),
+      data: {"index":index+1,"isIngredient": isIngredient,"recipeUuid":widget.uuid,"length":l,"renameMap":send},);
+      if(response.data["status"] == false) {
+        showSnack(context, "Oops something went wrong. Please try again!", (){}, "OK", 4);
+      }
+      return x;
+    } catch (e) {
+      print(e);
+      showSnack(context, "Oops something went wrong. Please try again!", (){}, "OK", 4);
+      return x;
+    }
+
   }
 
   double progress = 0.0;
