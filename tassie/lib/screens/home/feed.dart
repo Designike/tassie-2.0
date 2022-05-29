@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/leftSwipe.dart';
 import 'package:tassie/screens/authenticate/authenticate.dart';
 import 'package:tassie/screens/home/feedPost.dart';
 import 'package:tassie/screens/home/profile.dart';
@@ -15,8 +17,7 @@ import 'package:tassie/screens/imgLoader.dart';
 import 'package:tassie/screens/wrapper.dart';
 
 class Feed extends StatefulWidget {
-  const Feed({Key? key, required this.toggleLeftSwipe}) : super(key: key);
-  final void Function(bool) toggleLeftSwipe;
+  const Feed({Key? key}) : super(key: key);
   @override
   _FeedState createState() => _FeedState();
 }
@@ -86,6 +87,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
   // }
 
   void _getMoreData(int index) async {
+    // Provider.of<LeftSwipe>(context, listen: false).setSwipe(true);
     if (!isEnd) {
       if (!isLazyLoading) {
         print('calling...');
@@ -222,7 +224,6 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
         _getMoreData(page);
       }
     });
-    widget.toggleLeftSwipe(true);
   }
 
   @override
@@ -292,7 +293,6 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                                   : _buildProgressIndicator()
                               : FeedPost(
                                   // image: images[index],
-                                  toggleLeftSwipe: widget.toggleLeftSwipe,
                                   post: posts[index],
                                   noOfComment: noOfComments[index],
                                   noOfLike: noOfLikes[index],

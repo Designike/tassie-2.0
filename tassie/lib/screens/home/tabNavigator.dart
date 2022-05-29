@@ -12,16 +12,14 @@ import 'package:tassie/screens/home/recipes.dart';
 class TabNavigator extends StatelessWidget {
   const TabNavigator(
       {required this.navigatorKey,
-      required this.tabItem,
-      required this.toggleLeftSwipe});
+      required this.tabItem});
   final GlobalKey<NavigatorState> navigatorKey;
   final int tabItem;
-  final void Function(bool) toggleLeftSwipe;
   @override
   Widget build(BuildContext context) {
     Widget child;
     if (tabItem == 0) {
-      child = Feed(toggleLeftSwipe: toggleLeftSwipe);
+      child = Feed();
     } else if (tabItem == 1) {
       child = Recipes();
     } else if (tabItem == 2) {

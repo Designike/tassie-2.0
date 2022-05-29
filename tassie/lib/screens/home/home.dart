@@ -1,28 +1,13 @@
 // ignore_for_file: prefer_const_constructors, prefer_final_fields
 
-import 'dart:convert';
-import 'dart:io';
-import 'dart:math';
-
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:provider/provider.dart';
 import 'package:tassie/constants.dart';
-import 'package:tassie/screens/home/addPost.dart';
-import 'package:tassie/screens/home/addRecipe.dart';
-import 'package:tassie/screens/home/explore.dart';
-import 'package:tassie/screens/home/feed.dart';
-import 'package:tassie/screens/home/profile.dart';
-import 'package:tassie/screens/home/recipes.dart';
-import 'package:tassie/screens/home/snackbar.dart';
-import 'package:tassie/screens/home/tabNavigator.dart';
+import 'package:tassie/leftSwipe.dart';
 import 'package:tassie/screens/home/tabNavigator2.dart';
-import 'package:tassie/screens/wrapper.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -110,7 +95,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     return TabNavigator2(
         navigatorKey: _navigatorKeys[index]!,
         tabItem: index,
-        toggleLeftSwipe: toggleLeftSwipe,
         rightSwipe: () {
           print('yup2');
           setState(() {
@@ -463,7 +447,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           //   index: _selectedIndex,
           // ),
           body: PageView(
-            physics: leftSwipeOn
+            physics: Provider.of<LeftSwipe>(context).isSwipe
                 ? AlwaysScrollableScrollPhysics()
                 : NeverScrollableScrollPhysics(),
             controller: _pageController,

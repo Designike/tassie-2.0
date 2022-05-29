@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:tassie/leftSwipe.dart';
 import 'package:tassie/screens/wrapper.dart';
 import 'package:tassie/theme.dart';
 import 'package:tassie/themePreferences.dart';
@@ -19,7 +20,10 @@ void main() {
   // Get.lazyPut(() => ThemeController());
   ThemeController thc = ThemeController();
   thc.getThemeModeFromPreferences();
-  runApp(MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (_) => LeftSwipe(),
+    child: MyApp()));
+  // runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

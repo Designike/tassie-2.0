@@ -12,10 +12,3 @@ const kErrorColor = Color(0xFFF03738);
 
 const kDefaultPadding = 20.0;
 
-bool leftSwipeOn = true;
-
-void toggleLeftSwipe(bool leftSwipe) {
-    leftSwipeOn = leftSwipe;
-  print(leftSwipeOn);
-}
-

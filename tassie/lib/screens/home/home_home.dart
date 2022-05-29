@@ -12,7 +12,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:provider/provider.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/leftSwipe.dart';
 import 'package:tassie/screens/home/addPost.dart';
 import 'package:tassie/screens/home/addRecipe.dart';
 import 'package:tassie/screens/home/explore.dart';
@@ -24,9 +26,7 @@ import 'package:tassie/screens/home/tabNavigator.dart';
 import 'package:tassie/screens/wrapper.dart';
 
 class HomeHome extends StatefulWidget {
-  const HomeHome({Key? key, required this.toggleLeftSwipe}) : super(key: key);
-
-  final void Function(bool) toggleLeftSwipe;
+  const HomeHome({Key? key}) : super(key: key);
   @override
   _HomeHomeState createState() => _HomeHomeState();
 }
@@ -112,7 +112,6 @@ class _HomeHomeState extends State<HomeHome>
     return TabNavigator(
       navigatorKey: _navigatorKeys[index]!,
       tabItem: index,
-      toggleLeftSwipe: widget.toggleLeftSwipe,
     );
   }
 
@@ -124,12 +123,14 @@ class _HomeHomeState extends State<HomeHome>
       setState(() {
         _selectedIndex = index;
         _pageController.jumpToPage(index);
-        if (index == 0) {
-          widget.toggleLeftSwipe(true);
-        } else {
-          widget.toggleLeftSwipe(false);
-        }
       });
+      if (index == 0) {
+        // widget.toggleLeftSwipe(true);
+        Provider.of<LeftSwipe>(context, listen: false).setSwipe(true);
+      } else {
+        // widget.toggleLeftSwipe(false);
+        Provider.of<LeftSwipe>(context, listen: false).setSwipe(false);
+      }
     }
   }
 
@@ -143,7 +144,6 @@ class _HomeHomeState extends State<HomeHome>
     //     _angle = animatedController.value * 45 / 360 * pi * 2;
     //   });
     _selectedIndex = 0;
-    widget.toggleLeftSwipe(true);
     // _screens = [
     //   Feed(),
     //   Recipes(),
@@ -209,7 +209,9 @@ class _HomeHomeState extends State<HomeHome>
                           MaterialPageRoute(builder: (context) {
                             return AddPost();
                           }),
-                        )
+                        ),
+                        Provider.of<LeftSwipe>(context, listen: false)
+                            .setSwipe(false)
                       }),
               SpeedDialChild(
                   child: Icon(Icons.fastfood_rounded),
@@ -233,6 +235,8 @@ class _HomeHomeState extends State<HomeHome>
                         );
                       }),
                     );
+                    Provider.of<LeftSwipe>(context, listen: false)
+                        .setSwipe(false);
                     var url =
                         "https://api-tassie.herokuapp.com/recs/createRecipe/";
 
@@ -264,9 +268,12 @@ class _HomeHomeState extends State<HomeHome>
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) {
-                          return HomeHome(toggleLeftSwipe: widget.toggleLeftSwipe,);
+                          return HomeHome(
+                          );
                         }),
                       );
+                      Provider.of<LeftSwipe>(context, listen: false)
+                          .setSwipe(true);
                     }
                   }),
             ],

@@ -8,7 +8,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/leftSwipe.dart';
 import 'package:tassie/screens/home/viewComments.dart';
 import 'package:tassie/screens/imgLoader.dart';
 
@@ -21,7 +23,6 @@ class FeedPost extends StatefulWidget {
       required this.plusComment,
       required this.bookmark,
       required this.funcB,
-      required this.toggleLeftSwipe,
       // required this.image,
       required this.minusComment});
   final Map post;
@@ -33,7 +34,6 @@ class FeedPost extends StatefulWidget {
   final void Function(bool) funcB;
   final void Function() plusComment;
   final void Function() minusComment;
-  final void Function(bool) toggleLeftSwipe;
   @override
   _FeedPostState createState() => _FeedPostState();
 }
@@ -167,8 +167,7 @@ class _FeedPostState extends State<FeedPost> {
                     onDoubleTap: () async {
                       if (!liked) {
                         var token = await storage.read(key: "token");
-                        dio.post(
-                            "https://api-tassie.herokuapp.com/feed/like",
+                        dio.post("https://api-tassie.herokuapp.com/feed/like",
                             options: Options(headers: {
                               HttpHeaders.contentTypeHeader: "application/json",
                               HttpHeaders.authorizationHeader:
@@ -304,7 +303,6 @@ class _FeedPostState extends State<FeedPost> {
                                         .push(
                                       MaterialPageRoute(
                                         builder: (_) => ViewComments(
-                                          toggleLeftSwipe: widget.toggleLeftSwipe,
                                           post: post,
                                           noOfComment: widget.noOfComment,
                                           noOfLike: widget.noOfLike,
@@ -317,7 +315,7 @@ class _FeedPostState extends State<FeedPost> {
                                         ),
                                       ),
                                     );
-                                    widget.toggleLeftSwipe(false);
+                                    Provider.of<LeftSwipe>(context, listen: false).setSwipe(false);
                                   },
                                 ),
                                 Text(
@@ -387,7 +385,7 @@ class _FeedPostState extends State<FeedPost> {
                         Navigator.of(context, rootNavigator: true)
                             .push(MaterialPageRoute(
                           builder: (_) => ViewComments(
-                            toggleLeftSwipe: widget.toggleLeftSwipe,
+                            
                             post: post,
                             noOfComment: widget.noOfComment,
                             noOfLike: widget.noOfLike,
@@ -399,7 +397,7 @@ class _FeedPostState extends State<FeedPost> {
                             dp: dp,
                           ),
                         ));
-                        widget.toggleLeftSwipe(false);
+                        
                       },
                       child: RichText(
                         overflow: TextOverflow.ellipsis,

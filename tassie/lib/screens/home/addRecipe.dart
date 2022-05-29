@@ -13,6 +13,8 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+import 'package:tassie/leftSwipe.dart';
 import 'package:tassie/screens/home/home_home.dart';
 import 'package:tassie/screens/home/snackbar.dart';
 import 'package:tassie/screens/home/upload.dart';
@@ -1064,11 +1066,12 @@ List<Widget> _getRecipe(size) {
               GestureDetector(
                 onTap: () async {
                   print("henlooooooooo");
+                  Provider.of<LeftSwipe>(context, listen: false).setSwipe(true);
                   // Navigator.of(context, rootNavigator: true).popUntil((route) => route.isFirst);
                   Navigator.of(context,rootNavigator: true).pop();
                   Navigator.of(context,rootNavigator: true).pushReplacement
                     (MaterialPageRoute(builder: (context) {
-                          return HomeHome(toggleLeftSwipe: (bool ) {  },);
+                          return HomeHome();
                         }));
                   var url = "https://api-tassie.herokuapp.com/recs/deleteRecipe";
                   var token = await storage.read(key: "token");
@@ -1175,6 +1178,7 @@ List<Widget> _getRecipe(size) {
                       data: {'uuid': widget.uuid, 
                       // 'folder': widget.folder, 
                       'youtubeLink': youtubeLink});
+                      Provider.of<LeftSwipe>(context, listen: false).setSwipe(true);
                         Navigator.of(context).pop();
                        Navigator.pushReplacement(
                         context,
@@ -1182,6 +1186,7 @@ List<Widget> _getRecipe(size) {
                           return Home();
                         }),
                       );
+                      
                       }
                     } else {
                       showSnack(context, 'Add cooking time', () {}, 'OK', 4);
