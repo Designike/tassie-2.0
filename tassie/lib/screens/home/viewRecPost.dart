@@ -663,7 +663,26 @@ class _ViewRecPostState extends State<ViewRecPost> {
                         onSelected: (value) async {
                           if (value == "edit") {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => EditRecipe(uuid: "")));
+                                builder: (context) => EditRecipe(
+                                      recipeName: recipeName,
+                                      uuid: widget.recs['uuid'],
+                                      chefName: chefName,
+                                      stepPics: stepPics,
+                                      isLunch: isLunch,
+                                      isVeg: isVeg,
+                                      isDinner: isDinner,
+                                      isCraving: isCraving,
+                                      isBreakfast: isBreakfast,
+                                      flavour: flavour,
+                                      course: course,
+                                      desc: desc,
+                                      hours: hours,
+                                      mins: mins,
+                                      ingredientPics: ingredientPics,
+                                      ingredients: ingredients,
+                                      steps: steps,
+                                      recipeImageID: recipeImageID,
+                                    )));
                           } else if (value == "delete") {
                             await showDialog(
                                 context: context,
