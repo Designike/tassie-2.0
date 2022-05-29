@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/editProfile.dart';
+import 'package:tassie/screens/home/editProfileImage.dart';
 import 'package:tassie/screens/home/profileBookmarks.dart';
 import 'package:tassie/screens/home/profilePostTab.dart';
 import 'package:tassie/screens/home/settings.dart';
@@ -142,8 +143,8 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
 
   Future<void> _getProfile(memoizer) async {
     print("profile func calling ...");
-    var url = "https://api-tassie.herokuapp.com/profile/getProfile/" +
-        widget.uuid;
+    var url =
+        "https://api-tassie.herokuapp.com/profile/getProfile/" + widget.uuid;
     var token = await storage.read(key: "token");
     Response response = await dio.get(
       url,
@@ -185,11 +186,10 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
         });
 
         // print(query);
-        var url =
-            "https://api-tassie.herokuapp.com/profile/lazyProfileRecs/" +
-                widget.uuid +
-                "/" +
-                index.toString();
+        var url = "https://api-tassie.herokuapp.com/profile/lazyProfileRecs/" +
+            widget.uuid +
+            "/" +
+            index.toString();
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
@@ -252,11 +252,10 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
         });
 
         // print(query);
-        var url =
-            "https://api-tassie.herokuapp.com/profile/lazyProfilePost/" +
-                widget.uuid +
-                "/" +
-                index.toString();
+        var url = "https://api-tassie.herokuapp.com/profile/lazyProfilePost/" +
+            widget.uuid +
+            "/" +
+            index.toString();
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
@@ -385,7 +384,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
     _getProfile(memoizer);
     _getPosts(pageP);
     _getRecipes(pageR);
-    
+
     super.initState();
     // load();
 
@@ -526,7 +525,15 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                                 text.data.toString()),
                                             fit: BoxFit.cover,
                                             child: InkWell(
-                                              onTap: () {},
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) {
+                                                    return EditProfileImage();
+                                                  }),
+                                                );
+                                              },
                                             ),
                                           );
                                         }
@@ -542,17 +549,27 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                               bottom: 0,
                               right: 0,
                               child: ClipOval(
-                                child: Container(
-                                  padding: EdgeInsets.all(4.0),
-                                  color:
-                                      Theme.of(context).scaffoldBackgroundColor,
-                                  child: ClipOval(
-                                    child: Container(
-                                      padding: EdgeInsets.all(8.0),
-                                      color: kPrimaryColor,
-                                      child: Icon(
-                                        Icons.edit,
-                                        size: 20,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) {
+                                        return EditProfileImage();
+                                      }),
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(4.0),
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    child: ClipOval(
+                                      child: Container(
+                                        padding: EdgeInsets.all(8.0),
+                                        color: kPrimaryColor,
+                                        child: Icon(
+                                          Icons.edit,
+                                          size: 20,
+                                        ),
                                       ),
                                     ),
                                   ),

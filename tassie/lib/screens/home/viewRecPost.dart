@@ -11,6 +11,7 @@ import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/editRecipe.dart';
 import 'package:tassie/screens/home/showMoreText.dart';
 import 'package:tassie/screens/home/snackbar.dart';
+import 'package:tassie/screens/home/string_extension.dart';
 import 'package:tassie/screens/home/viewRecAllRatings.dart';
 import 'package:tassie/screens/home/viewRecCommentChild.dart';
 import 'package:tassie/screens/home/viewRecPostChild.dart';
@@ -20,7 +21,8 @@ import 'package:tassie/screens/imgLoader.dart';
 import 'viewRecAllComments.dart';
 
 class ViewRecPost extends StatefulWidget {
-  const ViewRecPost({required this.recs, required this.funcB, this.refreshPage});
+  const ViewRecPost(
+      {required this.recs, required this.funcB, this.refreshPage});
   final Map recs;
   final void Function(bool) funcB;
   final void Function()? refreshPage;
@@ -29,6 +31,7 @@ class ViewRecPost extends StatefulWidget {
 }
 
 class _ViewRecPostState extends State<ViewRecPost> {
+  bool isPop = false;
   bool isSubscribed = false;
   bool isExpandedIng = false;
   bool isExpandedSteps = false;
@@ -63,7 +66,9 @@ class _ViewRecPostState extends State<ViewRecPost> {
   final dio = Dio();
   final storage = FlutterSecureStorage();
   AsyncMemoizer memoizer = AsyncMemoizer();
+  AsyncMemoizer memoizer3 = AsyncMemoizer();
   late Future storedFuture;
+  late Future storedFuture3;
   // Future<String> myFuture = "" as Future<String>;
   // var ingredientPics = [
   //   {'index': '1', 'fileID': 'https://picsum.photos/200'},
@@ -124,6 +129,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
 
   Future<void> getImage() async {
     storedFuture = loadImg(recipeImageID, memoizer);
+    storedFuture3 = loadImg(dp, memoizer3);
     setState(() {
       isLoading = false;
     });
@@ -215,8 +221,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
     });
   }
 
-  String desc =
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+  String desc = "";
 
   // Widget _createComment(Map comment, int index) {
   //   // Map post = widget.post;
@@ -483,6 +488,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
   void initState() {
     super.initState();
     memoizer = AsyncMemoizer();
+    memoizer3 = AsyncMemoizer();
     getRecipe();
     // myFuture = loadImg(x);
 
@@ -654,17 +660,19 @@ class _ViewRecPostState extends State<ViewRecPost> {
                       child: PopupMenuButton(
                         elevation: 20,
                         enabled: true,
-                        onSelected: (value) {
+                        onSelected: (value) async {
                           if (value == "edit") {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => EditRecipe(uuid: "")));
                           } else if (value == "delete") {
-                            showDialog(
+                            await showDialog(
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
                                     title: Text("Delete"),
                                     content: Text("Are you sure?"),
+                                    actionsPadding: EdgeInsets.only(
+                                        bottom: 20.0, right: 20.0),
                                     actions: [
                                       Padding(
                                         padding:
@@ -679,8 +687,11 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                       SizedBox(height: 16),
                                       GestureDetector(
                                         onTap: () async {
-                                          Navigator.of(context).pop();
-                                          Navigator.of(context).pop();
+                                          setState(() {
+                                            isPop = true;
+                                          });
+                                          Navigator.of(context).pop(true);
+                                          // Navigator.of(context, rootNavigator: false).pop();
                                           var url =
                                               "https://api-tassie.herokuapp.com/recs/deleteRecipe";
                                           var token =
@@ -714,6 +725,9 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                     ],
                                   );
                                 });
+                            if (isPop) {
+                              Navigator.of(context).pop();
+                            }
                           }
                         },
                         itemBuilder: (context) => [
@@ -807,7 +821,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                 height: 30.0,
                               ),
                               Text(
-                                recipeName,
+                                recipeName.capitaliz(),
                                 style: TextStyle(
                                   // color: kPrimaryColor,
                                   fontWeight: FontWeight.bold,
@@ -1062,13 +1076,38 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                   ),
                                   child: CircleAvatar(
                                     child: ClipOval(
-                                      child: Image(
-                                        height: (size.width - 40.0) / 10,
-                                        width: (size.width - 40.0) / 10,
-                                        image: NetworkImage(
-                                            'https://picsum.photos/200'),
-                                        fit: BoxFit.cover,
-                                      ),
+                                      // child: Image(
+                                      //   height: (size.width - 40.0) / 10,
+                                      //   width: (size.width - 40.0) / 10,
+                                      //   image: NetworkImage(
+                                      //       'https://picsum.photos/200'),
+                                      //   fit: BoxFit.cover,
+                                      // ),
+                                      child: FutureBuilder(
+                                          future: storedFuture3,
+                                          builder: (BuildContext context,
+                                              AsyncSnapshot text) {
+                                            if (text.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return Image(
+                                                height:
+                                                    (size.width - 40.0) / 10,
+                                                width: (size.width - 40.0) / 10,
+                                                image: AssetImage(
+                                                    'assets/images/broken.png'),
+                                                fit: BoxFit.cover,
+                                              );
+                                            } else {
+                                              return Image(
+                                                height:
+                                                    (size.width - 40.0) / 10,
+                                                width: (size.width - 40.0) / 10,
+                                                image: NetworkImage(
+                                                    text.data.toString()),
+                                                fit: BoxFit.cover,
+                                              );
+                                            }
+                                          }),
                                     ),
                                   ),
                                 ),
@@ -1167,7 +1206,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                     if (desc != "") ...[
                       Padding(
                         padding: const EdgeInsets.all(kDefaultPadding),
-                        child: ShowMoreText(text: desc),
+                        child: ShowMoreText(text: desc.capitaliz()),
                       ),
                       SizedBox(height: 10.0)
                     ],
