@@ -79,16 +79,17 @@ class _AddRecipeState extends State<AddRecipe> {
   //ane tassie mathi leto avje code plus vado e page ma bov kayi che nayi ena sivayi
   List<Widget> _uploadImg(size,key,index,image) {
         // print(image);
+        // image = File(image.path);
         List<Widget> _upload = [
           if(image!='' && image!=null) ... [
              Padding(
               padding: const EdgeInsets.symmetric(vertical: kDefaultPadding * 1.5, horizontal: 5.0),
-              child: Image.file(image),
+              child: Image.file(File(image.path)),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
               child: RecImageUploader(
-                file: image, 
+                file: File(image.path), 
                 keyValue: recipeName,
                 keyName: 'name', 
                 imgName: key+'_'+(index+1).toString(),
@@ -792,6 +793,9 @@ List<Widget> _getRecipe(size) {
         if (add) {
           ingredientsList.insert(index + 1, "");
           ingredientPics[(index+1).toString()] = '';
+          setState((){
+            _clearIngs[index+1] = false;
+          });
         } else{
           ingredientsList.removeAt(i);
           ingredientPics[i.toString()] = '';
@@ -823,7 +827,7 @@ List<Widget> _getRecipe(size) {
 
   /// Cropper plugin
   Future<void> _cropImage(key, index) async {
-    File? cropped = await ImageCropper.cropImage(
+    CroppedFile? cropped = await ImageCropper().cropImage(
         sourcePath: _imageFile!.path,
         // ratioX: 1.0,
         // ratioY: 1.0,
@@ -832,21 +836,20 @@ List<Widget> _getRecipe(size) {
         aspectRatioPresets: [CropAspectRatioPreset.square],
         aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
         compressQuality: 80,
-        androidUiSettings: AndroidUiSettings(
+        uiSettings:[AndroidUiSettings(
           toolbarTitle: 'Garnish it'
           toolbarColor: Theme.of(context).scaffoldBackgroundColor,
           toolbarWidgetColor: Theme.of(context).brightness == Brightness.dark
                     ? kDark
                     : kDark[900],
-        ),
-        iosUiSettings: IOSUiSettings(
+        ), IOSUiSettings(
           title: 'Garnish it,'
-        )
+        )]
         );
 
     setState(() {
       if(key=='r'){
-          recipePic = cropped;
+          recipePic = File(cropped!.path);
           _imageFile = null;
           
         }else if(key=='i'){

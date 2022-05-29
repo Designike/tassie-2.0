@@ -341,7 +341,13 @@ class _ViewRecPostState extends State<ViewRecPost> {
                 ? (isIng
                     ? ingWidgetList.sublist(0, 2)
                     : stepsWidgetList.sublist(0, 2))
-                : (isIng ? ingWidgetList : stepsWidgetList)),
+                : (isIng ? ingWidgetList : stepsWidgetList),
+            // children: isIng
+            //     ? (isExpandedIng
+            //         ? ingWidgetList.sublist(0, 2)
+            //         : ingWidgetList)
+            //     : (isExpandedSteps ? stepsWidgetList.sublist(0, 2) : stepsWidgetList),
+                ),
         showMoreBtn
             ? TextButton.icon(
                 icon: isIng

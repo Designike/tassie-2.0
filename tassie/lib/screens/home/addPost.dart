@@ -46,7 +46,7 @@ class _AddPostState extends State<AddPost> {
   }
   /// Cropper plugin
   Future<void> _cropImage() async {
-    File? cropped = await ImageCropper.cropImage(
+    CroppedFile? cropped = await ImageCropper().cropImage(
         sourcePath: _imageFile!.path,
         // ratioX: 1.0,
         // ratioY: 1.0,
@@ -55,20 +55,21 @@ class _AddPostState extends State<AddPost> {
         aspectRatioPresets: [CropAspectRatioPreset.square],
         aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
         compressQuality: 80,
-        androidUiSettings: AndroidUiSettings(
+        uiSettings:[
+        AndroidUiSettings(
           toolbarTitle: 'Garnish it,'
           toolbarColor: Theme.of(context).scaffoldBackgroundColor,
           toolbarWidgetColor: Theme.of(context).brightness == Brightness.dark
                     ? kDark
                     : kDark[900],
         ),
-        iosUiSettings: IOSUiSettings(
+        IOSUiSettings(
           title: 'Garnish it,'
-        )
+        )]
         );
 
     setState(() {
-      _imageFile = cropped;
+      _imageFile =  cropped == null ? null : File(cropped.path);
     });
   }
 
