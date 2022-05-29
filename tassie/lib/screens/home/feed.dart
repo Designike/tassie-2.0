@@ -15,7 +15,8 @@ import 'package:tassie/screens/imgLoader.dart';
 import 'package:tassie/screens/wrapper.dart';
 
 class Feed extends StatefulWidget {
-  const Feed({Key? key}) : super(key: key);
+  const Feed({Key? key, required this.toggleLeftSwipe}) : super(key: key);
+  final void Function(bool) toggleLeftSwipe;
   @override
   _FeedState createState() => _FeedState();
 }
@@ -221,6 +222,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
         _getMoreData(page);
       }
     });
+    widget.toggleLeftSwipe(true);
   }
 
   @override
@@ -290,6 +292,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                                   : _buildProgressIndicator()
                               : FeedPost(
                                   // image: images[index],
+                                  toggleLeftSwipe: widget.toggleLeftSwipe,
                                   post: posts[index],
                                   noOfComment: noOfComments[index],
                                   noOfLike: noOfLikes[index],

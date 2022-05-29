@@ -21,6 +21,7 @@ class FeedPost extends StatefulWidget {
       required this.plusComment,
       required this.bookmark,
       required this.funcB,
+      required this.toggleLeftSwipe,
       // required this.image,
       required this.minusComment});
   final Map post;
@@ -32,6 +33,7 @@ class FeedPost extends StatefulWidget {
   final void Function(bool) funcB;
   final void Function() plusComment;
   final void Function() minusComment;
+  final void Function(bool) toggleLeftSwipe;
   @override
   _FeedPostState createState() => _FeedPostState();
 }
@@ -302,6 +304,7 @@ class _FeedPostState extends State<FeedPost> {
                                         .push(
                                       MaterialPageRoute(
                                         builder: (_) => ViewComments(
+                                          toggleLeftSwipe: widget.toggleLeftSwipe,
                                           post: post,
                                           noOfComment: widget.noOfComment,
                                           noOfLike: widget.noOfLike,
@@ -314,6 +317,7 @@ class _FeedPostState extends State<FeedPost> {
                                         ),
                                       ),
                                     );
+                                    widget.toggleLeftSwipe(false);
                                   },
                                 ),
                                 Text(
@@ -383,6 +387,7 @@ class _FeedPostState extends State<FeedPost> {
                         Navigator.of(context, rootNavigator: true)
                             .push(MaterialPageRoute(
                           builder: (_) => ViewComments(
+                            toggleLeftSwipe: widget.toggleLeftSwipe,
                             post: post,
                             noOfComment: widget.noOfComment,
                             noOfLike: widget.noOfLike,
@@ -394,6 +399,7 @@ class _FeedPostState extends State<FeedPost> {
                             dp: dp,
                           ),
                         ));
+                        widget.toggleLeftSwipe(false);
                       },
                       child: RichText(
                         overflow: TextOverflow.ellipsis,

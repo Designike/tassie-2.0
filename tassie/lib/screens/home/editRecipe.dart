@@ -67,6 +67,8 @@ class _EditRecipeState extends State<EditRecipe> {
   bool isUpload = false;
   String? hour;
   String? min;
+  Map _clearSteps = {0: false};
+  Map _clearIngs = {0: false};
   // RangeValues _currentRangeValues = RangeValues(0, 15);
   //ane tassie mathi leto avje code plus vado e page ma bov kayi che nayi ena sivayi
   List<Widget> _UploadImg(size,key,index,image) {
@@ -167,7 +169,9 @@ class _EditRecipeState extends State<EditRecipe> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
-              child: RecImageUploader(file: image, keyValue: recipeName,keyName: 'name', imgName: key+'_'+(index+1).toString(),
+              child: RecImageUploader(file: image,
+              clearRecost: key == 'i' ? _clearIngs[index] : _clearSteps[index],
+               keyValue: recipeName,keyName: 'name', imgName: key+'_'+(index+1).toString(),
               // folder: widget.folder, 
               uuid: widget.uuid,trueResp: () {
                   _imageFile = null;

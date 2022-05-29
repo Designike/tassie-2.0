@@ -242,6 +242,7 @@ class _SignInState extends State<SignIn> {
                               //           response.data['data']['token']
                               //     }));
                               // if (response.data['data']['profilePic'] != "") {
+                              print(response.data['data']['profilePic']);
                               await storage.write(
                                   key: "profilePic",
                                   value: response.data['data']['profilePic']);

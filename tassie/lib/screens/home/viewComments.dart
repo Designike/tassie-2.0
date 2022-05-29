@@ -21,6 +21,7 @@ class ViewComments extends StatefulWidget {
   final void Function() plusComment;
   final void Function() minusComment;
   final String? dp;
+  final void Function(bool) toggleLeftSwipe;
   ViewComments(
       {required this.post,
       required this.noOfComment,
@@ -30,7 +31,8 @@ class ViewComments extends StatefulWidget {
       required this.funcB,
       required this.bookmark,
       required this.minusComment,
-      required this.dp});
+      required this.dp,
+      required this.toggleLeftSwipe});
 
   @override
   _ViewCommentsState createState() => _ViewCommentsState();
@@ -302,6 +304,7 @@ class _ViewCommentsState extends State<ViewComments> {
                                   onPressed: () {
                                     print('henlo');
                                     Navigator.pop(context);
+                                    widget.toggleLeftSwipe(true);
                                   },
                                 ),
                                 Container(

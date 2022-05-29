@@ -51,6 +51,10 @@ class _AddRecipeState extends State<AddRecipe> {
   Map ingredientPics = {'0': ''};
   //ama bhi same
   Map stepPics = {'0': ''};
+  
+  Map _clearSteps = {0: false};
+  Map _clearIngs = {0: false};
+  
   final LocalStorage lstorage = LocalStorage('tassie');
 
   // final TextEditingController _stepController = TextEditingController();
@@ -68,99 +72,12 @@ class _AddRecipeState extends State<AddRecipe> {
   bool isUpload = false;
   String hour = '0';
   String min = '15';
+
   // RangeValues _currentRangeValues = RangeValues(0, 15);
   //ane tassie mathi leto avje code plus vado e page ma bov kayi che nayi ena sivayi
-  List<Widget> _UploadImg(size,key,index,image) {
-    
-  List<Widget> _upload = [
-    // if (image=='' && _imageFile != null) ...[
-        
-    //         Padding(
-    //           padding: const EdgeInsets.symmetric(vertical: kDefaultPadding * 1.5, horizontal: 5.0),
-    //           child: Image.file(_imageFile!),
-    //         ),
-    //         Padding(
-    //           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
-    //           child: Row(
-    //             mainAxisAlignment: MainAxisAlignment.center,
-    //             children: <Widget>[
-    //               TextButton(
-    //                 child: Icon(Icons.crop),
-    //                 onPressed:() => _cropImage(key, index),
-    //               ),
-    //               TextButton(
-    //                 child: Icon(Icons.refresh),
-    //                 onPressed: _clear,
-    //               ),
-    //             ],
-    //           ),
-    //         ),
-            
-    //         // onTap: () async {
-    //         //             if (_formKey.currentState!.validate()) {
-    //         //               Response response = await dio.post(
-    //         //                 "https://api-tassie.herokuapp.com/user/login/",
-    //         //                 options: Options(headers: {
-    //         //                   HttpHeaders.contentTypeHeader: "application/json",
-    //         //                 }),
-    //         //                 // data: jsonEncode(value),
-    //         //                 data: email != ""
-    //         //                     ? {"email": email, "password": password}
-    //         //                     : {"username": username, "password": password},
-    //         //               );
-    //         //               print('1');
-    //         //               await storage.write(
-    //         //                   key: "token",
-    //         //                   value: response.data['data']['token']);
-    //         //               print('2');
-    //         //               Navigator.pushReplacement(
-    //         //                 context,
-    //         //                 MaterialPageRoute(builder: (context) {
-    //         //                   return Home();
-    //         //                 }),
-    //         //               );
-    //         //               print(response.toString());
-    //         //             }
-    //         //           },
-    //         Container(
-    //           child: IconButton(
-    //             padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
-    //             icon: Icon(Icons.cloud_upload),
-    //             iconSize: 30.0,
-    //             color: Theme.of(context).brightness == Brightness.dark
-    //                 ? kPrimaryColor
-    //                 : kPrimaryColorAccent,
-    //             onPressed: () {
-    //               print('1');
-                  
-    //                 if(key=='r'){
-    //                   recipePic = _imageFile;
-    //                   _imageFile = null;
-    //                   _startUpload( recipePic,recipeName,'name',key+'_'+(index+1).toString(), widget.folder);
-    //                   print('2');
-    //                 }else if(key=='i'){
-    //                   ingredientPics[(index).toString()]=_imageFile;
-    //                   _imageFile = null;
-    //                   _startUpload( ingredientPics[(index).toString()],recipeName,'name',key+'_'+(index+1).toString(), widget.folder);
-    //                   print('3');
-    //                 }else{
-    //                   stepPics[(index).toString()]=_imageFile;
-    //                   _imageFile = null;
-    //                   _startUpload( stepPics[(index).toString()],recipeName,'name',key+'_'+(index+1).toString(), widget.folder);
-    //                   print('4');
-    //                 }
-    //                 print('5');
-    //                 // if (recipeName!='') {
-    //                 // _startUpload( _imageFile,recipeName,'name',key+'_'+(index+1).toString(), widget.folder);
-    //                 // }
-    //             },
-    //           ),
-    //           decoration: BoxDecoration(
-    //             borderRadius: BorderRadius.circular(15.0),
-    //             color: kDark[900],
-    //           ),
-    //         ),
-    //       ] else 
+  List<Widget> _uploadImg(size,key,index,image) {
+        // print(image);
+        List<Widget> _upload = [
           if(image!='' && image!=null) ... [
              Padding(
               padding: const EdgeInsets.symmetric(vertical: kDefaultPadding * 1.5, horizontal: 5.0),
@@ -168,44 +85,52 @@ class _AddRecipeState extends State<AddRecipe> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
-              child: RecImageUploader(file: image, keyValue: recipeName,keyName: 'name', imgName: key+'_'+(index+1).toString(),
-              // folder: widget.folder, 
-              uuid: widget.uuid,falseResp: () {
-                  print("working");
-                  setState(() {
-                  if(key=='r'){
-                      recipePic = null;
-                      _imageFile = null;
-                    }else if(key=='i'){
-                      ingredientPics[(index).toString()]= null;
-                      _imageFile = null;
-                      
-                    }else{
-                      stepPics[(index).toString()]= null;
-                      _imageFile = null;
-                    }
-                });
-                  if (key+'_'+(index+1).toString() == 'r_1') {
-                    setState(() {
-                      isUpload = false;
-                    });
-                  }
-                }, trueResp: () {
+              child: RecImageUploader(
+                file: image, 
+                keyValue: recipeName,
+                keyName: 'name', 
+                imgName: key+'_'+(index+1).toString(),
+                uuid: widget.uuid,
+                clearRecost: key == 'i' ? _clearIngs[index] : _clearSteps[index],
+                falseResp: () {
+                      print("working");
+                      setState(() {
+                        if(key=='r'){
+                            recipePic = null;
+                            _imageFile = null;
+                        }else if(key=='i'){
+                            ingredientPics[(index).toString()]= null;
+                            _imageFile = null;
+                        }else{
+                            stepPics[(index).toString()]= null;
+                            _imageFile = null;
+                        }
+                      });
+
+                      if (key+'_'+(index+1).toString() == 'r_1') {
+                        setState(() {
+                          isUpload = false;
+                        });
+                      }
+
+                    }, 
+                trueResp: () {
                   if (key+'_'+(index+1).toString() == 'r_1') {
                     setState(() {
                       isUpload = true;
                     });
                   }
-                }, imageNull: () {
-               _imageFile = null;
+                }, 
+                imageNull: () {
+                  _imageFile = null;
 
-            },
-            onClear: () async {
-              await _clear(key, index, key + '_' + (index + 1).toString());
-            },
-            onCrop: () {
-              _cropImage(key, index);
-            },
+                },
+                onClear: () async {
+                  await _clear(key, index, key + '_' + (index + 1).toString());
+                },
+                onCrop: () {
+                  _cropImage(key, index);
+                },
             ),
             ),
           ]
@@ -412,7 +337,7 @@ class _AddRecipeState extends State<AddRecipe> {
                             : null,
                       ),
 
-                      ... _UploadImg(size,'r',0,recipePic)
+                      ... _uploadImg(size,'r',0,recipePic)
               ],
             ),
           ),
@@ -776,6 +701,8 @@ class _AddRecipeState extends State<AddRecipe> {
 List<Widget> _getRecipe(size) {
     List<Widget> recipeTextFields = [];
     for (int i = 0; i < stepsList.length; i++) {
+      // print(i);
+      // print(stepPics[i.toString()]);
       recipeTextFields.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: Column(
@@ -789,7 +716,7 @@ List<Widget> _getRecipe(size) {
                 _addRemoveButtonR(i == 0, stepsList.length - 1, i),
               ],
             ),
-            ... _UploadImg(size,'s',i,stepPics[i.toString()])
+            ... _uploadImg(size,'s',i,stepPics[i.toString()])
           ],
         ),
       ));
@@ -803,10 +730,14 @@ List<Widget> _getRecipe(size) {
         if (add) {
           stepsList.insert(index + 1, "");
           stepPics[(index + 1).toString()] = '';
+          setState((){
+            _clearSteps[index+1] = false;
+          });
+          // print(_clearSteps);
         } else {
           stepsList.removeAt(i);
           stepPics[i.toString()] = '';
-          await _clear('s',i,'s_'+(i+1).toString());
+          await _clear('s',i,'s_'+(i+1).toString(), true);
           stepPics = await _adjustImages(i,stepPics,false,"s_");
           setState(() {});
         }
@@ -845,7 +776,7 @@ List<Widget> _getRecipe(size) {
                 _addRemoveButtonI(i == 0, ingredientsList.length - 1, i),
               ],
             ),
-            ... _UploadImg(size,'i',i,ingredientPics[i.toString()])
+            ... _uploadImg(size,'i',i,ingredientPics[i.toString()])
           ],
         ),
       ));
@@ -862,7 +793,7 @@ List<Widget> _getRecipe(size) {
         } else{
           ingredientsList.removeAt(i);
           ingredientPics[i.toString()] = '';
-          await _clear('i',i,'i_'+(i+1).toString());
+          await _clear('i',i,'i_'+(i+1).toString(), true);
           ingredientPics = await _adjustImages(i,ingredientPics,true,"i_");
           setState(() {});
 
@@ -943,11 +874,12 @@ List<Widget> _getRecipe(size) {
   }
 
   /// Remove image
-  Future<void> _clear(key, index,imgName) async {
+  Future<void> _clear(key, index,imgName, [clearRecost = false]) async {
     print(widget.uuid);
       if(key=='r'){
         setState(() {
           recipePic = null;
+          
         });
           
           var token = await storage.read(key: "token");
@@ -964,6 +896,9 @@ List<Widget> _getRecipe(size) {
         }else if(key=='i'){
         setState(() {
           ingredientPics[(index).toString()]= '';
+          if(clearRecost){
+            _clearIngs[index] = true;
+          }
         });
           print(widget.uuid);
           var token = await storage.read(key: "token");
@@ -981,6 +916,9 @@ List<Widget> _getRecipe(size) {
         }else{
           setState(() {
           stepPics[(index).toString()]= '';
+          if(clearRecost){
+            _clearSteps[index] = true;
+          }
         });
           
           var token = await storage.read(key: "token");
@@ -998,32 +936,32 @@ List<Widget> _getRecipe(size) {
   }
 
   Future<Map> _adjustImages(int index,Map x,bool isIngredient,String key) async {
-    print('hfsdjsndfsdkfj');
-    print(x['0'].path);
+    // print('hfsdjsndfsdkfj');
+    // print(x['0'].path);
     int l = x.length;
     Map send = {};
-    print(x);
-    print("index");
-    print(index+1);
+    // print(x);
+    // print("index");
+    // print(index+1);
     for(int j=index; j<l-1; j++) {
-      print('----------------------------------');
+      // print('----------------------------------');
       x[j.toString()]=x[(j+1).toString()];
       if(x[(j+1).toString()] != ''){
-      print(x[(j+1).toString()]);
+      // print(x[(j+1).toString()]);
       send[key+(j+1).toString()+p.extension(x[(j).toString()].path)]=key+(j+2).toString()+p.extension(x[(j+1).toString()].path);
       }
-      print(x);
+      // print(x);
     }
     x.remove((l-1).toString());
-    print(x);
+    // print(x);
     try {
     var token = await storage.read(key: "token");
-    print("index");
-    print(index+1);
-    print("length");
-    print(l);
-    print("send");
-    print(send);
+    // print("index");
+    // print(index+1);
+    // print("length");
+    // print(l);
+    // print("send");
+    // print(send);
     if(send.length!=0){
     Response response = await dio.post(
       // 'https://api-tassie.herokuapp.com/drive/upload',
@@ -1130,7 +1068,7 @@ List<Widget> _getRecipe(size) {
                   Navigator.of(context,rootNavigator: true).pop();
                   Navigator.of(context,rootNavigator: true).pushReplacement
                     (MaterialPageRoute(builder: (context) {
-                          return HomeHome();
+                          return HomeHome(toggleLeftSwipe: (bool ) {  },);
                         }));
                   var url = "https://api-tassie.herokuapp.com/recs/deleteRecipe";
                   var token = await storage.read(key: "token");

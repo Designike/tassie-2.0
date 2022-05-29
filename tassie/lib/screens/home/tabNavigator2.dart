@@ -21,10 +21,12 @@ class TabNavigator2 extends StatefulWidget {
     required this.navigatorKey,
     required this.tabItem,
     required this.rightSwipe,
+    required this.toggleLeftSwipe,
   });
   final GlobalKey<NavigatorState> navigatorKey;
   final int tabItem;
   final void Function() rightSwipe;
+  final void Function(bool) toggleLeftSwipe;
 
   @override
   State<TabNavigator2> createState() => _TabNavigator2State();
@@ -37,6 +39,7 @@ class _TabNavigator2State extends State<TabNavigator2> {
 
   Future<void> getdp() async {
     dp = await storage.read(key: "profilePic");
+    print(dp);
     setState(() {
       isLoading = false;
     });
@@ -69,7 +72,7 @@ class _TabNavigator2State extends State<TabNavigator2> {
             onGenerateRoute: (routeSettings) {
               return MaterialPageRoute(
                   builder: (context) => widget.tabItem == 0
-                      ? HomeHome()
+                      ? HomeHome(toggleLeftSwipe: widget.toggleLeftSwipe)
                       : TassieMap(dp: dp!, rightSwipe: widget.rightSwipe));
             },
           );

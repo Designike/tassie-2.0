@@ -24,8 +24,9 @@ import 'package:tassie/screens/home/tabNavigator.dart';
 import 'package:tassie/screens/wrapper.dart';
 
 class HomeHome extends StatefulWidget {
-  const HomeHome({Key? key}) : super(key: key);
+  const HomeHome({Key? key, required this.toggleLeftSwipe}) : super(key: key);
 
+  final void Function(bool) toggleLeftSwipe;
   @override
   _HomeHomeState createState() => _HomeHomeState();
 }
@@ -111,6 +112,7 @@ class _HomeHomeState extends State<HomeHome>
     return TabNavigator(
       navigatorKey: _navigatorKeys[index]!,
       tabItem: index,
+      toggleLeftSwipe: widget.toggleLeftSwipe,
     );
   }
 
@@ -122,6 +124,11 @@ class _HomeHomeState extends State<HomeHome>
       setState(() {
         _selectedIndex = index;
         _pageController.jumpToPage(index);
+        if (index == 0) {
+          widget.toggleLeftSwipe(true);
+        } else {
+          widget.toggleLeftSwipe(false);
+        }
       });
     }
   }
@@ -130,13 +137,13 @@ class _HomeHomeState extends State<HomeHome>
   void initState() {
     super.initState();
     getIng();
-
     //  AnimationController animatedController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     //  animatedController.addListener(() {
     //   setState(() {
     //     _angle = animatedController.value * 45 / 360 * pi * 2;
     //   });
     _selectedIndex = 0;
+    widget.toggleLeftSwipe(true);
     // _screens = [
     //   Feed(),
     //   Recipes(),
@@ -257,7 +264,7 @@ class _HomeHomeState extends State<HomeHome>
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) {
-                          return HomeHome();
+                          return HomeHome(toggleLeftSwipe: widget.toggleLeftSwipe,);
                         }),
                       );
                     }

@@ -15,6 +15,7 @@ class RecImageUploader extends StatefulWidget {
       required this.keyName,
       required this.imgName,
       // required this.folder,
+      required this.clearRecost,
       required this.trueResp,
       required this.falseResp,
       required this.imageNull,
@@ -26,6 +27,7 @@ class RecImageUploader extends StatefulWidget {
   final String keyName;
   final String imgName;
   // final String folder;
+  final bool clearRecost;
   final void Function() trueResp;
   final void Function() falseResp;
   final void Function() imageNull;
@@ -67,9 +69,9 @@ class _RecImageUploaderState extends State<RecImageUploader> {
       data: formData,
       onSendProgress: (int sent, int total) {
         setState(() {
-          print(progress);
+          // print(progress);
           progress = (sent / total * 100);
-          print(progress);
+          // print(progress);
         });
       },
     );
@@ -101,9 +103,17 @@ class _RecImageUploaderState extends State<RecImageUploader> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    // print(progress);
+    // print(isUploaded);
+    // print(widget.clearRecost);
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    if (progress != 0.0 && isUploaded == true) {
+    if( (progress != 0.0 && isUploaded == true) || widget.clearRecost){
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
