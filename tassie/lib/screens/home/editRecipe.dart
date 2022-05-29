@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:async/async.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
@@ -24,6 +25,7 @@ import 'package:tassie/screens/home/snackbar.dart';
 import 'package:tassie/screens/home/upload.dart';
 import 'package:tassie/screens/home/uploadRecImages.dart';
 import 'package:path/path.dart' as p;
+import 'package:tassie/screens/imgLoader.dart';
 import '../../constants.dart';
 import 'addIngredient.dart';
 import 'addStep.dart';
@@ -99,7 +101,9 @@ class _EditRecipeState extends State<EditRecipe> {
   bool isLoading = true;
 
   Future<File> _fileFromImageUrl(filepath) async {
-    final response = await http.get(Uri.parse(filepath));
+    AsyncMemoizer memoizer = AsyncMemoizer();
+    String storedFuture = await loadImg(filepath,memoizer);
+    final response = await http.get(Uri.parse(storedFuture));
     final documentDirectory = await getApplicationDocumentsDirectory();
     final file = File(p.join(documentDirectory.path, 'test.jpg'));
     file.writeAsBytesSync(response.bodyBytes);
