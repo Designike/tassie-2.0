@@ -87,6 +87,7 @@ class _SignInState extends State<SignIn> {
           print(err);
         });
       }).catchError((err) {
+        print(err);
         print('error occured');
       });
 

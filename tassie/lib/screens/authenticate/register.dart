@@ -236,36 +236,36 @@ class _RegisterState extends State<Register> {
                             isClicked = true;
                           });
                           try {
-                            // Response response = await dio.post(
-                            //     // "https://api-tassie.herokuapp.com/user/",
-                            //     "https://api-tassie.herokuapp.com/user/",
-                            //     options: Options(headers: {
-                            //       HttpHeaders.contentTypeHeader:
-                            //           "application/json",
-                            //     }),
-                            //     data: {
-                            //       "name": name,
-                            //       "username": username,
-                            //       "email": email,
-                            //       "password": password,
-                            //     });
-                            // print(response.data['data']['uuid']);
-                            // if (response.data['status' == true]) {
-                            //   Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(builder: (context) {
-                            //       return OTP(
-                            //           uuid: response.data['data']['uuid'],
-                            //           time: response.data['data']['time']);
-                            //     }),
-                            //   );
-                            // } else {
-                            //   showSnack(context, response.data['message'],
-                            //       () {}, 'OK', 4);
-                            //   setState(() {
-                            //     isClicked = false;
-                            //   });
-                            // }
+                            Response response = await dio.post(
+                                // "https://api-tassie.herokuapp.com/user/",
+                                "https://api-tassie.herokuapp.com/user/",
+                                options: Options(headers: {
+                                  HttpHeaders.contentTypeHeader:
+                                      "application/json",
+                                }),
+                                data: {
+                                  "name": name,
+                                  "username": username,
+                                  "email": email,
+                                  "password": password,
+                                });
+                            print(response.data['data']['uuid']);
+                            if (response.data['status'] == true) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) {
+                                  return OTP(
+                                      uuid: response.data['data']['uuid'],
+                                      time: response.data['data']['time']);
+                                }),
+                              );
+                            } else {
+                              showSnack(context, response.data['message'],
+                                  () {}, 'OK', 4);
+                              setState(() {
+                                isClicked = false;
+                              });
+                            }
                           } on DioError catch (e) {
                             if (e.response != null) {
                               var errorMessage = e.response!.data;

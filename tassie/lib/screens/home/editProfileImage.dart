@@ -53,17 +53,15 @@ class _EditProfileImageState extends State<EditProfileImage> {
         aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
         compressQuality: 80,
         uiSettings: [
-        AndroidUiSettings(
-          toolbarTitle: 'Few touch-ups!,'
-          toolbarColor: Theme.of(context).scaffoldBackgroundColor,
-          toolbarWidgetColor: Theme.of(context).brightness == Brightness.dark
-                    ? kDark
-                    : kDark[900],
-        ),
-        IOSUiSettings(
-          title: 'Few touch-ups!,'
-        )]
-        );
+          AndroidUiSettings(
+            toolbarTitle: 'Few touch-ups!',
+            toolbarColor: Theme.of(context).scaffoldBackgroundColor,
+            toolbarWidgetColor: Theme.of(context).brightness == Brightness.dark
+                ? kDark
+                : kDark[900],
+          ),
+          IOSUiSettings(title: 'Few touch-ups!,')
+        ]);
 
     setState(() {
       _imageFile = File(cropped!.path);
@@ -103,12 +101,10 @@ class _EditProfileImageState extends State<EditProfileImage> {
     setState(() => _imageFile = null);
   }
 
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    
-    
+
     return Scaffold(
       // Select an image from the camera or gallery
       // bottomNavigationBar: BottomAppBar(
@@ -165,20 +161,21 @@ class _EditProfileImageState extends State<EditProfileImage> {
           if (_imageFile != null) ...[
             SizedBox(height: 15.0),
             Text(
-                'Ready to flex!',
-                style: TextStyle(
-                  color: kPrimaryColor,
-                  fontFamily: 'LobsterTwo',
-                  fontSize: 35.0,
-                ),
-                textAlign: TextAlign.center,
-                ),
+              'Ready to flex!',
+              style: TextStyle(
+                color: kPrimaryColor,
+                fontFamily: 'LobsterTwo',
+                fontSize: 35.0,
+              ),
+              textAlign: TextAlign.center,
+            ),
             Padding(
               padding: const EdgeInsets.all(kDefaultPadding * 1.5),
               child: Image.file(_imageFile!),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -193,101 +190,102 @@ class _EditProfileImageState extends State<EditProfileImage> {
                 ],
               ),
             ),
-            Padding(padding: EdgeInsets.all(kDefaultPadding * 1.5),
-            child: Column(children: [
-            // TextFormField(
-            //   // style: TextStyle(color: Theme.of(context).brightness == Brightness.dark
-            //   //     ? kLight
-            //   //     : kDark[900]),
-            //         initialValue: desc.isNotEmpty ? desc : '',
-            //         decoration: InputDecoration(
-            //             labelText: 'DESCRIPTION',
-                        
-            //             labelStyle: TextStyle(
-            //               // fontFamily: 'Raleway',
-            //               fontSize: 16.0,
-            //               color: Theme.of(context).brightness == Brightness.dark
-            //       ? kPrimaryColor
-            //       : kDark[900],
-            //             ),
-            //             contentPadding: EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
-            //             floatingLabelBehavior: FloatingLabelBehavior.always,
-            //             border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), ),
-            //             focusedBorder: OutlineInputBorder(
-            //                 borderSide: BorderSide(color: Theme.of(context).brightness == Brightness.dark
-            //       ? kPrimaryColor
-            //       : kDark[900]!),borderRadius: BorderRadius.circular(15.0),),
-            //                 ),
-            //         keyboardType: TextInputType.multiline,
-                    
-            //         maxLines: null,
-            //         onChanged: (value) {
-            //           desc = value;
-            //         },
-            //         validator: (val) => val!.isEmpty || val.length > 500
-            //             ? 'Description should be within 500 characters'
-            //             : null,
-            //       ),
-    //               TypeAheadFormField<String?>(
-    //                 hideOnEmpty:true, 
-    //                 debounceDuration: Duration(seconds:1),
-    //                 direction: AxisDirection.up,
-    //                 // suggestionsCallback: _ingredientController.text.isNotEmpty ? _ingredientController.text.characters.last != '#' ? Hashtags.getSuggestions : (v) => [] : (v) => [],
-    //                 suggestionsCallback: Hashtags.getSuggestions,
-    //                 textFieldConfiguration: TextFieldConfiguration(
-    //                   keyboardType: TextInputType.multiline,
-                                    
-    //                   maxLines: null,
-    //                   controller: _tagController,
-    //                   onChanged: (v) {
-    //                     desc = v;        
-    //                     },
-    //                   decoration: InputDecoration(
-    //                     labelText: 'Description',
-    //                     labelStyle: TextStyle(
-    //                       // fontFamily: 'Raleway',
-    //                       fontSize: 16.0,
-    //                       color: Theme.of(context).brightness == Brightness.dark
-    //                           ? kPrimaryColor
-    //                           : kDark[900],
-    //                     ),
-    //                     contentPadding:
-    //                         EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
-    //                     floatingLabelBehavior: FloatingLabelBehavior.always,
-    //                     border: OutlineInputBorder(
-    //                       borderRadius: BorderRadius.circular(15.0),
-    //                     ),
-    //                     focusedBorder: OutlineInputBorder(
-    //                       borderSide: BorderSide(
-    //                           color:
-    //                               Theme.of(context).brightness == Brightness.dark
-    //                                   ? kPrimaryColor
-    //                                   : kDark[900]!),
-    //                       borderRadius: BorderRadius.circular(15.0),
-    //                     ),
-                        
-    //                   ),
-    //                 ),
-    //                 itemBuilder: (context, String? suggestion) => ListTile(
-    //                   title: Text(suggestion!),
-    //                 ),
-    //                 onSuggestionSelected: (v) {
-    //                   // setState(() {
-    //                     print("first");
-    //                     print(_appendHashtag(desc, v));
-    //                     _tagController.text = _appendHashtag(desc, v);
-    //                     print("second");
-    //                   print(_tagController.text);
-    //                   // });
-    //                 },
-    //                 validator: (val) => val!.isEmpty || val.length > 500
-    //                                     ? 'Description should be within 500 characters'
-    //                                     : null,
-                        
-    // ),
-                  
-                  
-            ],),
+            Padding(
+              padding: EdgeInsets.all(kDefaultPadding * 1.5),
+              child: Column(
+                children: [
+                  // TextFormField(
+                  //   // style: TextStyle(color: Theme.of(context).brightness == Brightness.dark
+                  //   //     ? kLight
+                  //   //     : kDark[900]),
+                  //         initialValue: desc.isNotEmpty ? desc : '',
+                  //         decoration: InputDecoration(
+                  //             labelText: 'DESCRIPTION',
+
+                  //             labelStyle: TextStyle(
+                  //               // fontFamily: 'Raleway',
+                  //               fontSize: 16.0,
+                  //               color: Theme.of(context).brightness == Brightness.dark
+                  //       ? kPrimaryColor
+                  //       : kDark[900],
+                  //             ),
+                  //             contentPadding: EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
+                  //             floatingLabelBehavior: FloatingLabelBehavior.always,
+                  //             border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), ),
+                  //             focusedBorder: OutlineInputBorder(
+                  //                 borderSide: BorderSide(color: Theme.of(context).brightness == Brightness.dark
+                  //       ? kPrimaryColor
+                  //       : kDark[900]!),borderRadius: BorderRadius.circular(15.0),),
+                  //                 ),
+                  //         keyboardType: TextInputType.multiline,
+
+                  //         maxLines: null,
+                  //         onChanged: (value) {
+                  //           desc = value;
+                  //         },
+                  //         validator: (val) => val!.isEmpty || val.length > 500
+                  //             ? 'Description should be within 500 characters'
+                  //             : null,
+                  //       ),
+                  //               TypeAheadFormField<String?>(
+                  //                 hideOnEmpty:true,
+                  //                 debounceDuration: Duration(seconds:1),
+                  //                 direction: AxisDirection.up,
+                  //                 // suggestionsCallback: _ingredientController.text.isNotEmpty ? _ingredientController.text.characters.last != '#' ? Hashtags.getSuggestions : (v) => [] : (v) => [],
+                  //                 suggestionsCallback: Hashtags.getSuggestions,
+                  //                 textFieldConfiguration: TextFieldConfiguration(
+                  //                   keyboardType: TextInputType.multiline,
+
+                  //                   maxLines: null,
+                  //                   controller: _tagController,
+                  //                   onChanged: (v) {
+                  //                     desc = v;
+                  //                     },
+                  //                   decoration: InputDecoration(
+                  //                     labelText: 'Description',
+                  //                     labelStyle: TextStyle(
+                  //                       // fontFamily: 'Raleway',
+                  //                       fontSize: 16.0,
+                  //                       color: Theme.of(context).brightness == Brightness.dark
+                  //                           ? kPrimaryColor
+                  //                           : kDark[900],
+                  //                     ),
+                  //                     contentPadding:
+                  //                         EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
+                  //                     floatingLabelBehavior: FloatingLabelBehavior.always,
+                  //                     border: OutlineInputBorder(
+                  //                       borderRadius: BorderRadius.circular(15.0),
+                  //                     ),
+                  //                     focusedBorder: OutlineInputBorder(
+                  //                       borderSide: BorderSide(
+                  //                           color:
+                  //                               Theme.of(context).brightness == Brightness.dark
+                  //                                   ? kPrimaryColor
+                  //                                   : kDark[900]!),
+                  //                       borderRadius: BorderRadius.circular(15.0),
+                  //                     ),
+
+                  //                   ),
+                  //                 ),
+                  //                 itemBuilder: (context, String? suggestion) => ListTile(
+                  //                   title: Text(suggestion!),
+                  //                 ),
+                  //                 onSuggestionSelected: (v) {
+                  //                   // setState(() {
+                  //                     print("first");
+                  //                     print(_appendHashtag(desc, v));
+                  //                     _tagController.text = _appendHashtag(desc, v);
+                  //                     print("second");
+                  //                   print(_tagController.text);
+                  //                   // });
+                  //                 },
+                  //                 validator: (val) => val!.isEmpty || val.length > 500
+                  //                                     ? 'Description should be within 500 characters'
+                  //                                     : null,
+
+                  // ),
+                ],
+              ),
             ),
             // onTap: () async {
             //             if (_formKey.currentState!.validate()) {
@@ -317,59 +315,63 @@ class _EditProfileImageState extends State<EditProfileImage> {
             //           },
 
             ProfileUploader(file: _imageFile)
-          ] else ... [
+          ] else ...[
             Container(
               padding: EdgeInsets.symmetric(vertical: 50.0),
               child: Column(
-              
                 children: [
                   Text(
-                'Fresh or Baked ?',
-                style: TextStyle(
-                  color: kPrimaryColor,
-                  fontFamily: 'LobsterTwo',
-                  fontSize: 40.0,
-                ),
-                
-              ),
-              SizedBox(height: 3 * kDefaultPadding,),
+                    'Fresh or Baked ?',
+                    style: TextStyle(
+                      color: kPrimaryColor,
+                      fontFamily: 'LobsterTwo',
+                      fontSize: 40.0,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 3 * kDefaultPadding,
+                  ),
                   Container(
                     child: IconButton(
                       padding: EdgeInsets.all(size.width * 0.1),
                       icon: Icon(Icons.camera_alt_rounded),
                       iconSize: 50.0,
-                    onPressed: () => _pickImage(ImageSource.camera),
+                      onPressed: () => _pickImage(ImageSource.camera),
                     ),
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(size.width),
-                    color: Theme.of(context).brightness == Brightness.dark
-                    ? kDark[900]
-                    : kLight,),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(size.width),
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? kDark[900]
+                          : kLight,
+                    ),
                   ),
-                  SizedBox(height: kDefaultPadding,),
+                  SizedBox(
+                    height: kDefaultPadding,
+                  ),
                   Container(
                     child: IconButton(
                       padding: EdgeInsets.all(size.width * 0.1),
                       icon: Icon(Icons.photo_library_rounded),
                       iconSize: 50.0,
-                    onPressed: () => _pickImage(ImageSource.gallery),
+                      onPressed: () => _pickImage(ImageSource.gallery),
                     ),
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(size.width),
-                    color: Theme.of(context).brightness == Brightness.dark
-                    ? kDark[900]
-                    : kLight,),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(size.width),
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? kDark[900]
+                          : kLight,
+                    ),
                   ),
-                  SizedBox(height: 2 * kDefaultPadding,),
+                  SizedBox(
+                    height: 2 * kDefaultPadding,
+                  ),
                   Container(
                     width: size.width * 0.5,
                     child: Text(
-                'Let\'s pick some cool display picture !',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 18.0,
-                    height: 1.5
-                    
-                ),
-              ),
+                      'Let\'s pick some cool display picture !',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 18.0, height: 1.5),
+                    ),
                   ),
                 ],
               ),

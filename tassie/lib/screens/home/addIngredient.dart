@@ -32,7 +32,7 @@ class _IngredientTextFieldState extends State<IngredientTextField> {
   Widget build(BuildContext context) {
     bool index;
     final TextEditingController _ingredientController = TextEditingController();
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _ingredientController.text = widget.ingredientsList[widget.index!] ?? '';
     });
     // return TextFormField(

@@ -29,7 +29,7 @@ class _StepTextFieldState extends State<StepTextField> {
   @override
   Widget build(BuildContext context) {
     final TextEditingController _stepController = TextEditingController();
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _stepController.text = widget.stepsList[widget.index!] ?? '';
     });
     // return TextFormField(
