@@ -27,7 +27,7 @@ class _IngredientTextFieldState extends State<IngredientTextField> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _ingredientController.text =
           widget.ingredientsList[widget.index!] ?? '';
     });
