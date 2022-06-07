@@ -329,8 +329,10 @@ class _ExploreViewCommentsState extends State<ExploreViewComments> {
                                               future: storedFuture1,
                                               builder: (BuildContext context,
                                                   AsyncSnapshot text) {
-                                                if (text.connectionState ==
-                                                    ConnectionState.waiting) {
+                                                if ((text.connectionState ==
+                                                        ConnectionState
+                                                            .waiting) ||
+                                                    text.hasError) {
                                                   return Image(
                                                     height: 50.0,
                                                     width: 50.0,
@@ -343,6 +345,20 @@ class _ExploreViewCommentsState extends State<ExploreViewComments> {
                                                   //   image: NetworkImage(text.data.toString()),
                                                   //   fit: BoxFit.cover,
                                                   // );
+                                                  if (!text.hasData) {
+                                                    return GestureDetector(
+                                                        onTap: () {
+                                                          setState(() {});
+                                                        },
+                                                        child: Container(
+                                                            child: Center(
+                                                          child: Icon(
+                                                            Icons.refresh,
+                                                            // size: 50.0,
+                                                            color: kDark,
+                                                          ),
+                                                        )));
+                                                  }
                                                   return Image(
                                                     height: 50.0,
                                                     width: 50.0,
@@ -379,66 +395,93 @@ class _ExploreViewCommentsState extends State<ExploreViewComments> {
                                 ),
                               ],
                             ),
-                            InkWell(
-                              onDoubleTap: () async {
-                                if (!liked) {
-                                  var token = await storage.read(key: "token");
-                                  dio.post(
-                                      "https://api-tassie.herokuapp.com/feed/like",
-                                      options: Options(headers: {
-                                        HttpHeaders.contentTypeHeader:
-                                            "application/json",
-                                        HttpHeaders.authorizationHeader:
-                                            "Bearer " + token!
-                                      }),
-                                      data: {'uuid': widget.post['uuid']});
-                                  widget.func(true);
-                                  setState(() {});
-                                }
-                              },
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              // child: Container(
-                              //   margin: EdgeInsets.all(10.0),
-                              //   width: double.infinity,
-                              //   height: 400.0,
-                              //   decoration: BoxDecoration(
-                              //     borderRadius: BorderRadius.circular(25.0),
-                              //     image: DecorationImage(
-                              //       image:
-                              //           NetworkImage(widget.post['profilePic']),
-                              //       fit: BoxFit.cover,
-                              //     ),
-                              //   ),
-                              // ),
-                              child: FutureBuilder(
-                                  future: storedFuture,
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot text) {
-                                    if (text.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return Container(
-                                        margin: EdgeInsets.all(10.0),
-                                        width: double.infinity,
-                                        height: size.width - 40.0,
-                                        // height: 400.0,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(25.0),
-                                          image: DecorationImage(
-                                            image: AssetImage(
-                                              'assets/images/broken.png',
-                                            ),
-                                            fit: BoxFit.cover,
+                            FutureBuilder(
+                                future: storedFuture,
+                                builder:
+                                    (BuildContext context, AsyncSnapshot text) {
+                                  if ((text.connectionState ==
+                                          ConnectionState.waiting ||
+                                      text.hasError)) {
+                                    return Container(
+                                      margin: EdgeInsets.all(10.0),
+                                      width: double.infinity,
+                                      height: size.width - 40.0,
+                                      // height: 400.0,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(25.0),
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                            'assets/images/broken.png',
                                           ),
+                                          fit: BoxFit.cover,
                                         ),
+                                      ),
+                                    );
+                                  } else {
+                                    // return Image(
+                                    //   image: NetworkImage(text.data.toString()),
+                                    //   fit: BoxFit.cover,
+                                    // );
+                                    if (!text.hasData) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          setState(() {});
+                                        },
+                                        child: Container(
+                                            margin: EdgeInsets.all(10.0),
+                                            width: double.infinity,
+                                            height: size.width - 40.0,
+                                            // height: 400.0,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(25.0),
+                                            ),
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.refresh,
+                                                size: 50.0,
+                                                color: kDark,
+                                              ),
+                                            )),
                                       );
-                                    } else {
-                                      // return Image(
-                                      //   image: NetworkImage(text.data.toString()),
-                                      //   fit: BoxFit.cover,
-                                      // );
-                                      return Container(
+                                    }
+                                    return InkWell(
+                                      onDoubleTap: () async {
+                                        if (!liked) {
+                                          var token =
+                                              await storage.read(key: "token");
+                                          dio.post(
+                                              "https://api-tassie.herokuapp.com/feed/like",
+                                              options: Options(headers: {
+                                                HttpHeaders.contentTypeHeader:
+                                                    "application/json",
+                                                HttpHeaders.authorizationHeader:
+                                                    "Bearer " + token!
+                                              }),
+                                              data: {
+                                                'uuid': widget.post['uuid']
+                                              });
+                                          widget.func(true);
+                                          setState(() {});
+                                        }
+                                      },
+                                      splashColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      // child: Container(
+                                      //   margin: EdgeInsets.all(10.0),
+                                      //   width: double.infinity,
+                                      //   height: 400.0,
+                                      //   decoration: BoxDecoration(
+                                      //     borderRadius: BorderRadius.circular(25.0),
+                                      //     image: DecorationImage(
+                                      //       image:
+                                      //           NetworkImage(widget.post['profilePic']),
+                                      //       fit: BoxFit.cover,
+                                      //     ),
+                                      //   ),
+                                      // ),
+                                      child: Container(
                                         margin: EdgeInsets.all(10.0),
                                         width: double.infinity,
                                         height: size.width - 40.0,
@@ -452,10 +495,10 @@ class _ExploreViewCommentsState extends State<ExploreViewComments> {
                                             fit: BoxFit.cover,
                                           ),
                                         ),
-                                      );
-                                    }
-                                  }),
-                            ),
+                                      ),
+                                    );
+                                  }
+                                }),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 20.0),
                               child: Row(
@@ -725,8 +768,9 @@ class _ExploreViewCommentsState extends State<ExploreViewComments> {
                       child: FutureBuilder(
                           future: storedFuture2,
                           builder: (BuildContext context, AsyncSnapshot text) {
-                            if (text.connectionState ==
-                                ConnectionState.waiting) {
+                            if ((text.connectionState ==
+                                    ConnectionState.waiting) ||
+                                text.hasError) {
                               return Image(
                                 height: 48.0,
                                 width: 48.0,
@@ -738,6 +782,22 @@ class _ExploreViewCommentsState extends State<ExploreViewComments> {
                               //   image: NetworkImage(text.data.toString()),
                               //   fit: BoxFit.cover,
                               // );
+                              if (!text.hasData) {
+                                return GestureDetector(
+                                    onTap: () {
+                                      setState(() {});
+                                    },
+                                    child: Container(
+                                        height: 48.0,
+                                        width: 48.0,
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.refresh,
+                                            // size: 50.0,
+                                            color: kDark,
+                                          ),
+                                        )));
+                              }
                               return Image(
                                 height: 48.0,
                                 width: 48.0,

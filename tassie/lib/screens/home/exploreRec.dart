@@ -72,69 +72,68 @@ class _ExploreRecState extends State<ExploreRec> {
         children: [
           Column(
             children: [
-              InkWell(
-                onDoubleTap: () => print('Bookmark recipe'),
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                // child: Container(
-                //   margin: EdgeInsets.all(10.0),
-                //   width: double.infinity,
-                //   height: ((size.width - 42.0) / 2) -
-                //       20, // minus padding, minus margin
-                //   decoration: BoxDecoration(
-                //     borderRadius: BorderRadius.circular(25.0),
-                //     image: DecorationImage(
-                //       image: !isImage
-                //           ? Image.asset('assets/images/broken.png',
-                //                   fit: BoxFit.cover)
-                //               .image
-                //           : Image.network(_image, fit: BoxFit.cover).image,
-                //       fit: BoxFit.cover,
-                //     ),
-                //   ),
-                // ),
-                child: FutureBuilder(
-                    future: storedFuture,
-                    builder: (BuildContext context, AsyncSnapshot text) {
-                      if (text.connectionState == ConnectionState.waiting) {
-                        return Container(
-                          margin: EdgeInsets.all(10.0),
-                          width: double.infinity,
-                          height: (size.width / 2) - 20.0 - 14.0,
-                          // height: 400.0,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25.0),
-                            image: DecorationImage(
-                              image: AssetImage(
-                                'assets/images/broken.png',
-                              ),
-                              fit: BoxFit.cover,
+              FutureBuilder(
+                  future: storedFuture,
+                  builder: (BuildContext context, AsyncSnapshot text) {
+                    if (text.connectionState == ConnectionState.waiting) {
+                      return Container(
+                        margin: EdgeInsets.all(10.0),
+                        width: double.infinity,
+                        height: (size.width / 2) - 20.0 - 14.0,
+                        // height: 400.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25.0),
+                          image: DecorationImage(
+                            image: AssetImage(
+                              'assets/images/broken.png',
                             ),
+                            fit: BoxFit.cover,
                           ),
-                        );
-                      } else if(text.error != null){
-                        return Container(
-                          margin: EdgeInsets.all(10.0),
-                          width: double.infinity,
-                          height: (size.width / 2) - 20.0 - 14.0,
-                          // height: 400.0,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25.0),
-                            image: DecorationImage(
-                              image: AssetImage(
-                                'assets/images/broken.png',
-                              ),
-                              fit: BoxFit.cover,
+                        ),
+                      );
+                    } else if (text.error != null) {
+                      return Container(
+                        margin: EdgeInsets.all(10.0),
+                        width: double.infinity,
+                        height: (size.width / 2) - 20.0 - 14.0,
+                        // height: 400.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25.0),
+                          image: DecorationImage(
+                            image: AssetImage(
+                              'assets/images/broken.png',
                             ),
+                            fit: BoxFit.cover,
                           ),
-                        );
-                      
-                      } else {
-                        // return Image(
-                        //   image: NetworkImage(text.data.toString()),
-                        //   fit: BoxFit.cover,
-                        // );
-                        return Container(
+                        ),
+                      );
+                    } else {
+                      // return Image(
+                      //   image: NetworkImage(text.data.toString()),
+                      //   fit: BoxFit.cover,
+                      // );
+                      if (!text.hasData) {
+                        return GestureDetector(
+                            onTap: () {
+                              setState(() {});
+                            },
+                            child: Container(
+                                margin: EdgeInsets.all(10.0),
+                                width: double.infinity,
+                                height: (size.width / 2) - 20.0 - 14.0,
+                                child: Center(
+                                  child: Icon(
+                                    Icons.refresh,
+                                    size: 50.0,
+                                    color: kDark,
+                                  ),
+                                )));
+                      }
+                      return InkWell(
+                        onDoubleTap: () => print('Bookmark recipe'),
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        child: Container(
                           margin: EdgeInsets.all(10.0),
                           width: double.infinity,
                           height: (size.width / 2) - 20.0 - 14.0,
@@ -146,10 +145,10 @@ class _ExploreRecState extends State<ExploreRec> {
                               fit: BoxFit.cover,
                             ),
                           ),
-                        );
-                      }
-                    }),
-              ),
+                        ),
+                      );
+                    }
+                  }),
               ListTile(
                 dense: true,
                 leading: Container(
@@ -169,8 +168,9 @@ class _ExploreRecState extends State<ExploreRec> {
                       child: FutureBuilder(
                           future: storedFuture1,
                           builder: (BuildContext context, AsyncSnapshot text) {
-                            if (text.connectionState ==
-                                ConnectionState.waiting) {
+                            if ((text.connectionState ==
+                                    ConnectionState.waiting) ||
+                                text.hasError) {
                               return Image(
                                 height: (size.width - 42.0) / 12,
                                 width: (size.width - 42.0) / 12,
@@ -182,6 +182,20 @@ class _ExploreRecState extends State<ExploreRec> {
                               //   image: NetworkImage(text.data.toString()),
                               //   fit: BoxFit.cover,
                               // );
+                              if (!text.hasData) {
+                                return GestureDetector(
+                                    onTap: () {
+                                      setState(() {});
+                                    },
+                                    child: Container(
+                                        child: Center(
+                                      child: Icon(
+                                        Icons.refresh,
+                                        // size: 50.0,
+                                        color: kDark,
+                                      ),
+                                    )));
+                              }
                               return Image(
                                 height: (size.width - 42.0) / 12,
                                 width: (size.width - 42.0) / 12,

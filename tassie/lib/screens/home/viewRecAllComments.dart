@@ -347,13 +347,29 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
                             // future: loadImg('assets/Banana.png'),
                             builder:
                                 (BuildContext context, AsyncSnapshot text) {
-                              if (text.connectionState ==
-                                  ConnectionState.waiting) {
+                              if ((text.connectionState ==
+                                  ConnectionState.waiting) || text.hasError) {
                                 return Image.asset("assets/images/broken.png",
                                     fit: BoxFit.cover,
                                     height: 48.0,
                                     width: 48.0);
                               } else {
+                                if (!text.hasData) {
+                                  return GestureDetector(
+                                      onTap: () {
+                                        setState(() {});
+                                      },
+                                      child: Container(
+                                          height: 48.0,
+                                          width: 48.0,
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.refresh,
+                                              // size: 50.0,
+                                              color: kDark,
+                                            ),
+                                          )));
+                                }
                                 return Image(
                                   height: 48.0,
                                   width: 48.0,

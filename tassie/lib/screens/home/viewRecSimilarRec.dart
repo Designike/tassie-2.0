@@ -91,7 +91,7 @@ class _ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
                   child: FutureBuilder(
                       future: storedFuture,
                       builder: (BuildContext context, AsyncSnapshot text) {
-                        if (text.connectionState == ConnectionState.waiting) {
+                        if ((text.connectionState == ConnectionState.waiting) || text.hasError){
                           // return Image.asset("assets/images/broken.png",
                           //     fit: BoxFit.cover, height: 128, width: 128);
                           return Container(
@@ -109,6 +109,25 @@ class _ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
                             ),
                           );
                         } else {
+                          if (!text.hasData) {
+                            return GestureDetector(
+                                onTap: () {
+                                  setState(() {});
+                                },
+                                child: Container(
+                                    margin: EdgeInsets.all(10.0),
+                                    width: double.infinity,
+                                    // height: ((size.width - 42.0) / 2) -
+                                    //     20, // minus padding, minus margin
+                                    height: 150 - 20,
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.refresh,
+                                        size: 50.0,
+                                        color: kDark,
+                                      ),
+                                    )));
+                          }
                           return Container(
                             margin: EdgeInsets.all(10.0),
                             width: double.infinity,

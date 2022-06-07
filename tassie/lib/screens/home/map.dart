@@ -169,14 +169,30 @@ class _TassieMapState extends State<TassieMap> {
                                         future: storedFuture,
                                         builder: (BuildContext context,
                                             AsyncSnapshot text) {
-                                          if (text.connectionState ==
-                                              ConnectionState.waiting) {
+                                          if ((text.connectionState ==
+                                              ConnectionState.waiting) || text.hasError) {
                                             return Image.asset(
                                                 "assets/images/broken.png",
                                                 fit: BoxFit.cover,
                                                 height: 48,
                                                 width: 48);
                                           } else {
+                                            if (!text.hasData) {
+                                              return GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {});
+                                                  },
+                                                  child: Container(
+                                                      height: 48,
+                                                      width: 48,
+                                                      child: Center(
+                                                        child: Icon(
+                                                          Icons.refresh,
+                                                          // size: 50.0,
+                                                          color: kDark,
+                                                        ),
+                                                      )));
+                                            }
                                             return Ink.image(
                                               height: 48,
                                               width: 48,
@@ -201,34 +217,36 @@ class _TassieMapState extends State<TassieMap> {
                     ),
                   ],
                 ),
-                Positioned(bottom: kDefaultPadding, right: kDefaultPadding*2 + 100.0, left: kDefaultPadding, child:  GestureDetector(
-
-                            onTap: () => widget.rightSwipe(),
-                            child: Container(
-                              height: 50.0,
-                              decoration: BoxDecoration(
-
-                                    borderRadius: BorderRadius.circular(25.0),
-                              ),
-                              child: Material(
-
-                                borderRadius: BorderRadius.circular(25.0),
-                                shadowColor: kPrimaryColorAccent,
-                                color: kPrimaryColor,
-                                elevation: 5.0,
-                                child: const Center(
-                                  child: Text(
-                                    'BACK TO FEED',
-                                    style: TextStyle(
-                                      // fontFamily: 'Raleway',
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
+                Positioned(
+                  bottom: kDefaultPadding,
+                  right: kDefaultPadding * 2 + 100.0,
+                  left: kDefaultPadding,
+                  child: GestureDetector(
+                    onTap: () => widget.rightSwipe(),
+                    child: Container(
+                      height: 50.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
+                      child: Material(
+                        borderRadius: BorderRadius.circular(25.0),
+                        shadowColor: kPrimaryColorAccent,
+                        color: kPrimaryColor,
+                        elevation: 5.0,
+                        child: const Center(
+                          child: Text(
+                            'BACK TO FEED',
+                            style: TextStyle(
+                              // fontFamily: 'Raleway',
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
                             ),
-                          ),),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           );

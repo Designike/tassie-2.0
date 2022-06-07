@@ -109,8 +109,9 @@ class _RecPostState extends State<RecPost> {
                               future: storedFuture,
                               builder:
                                   (BuildContext context, AsyncSnapshot text) {
-                                if (text.connectionState ==
-                                    ConnectionState.waiting) {
+                                if ((text.connectionState ==
+                                        ConnectionState.waiting) ||
+                                    text.hasError) {
                                   return Container(
                                     margin: EdgeInsets.all(10.0),
                                     width: double.infinity,
@@ -131,6 +132,24 @@ class _RecPostState extends State<RecPost> {
                                   //   image: NetworkImage(text.data.toString()),
                                   //   fit: BoxFit.cover,
                                   // );
+                                  if (!text.hasData) {
+                                    return GestureDetector(
+                                        onTap: () {
+                                          setState(() {});
+                                        },
+                                        child: Container(
+                                            margin: EdgeInsets.all(10.0),
+                                            width: double.infinity,
+                                            height: ((size.width - 40.0) / 2) -
+                                                20.0,
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.refresh,
+                                                size: 50.0,
+                                                color: kDark,
+                                              ),
+                                            )));
+                                  }
                                   return Container(
                                     margin: EdgeInsets.all(10.0),
                                     width: double.infinity,
@@ -183,6 +202,23 @@ class _RecPostState extends State<RecPost> {
                                       //   image: NetworkImage(text.data.toString()),
                                       //   fit: BoxFit.cover,
                                       // );
+                                      if (!text.hasData) {
+                                        return GestureDetector(
+                                            onTap: () {
+                                              setState(() {});
+                                            },
+                                            child: Container(
+                                                height:
+                                                    (size.width - 40.0) / 12,
+                                                width: (size.width - 40.0) / 12,
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.refresh,
+                                                    // size: 50.0,
+                                                    color: kDark,
+                                                  ),
+                                                )));
+                                      }
                                       return Image(
                                         height: (size.width - 40.0) / 12,
                                         width: (size.width - 40.0) / 12,

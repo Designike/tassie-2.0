@@ -98,79 +98,68 @@ class _ExplorePostState extends State<ExplorePost> {
         children: <Widget>[
           Column(
             children: <Widget>[
-              InkWell(
-                // onDoubleTap: () async {
-                //   if (!liked) {
-                //     var token = await storage.read(key: "token");
-                //     dio.post("https://api-tassie.herokuapp.com/feed/like",
-                //         options: Options(headers: {
-                //           HttpHeaders.contentTypeHeader: "application/json",
-                //           HttpHeaders.authorizationHeader:
-                //               "Bearer " + token!
-                //         }),
-                //         data: {'uuid': post['uuid']});
-                //     widget.func(true);
-                //   }
-                // },
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => ExploreViewComments(
-                            post: post,
-                            noOfComment: widget.noOfComment,
-                            noOfLike: widget.noOfLike,
-                            isLiked: widget.isLiked,
-                            func: widget.func,
-                            plusComment: widget.plusComment,
-                            funcB: widget.funcB,
-                            bookmark: widget.bookmark,
-                            minusComment: widget.minusComment,
-                            dp: dp),
-                      ));
-                },
-                // child: Container(
-                //   margin: EdgeInsets.all(10.0),
-                //   width: double.infinity,
-                //   height: (size.width / 2) - 20.0 - 14.0,
-                //   // height: 400.0,
-                //   decoration: BoxDecoration(
-                //     borderRadius: BorderRadius.circular(25.0),
-                //     image: DecorationImage(
-                //       image: !isImage
-                //           ? Image.asset('assets/images/broken.png',
-                //                   fit: BoxFit.cover)
-                //               .image
-                //           : Image.network(_image, fit: BoxFit.cover).image,
-                //       fit: BoxFit.cover,
-                //     ),
-                //   ),
-                // ),
-                child: FutureBuilder(
-                    future: storedFuture,
-                    builder: (BuildContext context, AsyncSnapshot text) {
-                      if (text.connectionState == ConnectionState.waiting) {
-                        return Container(
-                          margin: EdgeInsets.all(10.0),
-                          width: double.infinity,
-                          height: (size.width / 2) - 20.0 - 14.0,
-                          // height: 400.0,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25.0),
-                            image: DecorationImage(
-                              image: AssetImage(
-                                'assets/images/broken.png',
-                              ),
-                              fit: BoxFit.cover,
+              FutureBuilder(
+                  future: storedFuture,
+                  builder: (BuildContext context, AsyncSnapshot text) {
+                    if ((text.connectionState == ConnectionState.waiting) ||
+                        text.hasError) {
+                      return Container(
+                        margin: EdgeInsets.all(10.0),
+                        width: double.infinity,
+                        height: (size.width / 2) - 20.0 - 14.0,
+                        // height: 400.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25.0),
+                          image: DecorationImage(
+                            image: AssetImage(
+                              'assets/images/broken.png',
                             ),
+                            fit: BoxFit.cover,
                           ),
-                        );
-                      } else {
-                        // return Image(
-                        //   image: NetworkImage(text.data.toString()),
-                        //   fit: BoxFit.cover,
-                        // );
-                        return Container(
+                        ),
+                      );
+                    } else {
+                      // return Image(
+                      //   image: NetworkImage(text.data.toString()),
+                      //   fit: BoxFit.cover,
+                      // );
+
+                      if (!text.hasData) {
+                        return GestureDetector(
+                            onTap: () {
+                              setState(() {});
+                            },
+                            child: Container(
+                                margin: EdgeInsets.all(10.0),
+                                width: double.infinity,
+                                height: (size.width / 2) - 20.0 - 14.0,
+                                child: Center(
+                                  child: Icon(
+                                    Icons.refresh,
+                                    size: 50.0,
+                                    color: kDark,
+                                  ),
+                                )));
+                      }
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ExploreViewComments(
+                                    post: post,
+                                    noOfComment: widget.noOfComment,
+                                    noOfLike: widget.noOfLike,
+                                    isLiked: widget.isLiked,
+                                    func: widget.func,
+                                    plusComment: widget.plusComment,
+                                    funcB: widget.funcB,
+                                    bookmark: widget.bookmark,
+                                    minusComment: widget.minusComment,
+                                    dp: dp),
+                              ));
+                        },
+                        child: Container(
                           margin: EdgeInsets.all(10.0),
                           width: double.infinity,
                           height: (size.width / 2) - 20.0 - 14.0,
@@ -182,10 +171,10 @@ class _ExplorePostState extends State<ExplorePost> {
                               fit: BoxFit.cover,
                             ),
                           ),
-                        );
-                      }
-                    }),
-              ),
+                        ),
+                      );
+                    }
+                  }),
               GestureDetector(
                 onTap: () {
                   Navigator.of(context, rootNavigator: true).push(
@@ -224,8 +213,9 @@ class _ExplorePostState extends State<ExplorePost> {
                             future: storedFuture1,
                             builder:
                                 (BuildContext context, AsyncSnapshot text) {
-                              if (text.connectionState ==
-                                  ConnectionState.waiting) {
+                              if ((text.connectionState ==
+                                      ConnectionState.waiting) ||
+                                  text.hasError) {
                                 // return Image.asset("assets/images/broken.png",
                                 //     fit: BoxFit.cover, height: 128, width: 128);
                                 return Image(
@@ -235,6 +225,20 @@ class _ExplorePostState extends State<ExplorePost> {
                                   fit: BoxFit.cover,
                                 );
                               } else {
+                                if (!text.hasData) {
+                                  return GestureDetector(
+                                      onTap: () {
+                                        setState(() {});
+                                      },
+                                      child: Container(
+                                          child: Center(
+                                        child: Icon(
+                                          Icons.refresh,
+                                          size: 50.0,
+                                          color: kDark,
+                                        ),
+                                      )));
+                                }
                                 return Image(
                                   height: (size.width - 42.0) / 12,
                                   width: (size.width - 42.0) / 12,

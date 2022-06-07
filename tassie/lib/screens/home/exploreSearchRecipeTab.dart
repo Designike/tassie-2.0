@@ -19,7 +19,6 @@ class ExploreSearchRecipeTab extends StatefulWidget {
 class _ExploreSearchRecipeTabState extends State<ExploreSearchRecipeTab> {
   // AsyncMemoizer memoizer = AsyncMemoizer();
 
-
   Widget _buildProgressIndicator() {
     return Padding(
       padding: const EdgeInsets.all(kDefaultPadding),
@@ -120,7 +119,8 @@ class _exploreRecipeAvatarState extends State<exploreRecipeAvatar> {
     return FutureBuilder(
         future: storedFuture,
         builder: (BuildContext context, AsyncSnapshot text) {
-          if (text.connectionState == ConnectionState.waiting) {
+          if ((text.connectionState == ConnectionState.waiting) ||
+              text.hasError) {
             return Image(
               height: 50.0,
               width: 50.0,
@@ -132,6 +132,22 @@ class _exploreRecipeAvatarState extends State<exploreRecipeAvatar> {
             //   image: NetworkImage(text.data.toString()),
             //   fit: BoxFit.cover,
             // );
+            if (!text.hasData) {
+              return GestureDetector(
+                  onTap: () {
+                    setState(() {});
+                  },
+                  child: Container(
+                    height: 50.0,
+              width: 50.0,
+                      child: Center(
+                    child: Icon(
+                      Icons.refresh,
+                      // size: 50.0,
+                      color: kDark,
+                    ),
+                  )));
+            }
             return Image(
               height: 50.0,
               width: 50.0,

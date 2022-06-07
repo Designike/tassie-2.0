@@ -196,11 +196,25 @@ class _ProfilePostTabChildState extends State<ProfilePostTabChild> {
     return FutureBuilder(
         future: storedFuture,
         builder: (BuildContext context, AsyncSnapshot text) {
-          if (text.connectionState == ConnectionState.waiting) {
+          if ((text.connectionState == ConnectionState.waiting) || text.hasError) {
             // return Image.asset("assets/images/broken.png",
             //     fit: BoxFit.cover, height: 128, width: 128);
             return Container();
           } else {
+            if (!text.hasData) {
+              return GestureDetector(
+                  onTap: () {
+                    setState(() {});
+                  },
+                  child: Container(
+                      child: Center(
+                        child: Icon(
+                          Icons.refresh,
+                          // size: 50.0,
+                          color: kDark,
+                        ),
+                      )));
+            }
             return Image(
               image: NetworkImage(text.data.toString()),
               fit: BoxFit.cover,

@@ -337,17 +337,17 @@ class _ViewRecPostState extends State<ViewRecPost> {
         // ],
 
         Column(
-            children: showMoreBtn
-                ? (isIng
-                    ? ingWidgetList.sublist(0, 2)
-                    : stepsWidgetList.sublist(0, 2))
-                : (isIng ? ingWidgetList : stepsWidgetList),
-            // children: isIng
-            //     ? (isExpandedIng
-            //         ? ingWidgetList.sublist(0, 2)
-            //         : ingWidgetList)
-            //     : (isExpandedSteps ? stepsWidgetList.sublist(0, 2) : stepsWidgetList),
-                ),
+          // children: showMoreBtn
+          //     ? (isIng
+          //         ? ingWidgetList.sublist(0, 2)
+          //         : stepsWidgetList.sublist(0, 2))
+          //     : (isIng ? ingWidgetList : stepsWidgetList),
+          children: isIng
+              ? (isExpandedIng ? ingWidgetList : ingWidgetList.sublist(0, 2))
+              : (isExpandedSteps
+                  ? stepsWidgetList
+                  : stepsWidgetList.sublist(0, 2)),
+        ),
         showMoreBtn
             ? TextButton.icon(
                 icon: isIng
@@ -368,8 +368,10 @@ class _ViewRecPostState extends State<ViewRecPost> {
                   setState(() {
                     if (isIng == true) {
                       isExpandedIng = !isExpandedIng;
+                      print(isExpandedIng);
                     } else {
                       isExpandedSteps = !isExpandedSteps;
+                      print(isExpandedSteps);
                     }
                   });
                 },
@@ -386,12 +388,12 @@ class _ViewRecPostState extends State<ViewRecPost> {
     List<bool> isImage = List.filled(listItems.length, false, growable: true);
     for (int k = 0; k < listImages.length; k++) {
       print(listImages[k]);
-      AsyncMemoizer memoizer = AsyncMemoizer();
-      Future storedFuture = loadImg(listImages[k]['fileID'], memoizer);
+      AsyncMemoizer memoizer4 = AsyncMemoizer();
+      String storedFuture = await loadImg(listImages[k]['fileID'], memoizer4);
       if (isIng) {
-        ingStoredFutures[(k + 1).toString()] = storedFuture;
+        ingStoredFutures[listImages[k]['index']] = storedFuture;
       } else {
-        stepStoredFutures[(k + 1).toString()] = storedFuture;
+        stepStoredFutures[listImages[k]['index']] = storedFuture;
       }
       isImage[int.parse(listImages[k]['index']) - 1] = true;
     }
@@ -817,11 +819,26 @@ class _ViewRecPostState extends State<ViewRecPost> {
                               future: storedFuture,
                               builder:
                                   (BuildContext context, AsyncSnapshot text) {
-                                if (text.connectionState ==
-                                    ConnectionState.waiting) {
+                                if ((text.connectionState ==
+                                        ConnectionState.waiting) ||
+                                    text.hasError) {
                                   return Image.asset(
                                       "assets/images/broken.png");
                                 } else {
+                                  if (!text.hasData) {
+                                    return GestureDetector(
+                                        onTap: () {
+                                          setState(() {});
+                                        },
+                                        child: Container(
+                                            child: Center(
+                                          child: Icon(
+                                            Icons.refresh,
+                                            size: 50.0,
+                                            color: kDark,
+                                          ),
+                                        )));
+                                  }
                                   return Image.network(text.data.toString());
                                 }
                               }),
@@ -1112,8 +1129,9 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                           future: storedFuture3,
                                           builder: (BuildContext context,
                                               AsyncSnapshot text) {
-                                            if (text.connectionState ==
-                                                ConnectionState.waiting) {
+                                            if ((text.connectionState ==
+                                                    ConnectionState.waiting) ||
+                                                text.hasError) {
                                               return Image(
                                                 height:
                                                     (size.width - 40.0) / 10,
@@ -1123,6 +1141,26 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                 fit: BoxFit.cover,
                                               );
                                             } else {
+                                              if (!text.hasData) {
+                                                return GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {});
+                                                    },
+                                                    child: Container(
+                                                        height: (size.width -
+                                                                40.0) /
+                                                            10,
+                                                        width: (size.width -
+                                                                40.0) /
+                                                            10,
+                                                        child: Center(
+                                                          child: Icon(
+                                                            Icons.refresh,
+                                                            // size: 50.0,
+                                                            color: kDark,
+                                                          ),
+                                                        )));
+                                              }
                                               return Image(
                                                 height:
                                                     (size.width - 40.0) / 10,

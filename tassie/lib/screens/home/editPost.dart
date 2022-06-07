@@ -226,9 +226,29 @@ class _EditPostState extends State<EditPost> {
                             image: AssetImage('assets/images/broken.png'),
                             fit: BoxFit.cover,
                           );
-                        } else {
+                        } else if (text.hasError) {
+                                    print('2');
+                                    return Image(
+                            image: AssetImage('assets/images/broken.png'),
+                            fit: BoxFit.cover,
+                          );
+                                  }else {
                           print('Hlneo');
                           print(post['postID']);
+                          if (!text.hasData) {
+                                    return GestureDetector(
+                                        onTap: () {
+                                          setState(() {});
+                                        },
+                                        child: Container(
+                                            child: Center(
+                                          child: Icon(
+                                            Icons.refresh,
+                                            size: 50.0,
+                                            color: kDark,
+                                          ),
+                                        )));
+                                  }
                           return Image(
                             image: NetworkImage(text.data.toString()),
                             fit: BoxFit.cover,

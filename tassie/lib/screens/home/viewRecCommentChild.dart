@@ -74,10 +74,26 @@ class _CreateCommentState extends State<CreateComment> {
                     future: storedFuture,
                     // future: loadImg('assets/Banana.png',memoizer),
                     builder: (BuildContext context, AsyncSnapshot text) {
-                      if (text.connectionState == ConnectionState.waiting) {
+                      if ((text.connectionState == ConnectionState.waiting) || text.hasError) {
                         return Image.asset("assets/images/broken.png",
                             fit: BoxFit.cover, height: 50.0, width: 50.0);
                       } else {
+                        if (!text.hasData) {
+                          return GestureDetector(
+                              onTap: () {
+                                setState(() {});
+                              },
+                              child: Container(
+                                  height: 50.0,
+                                  width: 50.0,
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.refresh,
+                                      // size: 50.0,
+                                      color: kDark,
+                                    ),
+                                  )));
+                        }
                         return Image(
                           height: 50.0,
                           width: 50.0,

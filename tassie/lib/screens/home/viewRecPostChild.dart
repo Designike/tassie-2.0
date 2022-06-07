@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:async/async.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -115,38 +116,56 @@ class _StepIngImageState extends State<StepIngImage> {
                     )
                   : Padding(
                       padding: const EdgeInsets.only(top: 10.0),
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(15.0),
-                          child: SizedBox(
-                            width: size.width - (2 * kDefaultPadding),
-                            height: size.width - (2 * kDefaultPadding),
-                            // child: Image(
-                            //   // image: NetworkImage(url),
-                            //   image:
-                            //       NetworkImage('https://picsum.photos/200'),
-                            //   fit: BoxFit.cover,
-                            // ),
-                            child: FutureBuilder(
-                                future: _storedFuture1,
-                                builder:
-                                    (BuildContext context, AsyncSnapshot text) {
-                                  if (text.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return Image.asset(
-                                        "assets/images/broken.png");
-                                  } else if (text.error != null) {
-                                    return Image.asset(
-                                        "assets/images/broken.png");
-                                  } else {
-                                    return Image(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15.0),
+                        child: SizedBox(
+                          width: size.width - (2 * kDefaultPadding),
+                          height: size.width - (2 * kDefaultPadding),
+                          // child: Image(
+                          //   // image: NetworkImage(url),
+                          //   image:
+                          //       NetworkImage('https://picsum.photos/200'),
+                          //   fit: BoxFit.cover,
+                          // ),
+                          child: FutureBuilder(
+                              future: _storedFuture1,
+                              builder:
+                                  (BuildContext context, AsyncSnapshot text) {
+                                if ((text.connectionState ==
+                                    ConnectionState.waiting) || text.hasError){
+                                  print('1');
+                                  return Image.asset(
+                                      "assets/images/broken.png");
+                                } else if (text.hasError) {
+                                  print('2');
+                                  return Image.asset(
+                                      "assets/images/broken.png");
+                                } else {
+                                  print('3');
+                                  print(text);
+                                  if (!text.hasData) {
+                                    return GestureDetector(
+                                        onTap: () {
+                                          setState(() {});
+                                        },
+                                        child: Container(
+                                            child: Center(
+                                          child: Icon(
+                                            Icons.refresh,
+                                            size: 50.0,
+                                            color: kDark,
+                                          ),
+                                        )));
+                                  }
+                                  return GestureDetector(
+                                    onTap: () {},
+                                    child: Image(
                                       image: NetworkImage(text.data.toString()),
                                       fit: BoxFit.cover,
-                                    );
-                                  }
-                                }),
-                          ),
+                                    ),
+                                  );
+                                }
+                              }),
                         ),
                       ),
                     ),

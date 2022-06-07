@@ -32,7 +32,9 @@ Future loadImg(key, AsyncMemoizer memoizer) async {
           HttpHeaders.contentTypeHeader: "application/json",
         }),
         data: {"key": key});
-    // print(response.data['error']);
+    // print('crap');
+    // print(response.data['data']['url']);
+    // print('crap2');
     return response.data['data']['url'];
   });
   // } else {

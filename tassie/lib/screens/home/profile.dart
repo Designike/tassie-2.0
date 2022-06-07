@@ -510,14 +510,30 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                       future: storedFuture,
                                       builder: (BuildContext context,
                                           AsyncSnapshot text) {
-                                        if (text.connectionState ==
-                                            ConnectionState.waiting) {
+                                        if ((text.connectionState ==
+                                            ConnectionState.waiting) || text.hasError) {
                                           return Image.asset(
                                               "assets/images/broken.png",
                                               fit: BoxFit.cover,
                                               height: 128,
                                               width: 128);
                                         } else {
+                                          if (!text.hasData) {
+                                            return GestureDetector(
+                                                onTap: () {
+                                                  setState(() {});
+                                                },
+                                                child: Container(
+                                                    height: 128,
+                                                    width: 128,
+                                                    child: Center(
+                                                      child: Icon(
+                                                        Icons.refresh,
+                                                        // size: 50.0,
+                                                        color: kDark,
+                                                      ),
+                                                    )));
+                                          }
                                           return Ink.image(
                                             height: 128,
                                             width: 128,

@@ -119,8 +119,8 @@ class _FeedPostState extends State<FeedPost> {
                               future: storedFuture1,
                               builder:
                                   (BuildContext context, AsyncSnapshot text) {
-                                if (text.connectionState ==
-                                    ConnectionState.waiting) {
+                                if ((text.connectionState ==
+                                    ConnectionState.waiting || text.hasError)) {
                                   return Image(
                                     height: 50.0,
                                     width: 50.0,
@@ -133,6 +133,22 @@ class _FeedPostState extends State<FeedPost> {
                                   //   image: NetworkImage(text.data.toString()),
                                   //   fit: BoxFit.cover,
                                   // );
+                                  if (!text.hasData) {
+                                    return GestureDetector(
+                                        onTap: () {
+                                          setState(() {});
+                                        },
+                                        child: Container(
+                                            height: 50.0,
+                                            width: 50.0,
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.refresh,
+                                                // size: 50.0,
+                                                color: kDark,
+                                              ),
+                                            )));
+                                  }
                                   return Image(
                                     height: 50.0,
                                     width: 50.0,
@@ -194,7 +210,7 @@ class _FeedPostState extends State<FeedPost> {
                     child: FutureBuilder(
                         future: storedFuture,
                         builder: (BuildContext context, AsyncSnapshot text) {
-                          if (text.connectionState == ConnectionState.waiting) {
+                          if ((text.connectionState == ConnectionState.waiting) || text.hasError) {
                             return Container(
                               margin: EdgeInsets.all(10.0),
                               width: double.infinity,
@@ -215,6 +231,23 @@ class _FeedPostState extends State<FeedPost> {
                             //   image: NetworkImage(text.data.toString()),
                             //   fit: BoxFit.cover,
                             // );
+                            if (!text.hasData) {
+                              return GestureDetector(
+                                  onTap: () {
+                                    setState(() {});
+                                  },
+                                  child: Container(
+                                      margin: EdgeInsets.all(10.0),
+                                      width: double.infinity,
+                                      height: size.width - 40.0,
+                                      child: Center(
+                                        child: Icon(
+                                          Icons.refresh,
+                                          size: 50.0,
+                                          color: kDark,
+                                        ),
+                                      )));
+                            }
                             return Container(
                               margin: EdgeInsets.all(10.0),
                               width: double.infinity,
@@ -315,7 +348,9 @@ class _FeedPostState extends State<FeedPost> {
                                         ),
                                       ),
                                     );
-                                    Provider.of<LeftSwipe>(context, listen: false).setSwipe(false);
+                                    Provider.of<LeftSwipe>(context,
+                                            listen: false)
+                                        .setSwipe(false);
                                   },
                                 ),
                                 Text(
@@ -385,7 +420,6 @@ class _FeedPostState extends State<FeedPost> {
                         Navigator.of(context, rootNavigator: true)
                             .push(MaterialPageRoute(
                           builder: (_) => ViewComments(
-                            
                             post: post,
                             noOfComment: widget.noOfComment,
                             noOfLike: widget.noOfLike,
@@ -397,7 +431,6 @@ class _FeedPostState extends State<FeedPost> {
                             dp: dp,
                           ),
                         ));
-                        
                       },
                       child: RichText(
                         overflow: TextOverflow.ellipsis,
