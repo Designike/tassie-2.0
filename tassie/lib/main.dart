@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
     //                     debugShowCheckedModeBanner: false,
     //                   )));
     return GetMaterialApp(
-      title: 'Theme change using Get',
+      title: 'Tassie',
       theme: lightThemeData(context),
       darkTheme: darkThemeData(context),
       themeMode: ThemeMode.dark,

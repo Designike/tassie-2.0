@@ -192,7 +192,9 @@ class _FeedPostState extends State<FeedPost> {
                           ),
                         ])),
                     subtitle: Text(
-                      post['createdAt'],
+                      DateTime.parse(post['createdAt']).hour.toString() +
+                          ":" +
+                          DateTime.parse(post['createdAt']).minute.toString(),
                       style: TextStyle(
                           color: Theme.of(context).brightness == Brightness.dark
                               ? kLight

@@ -93,6 +93,10 @@ class _EditRecipeState extends State<EditRecipe> {
 
   Map _clearSteps = {};
   Map _clearIngs = {};
+
+  List _stepFlags = [];
+  List _ingFlags = [];
+
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _tagController = TextEditingController();
   final LocalStorage lstorage = LocalStorage('tassie');
@@ -141,9 +145,16 @@ class _EditRecipeState extends State<EditRecipe> {
 
   Map falsify(dict1, dict2) {
     for (var key in dict1) {
-      dict2[int.parse(key['index']) - 1] = true;
+      dict2[int.parse(key['index']) - 1] = false;
     }
     return dict2;
+  }
+
+  List falsify2(dict1, flags) {
+    for (var key in dict1) {
+      flags.add(int.parse(key['index']) - 1);
+    }
+    return flags;
   }
 
   Future<void> urlToFile() async {
@@ -162,6 +173,9 @@ class _EditRecipeState extends State<EditRecipe> {
             setState(() {
               _clearIngs = falsify(widget.ingredientPics, _clearIngs);
               _clearSteps = falsify(widget.stepPics, _clearSteps);
+
+              _ingFlags = falsify2(widget.ingredientPics, _ingFlags);
+              _stepFlags = falsify2(widget.stepPics, _stepFlags);
               print(_clearSteps);
               print(_clearIngs);
               isLoading = false;
@@ -188,6 +202,9 @@ class _EditRecipeState extends State<EditRecipe> {
               setState(() {
                 _clearIngs = falsify(widget.ingredientPics, _clearIngs);
                 _clearSteps = falsify(widget.stepPics, _clearSteps);
+
+                _ingFlags = falsify2(widget.ingredientPics, _ingFlags);
+                _stepFlags = falsify2(widget.stepPics, _stepFlags);
                 print(_clearSteps);
                 print(_clearIngs);
                 isLoading = false;
@@ -226,7 +243,13 @@ class _EditRecipeState extends State<EditRecipe> {
             keyName: 'name',
             imgName: key + '_' + (index + 1).toString(),
             uuid: widget.uuid,
-            clearRecost: key == 'i' ? _clearIngs[index] : _clearSteps[index],
+            clearRecost: key == 'i'
+                ? _ingFlags.contains(index)
+                    ? !_clearIngs[index]
+                    : _clearIngs[index]
+                : _stepFlags.contains(index)
+                    ? !_clearSteps[index]
+                    : _clearSteps[index],
             falseResp: () {
               print("working"); //((index.toInt())-1).toString()
               setState(() {
@@ -1041,7 +1064,7 @@ class _EditRecipeState extends State<EditRecipe> {
   }
 
   /// Remove image
-  Future<void> _clear(key, index, imgName, [clearRecost = true]) async {
+  Future<void> _clear(key, index, imgName, [clearRecost = false]) async {
     print(widget.uuid);
     if (key == 'r') {
       setState(() {
@@ -1061,8 +1084,16 @@ class _EditRecipeState extends State<EditRecipe> {
     } else if (key == 'i') {
       setState(() {
         ingredientPics[(index).toString()] = '';
-        if (!clearRecost) {
-          _clearIngs[index] = false;
+        if (clearRecost) {
+          _clearIngs[index] = true;
+        }
+        if (_ingFlags.contains(index)) {
+          _ingFlags.remove(index);
+          for (var i = 0; i < _ingFlags.length; i++) {
+            if (_ingFlags[i] > index) {
+              _ingFlags[index] = _ingFlags[index] - 1;
+            }
+          }
         }
         print(_clearIngs);
       });
@@ -1080,9 +1111,17 @@ class _EditRecipeState extends State<EditRecipe> {
     } else {
       setState(() {
         stepPics[(index).toString()] = '';
-        if (!clearRecost) {
-          _clearSteps[index] = false;
+        if (clearRecost) {
+          _clearSteps[index] = true;
           print("dfghjkl");
+        }
+        if (_stepFlags.contains(index)) {
+          _stepFlags.remove(index);
+          for (var i = 0; i < _stepFlags.length; i++) {
+            if (_stepFlags[i] > index) {
+              _stepFlags[index] = _stepFlags[index] - 1;
+            }
+          }
         }
         print(_clearSteps);
       });
