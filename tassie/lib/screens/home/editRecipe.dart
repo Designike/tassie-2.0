@@ -146,14 +146,12 @@ class _EditRecipeState extends State<EditRecipe> {
   }
 
   Future<void> urlToFile() async {
-    widget.stepPics.forEach((element) async {
-      // print(widget.stepPics);
-      stepPics[(int.parse(element['index']) - 1).toString()] =
-          await _fileFromImageUrl(element['fileID']);
-      // print(widget.stepPics.length);
-      // print(stepPics);
-      // print(stepPics[element['index']]);
-      if (widget.stepPics.length == stepPics.length) {
+    if (widget.stepPics.isEmpty) {
+      if (widget.ingredientPics.isEmpty) {
+        setState(() {
+          isLoading = false;
+        });
+      } else {
         widget.ingredientPics.forEach((element) async {
           ingredientPics[(int.parse(element['index']) - 1).toString()] =
               await _fileFromImageUrl(element['fileID']);
@@ -170,7 +168,34 @@ class _EditRecipeState extends State<EditRecipe> {
           }
         });
       }
-    });
+    } else {
+      widget.stepPics.forEach((element) async {
+        // print(widget.stepPics);
+        stepPics[(int.parse(element['index']) - 1).toString()] =
+            await _fileFromImageUrl(element['fileID']);
+        print('length');
+        print(widget.stepPics.length);
+        print(stepPics.length);
+        // print(stepPics[element['index']]);
+        if (widget.stepPics.length == stepPics.length) {
+          widget.ingredientPics.forEach((element) async {
+            ingredientPics[(int.parse(element['index']) - 1).toString()] =
+                await _fileFromImageUrl(element['fileID']);
+            // print('2');
+            // print(ingredientPics[element['index']]);
+            if (widget.ingredientPics.length == ingredientPics.length) {
+              setState(() {
+                _clearIngs = falsify(widget.ingredientPics, _clearIngs);
+                _clearSteps = falsify(widget.stepPics, _clearSteps);
+                print(_clearSteps);
+                print(_clearIngs);
+                isLoading = false;
+              });
+            }
+          });
+        }
+      });
+    }
 
     // setState(() {
     //   isLoading = false;
@@ -189,13 +214,13 @@ class _EditRecipeState extends State<EditRecipe> {
         Padding(
           padding: const EdgeInsets.symmetric(
               vertical: kDefaultPadding * 1.5, horizontal: 5.0),
-          child: Image.file(image),
+          child: Image.file(File(image.path)),
         ),
         Padding(
           padding:
               const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
           child: RecImageUploader(
-            file: image,
+            file: File(image.path),
             keyValue: recipeName,
             keyName: 'name',
             imgName: key + '_' + (index + 1).toString(),
@@ -1038,6 +1063,7 @@ class _EditRecipeState extends State<EditRecipe> {
         if (clearRecost) {
           _clearIngs[index] = true;
         }
+        print(_clearIngs);
       });
       print(widget.uuid);
       var token = await storage.read(key: "token");
@@ -1055,7 +1081,9 @@ class _EditRecipeState extends State<EditRecipe> {
         stepPics[(index).toString()] = '';
         if (clearRecost) {
           _clearSteps[index] = true;
+          print("dfghjkl");
         }
+        print(_clearSteps);
       });
 
       var token = await storage.read(key: "token");
@@ -1208,6 +1236,8 @@ class _EditRecipeState extends State<EditRecipe> {
       ];
       course = widget.course;
       flavour = widget.flavour;
+      _tagController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _tagController.text.length));
     });
     urlToFile();
     // print("ncaisadhuashuduasihduiasuiduiashudh2");

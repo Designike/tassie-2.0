@@ -16,10 +16,12 @@ class IngredientTextField extends StatefulWidget {
 
 class _IngredientTextFieldState extends State<IngredientTextField> {
   // late TextEditingController _ingredientController;
+  final TextEditingController _ingredientController = TextEditingController();
   @override
   void initState() {
     super.initState();
     // _ingredientController = TextEditingController();
+    _ingredientController.selection = TextSelection.fromPosition(TextPosition(offset: _ingredientController.text.length));
   }
 
   @override
@@ -31,7 +33,7 @@ class _IngredientTextFieldState extends State<IngredientTextField> {
   @override
   Widget build(BuildContext context) {
     bool index;
-    final TextEditingController _ingredientController = TextEditingController();
+    
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _ingredientController.text = widget.ingredientsList[widget.index!] ?? '';
     });

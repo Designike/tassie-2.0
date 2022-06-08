@@ -107,7 +107,7 @@ class _RecImageUploaderState extends State<RecImageUploader> {
     super.initState();
     // print(progress);
     // print(isUploaded);
-    // print(widget.clearRecost);
+    print(widget.clearRecost);
   }
 
   @override

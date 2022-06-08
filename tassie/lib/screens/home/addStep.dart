@@ -14,10 +14,12 @@ class StepTextField extends StatefulWidget {
 
 class _StepTextFieldState extends State<StepTextField> {
   // late TextEditingController _stepController;
+  final TextEditingController _stepController = TextEditingController();
   @override
   void initState() {
     super.initState();
     // _stepController = TextEditingController();
+    _stepController.selection = TextSelection.fromPosition(TextPosition(offset: _stepController.text.length));
   }
 
   @override
@@ -28,7 +30,7 @@ class _StepTextFieldState extends State<StepTextField> {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _stepController = TextEditingController();
+    
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _stepController.text = widget.stepsList[widget.index!] ?? '';
     });
