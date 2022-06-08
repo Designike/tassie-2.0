@@ -91,16 +91,16 @@ class _EditRecipeState extends State<EditRecipe> {
   Map ingredientPics = {};
   Map stepPics = {};
 
-  Map _clearSteps = {1:false,2:true};
-  Map _clearIngs = {1:true,2:false};
+  Map _clearSteps = {};
+  Map _clearIngs = {};
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _tagController = TextEditingController();
   final LocalStorage lstorage = LocalStorage('tassie');
 
   // final TextEditingController _stepController = TextEditingController();
   // final TextEditingController _ingredientController = TextEditingController();
-  List<String?> stepsList = [null];
-  List<String?> ingredientsList = [null];
+  List<String?> stepsList = [];
+  List<String?> ingredientsList = [];
   bool isVeg = true;
   int selectedFlavour = 0;
   int selectedCourse = 0;
@@ -118,6 +118,7 @@ class _EditRecipeState extends State<EditRecipe> {
   String? uuid;
   // bool isPop = false;
   bool isLoading = true;
+  bool isPop = false;
 
   Future<File> _fileFromImageUrl(filepath) async {
     // print(filepath);
@@ -139,7 +140,7 @@ class _EditRecipeState extends State<EditRecipe> {
 
   Map falsify(dict1, dict2) {
     for (var key in dict1) {
-      dict2[int.parse(key['index']) - 1] = false;
+      dict2[int.parse(key['index']) - 1] = true;
     }
     return dict2;
   }
@@ -147,13 +148,14 @@ class _EditRecipeState extends State<EditRecipe> {
   Future<void> urlToFile() async {
     widget.stepPics.forEach((element) async {
       // print(widget.stepPics);
-      stepPics[element['index']] = await _fileFromImageUrl(element['fileID']);
+      stepPics[(int.parse(element['index']) - 1).toString()] =
+          await _fileFromImageUrl(element['fileID']);
       // print(widget.stepPics.length);
       // print(stepPics);
       // print(stepPics[element['index']]);
       if (widget.stepPics.length == stepPics.length) {
         widget.ingredientPics.forEach((element) async {
-          ingredientPics[element['index']] =
+          ingredientPics[(int.parse(element['index']) - 1).toString()] =
               await _fileFromImageUrl(element['fileID']);
           // print('2');
           // print(ingredientPics[element['index']]);
@@ -196,9 +198,9 @@ class _EditRecipeState extends State<EditRecipe> {
             file: image,
             keyValue: recipeName,
             keyName: 'name',
-            imgName: key + '_' + (index+1).toString(),
+            imgName: key + '_' + (index + 1).toString(),
             uuid: widget.uuid,
-            clearRecost: key == 'i' ? _clearIngs[index-1] : _clearSteps[index-1],
+            clearRecost: key == 'i' ? _clearIngs[index] : _clearSteps[index],
             falseResp: () {
               print("working"); //((index.toInt())-1).toString()
               setState(() {
@@ -839,6 +841,7 @@ class _EditRecipeState extends State<EditRecipe> {
 
   List<Widget> _getRecipe(size) {
     List<Widget> recipeTextFields = [];
+    print(stepsList);
     for (int i = 0; i < stepsList.length; i++) {
       // print(i);
       // print(stepPics[i.toString()]);
@@ -901,6 +904,7 @@ class _EditRecipeState extends State<EditRecipe> {
 
   List<Widget> _getIngredient(size) {
     List<Widget> ingredientsTextFields = [];
+    print(ingredientsList);
     for (int i = 0; i < ingredientsList.length; i++) {
       ingredientsTextFields.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -1236,10 +1240,13 @@ class _EditRecipeState extends State<EditRecipe> {
               GestureDetector(
                 onTap: () async {
                   print("henlooooooooo");
+                  setState(() {
+                    isPop = true;
+                  });
                   Provider.of<LeftSwipe>(context, listen: false).setSwipe(true);
                   // Navigator.of(context, rootNavigator: true).popUntil((route) => route.isFirst);
                   Navigator.of(context).pop(true);
-                  Navigator.of(context).pop(true);
+                  // Navigator.of(context).pop(true);
                   // Navigator.of(context,rootNavigator: true).pushReplacement
                   //   (MaterialPageRoute(builder: (context) {
                   //         return HomeHome();
@@ -1266,6 +1273,9 @@ class _EditRecipeState extends State<EditRecipe> {
             ],
           ),
         );
+        if (isPop) {
+          Navigator.of(context).pop();
+        }
         if (value != null) {
           return Future.value(value);
         } else {
