@@ -4,8 +4,10 @@ import 'dart:io';
 
 import 'package:async/async.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:tassie/screens/home/profile.dart';
 import 'package:tassie/screens/home/viewRecPost.dart';
 import 'package:tassie/screens/imgLoader.dart';
 
@@ -91,7 +93,8 @@ class _ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
                   child: FutureBuilder(
                       future: storedFuture,
                       builder: (BuildContext context, AsyncSnapshot text) {
-                        if ((text.connectionState == ConnectionState.waiting) || text.hasError){
+                        if ((text.connectionState == ConnectionState.waiting) ||
+                            text.hasError) {
                           // return Image.asset("assets/images/broken.png",
                           //     fit: BoxFit.cover, height: 128, width: 128);
                           return Container(
@@ -214,14 +217,35 @@ class _ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  subtitle: Text(
-                    recs['username'],
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? kLight
-                            : kDark[900]),
-                  ),
+                  // subtitle: Text(
+                  //   recs['username'],
+                  //   overflow: TextOverflow.ellipsis,
+                  //   style: TextStyle(
+                  //       color: Theme.of(context).brightness == Brightness.dark
+                  //           ? kLight
+                  //           : kDark[900]),
+                  // ),
+                  subtitle: RichText(
+                      overflow: TextOverflow.ellipsis,
+                      text: TextSpan(children: [
+                        TextSpan(
+                          text: recs['username'],
+                          style: TextStyle(
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? kDark[900]
+                                    : kLight,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) => Profile(
+                                  uuid: recs['uuid'],
+                                ),
+                              ));
+                            },
+                        ),
+                      ])),
                   isThreeLine: true,
                 ),
               ),

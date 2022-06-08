@@ -143,6 +143,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
 
   Future<void> _getProfile(memoizer) async {
     print("profile func calling ...");
+    print(widget.uuid);
     var url =
         "https://api-tassie.herokuapp.com/profile/getProfile/" + widget.uuid;
     var token = await storage.read(key: "token");
@@ -153,6 +154,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
         HttpHeaders.authorizationHeader: "Bearer " + token!
       }),
     );
+    print(response.data);
     if (response.data['data'] != null) {
       setState(() {
         subscribeds = response.data['data']['noOfSub']['subscribed'];
@@ -511,7 +513,8 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                       builder: (BuildContext context,
                                           AsyncSnapshot text) {
                                         if ((text.connectionState ==
-                                            ConnectionState.waiting) || text.hasError) {
+                                                ConnectionState.waiting) ||
+                                            text.hasError) {
                                           return Image.asset(
                                               "assets/images/broken.png",
                                               fit: BoxFit.cover,

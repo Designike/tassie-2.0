@@ -4,9 +4,11 @@ import 'dart:io';
 
 import 'package:async/async.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:tassie/screens/home/profile.dart';
 import 'package:tassie/screens/home/viewRecPost.dart';
 import 'package:tassie/screens/imgLoader.dart';
 
@@ -285,15 +287,38 @@ class _RecPostState extends State<RecPost> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          subtitle: Text(
-                            recs['username'],
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
+                          // subtitle: Text(
+                          //   recs['username'],
+                          //   overflow: TextOverflow.ellipsis,
+                          //   style: TextStyle(
+                          //       color: Theme.of(context).brightness ==
+                          //               Brightness.dark
+                          //           ? kLight
+                          //           : kDark[900]),
+                          // ),
+                          subtitle: RichText(
+                        overflow: TextOverflow.ellipsis,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: recs['username'],
+                              style: TextStyle(
                                 color: Theme.of(context).brightness ==
-                                        Brightness.dark
-                                    ? kLight
-                                    : kDark[900]),
-                          ),
+                                        Brightness.light
+                                    ? kDark[900]
+                                    : kLight,
+                                    
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.of(context)
+                                      .push(MaterialPageRoute(
+                                    builder: (_) => Profile(
+                                      uuid: recs['userUuid'],
+                                    ),
+                                  ));
+                                },
+                            ),])),
                           isThreeLine: true,
                         ),
                       ),

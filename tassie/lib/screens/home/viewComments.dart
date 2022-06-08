@@ -4,10 +4,12 @@ import 'dart:io';
 
 import 'package:async/async.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:tassie/leftSwipe.dart';
+import 'package:tassie/screens/home/profile.dart';
 import 'package:tassie/screens/home/viewRecCommentChild.dart';
 import 'package:tassie/screens/imgLoader.dart';
 
@@ -120,12 +122,32 @@ class _ViewCommentsState extends State<ViewComments> {
             ),
           ),
         ),
-        title: Text(
-          comments[index]['username'],
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        // title: Text(
+        //   comments[index]['username'],
+        //   style: TextStyle(
+        //     fontWeight: FontWeight.bold,
+        //   ),
+        // ),
+        title: RichText(
+            overflow: TextOverflow.ellipsis,
+            text: TextSpan(children: [
+              TextSpan(
+                text: post['comments'][index]['username'],
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? kDark[900]
+                      : kLight,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => Profile(
+                        uuid: post['comments'][index]['userUuid'],
+                      ),
+                    ));
+                  },
+              ),
+            ])),
         subtitle: Text(
           comments[index]['comment'],
           style: TextStyle(
@@ -376,12 +398,35 @@ class _ViewCommentsState extends State<ViewComments> {
                                         ),
                                       ),
                                     ),
-                                    title: Text(
-                                      widget.post['username'],
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                    // title: Text(
+                                    //   widget.post['username'],
+                                    //   style: TextStyle(
+                                    //     fontWeight: FontWeight.bold,
+                                    //   ),
+                                    // ),
+                                    title: RichText(
+                                        overflow: TextOverflow.ellipsis,
+                                        text: TextSpan(children: [
+                                          TextSpan(
+                                            text: widget.post['username'],
+                                            style: TextStyle(
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.light
+                                                  ? kDark[900]
+                                                  : kLight,
+                                            ),
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () {
+                                                Navigator.of(context)
+                                                    .push(MaterialPageRoute(
+                                                  builder: (_) => Profile(
+                                                    uuid: widget.post['userUuid'],
+                                                  ),
+                                                ));
+                                              },
+                                          ),
+                                        ])),
                                     subtitle: Text(
                                       widget.post['createdAt'],
                                       style: TextStyle(
@@ -660,6 +705,15 @@ class _ViewCommentsState extends State<ViewComments> {
                                             ? kDark[900]
                                             : kLight,
                                       ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          Navigator.of(context)
+                                              .push(MaterialPageRoute(
+                                            builder: (_) => Profile(
+                                              uuid: widget.post['userUuid'],
+                                            ),
+                                          ));
+                                        },
                                     ),
                                     TextSpan(text: " "),
                                     TextSpan(

@@ -128,6 +128,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
   // }
 
   Future<void> getImage() async {
+
     storedFuture = loadImg(recipeImageID, memoizer);
     storedFuture3 = loadImg(dp, memoizer3);
     setState(() {
@@ -663,7 +664,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                   ),
                 ),
               ),
-              ClipOval(
+              if(uuid == widget.recs['userUuid'])...[ClipOval(
                 child: Container(
                   padding: EdgeInsets.all(8.0),
                   color: Colors.transparent,
@@ -778,6 +779,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                   ),
                 ),
               ),
+              ],
               // Container(
               //   width: kToolbarHeight * 1.1,
               //   height: kToolbarHeight * 1.1,

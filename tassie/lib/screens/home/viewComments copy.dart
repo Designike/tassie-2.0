@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:tassie/screens/home/profile.dart';
 
 import '../../constants.dart';
 
@@ -61,12 +63,35 @@ class _ViewCommentsState extends State<ViewComments> {
             ),
           ),
         ),
-        title: Text(
-          post['comments'][index]['username'],
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        // title: Text(
+        //   post['comments'][index]['username'],
+        //   style: TextStyle(
+        //     fontWeight: FontWeight.bold,
+        //   ),
+        // ),
+        title:RichText(
+                        overflow: TextOverflow.ellipsis,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: post['comments'][index]['username'],
+                              style: TextStyle(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? kDark[900]
+                                    : kLight,
+                                    
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.of(context)
+                                      .push(MaterialPageRoute(
+                                    builder: (_) => Profile(
+                                      uuid: post['comments'][index]['userUuid'],
+                                    ),
+                                  ));
+                                },
+                            ),])),
         subtitle: Text(
           post['comments'][index]['comment'],
           style: TextStyle(

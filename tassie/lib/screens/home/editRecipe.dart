@@ -109,7 +109,7 @@ class _EditRecipeState extends State<EditRecipe> {
   List<bool> mealType = [false, false, false, false];
   List<String> hours = ['0', '1', '2', '3'];
   final minutes = ['00', '15', '30', '45'];
-  bool isUpload = false;
+
   String hour = '0';
   String min = '15';
   int counter = 0;
@@ -119,6 +119,7 @@ class _EditRecipeState extends State<EditRecipe> {
   // bool isPop = false;
   bool isLoading = true;
   bool isPop = false;
+  bool isUpload = false;
 
   Future<File> _fileFromImageUrl(filepath) async {
     // print(filepath);
@@ -1040,7 +1041,7 @@ class _EditRecipeState extends State<EditRecipe> {
   }
 
   /// Remove image
-  Future<void> _clear(key, index, imgName, [clearRecost = false]) async {
+  Future<void> _clear(key, index, imgName, [clearRecost = true]) async {
     print(widget.uuid);
     if (key == 'r') {
       setState(() {
@@ -1060,8 +1061,8 @@ class _EditRecipeState extends State<EditRecipe> {
     } else if (key == 'i') {
       setState(() {
         ingredientPics[(index).toString()] = '';
-        if (clearRecost) {
-          _clearIngs[index] = true;
+        if (!clearRecost) {
+          _clearIngs[index] = false;
         }
         print(_clearIngs);
       });
@@ -1079,8 +1080,8 @@ class _EditRecipeState extends State<EditRecipe> {
     } else {
       setState(() {
         stepPics[(index).toString()] = '';
-        if (clearRecost) {
-          _clearSteps[index] = true;
+        if (!clearRecost) {
+          _clearSteps[index] = false;
           print("dfghjkl");
         }
         print(_clearSteps);

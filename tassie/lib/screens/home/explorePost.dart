@@ -4,11 +4,13 @@ import 'dart:io';
 
 import 'package:async/async.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/exploreViewComments.dart';
+import 'package:tassie/screens/home/profile.dart';
 import 'package:tassie/screens/home/viewComments%20copy.dart';
 import 'package:tassie/screens/home/viewComments.dart';
 import 'package:tassie/screens/home/viewRecPost.dart';
@@ -250,13 +252,36 @@ class _ExplorePostState extends State<ExplorePost> {
                       ),
                     ),
                   ),
-                  title: Text(
-                    post['username'],
-                    style: TextStyle(
+                  // title: Text(
+                  //   post['username'],
+                  //   style: TextStyle(
+                  //     overflow: TextOverflow.ellipsis,
+                  //     fontWeight: FontWeight.bold,
+                  //   ),
+                  // ),
+                  title: RichText(
                       overflow: TextOverflow.ellipsis,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                      text: TextSpan(children: [
+                        TextSpan(
+                          text: post['username'],
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? kDark[900]
+                                    : kLight,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.of(context, rootNavigator: true)
+                                  .push(MaterialPageRoute(
+                                builder: (_) => Profile(
+                                  uuid: post['userUuid'],
+                                ),
+                              ));
+                            },
+                        ),
+                      ])),
                   // subtitle: Text(
                   //   post['createdAt'],
                   //   style: TextStyle(

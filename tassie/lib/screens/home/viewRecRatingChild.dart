@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:async/async.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/home/profile.dart';
 import 'package:tassie/screens/imgLoader.dart';
 
 class CreateRating extends StatefulWidget {
@@ -96,12 +98,35 @@ class _CreateRatingState extends State<CreateRating> {
                     })),
           ),
         ),
-        title: Text(
-          widget.rating['username'],
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        // title: Text(
+        //   widget.rating['username'],
+        //   style: TextStyle(
+        //     fontWeight: FontWeight.bold,
+        //   ),
+        // ),
+        title:RichText(
+                        overflow: TextOverflow.ellipsis,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: widget.rating['username'],
+                              style: TextStyle(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? kDark[900]
+                                    : kLight,
+                                    
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.of(context)
+                                      .push(MaterialPageRoute(
+                                    builder: (_) => Profile(
+                                      uuid: widget.rating['uuid'],
+                                    ),
+                                  ));
+                                },
+                            ),])),
         subtitle: RatingBarIndicator(
           rating: widget.rating['star'].toDouble(),
           itemBuilder: (context, index) => Icon(

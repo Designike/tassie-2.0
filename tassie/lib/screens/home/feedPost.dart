@@ -5,12 +5,14 @@ import 'dart:typed_data';
 
 import 'package:async/async.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/leftSwipe.dart';
+import 'package:tassie/screens/home/profile.dart';
 import 'package:tassie/screens/home/viewComments.dart';
 import 'package:tassie/screens/imgLoader.dart';
 
@@ -120,7 +122,8 @@ class _FeedPostState extends State<FeedPost> {
                               builder:
                                   (BuildContext context, AsyncSnapshot text) {
                                 if ((text.connectionState ==
-                                    ConnectionState.waiting || text.hasError)) {
+                                        ConnectionState.waiting ||
+                                    text.hasError)) {
                                   return Image(
                                     height: 50.0,
                                     width: 50.0,
@@ -160,12 +163,34 @@ class _FeedPostState extends State<FeedPost> {
                         ),
                       ),
                     ),
-                    title: Text(
-                      post['username'],
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    // title: Text(
+                    //   post['username'],
+                    //   style: TextStyle(
+                    //     fontWeight: FontWeight.bold,
+                    //   ),
+                    // ),
+                    title: RichText(
+                        overflow: TextOverflow.ellipsis,
+                        text: TextSpan(children: [
+                          TextSpan(
+                            text: post['username'],
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? kDark[900]
+                                  : kLight,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) => Profile(
+                                    uuid: post['userUuid'],
+                                  ),
+                                ));
+                              },
+                          ),
+                        ])),
                     subtitle: Text(
                       post['createdAt'],
                       style: TextStyle(
@@ -210,7 +235,9 @@ class _FeedPostState extends State<FeedPost> {
                     child: FutureBuilder(
                         future: storedFuture,
                         builder: (BuildContext context, AsyncSnapshot text) {
-                          if ((text.connectionState == ConnectionState.waiting) || text.hasError) {
+                          if ((text.connectionState ==
+                                  ConnectionState.waiting) ||
+                              text.hasError) {
                             return Container(
                               margin: EdgeInsets.all(10.0),
                               width: double.infinity,
@@ -445,6 +472,15 @@ class _FeedPostState extends State<FeedPost> {
                                     ? kDark[900]
                                     : kLight,
                               ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .push(MaterialPageRoute(
+                                    builder: (_) => Profile(
+                                      uuid: post['userUuid'],
+                                    ),
+                                  ));
+                                },
                             ),
                             TextSpan(text: " "),
                             TextSpan(
