@@ -12,7 +12,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tassie/screens/home/upload.dart';
 import 'package:tassie/screens/imgLoader.dart';
-
 import '../../constants.dart';
 import 'hashtag_suggestions.dart';
 
@@ -227,30 +226,30 @@ class _EditPostState extends State<EditPost> {
                             fit: BoxFit.cover,
                           );
                         } else if (text.hasError) {
-                                    print('2');
-                                    return Image(
+                          print('2');
+                          return Image(
                             image: AssetImage('assets/images/broken.png'),
                             fit: BoxFit.cover,
                           );
-                                  }else {
+                        } else {
                           print('Hlneo');
                           print(post['postID']);
                           if (!text.hasData) {
-                                    return GestureDetector(
-                                        onTap: () {
-                                          setState(() {});
-                                        },
-                                        child: Container(
-                                            child: Center(
-                                          child: Icon(
-                                            Icons.refresh,
-                                            size: 50.0,
-                                            color: kDark,
-                                          ),
-                                        )));
-                                  }
+                            return GestureDetector(
+                                onTap: () {
+                                  // setState(() {});
+                                },
+                                child: Container(
+                                    child: Center(
+                                  child: Icon(
+                                    Icons.refresh,
+                                    size: 50.0,
+                                    color: kDark,
+                                  ),
+                                )));
+                          }
                           return Image(
-                            image: NetworkImage(text.data.toString()),
+                            image: NetworkImage(text.data.toString(),),
                             fit: BoxFit.cover,
                           );
                         }
