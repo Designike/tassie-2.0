@@ -88,11 +88,11 @@ class _EditRecipeState extends State<EditRecipe> {
   String youtubeLink = "";
   String desc = "";
   File? recipePic;
-  Map ingredientPics = {'0': ''};
-  Map stepPics = {'0': ''};
+  Map ingredientPics = {};
+  Map stepPics = {};
 
-  Map _clearSteps = {0: false};
-  Map _clearIngs = {0: false};
+  Map _clearSteps = {1:false,2:true};
+  Map _clearIngs = {1:true,2:false};
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _tagController = TextEditingController();
   final LocalStorage lstorage = LocalStorage('tassie');
@@ -112,6 +112,7 @@ class _EditRecipeState extends State<EditRecipe> {
   bool isUpload = false;
   String hour = '0';
   String min = '15';
+  int counter = 0;
   // List<Widget> ingWidgetList = [];
   // List<Widget> stepsWidgetList = [];
   String? uuid;
@@ -119,34 +120,68 @@ class _EditRecipeState extends State<EditRecipe> {
   bool isLoading = true;
 
   Future<File> _fileFromImageUrl(filepath) async {
+    // print(filepath);
     AsyncMemoizer memoizer = AsyncMemoizer();
     String storedFuture = await loadImg(filepath, memoizer);
+    // print('2a');
     final response = await http.get(Uri.parse(storedFuture));
+    // print('2b');
     final documentDirectory = await getApplicationDocumentsDirectory();
-    final file = File(p.join(documentDirectory.path, 'test.jpg'));
+    // print('2c');
+    final file = File(p.join(
+        documentDirectory.path, 'test' + (counter++).toString() + '.jpg'));
+    // print('2d');
     file.writeAsBytesSync(response.bodyBytes);
+    // print('2e');
+    // print(file);
     return file;
+  }
+
+  Map falsify(dict1, dict2) {
+    for (var key in dict1) {
+      dict2[int.parse(key['index']) - 1] = false;
+    }
+    return dict2;
   }
 
   Future<void> urlToFile() async {
     widget.stepPics.forEach((element) async {
+      // print(widget.stepPics);
       stepPics[element['index']] = await _fileFromImageUrl(element['fileID']);
+      // print(widget.stepPics.length);
+      // print(stepPics);
+      // print(stepPics[element['index']]);
+      if (widget.stepPics.length == stepPics.length) {
+        widget.ingredientPics.forEach((element) async {
+          ingredientPics[element['index']] =
+              await _fileFromImageUrl(element['fileID']);
+          // print('2');
+          // print(ingredientPics[element['index']]);
+          if (widget.ingredientPics.length == ingredientPics.length) {
+            setState(() {
+              _clearIngs = falsify(widget.ingredientPics, _clearIngs);
+              _clearSteps = falsify(widget.stepPics, _clearSteps);
+              print(_clearSteps);
+              print(_clearIngs);
+              isLoading = false;
+            });
+          }
+        });
+      }
     });
 
-    widget.ingredientPics.forEach((element) async {
-      ingredientPics[element['index']] =
-          await _fileFromImageUrl(element['fileID']);
-    });
-
-    setState(() {
-      isLoading = false;
-    });
+    // setState(() {
+    //   isLoading = false;
+    // });
+    // print("ncaisadhuashuduasihduiasuiduiashudh");
+    // print(stepPics);
+    // print(ingredientPics);
   }
 
   // RangeValues _currentRangeValues = RangeValues(0, 15);
   //ane tassie mathi leto avje code plus vado e page ma bov kayi che nayi ena sivayi
   List<Widget> _uploadImg(size, key, index, image) {
-    // print(image);
+    // print();
     List<Widget> _upload = [
       if (image != '' && image != null) ...[
         Padding(
@@ -161,11 +196,11 @@ class _EditRecipeState extends State<EditRecipe> {
             file: image,
             keyValue: recipeName,
             keyName: 'name',
-            imgName: key + '_' + (index + 1).toString(),
+            imgName: key + '_' + (index+1).toString(),
             uuid: widget.uuid,
-            clearRecost: key == 'i' ? _clearIngs[index] : _clearSteps[index],
+            clearRecost: key == 'i' ? _clearIngs[index-1] : _clearSteps[index-1],
             falseResp: () {
-              print("working");
+              print("working"); //((index.toInt())-1).toString()
               setState(() {
                 if (key == 'r') {
                   recipePic = null;
@@ -273,15 +308,15 @@ class _EditRecipeState extends State<EditRecipe> {
   }
 
   String _appendHashtag(desc1, tag) {
-    print(desc1);
-    print(tag);
+    // print(desc1);
+    // print(tag);
     // String desc1 = desc;
     String last = desc1.substring(desc1.length - 1);
     while (last != '#') {
       desc1 = desc1.substring(0, desc1.length - 1);
       last = desc1.substring(desc1.length - 1);
     }
-    print(desc1 + tag.substring(1, tag.length));
+    // print(desc1 + tag.substring(1, tag.length));
     return desc1 + tag.substring(1, tag.length);
   }
 
@@ -290,7 +325,7 @@ class _EditRecipeState extends State<EditRecipe> {
       flavour = flav;
       selectedFlavour = index;
     });
-    print(flavour);
+    // print(flavour);
   }
 
   void changeCourse(int index, String cour) {
@@ -298,7 +333,7 @@ class _EditRecipeState extends State<EditRecipe> {
       course = cour;
       selectedCourse = index;
     });
-    print(course);
+    // print(course);
   }
 
   void changeMeal(int index, bool check) {
@@ -1171,6 +1206,9 @@ class _EditRecipeState extends State<EditRecipe> {
       flavour = widget.flavour;
     });
     urlToFile();
+    // print("ncaisadhuashuduasihduiasuiduiashudh2");
+    // print(stepPics);
+    // print(ingredientPics);
   }
 
   @override
