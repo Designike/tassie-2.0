@@ -43,6 +43,16 @@ class ExploreSearchHashtagTabState extends State<ExploreSearchHashtagTab> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     List hashtags = widget.hashtags;
     return ListView.builder(

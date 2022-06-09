@@ -18,6 +18,17 @@ class ChangePasswordState extends State<ChangePassword> {
   final _formKey = GlobalKey<FormState>();
   String oldpass = "";
   String newpass = "";
+
+  @override
+  void initState(){
+    super.initState();
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

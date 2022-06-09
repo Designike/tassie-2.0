@@ -1270,6 +1270,12 @@ class EditRecipeState extends State<EditRecipe> {
   }
 
   @override
+  void dispose() {
+    _tagController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return WillPopScope(

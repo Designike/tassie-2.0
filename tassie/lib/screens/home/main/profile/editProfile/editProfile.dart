@@ -36,6 +36,11 @@ class EditProfilePageState extends State<EditProfilePage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     index = genders.indexOf(widget.gender);
     String bio = widget.bio;

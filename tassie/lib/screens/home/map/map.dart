@@ -97,6 +97,12 @@ class _TassieMapState extends State<TassieMap> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     MapController mapController = MapController();
     return isLoading

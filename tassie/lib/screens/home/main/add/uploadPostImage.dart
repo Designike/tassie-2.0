@@ -126,6 +126,16 @@ class UploaderState extends State<Uploader> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (progress != 0.0) {
       /// Manage the task state and event subscription with a StreamBuilder

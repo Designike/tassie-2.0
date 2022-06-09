@@ -41,6 +41,11 @@ class CreateRatingState extends State<CreateRating> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // print(comment);
     return Padding(

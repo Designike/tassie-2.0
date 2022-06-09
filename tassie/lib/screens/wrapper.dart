@@ -33,6 +33,11 @@ class _WrapperState extends State<Wrapper> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (isLoading) {
       return const Scaffold(

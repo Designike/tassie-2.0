@@ -61,6 +61,11 @@ class ExplorePostState extends State<ExplorePost> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // print(widget.bookmark);
     Map post = widget.post;

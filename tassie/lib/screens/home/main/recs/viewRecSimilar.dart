@@ -39,6 +39,11 @@ class ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // bool isBookmarked = widget.recostData['isBookmarked'];
     Map recs = widget.recs;

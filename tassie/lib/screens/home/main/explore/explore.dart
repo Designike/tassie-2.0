@@ -121,6 +121,12 @@ class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
   }
 
   @override
+  void dispose() {
+    _sc.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     Size size = MediaQuery.of(context).size;

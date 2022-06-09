@@ -64,6 +64,11 @@ class FeedPostState extends State<FeedPost> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Future<Uint8List> load = loadImg(widget.post['postID']);
     Map post = widget.post;

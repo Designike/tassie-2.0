@@ -51,6 +51,11 @@ class PostTabState extends State<PostTab> with AutomaticKeepAliveClientMixin {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     List posts = widget.posts;

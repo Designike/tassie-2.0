@@ -25,6 +25,12 @@ class ShowMoreTextState extends State<ShowMoreText> {
       firstPart = widget.text;
     }
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -49,6 +49,11 @@ class ExploreRecState extends State<ExploreRec> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var storage = const FlutterSecureStorage();
     var dio = Dio();

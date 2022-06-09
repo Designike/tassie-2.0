@@ -122,6 +122,11 @@ class SearchBarState extends State<SearchBar> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     super.dispose();
   }

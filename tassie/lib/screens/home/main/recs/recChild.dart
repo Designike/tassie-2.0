@@ -14,7 +14,11 @@ import '../../../../constants.dart';
 
 class RecPost extends StatefulWidget {
   const RecPost(
-      {required this.recs, required this.recipeData, required this.funcB, Key? key}) : super(key: key);
+      {required this.recs,
+      required this.recipeData,
+      required this.funcB,
+      Key? key})
+      : super(key: key);
   final Map recs;
   final Map recipeData;
   final void Function(bool) funcB;
@@ -53,13 +57,18 @@ class RecPostState extends State<RecPost> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     bool isBookmarked = widget.recipeData['isBookmarked'];
     Size size = MediaQuery.of(context).size;
     Map recs = widget.recs;
     return (isLoading)
         ? const Center(
-            child:  SpinKitThreeBounce(
+            child: SpinKitThreeBounce(
               color: kPrimaryColor,
               size: 50.0,
             ),
@@ -317,10 +326,8 @@ class RecPostState extends State<RecPost> {
                           isThreeLine: true,
                         ),
                       ),
-                      
                     ],
                   ),
-                  
                 ],
               ),
             ),

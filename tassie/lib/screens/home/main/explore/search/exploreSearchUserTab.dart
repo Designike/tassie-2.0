@@ -21,6 +21,16 @@ class ExploreSearchUserTabState extends State<ExploreSearchUserTab> {
 
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     List users = widget.users;
     return ListView.builder(
@@ -84,6 +94,11 @@ class _ExploreUserAvatarState extends State<ExploreUserAvatar> {
     super.initState();
     memoizer = AsyncMemoizer();
     storedFuture = loadImg(widget.profilePic, memoizer);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override

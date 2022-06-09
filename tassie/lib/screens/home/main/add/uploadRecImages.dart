@@ -99,6 +99,11 @@ class RecImageUploaderState extends State<RecImageUploader> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if ((progress != 0.0 && isUploaded == true) || widget.clearRecost) {
       return Row(

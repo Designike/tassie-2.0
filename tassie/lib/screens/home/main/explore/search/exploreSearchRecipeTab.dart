@@ -47,6 +47,16 @@ class ExploreSearchRecipeTabState extends State<ExploreSearchRecipeTab> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     List recipes = widget.recipes;
     return ListView.builder(
@@ -96,6 +106,11 @@ class _ExploreRecipeAvatarState extends State<ExploreRecipeAvatar> {
     super.initState();
     memoizer = AsyncMemoizer();
     storedFuture = loadImg(widget.recipeImageID, memoizer);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override

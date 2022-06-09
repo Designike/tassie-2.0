@@ -44,6 +44,11 @@ class _TabNavigator2State extends State<TabNavigator2> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Widget child;
     // if (widget.tabItem == 0) {

@@ -76,6 +76,16 @@ class ProfileUploaderState extends State<ProfileUploader> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (progress != 0.0) {
       return Column(

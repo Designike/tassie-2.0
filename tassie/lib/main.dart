@@ -8,46 +8,16 @@ import 'package:tassie/utils/themePreferences.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  // runApp(ChangeNotifierProvider(
-  //   create: (_) => ThemeModel(),
-  //   child: Consumer(
-  //   builder: (context, ThemeModel themeNotifier,child),
-  //   child: MyApp(),
-  //   // ),
-  // ));
-  // Get.lazyPut(() => ThemeController());
   ThemeController thc = ThemeController();
   thc.getThemeModeFromPreferences();
-  runApp(ChangeNotifierProvider(
-    create: (_) => LeftSwipe(),
-    child: const MyApp()));
-  // runApp(MyApp());
+  runApp(
+      ChangeNotifierProvider(create: (_) => LeftSwipe(), child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}): super(key: key);
-
-  // This widget is the root of your application.
+  const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    // return ChangeNotifierProvider(
-    //     create: (_) => ThemeModel(),
-    //     child: Consumer(
-    //         builder: (context, ThemeModel themeNotifier, child) =>
-    //             themeNotifier.isDark['system'] == "true"
-    //                 ? MaterialApp(
-    //                     home: Wrapper(),
-    //                     theme: lightThemeData(context),
-    //                     darkTheme: darkThemeData(context),
-    //                     debugShowCheckedModeBanner: false,
-    //                   )
-    //                 : MaterialApp(
-    //                     home: Wrapper(),
-    //                     theme: themeNotifier.isDark['light'] == "true"
-    //                         ? lightThemeData(context)
-    //                         : darkThemeData(context),
-    //                     debugShowCheckedModeBanner: false,
-    //                   )));
     return GetMaterialApp(
       title: 'Tassie',
       theme: lightThemeData(context),
@@ -56,14 +26,5 @@ class MyApp extends StatelessWidget {
       home: const Wrapper(),
       debugShowCheckedModeBanner: false,
     );
-
-    // ),
-    // );
-    // return MaterialApp(
-    //   home: Wrapper(),
-    //   theme: theme lightThemeData(context),
-    //   darkTheme: darkThemeData(context),
-    //   debugShowCheckedModeBanner: false,
-    // );
   }
 }

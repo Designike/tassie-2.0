@@ -18,6 +18,16 @@ class AuthenticateState extends State<Authenticate> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (showSignIn) {
       return SignIn(func: toggle);
