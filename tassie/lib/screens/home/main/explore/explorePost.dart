@@ -1,18 +1,11 @@
-// ignore_for_file: prefer_const_constructors
-
-import 'dart:io';
-
 import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/main/explore/exploreViewPost.dart';
 import 'package:tassie/screens/home/main/profile/profile.dart';
-import 'package:tassie/screens/home/main/feed/viewPost.dart';
-import 'package:tassie/screens/home/main/recs/viewRecipe.dart';
 import 'package:tassie/utils/imgLoader.dart';
 
 class ExplorePost extends StatefulWidget {
@@ -26,10 +19,10 @@ class ExplorePost extends StatefulWidget {
       required this.plusComment,
       required this.bookmark,
       required this.funcB,
-      required this.minusComment});
+      required this.minusComment,
+      Key? key})
+      : super(key: key);
   final Map post;
-  // final Map recostData;
-  // final void Function(bool) funcB;
   final int noOfComment;
   final int noOfLike;
   final bool bookmark;
@@ -39,12 +32,12 @@ class ExplorePost extends StatefulWidget {
   final void Function() plusComment;
   final void Function() minusComment;
   @override
-  _ExplorePostState createState() => _ExplorePostState();
+  ExplorePostState createState() => ExplorePostState();
 }
 
-class _ExplorePostState extends State<ExplorePost> {
+class ExplorePostState extends State<ExplorePost> {
   final dio = Dio();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   AsyncMemoizer memoizer = AsyncMemoizer();
   AsyncMemoizer memoizer1 = AsyncMemoizer();
   String? dp;
@@ -59,32 +52,18 @@ class _ExplorePostState extends State<ExplorePost> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getdp();
     memoizer = AsyncMemoizer();
     memoizer1 = AsyncMemoizer();
     storedFuture = loadImg(widget.post['postID'], memoizer);
     storedFuture1 = loadImg(widget.post['profilePic'], memoizer1);
-    // super.initState();
-    // loadImg(widget.post['postID']).then((result) {
-    //   setState(() {
-    //     _image = result;
-    //     isImage = true;
-    //   });
-    // });
-    // if (widget.post['postID'] != "") {
-    //   isImage = true;
-    // }
   }
 
   @override
   Widget build(BuildContext context) {
     // print(widget.bookmark);
     Map post = widget.post;
-    // bool isBookmarked = widget.bookmark['isBookmarked'];
-    // bool liked = widget.noOfLike['isLiked'];
-    // int likeNumber = widget.noOfLike['count'];
     Size size = MediaQuery.of(context).size;
     return Container(
       width: double.infinity,
@@ -105,13 +84,13 @@ class _ExplorePostState extends State<ExplorePost> {
                     if ((text.connectionState == ConnectionState.waiting) ||
                         text.hasError) {
                       return Container(
-                        margin: EdgeInsets.all(10.0),
+                        margin: const EdgeInsets.all(10.0),
                         width: double.infinity,
                         height: (size.width / 2) - 20.0 - 14.0,
                         // height: 400.0,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(25.0),
-                          image: DecorationImage(
+                          image: const DecorationImage(
                             image: AssetImage(
                               'assets/images/broken.png',
                             ),
@@ -131,10 +110,10 @@ class _ExplorePostState extends State<ExplorePost> {
                               setState(() {});
                             },
                             child: Container(
-                                margin: EdgeInsets.all(10.0),
+                                margin: const EdgeInsets.all(10.0),
                                 width: double.infinity,
                                 height: (size.width / 2) - 20.0 - 14.0,
-                                child: Center(
+                                child: const Center(
                                   child: Icon(
                                     Icons.refresh,
                                     size: 50.0,
@@ -161,7 +140,7 @@ class _ExplorePostState extends State<ExplorePost> {
                               ));
                         },
                         child: Container(
-                          margin: EdgeInsets.all(10.0),
+                          margin: const EdgeInsets.all(10.0),
                           width: double.infinity,
                           height: (size.width / 2) - 20.0 - 14.0,
                           // height: 400.0,
@@ -199,7 +178,7 @@ class _ExplorePostState extends State<ExplorePost> {
                   leading: Container(
                     width: (size.width - 42.0) / 12,
                     height: (size.width - 42.0) / 12,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                     ),
                     child: CircleAvatar(
@@ -222,7 +201,8 @@ class _ExplorePostState extends State<ExplorePost> {
                                 return Image(
                                   height: (size.width - 42.0) / 12,
                                   width: (size.width - 42.0) / 12,
-                                  image: AssetImage("assets/images/broken.png"),
+                                  image: const AssetImage(
+                                      "assets/images/broken.png"),
                                   fit: BoxFit.cover,
                                 );
                               } else {
@@ -232,7 +212,7 @@ class _ExplorePostState extends State<ExplorePost> {
                                         setState(() {});
                                       },
                                       child: Container(
-                                          child: Center(
+                                          child: const Center(
                                         child: Icon(
                                           Icons.refresh,
                                           size: 50.0,
@@ -251,13 +231,6 @@ class _ExplorePostState extends State<ExplorePost> {
                       ),
                     ),
                   ),
-                  // title: Text(
-                  //   post['username'],
-                  //   style: TextStyle(
-                  //     overflow: TextOverflow.ellipsis,
-                  //     fontWeight: FontWeight.bold,
-                  //   ),
-                  // ),
                   title: RichText(
                       overflow: TextOverflow.ellipsis,
                       text: TextSpan(children: [
@@ -281,251 +254,10 @@ class _ExplorePostState extends State<ExplorePost> {
                             },
                         ),
                       ])),
-                  // subtitle: Text(
-                  //   post['createdAt'],
-                  //   style: TextStyle(
-                  //       color: MediaQuery.of(context).platformBrightness ==
-                  //               Brightness.dark
-                  //           ? kLight
-                  //           : kDark[900]),
-                  // ),
-                  // trailing: IconButton(
-                  //   icon: Icon(Icons.more_horiz),
-                  //   // color: Colors.black,
-                  //   onPressed: () => print('More'),
-                  // ),
-                  // trailing: IconButton(
-                  //       icon: (isBookmarked)
-                  //           ? Icon(Icons.bookmark)
-                  //           : Icon(Icons.bookmark_border),
-                  //       iconSize: 30.0,
-                  //       onPressed: () async {
-                  //         if (!isBookmarked) {
-                  //           var token = await storage.read(key: "token");
-                  //           Response response = await dio
-                  //               .post("https://api-tassie.herokuapp.com/feed/bookmark",
-                  //                   options: Options(headers: {
-                  //                     HttpHeaders.contentTypeHeader:
-                  //                         "application/json",
-                  //                     HttpHeaders.authorizationHeader:
-                  //                         "Bearer " + token!
-                  //                   }),
-                  //                   data: {'uuid': post['uuid']});
-                  //           widget.funcB(true);
-                  //         } else {
-                  //           var token = await storage.read(key: "token");
-                  //           Response response = await dio.post(
-                  //               "https://api-tassie.herokuapp.com/feed/removeBookmark",
-                  //               options: Options(headers: {
-                  //                 HttpHeaders.contentTypeHeader:
-                  //                     "application/json",
-                  //                 HttpHeaders.authorizationHeader:
-                  //                     "Bearer " + token!
-                  //               }),
-                  //               data: {'uuid': post['uuid']});
-                  //           widget.funcB(false);
-                  //         }
-                  //       },
-                  //     ),
                 ),
               ),
-              // Padding(
-              //   padding: EdgeInsets.symmetric(horizontal: 20.0),
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //     children: [
-              //       Row(
-              //         children: [
-              //           Row(
-              //             children: [
-              //               IconButton(
-              //                 icon: (!liked)
-              //                     ? Icon(Icons.favorite_border)
-              //                     : Icon(
-              //                         Icons.favorite,
-              //                         color: kPrimaryColor,
-              //                       ),
-              //                 iconSize: 30.0,
-              //                 onPressed: () async {
-              //                   if (liked) {
-              //                     // print(post);
-
-              //                     var token =
-              //                         await storage.read(key: "token");
-              //                     dio.post(
-              //                         "https://api-tassie.herokuapp.com/feed/unlike",
-              //                         options: Options(headers: {
-              //                           HttpHeaders.contentTypeHeader:
-              //                               "application/json",
-              //                           HttpHeaders.authorizationHeader:
-              //                               "Bearer " + token!
-              //                         }),
-              //                         data: {'uuid': post['uuid']});
-              //                     widget.func(false);
-              //                   } else {
-              //                     // print(post);
-
-              //                     var token =
-              //                         await storage.read(key: "token");
-              //                     dio.post("https://api-tassie.herokuapp.com/feed/like",
-              //                         options: Options(headers: {
-              //                           HttpHeaders.contentTypeHeader:
-              //                               "application/json",
-              //                           HttpHeaders.authorizationHeader:
-              //                               "Bearer " + token!
-              //                         }),
-              //                         data: {'uuid': post['uuid']});
-              //                     widget.func(true);
-              //                   }
-              //                   print(likeNumber.toString());
-              //                 },
-              //               ),
-              //               Text(
-              //                 likeNumber.toString(),
-              //                 style: TextStyle(
-              //                   fontSize: 14.0,
-              //                   fontWeight: FontWeight.w600,
-              //                 ),
-              //               ),
-              //             ],
-              //           ),
-              //           SizedBox(width: 20.0),
-              //           Row(
-              //             children: <Widget>[
-              //               IconButton(
-              //                 icon: Icon(Icons.chat),
-              //                 iconSize: 30.0,
-              //                 onPressed: () {
-              //                   Navigator.push(
-              //                     context,
-              //                     MaterialPageRoute(
-              //                       builder: (_) => ViewComments(
-              //                           post: post,
-              //                           noOfComment: widget.noOfComment,
-              //                           noOfLike: widget.noOfLike,
-              //                           func: widget.func,
-              //                           plusComment: widget.plusComment,
-              //                           funcB: widget.funcB,
-              //                           bookmark: widget.bookmark,
-              //                           minusComment: widget.minusComment),
-              //                     ),
-              //                   );
-              //                 },
-              //               ),
-              //               Text(
-              //                 widget.noOfComment['count'].toString(),
-              //                 style: TextStyle(
-              //                   fontSize: 14.0,
-              //                   fontWeight: FontWeight.w600,
-              //                 ),
-              //               ),
-              //             ],
-              //           ),
-              //         ],
-              //       ),
-              //       IconButton(
-              //         icon: (isBookmarked)
-              //             ? Icon(Icons.bookmark)
-              //             : Icon(Icons.bookmark_border),
-              //         iconSize: 30.0,
-              //         onPressed: () async {
-              //           if (!isBookmarked) {
-              //             var token = await storage.read(key: "token");
-              //             Response response = await dio
-              //                 .post("https://api-tassie.herokuapp.com/feed/bookmark",
-              //                     options: Options(headers: {
-              //                       HttpHeaders.contentTypeHeader:
-              //                           "application/json",
-              //                       HttpHeaders.authorizationHeader:
-              //                           "Bearer " + token!
-              //                     }),
-              //                     data: {'uuid': post['uuid']});
-              //             widget.funcB(true);
-              //           } else {
-              //             var token = await storage.read(key: "token");
-              //             Response response = await dio.post(
-              //                 "https://api-tassie.herokuapp.com/feed/removeBookmark",
-              //                 options: Options(headers: {
-              //                   HttpHeaders.contentTypeHeader:
-              //                       "application/json",
-              //                   HttpHeaders.authorizationHeader:
-              //                       "Bearer " + token!
-              //                 }),
-              //                 data: {'uuid': post['uuid']});
-              //             widget.funcB(false);
-              //           }
-              //         },
-              //       ),
-              //     ],
-              //   ),
-              // ),
             ],
           ),
-          // Padding(
-          //   padding:
-          //       const EdgeInsets.only(left: 32.0, right: 32.0, bottom: 20.0),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.start,
-          //     children: [
-          //       // Text(
-          //       //   posts[index]['description'],
-          //       //   overflow: TextOverflow.ellipsis,
-          //       //   textAlign: TextAlign.start,
-          //       // ),
-          //       Flexible(
-          //         child: GestureDetector(
-          //           onTap: () {
-          //             Navigator.push(
-          //                 context,
-          //                 MaterialPageRoute(
-          //                   builder: (_) => ViewComments(
-          //                     post: post,
-          //                     noOfComment: widget.noOfComment,
-          //                     noOfLike: widget.noOfLike,
-          //                     func: widget.func,
-          //                     plusComment: widget.plusComment,
-          //                     funcB: widget.funcB,
-          //                     bookmark: widget.bookmark,
-          //                     minusComment: widget.minusComment,
-          //                   ),
-          //                 )
-          //                 );
-          //           },
-          //           child: RichText(
-          //             overflow: TextOverflow.ellipsis,
-          //             text: TextSpan(
-          //               children: [
-          //                 TextSpan(
-          //                   text: post['username'],
-          //                   style: TextStyle(
-          //                     fontWeight: FontWeight.bold,
-          //                     color:
-          //                         Theme.of(context).brightness ==
-          //                                 Brightness.light
-          //                             ? kDark[900]
-          //                             : kLight,
-          //                   ),
-          //                 ),
-          //                 TextSpan(text: " "),
-          //                 TextSpan(
-          //                   text: post['description'],
-          //                   style: TextStyle(
-          //                     color:
-          //                         Theme.of(context).brightness ==
-          //                                 Brightness.light
-          //                             ? kDark[900]
-          //                             : kLight,
-          //                   ),
-          //                 )
-          //               ],
-          //             ),
-          //             textAlign: TextAlign.start,
-          //           ),
-          //         ),
-          //       )
-          //     ],
-          //   ),
-          // ),
         ],
       ),
     );

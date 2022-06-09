@@ -1,42 +1,32 @@
-// ignore_for_file: prefer_const_constructors, prefer_final_fields
-
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:provider/provider.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/utils/leftSwipe.dart';
 import 'package:tassie/screens/home/main/add/addPost.dart';
 import 'package:tassie/screens/home/main/add/addRecipe.dart';
-import 'package:tassie/screens/home/main/explore/explore.dart';
-import 'package:tassie/screens/home/main/feed/feed.dart';
-import 'package:tassie/screens/home/main/profile/profile.dart';
-import 'package:tassie/screens/home/main/recs/recipes.dart';
 import 'package:tassie/utils/snackbar.dart';
 import 'package:tassie/screens/home/navigator/tabNavigator.dart';
-import 'package:tassie/screens/wrapper.dart';
 
 class HomeHome extends StatefulWidget {
   const HomeHome({Key? key}) : super(key: key);
   @override
-  _HomeHomeState createState() => _HomeHomeState();
+  HomeHomeState createState() => HomeHomeState();
 }
 
-class _HomeHomeState extends State<HomeHome>
+class HomeHomeState extends State<HomeHome>
     with SingleTickerProviderStateMixin {
   // String _currentPage = "Page1";
   // List<String> pageKeys = ["Page1", "Page2", "Page3"];
 
-  Map<int, GlobalKey<NavigatorState>> _navigatorKeys = {
+  final Map<int, GlobalKey<NavigatorState>> _navigatorKeys = {
     0: GlobalKey<NavigatorState>(),
     1: GlobalKey<NavigatorState>(),
     2: GlobalKey<NavigatorState>(),
@@ -47,18 +37,17 @@ class _HomeHomeState extends State<HomeHome>
   int _selectedIndex = 0;
   // static bool isLoading = true;
   final dio = Dio();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   final LocalStorage lstorage = LocalStorage('tassie');
   int currentPage = 0;
   // bool isFetching = true;
 
   Future<void> getIng() async {
-    print(lstorage.getItem('ingreds'));
     // print((await storage.read(key: 'date')) == null);
     if ((await storage.read(key: 'date')) == null) {
       await storage.write(
           key: 'date',
-          value: (DateTime.now().add(Duration(hours: 48)).toString()));
+          value: (DateTime.now().add(const Duration(hours: 48)).toString()));
     }
     String? date = await storage.read(key: 'date');
 
@@ -75,7 +64,7 @@ class _HomeHomeState extends State<HomeHome>
           url,
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer " + token!
+            HttpHeaders.authorizationHeader: "Bearer ${token!}"
           }),
         );
         // await storage.delete(key: 'ingreds');
@@ -87,7 +76,7 @@ class _HomeHomeState extends State<HomeHome>
 
         await storage.write(
             key: 'date',
-            value: DateTime.now().add(Duration(hours: 48)).toString());
+            value: DateTime.now().add(const Duration(hours: 48)).toString());
         // setState(() {
         //   isFetching = false;
         // });
@@ -95,12 +84,6 @@ class _HomeHomeState extends State<HomeHome>
       }
       // print('1');
       // print(lstorage.getItem('ingreds'));
-    });
-  }
-
-  void _navigateBottomBar(int index) {
-    setState(() {
-      _selectedIndex = index;
     });
   }
 
@@ -201,20 +184,20 @@ class _HomeHomeState extends State<HomeHome>
             // onClose: () => animatedController.forward(),
             children: [
               SpeedDialChild(
-                  child: Icon(Icons.post_add_rounded),
+                  child: const Icon(Icons.post_add_rounded),
                   label: 'New Post',
                   onTap: () => {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) {
-                            return AddPost();
+                            return const AddPost();
                           }),
                         ),
                         Provider.of<LeftSwipe>(context, listen: false)
                             .setSwipe(false)
                       }),
               SpeedDialChild(
-                  child: Icon(Icons.fastfood_rounded),
+                  child: const Icon(Icons.fastfood_rounded),
                   label: 'New Recipe',
                   onTap: () async {
                     Navigator.push(
@@ -224,7 +207,7 @@ class _HomeHomeState extends State<HomeHome>
                           // backgroundColor: Colors.white,
                           body: Center(
                             child: AnimatedTextKit(
-                              pause: Duration(milliseconds: 100),
+                              pause: const Duration(milliseconds: 100),
                               animatedTexts: [
                                 FadeAnimatedText('Finding Trivets'),
                                 FadeAnimatedText('Settling grubs'),
@@ -245,13 +228,15 @@ class _HomeHomeState extends State<HomeHome>
                       url,
                       options: Options(headers: {
                         HttpHeaders.contentTypeHeader: "application/json",
-                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                        HttpHeaders.authorizationHeader: "Bearer ${token!}"
                       }),
                     );
-                    await Future.delayed(Duration(seconds: 1));
-                    print(response);
+                    await Future.delayed(const Duration(seconds: 1));
+
                     if (response.data['status'] == true) {
-                      print(response);
+                      await Future.delayed(const Duration(seconds: 1));
+
+                      if (!mounted) return;
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) {
@@ -262,13 +247,15 @@ class _HomeHomeState extends State<HomeHome>
                         }),
                       );
                     } else {
-                      print(response.data);
+                      await Future.delayed(const Duration(seconds: 1));
+
+                      if (!mounted) return;
                       showSnack(
                           context, 'Unable to create recipe', () {}, 'OK', 3);
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) {
-                          return HomeHome();
+                          return const HomeHome();
                         }),
                       );
                       Provider.of<LeftSwipe>(context, listen: false)
@@ -313,7 +300,7 @@ class _HomeHomeState extends State<HomeHome>
           //   ],
           // ),
           bottomNavigationBar: BottomAppBar(
-            shape: CircularNotchedRectangle(),
+            shape: const CircularNotchedRectangle(),
             color: Theme.of(context).brightness == Brightness.dark
                 ? kDark[900]
                 : kLight,
@@ -379,7 +366,7 @@ class _HomeHomeState extends State<HomeHome>
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 40.0,
                   ),
                   MaterialButton(
@@ -470,7 +457,7 @@ class _HomeHomeState extends State<HomeHome>
           // ),
           body: PageView(
             controller: _pageController,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             scrollDirection: Axis.horizontal,
             children: _screens,
           )),

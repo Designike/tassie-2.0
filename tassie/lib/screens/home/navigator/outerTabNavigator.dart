@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tassie/constants.dart';
-import 'package:tassie/screens/home/main/explore/explore.dart';
-import 'package:tassie/screens/home/main/feed/feed.dart';
 import 'package:tassie/screens/home/map/map.dart';
-import 'package:tassie/screens/home/main/profile/profile.dart';
-import 'package:tassie/screens/home/main/recs/recipes.dart';
 
 import '../home.dart';
 
@@ -16,11 +12,11 @@ import '../home.dart';
 // }
 
 class TabNavigator2 extends StatefulWidget {
-  TabNavigator2({
+  const TabNavigator2({Key? key, 
     required this.navigatorKey,
     required this.tabItem,
     required this.rightSwipe,
-  });
+  }) : super(key: key);
   final GlobalKey<NavigatorState> navigatorKey;
   final int tabItem;
   final void Function() rightSwipe;
@@ -32,11 +28,10 @@ class TabNavigator2 extends StatefulWidget {
 class _TabNavigator2State extends State<TabNavigator2> {
   String? dp;
   bool isLoading = true;
-  var storage = FlutterSecureStorage();
+  var storage = const FlutterSecureStorage();
 
   Future<void> getdp() async {
     dp = await storage.read(key: "profilePic");
-    print(dp);
     setState(() {
       isLoading = false;
     });
@@ -58,7 +53,7 @@ class _TabNavigator2State extends State<TabNavigator2> {
     // }
     // print(child);
     return isLoading
-        ? Center(
+        ? const Center(
             child: SpinKitThreeBounce(
               color: kPrimaryColor,
               size: 50.0,
@@ -69,7 +64,7 @@ class _TabNavigator2State extends State<TabNavigator2> {
             onGenerateRoute: (routeSettings) {
               return MaterialPageRoute(
                   builder: (context) => widget.tabItem == 0
-                      ? HomeHome()
+                      ? const HomeHome()
                       : TassieMap(dp: dp!, rightSwipe: widget.rightSwipe));
             },
           );

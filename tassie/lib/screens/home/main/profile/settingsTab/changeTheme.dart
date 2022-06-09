@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/utils/snackbar.dart';
 import 'package:tassie/utils/themePreferences.dart';
-import 'package:tassie/utils/themeModel.dart';
 import 'package:provider/provider.dart';
 
 class ChangeTheme extends StatefulWidget with ChangeNotifier {

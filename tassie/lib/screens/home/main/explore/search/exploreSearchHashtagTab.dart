@@ -5,23 +5,23 @@ class ExploreSearchHashtagTab extends StatefulWidget {
   const ExploreSearchHashtagTab(
       {required this.hashtags,
       required this.isEndT,
-      required this.isLazyLoadingT});
+      required this.isLazyLoadingT,
+      Key? key}): super(key: key);
   final List hashtags;
   final bool isEndT;
   final bool isLazyLoadingT;
   @override
-  _ExploreSearchHashtagTabState createState() =>
-      _ExploreSearchHashtagTabState();
+  ExploreSearchHashtagTabState createState() => ExploreSearchHashtagTabState();
 }
 
-class _ExploreSearchHashtagTabState extends State<ExploreSearchHashtagTab> {
+class ExploreSearchHashtagTabState extends State<ExploreSearchHashtagTab> {
   Widget _buildProgressIndicator() {
     return Padding(
       padding: const EdgeInsets.all(kDefaultPadding),
       child: Center(
         child: Opacity(
           opacity: widget.isLazyLoadingT ? 0.8 : 00,
-          child: CircularProgressIndicator(
+          child: const CircularProgressIndicator(
             color: kPrimaryColor,
             strokeWidth: 2.0,
           ),
@@ -31,8 +31,8 @@ class _ExploreSearchHashtagTabState extends State<ExploreSearchHashtagTab> {
   }
 
   Widget _endMessage() {
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
+    return const Padding(
+      padding: EdgeInsets.all(kDefaultPadding),
       child: Center(
         child: Opacity(
           opacity: 0.8,
@@ -58,8 +58,8 @@ class _ExploreSearchHashtagTabState extends State<ExploreSearchHashtagTab> {
                     border: Border.all(color: kDark),
                     borderRadius: BorderRadius.circular(100.0),
                   ),
-                  padding: EdgeInsets.all(5.0),
-                  child: Text(
+                  padding: const EdgeInsets.all(5.0),
+                  child: const Text(
                     '#',
                     style:
                         TextStyle(fontSize: 18.0, fontStyle: FontStyle.italic),

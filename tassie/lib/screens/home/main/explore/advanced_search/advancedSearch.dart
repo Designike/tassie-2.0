@@ -15,10 +15,10 @@ class AdvancedSearch extends StatefulWidget {
   const AdvancedSearch({Key? key}) : super(key: key);
 
   @override
-  _AdvancedSearchState createState() => _AdvancedSearchState();
+  AdvancedSearchState createState() => AdvancedSearchState();
 }
 
-class _AdvancedSearchState extends State<AdvancedSearch> {
+class AdvancedSearchState extends State<AdvancedSearch> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _tagController = TextEditingController();
   bool isVeg = true;
@@ -33,14 +33,13 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
   String hour = '1';
   String min = '00';
   List ingredients = [];
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   final dio = Dio();
   void changeFlavour(int index, String flav) {
     setState(() {
       flavour = flav;
       selectedFlavour = index;
     });
-    print(flavour);
   }
 
   void changeCourse(int index, String cour) {
@@ -48,7 +47,6 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
       course = cour;
       selectedCourse = index;
     });
-    print(course);
   }
 
   void changeMeal(int index, String m) {
@@ -66,11 +64,10 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
       padding: const EdgeInsets.only(right: kDefaultPadding, top: 10.0),
       child: OutlinedButton(
         onPressed: () => changeMeal(index, m),
-        child: Text(m),
         style: OutlinedButton.styleFrom(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-          padding: EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(15.0),
           side: BorderSide(
             color: selectedMeal == index ? kPrimaryColor : kDark,
             width: selectedMeal == index ? 2 : 1,
@@ -79,6 +76,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
               ? kPrimaryColor.withOpacity(0.1)
               : Colors.transparent,
         ),
+        child: Text(m),
       ),
     );
   }
@@ -88,11 +86,10 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
       padding: const EdgeInsets.only(right: kDefaultPadding, top: 10.0),
       child: OutlinedButton(
         onPressed: () => changeFlavour(index, flav),
-        child: Text(flav),
         style: OutlinedButton.styleFrom(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-          padding: EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(15.0),
           side: BorderSide(
             color: selectedFlavour == index ? kPrimaryColor : kDark,
             width: selectedFlavour == index ? 2 : 1,
@@ -101,6 +98,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
               ? kPrimaryColor.withOpacity(0.1)
               : Colors.transparent,
         ),
+        child: Text(flav),
       ),
     );
   }
@@ -110,11 +108,10 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
       padding: const EdgeInsets.only(right: kDefaultPadding, top: 10.0),
       child: OutlinedButton(
         onPressed: () => changeCourse(index, cour),
-        child: Text(cour),
         style: OutlinedButton.styleFrom(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-          padding: EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(15.0),
           side: BorderSide(
             color: selectedCourse == index ? kPrimaryColor : kDark,
             width: selectedCourse == index ? 2 : 1,
@@ -123,6 +120,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
               ? kPrimaryColor.withOpacity(0.1)
               : Colors.transparent,
         ),
+        child: Text(cour),
       ),
     );
   }
@@ -137,13 +135,13 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
             onTap: () => _removeIngredient(index),
             child: ClipOval(
               child: Container(
-                padding: EdgeInsets.all(1.0),
+                padding: const EdgeInsets.all(1.0),
                 color: Theme.of(context).scaffoldBackgroundColor,
                 child: ClipOval(
                   child: Container(
-                    padding: EdgeInsets.all(2.0),
+                    padding: const EdgeInsets.all(2.0),
                     color: kPrimaryColor,
-                    child: Icon(
+                    child: const Icon(
                       Icons.close,
                       size: 20,
                     ),
@@ -157,17 +155,17 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
           padding: const EdgeInsets.only(right: kDefaultPadding, top: 10.0),
           child: OutlinedButton(
             onPressed: () {},
-            child: Text(ing),
             style: OutlinedButton.styleFrom(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0)),
-              padding: EdgeInsets.all(15.0),
-              side: BorderSide(
+              padding: const EdgeInsets.all(15.0),
+              side: const BorderSide(
                 color: kDark,
                 width: 1,
               ),
               backgroundColor: Colors.transparent,
             ),
+            child: Text(ing),
           ),
         ),
       ],
@@ -203,7 +201,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                 Theme.of(context).brightness == Brightness.light
                     ? Brightness.dark
                     : Brightness.light),
-        title: Text(
+        title: const Text(
           'What all you got?',
           style: TextStyle(
             color: kPrimaryColor,
@@ -216,17 +214,16 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: EdgeInsets.all(kDefaultPadding * 1.5),
+          padding: const EdgeInsets.all(kDefaultPadding * 1.5),
           children: [
-            Text(
+            const Text(
               'Can\'t decide what to eat? We have got you! \nApply your filters, and get ready for some yumminess.',
             ),
             // SizedBox(
             //   height: 2 * kDefaultPadding,
             // ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(top: kDefaultPadding, bottom: 10.0),
+            const Padding(
+              padding: EdgeInsets.only(top: kDefaultPadding, bottom: 10.0),
               child: Text('Category'),
             ),
             // SizedBox(height: 3 * kDefaultPadding,),
@@ -240,11 +237,10 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                         isVeg = true;
                       });
                     },
-                    child: Text('Veg'),
                     style: OutlinedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0)),
-                      padding: EdgeInsets.all(15.0),
+                      padding: const EdgeInsets.all(15.0),
                       side: BorderSide(
                         color: isVeg ? Colors.green : kDark,
                         width: isVeg ? 2 : 1,
@@ -253,6 +249,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                           ? kPrimaryColor.withOpacity(0.1)
                           : Colors.transparent,
                     ),
+                    child: const Text('Veg'),
                   ),
                 ),
                 OutlinedButton(
@@ -261,11 +258,10 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                       isVeg = false;
                     });
                   },
-                  child: Text('Non Veg'),
                   style: OutlinedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0)),
-                    padding: EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(15.0),
                     side: BorderSide(
                       color: !isVeg ? Colors.red : kDark,
                       width: !isVeg ? 2 : 1,
@@ -274,14 +270,15 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                         ? kPrimaryColor.withOpacity(0.1)
                         : Colors.transparent,
                   ),
+                  child: const Text('Non Veg'),
                 ),
               ],
             ),
             // SizedBox(
             //   height: kDefaultPadding,
             // ),
-            Padding(
-              padding: const EdgeInsets.only(top: kDefaultPadding),
+            const Padding(
+              padding: EdgeInsets.only(top: kDefaultPadding),
               child: Text('Meal Type'),
             ),
 
@@ -297,8 +294,8 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
             // SizedBox(
             //   height: kDefaultPadding,
             // ),
-            Padding(
-              padding: const EdgeInsets.only(top: kDefaultPadding),
+            const Padding(
+              padding: EdgeInsets.only(top: kDefaultPadding),
               child: Text('Flavour'),
             ),
 
@@ -315,8 +312,8 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
             // SizedBox(
             //   height: kDefaultPadding,
             // ),
-            Padding(
-              padding: const EdgeInsets.only(top: kDefaultPadding),
+            const Padding(
+              padding: EdgeInsets.only(top: kDefaultPadding),
               child: Text('Course'),
             ),
 
@@ -334,15 +331,14 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
             // SizedBox(
             //   height: kDefaultPadding,
             // ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(top: kDefaultPadding, bottom: 10.0),
+            const Padding(
+              padding: EdgeInsets.only(top: kDefaultPadding, bottom: 10.0),
               child: Text('Cooking Time (HH : MM)'),
             ),
             Row(
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   width: size.width * 0.25,
                   decoration: BoxDecoration(
                     border: Border.all(color: kDark),
@@ -366,11 +362,11 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                         isExpanded: true),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10.0,
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   width: size.width * 0.25,
                   decoration: BoxDecoration(
                     border: Border.all(color: kDark),
@@ -396,9 +392,8 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                 ),
               ],
             ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(top: kDefaultPadding, bottom: 10.0),
+            const Padding(
+              padding: EdgeInsets.only(top: kDefaultPadding, bottom: 10.0),
               child: Text('What all ingredients do you have?'),
             ),
             Padding(
@@ -407,7 +402,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                 children: [
                   TypeAheadFormField<String?>(
                     hideOnEmpty: true,
-                    debounceDuration: Duration(seconds: 1),
+                    debounceDuration: const Duration(seconds: 1),
                     // direction: AxisDirection.up,
                     autoFlipDirection: true,
                     keepSuggestionsOnSuggestionSelected: true,
@@ -427,7 +422,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                               ? kPrimaryColor
                               : kDark[900],
                         ),
-                        contentPadding: EdgeInsets.symmetric(
+                        contentPadding: const EdgeInsets.symmetric(
                             horizontal: 25.0, vertical: kDefaultPadding),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         border: OutlineInputBorder(
@@ -448,11 +443,8 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                     ),
                     onSuggestionSelected: (v) {
                       // setState(() {
-                      print("first");
                       _appendIngredient(v);
                       _tagController.text = "";
-                      print("second");
-                      print(_tagController.text);
                       // });
                     },
                     validator: (val) => val!.isEmpty || val.length > 500
@@ -463,7 +455,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10.0),
+              padding: const EdgeInsets.only(top: 10.0),
               child: Wrap(
                 children: [
                   for (int i = 0; i < ingredients.length; i++) ...[
@@ -472,7 +464,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: kDefaultPadding,
             ),
 
@@ -498,7 +490,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                           text: 'Tassie',
                           waveColor: kPrimaryColor,
                           boxBackgroundColor: kDark[900]!,
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                             fontSize: 50.0,
                             fontWeight: FontWeight.bold,
                             fontFamily: "LobsterTwo",
@@ -529,10 +521,12 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                     });
                 // print(response);
                 var id = response.data['data']['id'];
-                print(id);
-                await Future.delayed(Duration(seconds: 1));
+                await Future.delayed(const Duration(seconds: 1));
                 if (response.data != null) {
                   if (response.data['data']['id'] != null) {
+                    await Future.delayed(const Duration(seconds: 1));
+
+                    if (!mounted) return;
                     Navigator.of(context, rootNavigator: true).pop();
                     Navigator.pushReplacement(
                       context,
@@ -541,6 +535,9 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                       }),
                     );
                   } else {
+                    await Future.delayed(const Duration(seconds: 1));
+
+                    if (!mounted) return;
                     Navigator.of(context, rootNavigator: true).pop();
                     showSnack(
                         context,
@@ -550,11 +547,13 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                         3);
                   }
                 } else {
+                  await Future.delayed(const Duration(seconds: 1));
+
+                  if (!mounted) return;
                   showSnack(context, 'Some error occured. Try again!', () {},
                       'OK', 3);
                 }
               },
-              child: Text('Find Recipes'),
               style: TextButton.styleFrom(
                 backgroundColor: Theme.of(context).brightness == Brightness.dark
                     ? kDark[900]
@@ -566,8 +565,9 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                   borderRadius: BorderRadius.circular(15.0),
                 ),
               ),
+              child: const Text('Find Recipes'),
             ),
-            SizedBox(
+            const SizedBox(
               height: 100.0,
             ),
           ],

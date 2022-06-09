@@ -17,7 +17,6 @@ import 'package:tassie/screens/home/main/profile/settingsTab/settings.dart';
 import 'package:tassie/utils/showMoreText.dart';
 import 'package:tassie/utils/snackbar.dart';
 import 'package:tassie/utils/imgLoader.dart';
-import 'package:tassie/utils/themeModel.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 

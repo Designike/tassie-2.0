@@ -1,7 +1,4 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,20 +13,13 @@ class AdvancedSearchResults extends StatefulWidget {
       : super(key: key);
   final String suggestionID;
   @override
-  _AdvancedSearchResultsState createState() => _AdvancedSearchResultsState();
+  AdvancedSearchResultsState createState() => AdvancedSearchResultsState();
 }
 
-class _AdvancedSearchResultsState extends State<AdvancedSearchResults>
+class AdvancedSearchResultsState extends State<AdvancedSearchResults>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  // recs to be fetched from api
-  // List recs = [];
-  // List<Map> recs = [
-  //   {"name": "Paneer Tikka", "user": "Sommy21", "url": "https://picsum.photos/200", "profilePic": "https://picsum.photos/200"},
-  //   {"name": "Dhokla", "user": "parthnamdev", "url": "https://picsum.photos/200", "profilePic": "https://picsum.photos/200"},
-  //   {"name": "Khamman", "user": "rishabh", "url": "https://picsum.photos/200", "profilePic": "https://picsum.photos/200"}
-  // ];
   final ScrollController _sc = ScrollController();
   static int page = 1;
   static List recs = [];
@@ -38,7 +28,7 @@ class _AdvancedSearchResultsState extends State<AdvancedSearchResults>
   static bool isLoading = true;
   bool isEnd = false;
   final dio = Dio();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
   Widget _buildProgressIndicator() {
     return Padding(
@@ -46,7 +36,7 @@ class _AdvancedSearchResultsState extends State<AdvancedSearchResults>
       child: Center(
         child: Opacity(
           opacity: isLazyLoading ? 0.8 : 00,
-          child: CircularProgressIndicator(
+          child: const CircularProgressIndicator(
             color: kPrimaryColor,
             strokeWidth: 2.0,
           ),
@@ -56,9 +46,8 @@ class _AdvancedSearchResultsState extends State<AdvancedSearchResults>
   }
 
   Widget _endMessage() {
-    print(isEnd);
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
+    return const Padding(
+      padding: EdgeInsets.all(kDefaultPadding),
       child: Center(
         child: Opacity(
           opacity: 0.8,
@@ -71,24 +60,18 @@ class _AdvancedSearchResultsState extends State<AdvancedSearchResults>
   void _getMoreData(int index) async {
     if (!isEnd) {
       if (!isLazyLoading) {
-        print('calling...');
         setState(() {
           isLazyLoading = true;
         });
-        var url = "https://api-tassie.herokuapp.com/search/lazyguess/" +
-            index.toString() +
-            "/" +
-            widget.suggestionID;
+        var url = "https://api-tassie.herokuapp.com/search/lazyguess/$index/${widget.suggestionID}";
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer " + token!
+            HttpHeaders.authorizationHeader: "Bearer ${token!}"
           }),
         );
-        print('data');
-        print(response);
         // print(response.data);
         if (response.data['data'] != null) {
           setState(() {
@@ -122,33 +105,6 @@ class _AdvancedSearchResultsState extends State<AdvancedSearchResults>
             isLazyLoading = false;
           });
         }
-        // List tList = [];
-        // if (response.data['data']['recs'] != null) {
-        //   for (int i = 0;
-        //       i < response.data['data']['recs']['results'].length;
-        //       i++) {
-        //     tList.add(response.data['data']['recs']['results'][i]);
-        //   }
-        //   setState(() {
-        //     if (index == 1) {
-        //       isLoading = false;
-        //     }
-        //     isLazyLoading = false;
-        //     recs.addAll(tList);
-        //     // print(recs[0]['name']);
-        //     page++;
-        //   });
-        //   if (response.data['data']['recs']['results'].length == 0) {
-        //     setState(() {
-        //       isEnd = true;
-        //     });
-        //   }
-        // } else {
-        //   setState(() {
-        //     isLoading = false;
-        //     isLazyLoading = false;
-        //   });
-        // }
       }
     }
   }
@@ -193,7 +149,7 @@ class _AdvancedSearchResultsState extends State<AdvancedSearchResults>
     super.build(context);
     Size size = MediaQuery.of(context).size;
     return (isLoading == true)
-        ? Scaffold(
+        ? const Scaffold(
             // backgroundColor: Colors.white,
             body: Center(
               child: SpinKitThreeBounce(
@@ -212,7 +168,7 @@ class _AdvancedSearchResultsState extends State<AdvancedSearchResults>
                       Theme.of(context).brightness == Brightness.light
                           ? Brightness.dark
                           : Brightness.light),
-              title: Text(
+              title: const Text(
                 'Yumminess ahead !',
                 style: TextStyle(
                   color: kPrimaryColor,
@@ -227,15 +183,15 @@ class _AdvancedSearchResultsState extends State<AdvancedSearchResults>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Divider(
+                  const Divider(
                     height: 10,
                     thickness: 0.5,
                   ),
-                  if (recs.length > 0) ...[
+                  if (recs.isNotEmpty) ...[
                     Expanded(
                       child: GridView.builder(
                         controller: _sc,
-                        physics: AlwaysScrollableScrollPhysics(),
+                        physics: const AlwaysScrollableScrollPhysics(),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio: (size.width / 2) /
@@ -266,7 +222,7 @@ class _AdvancedSearchResultsState extends State<AdvancedSearchResults>
                     ),
                   ] else ...[
                     SingleChildScrollView(
-                      physics: AlwaysScrollableScrollPhysics(),
+                      physics: const AlwaysScrollableScrollPhysics(),
                       child: Center(
                         child: Column(
                           children: [
@@ -277,17 +233,17 @@ class _AdvancedSearchResultsState extends State<AdvancedSearchResults>
                               image: MediaQuery.of(context)
                                           .platformBrightness ==
                                       Brightness.dark
-                                  ? AssetImage('assets/images/no_feed_dark.png')
-                                  : AssetImage(
+                                  ? const AssetImage('assets/images/no_feed_dark.png')
+                                  : const AssetImage(
                                       'assets/images/no_feed_light.png'),
                               width: size.width * 0.75,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 30.0,
                             ),
                             SizedBox(
                               width: size.width * 0.75,
-                              child: Text(
+                              child: const Text(
                                 'Subscribe to see others\' recs.',
                                 style: TextStyle(fontSize: 18.0),
                                 textAlign: TextAlign.center,

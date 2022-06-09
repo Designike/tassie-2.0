@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:io';
 
 import 'package:async/async.dart';
@@ -15,7 +13,11 @@ import '../../../../constants.dart';
 
 class ExploreRec extends StatefulWidget {
   const ExploreRec(
-      {required this.recs, required this.recostData, required this.funcB});
+      {required this.recs,
+      required this.recostData,
+      required this.funcB,
+      Key? key})
+      : super(key: key);
 
   final Map recs;
   final Map recostData;
@@ -23,11 +25,11 @@ class ExploreRec extends StatefulWidget {
   // final int index;
 
   @override
-  _ExploreRecState createState() => _ExploreRecState();
+  ExploreRecState createState() => ExploreRecState();
 }
 
-class _ExploreRecState extends State<ExploreRec> {
-  String _image = "";
+class ExploreRecState extends State<ExploreRec> {
+  String image = "";
   bool isImage = false;
   AsyncMemoizer memoizer = AsyncMemoizer();
   AsyncMemoizer memoizer1 = AsyncMemoizer();
@@ -36,27 +38,19 @@ class _ExploreRecState extends State<ExploreRec> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     memoizer = AsyncMemoizer();
     memoizer1 = AsyncMemoizer();
     storedFuture = loadImg(widget.recs['recipeImageID'], memoizer);
     storedFuture1 = loadImg(widget.recs['profilePic'], memoizer1);
-    // loadImg(widget.recs['recipeImageID']).then((result) {
-    //   setState(() {
-    //     _image = result;
-    //     isImage = true;
-    //   });
-    // });
     if (widget.recs['recipeImageID'] != "") {
       isImage = true;
     }
-    // super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    var storage = FlutterSecureStorage();
+    var storage = const FlutterSecureStorage();
     var dio = Dio();
     bool isBookmarked = widget.recostData['isBookmarked'];
     Size size = MediaQuery.of(context).size;
@@ -79,13 +73,13 @@ class _ExploreRecState extends State<ExploreRec> {
                   builder: (BuildContext context, AsyncSnapshot text) {
                     if (text.connectionState == ConnectionState.waiting) {
                       return Container(
-                        margin: EdgeInsets.all(10.0),
+                        margin: const EdgeInsets.all(10.0),
                         width: double.infinity,
                         height: (size.width / 2) - 20.0 - 14.0,
                         // height: 400.0,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(25.0),
-                          image: DecorationImage(
+                          image: const DecorationImage(
                             image: AssetImage(
                               'assets/images/broken.png',
                             ),
@@ -95,13 +89,13 @@ class _ExploreRecState extends State<ExploreRec> {
                       );
                     } else if (text.error != null) {
                       return Container(
-                        margin: EdgeInsets.all(10.0),
+                        margin: const EdgeInsets.all(10.0),
                         width: double.infinity,
                         height: (size.width / 2) - 20.0 - 14.0,
                         // height: 400.0,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(25.0),
-                          image: DecorationImage(
+                          image: const DecorationImage(
                             image: AssetImage(
                               'assets/images/broken.png',
                             ),
@@ -120,10 +114,10 @@ class _ExploreRecState extends State<ExploreRec> {
                               setState(() {});
                             },
                             child: Container(
-                                margin: EdgeInsets.all(10.0),
+                                margin: const EdgeInsets.all(10.0),
                                 width: double.infinity,
                                 height: (size.width / 2) - 20.0 - 14.0,
-                                child: Center(
+                                child: const Center(
                                   child: Icon(
                                     Icons.refresh,
                                     size: 50.0,
@@ -136,7 +130,7 @@ class _ExploreRecState extends State<ExploreRec> {
                         splashColor: Colors.transparent,
                         highlightColor: Colors.transparent,
                         child: Container(
-                          margin: EdgeInsets.all(10.0),
+                          margin: const EdgeInsets.all(10.0),
                           width: double.infinity,
                           height: (size.width / 2) - 20.0 - 14.0,
                           // height: 400.0,
@@ -156,17 +150,11 @@ class _ExploreRecState extends State<ExploreRec> {
                 leading: Container(
                   width: (size.width - 42.0) / 12,
                   height: (size.width - 42.0) / 12,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                   ),
                   child: CircleAvatar(
                     child: ClipOval(
-                      // child: Image(
-                      //   height: (size.width - 42.0) / 12,
-                      //   width: (size.width - 42.0) / 12,
-                      //   image: NetworkImage(recs['profilePic']),
-                      //   fit: BoxFit.cover,
-                      // ),
                       child: FutureBuilder(
                           future: storedFuture1,
                           builder: (BuildContext context, AsyncSnapshot text) {
@@ -176,21 +164,18 @@ class _ExploreRecState extends State<ExploreRec> {
                               return Image(
                                 height: (size.width - 42.0) / 12,
                                 width: (size.width - 42.0) / 12,
-                                image: AssetImage('assets/images/broken.png'),
+                                image: const AssetImage(
+                                    'assets/images/broken.png'),
                                 fit: BoxFit.cover,
                               );
                             } else {
-                              // return Image(
-                              //   image: NetworkImage(text.data.toString()),
-                              //   fit: BoxFit.cover,
-                              // );
                               if (!text.hasData) {
                                 return GestureDetector(
                                     onTap: () {
                                       setState(() {});
                                     },
                                     child: Container(
-                                        child: Center(
+                                        child: const Center(
                                       child: Icon(
                                         Icons.refresh,
                                         // size: 50.0,
@@ -211,27 +196,27 @@ class _ExploreRecState extends State<ExploreRec> {
                 ),
                 trailing: IconButton(
                   icon: (isBookmarked)
-                      ? Icon(Icons.bookmark)
-                      : Icon(Icons.bookmark_border),
+                      ? const Icon(Icons.bookmark)
+                      : const Icon(Icons.bookmark_border),
                   // color: Colors.black,
                   onPressed: () async {
                     if (!isBookmarked) {
                       var token = await storage.read(key: "token");
-                      Response response = await dio.post(
+                      await dio.post(
                           "https://api-tassie.herokuapp.com/recs/bookmark",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
-                            HttpHeaders.authorizationHeader: "Bearer " + token!
+                            HttpHeaders.authorizationHeader: "Bearer ${token!}"
                           }),
                           data: {'uuid': recs['uuid']});
                       widget.funcB(true);
                     } else {
                       var token = await storage.read(key: "token");
-                      Response response = await dio.post(
+                      await dio.post(
                           "https://api-tassie.herokuapp.com/recs/removeBookmark",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
-                            HttpHeaders.authorizationHeader: "Bearer " + token!
+                            HttpHeaders.authorizationHeader: "Bearer ${token!}"
                           }),
                           data: {'uuid': recs['uuid']});
                       widget.funcB(false);
@@ -254,164 +239,36 @@ class _ExploreRecState extends State<ExploreRec> {
                     recs['name'],
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  // subtitle: Text(
-                  //   recs['username'],
-                  //   overflow: TextOverflow.ellipsis,
-                  //   style: TextStyle(
-                  //     color: Theme.of(context).brightness == Brightness.dark
-                  //         ? kLight
-                  //         : kDark[900],
-                  //   ),
-                  // ),
                   subtitle: RichText(
-                        overflow: TextOverflow.ellipsis,
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: recs['username'],
-                              style: TextStyle(
-                                color: Theme.of(context).brightness ==
-                                        Brightness.light
+                      overflow: TextOverflow.ellipsis,
+                      text: TextSpan(children: [
+                        TextSpan(
+                          text: recs['username'],
+                          style: TextStyle(
+                            color:
+                                Theme.of(context).brightness == Brightness.light
                                     ? kDark[900]
                                     : kLight,
-                                    
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.of(context)
-                                      .push(MaterialPageRoute(
-                                    builder: (_) => Profile(
-                                      uuid: recs['userUuid'],
-                                    ),
-                                  ));
-                                },
-                            ),])),
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) => Profile(
+                                  uuid: recs['userUuid'],
+                                ),
+                              ));
+                            },
+                        ),
+                      ])),
                   isThreeLine: true,
                 ),
               ),
-              // Padding(
-              //   padding: EdgeInsets.symmetric(horizontal: 20.0),
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //     children: [
-              //       Row(
-              //         children: [
-              //           Row(
-              //             children: [
-              //               IconButton(
-              //                 icon: Icon(Icons.favorite_border),
-              //                 iconSize: 30.0,
-              //                 onPressed: () => print('Like post'),
-              //               ),
-              //               Text(
-              //                 '2,515',
-              //                 style: TextStyle(
-              //                   fontSize: 14.0,
-              //                   fontWeight: FontWeight.w600,
-              //                 ),
-              //               ),
-              //             ],
-              //           ),
-              //           SizedBox(width: 20.0),
-              //           Row(
-              //             children: <Widget>[
-              //               IconButton(
-              //                 icon: Icon(Icons.chat),
-              //                 iconSize: 30.0,
-              //                 onPressed: () {
-              //                   Navigator.push(
-              //                     context,
-              //                     MaterialPageRoute(
-              //                       builder: (_) => ViewExploreRec(
-              //                         recs: recs[index],
-              //                       ),
-              //                     ),
-              //                   );
-              //                 },
-              //               ),
-              //               Text(
-              //                 '350',
-              //                 style: TextStyle(
-              //                   fontSize: 14.0,
-              //                   fontWeight: FontWeight.w600,
-              //                 ),
-              //               ),
-              //             ],
-              //           ),
-              //         ],
-              //       ),
-              //       IconButton(
-              //         icon: Icon(Icons.bookmark_border),
-              //         iconSize: 30.0,
-              //         onPressed: () => print('Save post'),
-              //       ),
-              //     ],
-              //   ),
-              // ),
             ],
           ),
-          // Padding(
-          //   padding:
-          //       const EdgeInsets.only(left: 32.0, right: 32.0, bottom: 20.0),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.start,
-          //     children: [
-          //       // Text(
-          //       //   recs[index]['description'],
-          //       //   overflow: TextOverflow.ellipsis,
-          //       //   textAlign: TextAlign.start,
-          //       // ),
-          //       Flexible(
-          //         child: GestureDetector(
-          //           onTap: () {
-          //             Navigator.push(
-          //               context,
-          //               MaterialPageRoute(
-          //                 builder: (_) => ViewExploreRec(
-          //                   recs: recs[index],
-          //                 ),
-          //               ),
-          //             );
-          //           },
-          //           child: RichText(
-          //             overflow: TextOverflow.ellipsis,
-          //             text: TextSpan(
-          //               children: [
-          //                 TextSpan(
-          //                   text: recs[index]['username'],
-          //                   style: TextStyle(
-          //                     fontWeight: FontWeight.bold,
-          //                     color:
-          //                         Theme.of(context).brightness ==
-          //                                 Brightness.light
-          //                             ? kDark[900]
-          //                             : kLight,
-          //                   ),
-          //                 ),
-          //                 TextSpan(text: " "),
-          //                 TextSpan(
-          //                   text: recs[index]['description'],
-          //                   style: TextStyle(
-          //                     color:
-          //                         Theme.of(context).brightness ==
-          //                                 Brightness.light
-          //                             ? kDark[900]
-          //                             : kLight,
-          //                   ),
-          //                 )
-          //               ],
-          //             ),
-          //             textAlign: TextAlign.start,
-          //           ),
-          //         ),
-          //       )
-          //     ],
-          //   ),
-          // ),
         ],
       ),
     );

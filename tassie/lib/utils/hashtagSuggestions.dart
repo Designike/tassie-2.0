@@ -1,9 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:localstorage/localstorage.dart';
 
 class Hashtags {
   static final storage = FlutterSecureStorage();
@@ -18,9 +16,7 @@ class Hashtags {
     var temp = query.split("#");
     var tag = "";
 
-    print('1');
     if (!temp.contains(" ") && temp.length > 1) {
-      print('2');
       tag = temp[temp.length - 1];
       var dio = Dio();
       var token = await storage.read(key: "token");
@@ -30,15 +26,14 @@ class Hashtags {
         options: Options(
           headers: {
             HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer " + token!
+            HttpHeaders.authorizationHeader: "Bearer ${token!}"
           },
         ),
         data: {
-          "tag": "#" + tag,
+          "tag": "#$tag",
         },
       );
-      print('3');
-      print(response);
+      
       tags = [];
       for (final i in response.data['data']) {
         tags.add(i['name']);

@@ -12,10 +12,10 @@ class SearchBar extends StatefulWidget {
   const SearchBar({Key? key}) : super(key: key);
 
   @override
-  _SearchBarState createState() => _SearchBarState();
+  SearchBarState createState() => SearchBarState();
 }
 
-class _SearchBarState extends State<SearchBar> {
+class SearchBarState extends State<SearchBar> {
   String query = "";
   static int page = 1;
   List recipes = [];
@@ -29,12 +29,11 @@ class _SearchBarState extends State<SearchBar> {
   bool isEndU = false;
   bool isEndT = false;
   final dio = Dio();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   final TextEditingController _tc = TextEditingController();
   void _getRecosts(int index) async {
     if (!isEndR || !isEndU || !isEndT) {
       if (!isLazyLoadingR || !isLazyLoadingU || !isLazyLoadingT) {
-        print('calling...');
         // showSuggestions(context);
         setState(() {
           isLazyLoadingR = true;
@@ -42,20 +41,16 @@ class _SearchBarState extends State<SearchBar> {
           isLazyLoadingT = true;
         });
 
-        print(query);
-        var url = "https://api-tassie.herokuapp.com/search/lazySearch/" +
-            index.toString() +
-            '/' +
-            query;
+        var url =
+            "https://api-tassie.herokuapp.com/search/lazySearch/${index.toString()}/$query";
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer " + token!
+            HttpHeaders.authorizationHeader: "Bearer ${token!}"
           }),
         );
-        print(response);
         // print(response.data);
         if (response.data['data'] != null) {
           setState(() {
@@ -113,8 +108,8 @@ class _SearchBarState extends State<SearchBar> {
   }
 
   Widget _buildProgressIndicator() {
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
+    return const Padding(
+      padding: EdgeInsets.all(kDefaultPadding),
       child: Center(
         child: Opacity(
           opacity: 1,
@@ -127,21 +122,8 @@ class _SearchBarState extends State<SearchBar> {
     );
   }
 
-  // Widget _endMessage() {
-  //   print(isEnd);
-  //   return Padding(
-  //     padding: const EdgeInsets.all(kDefaultPadding),
-  //     child: Center(
-  //       child: Opacity(
-  //         opacity: 0.8,
-  //         child: Text('That\'s all for now!'),
-  //       ),
-  //     ),
-  //   );
-  // }
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -152,7 +134,7 @@ class _SearchBarState extends State<SearchBar> {
       child: Scaffold(
         body: NestedScrollView(
           floatHeaderSlivers: true,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           headerSliverBuilder: (context, isScrollable) {
             return [
               SliverAppBar(
@@ -167,7 +149,7 @@ class _SearchBarState extends State<SearchBar> {
                 title: TextFormField(
                   controller: _tc,
                   autofocus: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Search',
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     border: InputBorder.none,
@@ -181,14 +163,14 @@ class _SearchBarState extends State<SearchBar> {
                 ),
                 actions: [
                   IconButton(
-                    icon: Icon(Icons.clear_rounded),
+                    icon: const Icon(Icons.clear_rounded),
                     onPressed: () {
                       // clear query
                       _tc.text = "";
                     },
                   ),
                   IconButton(
-                    icon: Icon(Icons.search_rounded),
+                    icon: const Icon(Icons.search_rounded),
                     onPressed: () {
                       // search here
                       page = 1;
@@ -208,7 +190,7 @@ class _SearchBarState extends State<SearchBar> {
                   labelColor: Theme.of(context).brightness == Brightness.dark
                       ? kLight
                       : kDark[900],
-                  tabs: [
+                  tabs: const [
                     Tab(
                       icon: Icon(Icons.fastfood_rounded),
                     ),
@@ -221,7 +203,7 @@ class _SearchBarState extends State<SearchBar> {
                   ],
                 ),
               ),
-              SliverToBoxAdapter(
+              const SliverToBoxAdapter(
                 child: SizedBox(
                   height: 2.0,
                 ),

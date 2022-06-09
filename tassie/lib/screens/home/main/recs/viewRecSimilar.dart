@@ -1,21 +1,15 @@
-// ignore_for_file: prefer_const_constructors
-
-import 'dart:io';
-
 import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/screens/home/main/profile/profile.dart';
-import 'package:tassie/screens/home/main/recs/viewRecipe.dart';
-import 'package:tassie/utils/imgLoader.dart';
 
 import '../../../../constants.dart';
 
 class ViewRecSimilarRec extends StatefulWidget {
   const ViewRecSimilarRec(
-      {required this.recs, required this.funcB, required this.storedFuture});
+      {required this.recs, required this.funcB, required this.storedFuture, Key? key}) : super(key: key);
 
   final Map recs;
   // final Map recostData;
@@ -24,10 +18,10 @@ class ViewRecSimilarRec extends StatefulWidget {
   // final int index;
 
   @override
-  _ViewRecSimilarRecState createState() => _ViewRecSimilarRecState();
+  ViewRecSimilarRecState createState() => ViewRecSimilarRecState();
 }
 
-class _ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
+class ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
   // String _image = "";
   AsyncMemoizer memoizer = AsyncMemoizer();
   late Future storedFuture;

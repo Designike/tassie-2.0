@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -32,21 +30,21 @@ class _TassieMapState extends State<TassieMap> {
   late Future storedFuture;
 
   Future<void> checkPermission() async {
-    bool _serviceEnabled;
+    bool serviceEnabled;
     Location location = Location();
-    PermissionStatus _permissionGranted;
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
+    PermissionStatus permissionGranted;
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
         print('Error');
       }
     }
 
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
         print('Error');
       }
     }
@@ -54,12 +52,12 @@ class _TassieMapState extends State<TassieMap> {
 
   Future<void> getLocation() async {
     print('hello');
-    LocationData _locationData;
+    LocationData locationData;
     Location location = Location();
-    _locationData = await location.getLocation();
+    locationData = await location.getLocation();
     setState(() {
-      lat = _locationData.latitude!;
-      lng = _locationData.longitude!;
+      lat = locationData.latitude!;
+      lng = locationData.longitude!;
       isLoading = false;
     });
     // location.onLocationChanged.listen((LocationData currentLocation) {
@@ -77,9 +75,9 @@ class _TassieMapState extends State<TassieMap> {
     //   isLoading=false;
     // });
     // });
-    print(lng);
-    print(lat);
-    print(_locationData);
+    // print(lng);
+    // print(lat);
+    // print(locationData);
   }
 
   @override
@@ -95,9 +93,9 @@ class _TassieMapState extends State<TassieMap> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    MapController _mapController = MapController();
+    MapController mapController = MapController();
     return isLoading
-        ? Center(
+        ? const Center(
             child: SpinKitThreeBounce(
               color: kPrimaryColor,
               size: 50.0,
@@ -113,21 +111,17 @@ class _TassieMapState extends State<TassieMap> {
             // ),
             floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
             floatingActionButton: FloatingActionButton(
-              child: const Icon(Icons.my_location_rounded),
-              // foregroundColor: MediaQuery.of(context).platformBrightness ==
-              //                           Brightness.light
-              //                       ? kDark[900]
-              //                       : Colors.white,
               foregroundColor: kPrimaryColor,
               onPressed: () {
                 getLocation();
                 // mapController
               },
+              child: const Icon(Icons.my_location_rounded),
             ),
             body: Stack(
               children: [
                 FlutterMap(
-                  mapController: _mapController,
+                  mapController: mapController,
                   options: MapOptions(
                     center: LatLng(lat, lng),
                     zoom: 7.0,
@@ -164,51 +158,47 @@ class _TassieMapState extends State<TassieMap> {
                                 //     onTap: () {},
                                 //   ),
                                 // ),
-                                child: (true)
-                                    ? FutureBuilder(
-                                        future: storedFuture,
-                                        builder: (BuildContext context,
-                                            AsyncSnapshot text) {
-                                          if ((text.connectionState ==
-                                              ConnectionState.waiting) || text.hasError) {
-                                            return Image.asset(
-                                                "assets/images/broken.png",
-                                                fit: BoxFit.cover,
-                                                height: 48,
-                                                width: 48);
-                                          } else {
-                                            if (!text.hasData) {
-                                              return GestureDetector(
-                                                  onTap: () {
-                                                    setState(() {});
-                                                  },
-                                                  child: Container(
-                                                      height: 48,
-                                                      width: 48,
-                                                      child: Center(
-                                                        child: Icon(
-                                                          Icons.refresh,
-                                                          // size: 50.0,
-                                                          color: kDark,
-                                                        ),
-                                                      )));
-                                            }
-                                            return Ink.image(
-                                              height: 48,
-                                              width: 48,
-                                              image: NetworkImage(
-                                                  text.data.toString()),
-                                              fit: BoxFit.cover,
-                                              child: InkWell(
-                                                onTap: () {},
-                                              ),
-                                            );
-                                          }
-                                        })
-                                    : Image.asset("assets/images/broken.png",
-                                        fit: BoxFit.cover,
-                                        height: 128,
-                                        width: 128),
+                                child: FutureBuilder(
+                                    future: storedFuture,
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot text) {
+                                      if ((text.connectionState ==
+                                              ConnectionState.waiting) ||
+                                          text.hasError) {
+                                        return Image.asset(
+                                            "assets/images/broken.png",
+                                            fit: BoxFit.cover,
+                                            height: 48,
+                                            width: 48);
+                                      } else {
+                                        if (!text.hasData) {
+                                          return GestureDetector(
+                                              onTap: () {
+                                                setState(() {});
+                                              },
+                                              child: Container(
+                                                  height: 48,
+                                                  width: 48,
+                                                  child: const Center(
+                                                    child: const Icon(
+                                                      Icons.refresh,
+                                                      // size: 50.0,
+                                                      color: kDark,
+                                                    ),
+                                                  )));
+                                        }
+                                        return Ink.image(
+                                          height: 48,
+                                          width: 48,
+                                          image: NetworkImage(
+                                              text.data.toString()),
+                                          fit: BoxFit.cover,
+                                          child: InkWell(
+                                            onTap: () {},
+                                          ),
+                                        );
+                                      }
+                                    }),
                               ),
                             ),
                           ),

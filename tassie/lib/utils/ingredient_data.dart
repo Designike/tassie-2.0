@@ -4,7 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:localstorage/localstorage.dart';
 
 class IngredientData {
-  static final storage = FlutterSecureStorage();
+  static const storage = FlutterSecureStorage();
   static final LocalStorage lstorage = LocalStorage('tassie');
 
   static String? ing = "";
@@ -31,7 +31,6 @@ class IngredientData {
 
   static List<String> getSuggestions(String query) {
     getIng();
-    print(ingreds);
     return query.isEmpty
         ? []
         : List.of(ingreds).where((ing) {

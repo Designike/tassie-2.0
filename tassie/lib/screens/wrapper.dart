@@ -6,8 +6,9 @@ import 'package:tassie/constants.dart';
 import 'authenticate/authenticate.dart';
 import 'home/homeMapPageContoller.dart';
 
-// ignore: use_key_in_widget_constructors
 class Wrapper extends StatefulWidget {
+  const Wrapper({Key? key}) : super(key: key);
+
   @override
   State<Wrapper> createState() => _WrapperState();
 }
@@ -16,7 +17,7 @@ class _WrapperState extends State<Wrapper> {
   GlobalKey<NavigatorState> key = GlobalKey<NavigatorState>();
   String? value;
   bool isLoading = true;
-  Future<String?> check() async {
+  Future<void> check() async {
     const storage = FlutterSecureStorage();
     var x = await storage.read(key: "token");
     setState(() {

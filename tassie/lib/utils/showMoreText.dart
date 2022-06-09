@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:tassie/constants.dart';
 
 class ShowMoreText extends StatefulWidget {
-  const ShowMoreText({ required this.text});
+  const ShowMoreText({ required this.text, Key? key}) : super(key: key);
+
   final String text;
 
   @override
-  _ShowMoreTextState createState() => _ShowMoreTextState();
+  ShowMoreTextState createState() => ShowMoreTextState();
 }
 
-class _ShowMoreTextState extends State<ShowMoreText> {
+class ShowMoreTextState extends State<ShowMoreText> {
   String firstPart = "";
   String secondPart = "";
   bool isMore = false;
@@ -18,7 +19,7 @@ class _ShowMoreTextState extends State<ShowMoreText> {
     super.initState();
     
     if(widget.text.length > 100){
-      firstPart = widget.text.substring(0,60) + "...";
+      firstPart = "${widget.text.substring(0,60)}...";
       secondPart = widget.text.substring(61, widget.text.length);
     } else {
       firstPart = widget.text;
@@ -31,7 +32,7 @@ class _ShowMoreTextState extends State<ShowMoreText> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(isMore ? widget.text : firstPart),
-          InkWell(child: Text( isMore ? 'Show less' : 'Show more', style: TextStyle(color: kDark),), onTap: () {
+          InkWell(child: Text( isMore ? 'Show less' : 'Show more', style: const TextStyle(color: kDark),), onTap: () {
             setState(() {
               isMore = !isMore;
             });
