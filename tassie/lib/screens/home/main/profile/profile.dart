@@ -21,7 +21,6 @@ import 'package:tassie/utils/themeModel.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 
-import '../../../wrapper.dart';
 import 'recipeTab/profileRecipeTab.dart';
 
 class Profile extends StatefulWidget {
