@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:async/async.dart';
 import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
 
 // AsyncMemoizer _memoizer = AsyncMemoizer();
 Future loadImg(key, AsyncMemoizer memoizer) async {
@@ -15,7 +16,9 @@ Future loadImg(key, AsyncMemoizer memoizer) async {
             HttpHeaders.contentTypeHeader: "application/json",
           }),
           data: {"key": key});
-      return response.data['data']['url'];
+      var res = await http.get(Uri.parse(response.data['data']['url']));
+
+      return res.statusCode == 200 ? response.data['data']['url'] : null;
     });
   } catch (e) {
     return null;
