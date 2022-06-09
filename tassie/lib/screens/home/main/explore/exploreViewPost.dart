@@ -250,14 +250,13 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                                         onTap: () {
                                                           setState(() {});
                                                         },
-                                                        child: Container(
-                                                            child: const Center(
+                                                        child: const Center(
                                                           child: Icon(
                                                             Icons.refresh,
                                                             // size: 50.0,
                                                             color: kDark,
                                                           ),
-                                                        )));
+                                                        ));
                                                   }
                                                   return Image(
                                                     height: 50.0,
@@ -289,7 +288,7 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                     trailing: IconButton(
                                       icon: const Icon(Icons.more_horiz),
                                       // color: Colors.black,
-                                      onPressed: () => print('More'),
+                                      onPressed: () => {},
                                     ),
                                   ),
                                 ),

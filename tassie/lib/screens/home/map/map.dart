@@ -8,9 +8,10 @@ import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/utils/imgLoader.dart';
+import 'package:tassie/utils/snackbar.dart';
 
 class TassieMap extends StatefulWidget {
-  const TassieMap({required this.dp, required this.rightSwipe});
+  const TassieMap({required this.dp, required this.rightSwipe, Key? key}) : super(key: key);
   final String dp;
   final void Function() rightSwipe;
 
@@ -37,7 +38,10 @@ class _TassieMapState extends State<TassieMap> {
     if (!serviceEnabled) {
       serviceEnabled = await location.requestService();
       if (!serviceEnabled) {
-        print('Error');
+        await Future.delayed(const Duration(seconds: 1));
+
+      if (!mounted) return;
+        showSnack(context, 'please turn on location', (){}, 'OK', 4);
       }
     }
 
@@ -45,13 +49,15 @@ class _TassieMapState extends State<TassieMap> {
     if (permissionGranted == PermissionStatus.denied) {
       permissionGranted = await location.requestPermission();
       if (permissionGranted != PermissionStatus.granted) {
-        print('Error');
+        await Future.delayed(const Duration(seconds: 1));
+
+      if (!mounted) return;
+        showSnack(context, 'please turn on location', (){}, 'OK', 4);
       }
     }
   }
 
   Future<void> getLocation() async {
-    print('hello');
     LocationData locationData;
     Location location = Location();
     locationData = await location.getLocation();
@@ -92,7 +98,6 @@ class _TassieMapState extends State<TassieMap> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     MapController mapController = MapController();
     return isLoading
         ? const Center(
@@ -145,61 +150,59 @@ class _TassieMapState extends State<TassieMap> {
                           width: 48.0,
                           height: 48.0,
                           point: LatLng(lat, lng),
-                          builder: (ctx) => Container(
-                            child: ClipOval(
-                              child: Material(
-                                // child: Ink.image(
-                                //   height: 128,
-                                //   width: 128,
-                                //   image:
-                                //       NetworkImage('https://picsum.photos/200'),
-                                //   fit: BoxFit.cover,
-                                //   child: InkWell(
-                                //     onTap: () {},
-                                //   ),
-                                // ),
-                                child: FutureBuilder(
-                                    future: storedFuture,
-                                    builder: (BuildContext context,
-                                        AsyncSnapshot text) {
-                                      if ((text.connectionState ==
-                                              ConnectionState.waiting) ||
-                                          text.hasError) {
-                                        return Image.asset(
-                                            "assets/images/broken.png",
-                                            fit: BoxFit.cover,
-                                            height: 48,
-                                            width: 48);
-                                      } else {
-                                        if (!text.hasData) {
-                                          return GestureDetector(
-                                              onTap: () {
-                                                setState(() {});
-                                              },
-                                              child: Container(
-                                                  height: 48,
-                                                  width: 48,
-                                                  child: const Center(
-                                                    child: const Icon(
-                                                      Icons.refresh,
-                                                      // size: 50.0,
-                                                      color: kDark,
-                                                    ),
-                                                  )));
-                                        }
-                                        return Ink.image(
-                                          height: 48,
-                                          width: 48,
-                                          image: NetworkImage(
-                                              text.data.toString()),
+                          builder: (ctx) => ClipOval(
+                            child: Material(
+                              // child: Ink.image(
+                              //   height: 128,
+                              //   width: 128,
+                              //   image:
+                              //       NetworkImage('https://picsum.photos/200'),
+                              //   fit: BoxFit.cover,
+                              //   child: InkWell(
+                              //     onTap: () {},
+                              //   ),
+                              // ),
+                              child: FutureBuilder(
+                                  future: storedFuture,
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot text) {
+                                    if ((text.connectionState ==
+                                            ConnectionState.waiting) ||
+                                        text.hasError) {
+                                      return Image.asset(
+                                          "assets/images/broken.png",
                                           fit: BoxFit.cover,
-                                          child: InkWell(
-                                            onTap: () {},
-                                          ),
-                                        );
+                                          height: 48,
+                                          width: 48);
+                                    } else {
+                                      if (!text.hasData) {
+                                        return GestureDetector(
+                                            onTap: () {
+                                              setState(() {});
+                                            },
+                                            child: const SizedBox(
+                                                height: 48,
+                                                width: 48,
+                                                child: Center(
+                                                  child:  Icon(
+                                                    Icons.refresh,
+                                                    // size: 50.0,
+                                                    color: kDark,
+                                                  ),
+                                                )));
                                       }
-                                    }),
-                              ),
+                                      return Ink.image(
+                                        height: 48,
+                                        width: 48,
+                                        image: NetworkImage(
+                                            text.data.toString()),
+                                        fit: BoxFit.cover,
+                                        child: InkWell(
+                                          onTap: () {},
+                                        ),
+                                      );
+                                    }
+                                  }),
                             ),
                           ),
                         ),

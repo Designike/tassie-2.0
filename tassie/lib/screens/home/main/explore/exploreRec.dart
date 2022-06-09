@@ -126,7 +126,7 @@ class ExploreRecState extends State<ExploreRec> {
                                 )));
                       }
                       return InkWell(
-                        onDoubleTap: () => print('Bookmark recipe'),
+                        onDoubleTap: () => {},
                         splashColor: Colors.transparent,
                         highlightColor: Colors.transparent,
                         child: Container(
@@ -174,14 +174,13 @@ class ExploreRecState extends State<ExploreRec> {
                                     onTap: () {
                                       setState(() {});
                                     },
-                                    child: Container(
-                                        child: const Center(
+                                    child: const Center(
                                       child: Icon(
-                                        Icons.refresh,
-                                        // size: 50.0,
-                                        color: kDark,
+                                    Icons.refresh,
+                                    // size: 50.0,
+                                    color: kDark,
                                       ),
-                                    )));
+                                    ));
                               }
                               return Image(
                                 height: (size.width - 42.0) / 12,

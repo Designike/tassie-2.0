@@ -1,27 +1,8 @@
-import 'dart:io';
-import 'dart:math';
-
-import 'package:async/async.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-// import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
-import 'package:tassie/screens/home/main/profile/recipeTab/editRecipe.dart';
-import 'package:tassie/utils/showMoreText.dart';
-import 'package:tassie/utils/snackbar.dart';
-import 'package:tassie/screens/home/main/recs/viewRecAllRatings.dart';
-import 'package:tassie/screens/home/main/recs/viewRecCommentChild.dart';
-import 'package:tassie/screens/home/main/recs/viewRecSimilar.dart';
-import 'package:tassie/utils/imgLoader.dart';
-
-import 'viewRecAllComments.dart';
 
 class MyBullet extends StatelessWidget {
-  MyBullet({required this.index});
+  const MyBullet({required this.index, Key? key}) : super(key: key);
   final String index;
   @override
   Widget build(BuildContext context) {
@@ -35,7 +16,7 @@ class MyBullet extends StatelessWidget {
     // );
     return Text(
       index,
-      style: TextStyle(fontSize: 30.0, color: kPrimaryColor),
+      style: const TextStyle(fontSize: 30.0, color: kPrimaryColor),
     );
   }
 }
@@ -60,11 +41,10 @@ class StepIngImage extends StatefulWidget {
   final Future Function(int) storedFuture;
 
   @override
-  _StepIngImageState createState() => _StepIngImageState();
+  StepIngImageState createState() => StepIngImageState();
 }
 
-class _StepIngImageState extends State<StepIngImage> {
-  AsyncMemoizer _memoizer1 = AsyncMemoizer();
+class StepIngImageState extends State<StepIngImage> {
   late Future _storedFuture1;
   bool _isLoading1 = true;
   Future<void> _getImage() async {
@@ -73,8 +53,6 @@ class _StepIngImageState extends State<StepIngImage> {
     if (mounted) {
       setState(() {
         _storedFuture1 = widget.storedFuture(widget.index);
-        print("stored future");
-        print(_storedFuture1);
         _isLoading1 = false;
       });
     }
@@ -83,8 +61,6 @@ class _StepIngImageState extends State<StepIngImage> {
   @override
   void initState() {
     super.initState();
-    // TODO: implement initState
-    _memoizer1 = AsyncMemoizer();
     _getImage();
   }
 
@@ -97,7 +73,7 @@ class _StepIngImageState extends State<StepIngImage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return (_isLoading1)
-        ? Center(
+        ? const Center(
             child: CircularProgressIndicator(
               strokeWidth: 2.0,
             ),
@@ -108,10 +84,10 @@ class _StepIngImageState extends State<StepIngImage> {
                 leading: MyBullet(index: (widget.index + 1).toString()),
                 title: Text(widget.text),
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
+                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
               ),
               !widget.isImage
-                  ? SizedBox(
+                  ? const SizedBox(
                       height: 0,
                     )
                   : Padding(
@@ -134,29 +110,24 @@ class _StepIngImageState extends State<StepIngImage> {
                                 if ((text.connectionState ==
                                         ConnectionState.waiting) ||
                                     text.hasError) {
-                                  print('1');
                                   return Image.asset(
                                       "assets/images/broken.png");
                                 } else if (text.hasError) {
-                                  print('2');
                                   return Image.asset(
                                       "assets/images/broken.png");
                                 } else {
-                                  print('3');
-                                  print(text);
                                   if (!text.hasData) {
                                     return GestureDetector(
                                         onTap: () {
                                           setState(() {});
                                         },
-                                        child: Container(
-                                            child: Center(
+                                        child: const Center(
                                           child: Icon(
-                                            Icons.refresh,
-                                            size: 50.0,
-                                            color: kDark,
+                                        Icons.refresh,
+                                        size: 50.0,
+                                        color: kDark,
                                           ),
-                                        )));
+                                        ));
                                   }
                                   return GestureDetector(
                                     onTap: () {},
@@ -171,10 +142,10 @@ class _StepIngImageState extends State<StepIngImage> {
                       ),
                     ),
               if (widget.index != widget.count - 1) ...[
-                SizedBox(
+                const SizedBox(
                   height: 15.0,
                 ),
-                Divider(
+                const Divider(
                   thickness: 1.0,
                 )
               ],

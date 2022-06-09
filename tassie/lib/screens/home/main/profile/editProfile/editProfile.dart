@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
-import 'package:tassie/screens/home/main/profile/profile.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage(
@@ -13,7 +12,9 @@ class EditProfilePage extends StatefulWidget {
       required this.bio,
       required this.website,
       required this.number,
-      required this.gender});
+      required this.gender,
+      Key? key})
+      : super(key: key);
   final String name;
   final String bio;
   final String website;
@@ -21,10 +22,10 @@ class EditProfilePage extends StatefulWidget {
   final String gender;
 
   @override
-  _EditProfilePageState createState() => _EditProfilePageState();
+  EditProfilePageState createState() => EditProfilePageState();
 }
 
-class _EditProfilePageState extends State<EditProfilePage> {
+class EditProfilePageState extends State<EditProfilePage> {
   // bool showPassword = false;
   List<String> genders = ['', 'male', 'female', 'other'];
   int index = 0;
@@ -53,35 +54,26 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 Theme.of(context).brightness == Brightness.light
                     ? Brightness.dark
                     : Brightness.light),
-        title: Text(
+        title: const Text(
           "Edit Profile",
           // style: TextStyle(fontWeight: FontWeight.w500),
         ),
         actions: [
           IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.done_rounded,
                 // color: Colors.green,
               ),
               onPressed: () async {
                 var dio = Dio();
-                var storage = FlutterSecureStorage();
+                var storage = const FlutterSecureStorage();
                 var token = await storage.read(key: "token");
-                //         Response response =
-                //             await dio.post("https://api-tassie.herokuapp.com/recs/bookmark",
-                //                 options: Options(headers: {
-                //                   HttpHeaders.contentTypeHeader:
-                //                       "application/json",
-                //                   HttpHeaders.authorizationHeader:
-                //                       "Bearer " + token!
-                //                 }),
-                //                 data: {'uuid': recs['uuid']});
                 if (_formKey.currentState!.validate()) {
                   Response response = await dio.post(
                       "https://api-tassie.herokuapp.com/profile/updateProfile/",
                       options: Options(headers: {
                         HttpHeaders.contentTypeHeader: "application/json",
-                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                        HttpHeaders.authorizationHeader: "Bearer ${token!}"
                       }),
                       // data: jsonEncode(value),
                       data: {
@@ -92,6 +84,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         "gender": gender
                       });
                   if (response.data['status']) {
+                    await Future.delayed(const Duration(seconds: 1));
+
+                    if (!mounted) return;
                     Navigator.pop(context);
                   }
                 }
@@ -99,7 +94,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         ],
       ),
       body: Container(
-        padding: EdgeInsets.all(kDefaultPadding),
+        padding: const EdgeInsets.all(kDefaultPadding),
         child: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -108,7 +103,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             key: _formKey,
             child: ListView(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 15.0,
                 ),
                 buildTextField("Name", name, false, TextInputType.text, (val) {
@@ -138,7 +133,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               ? kPrimaryColor
                               : kDark[900],
                         ),
-                        contentPadding: EdgeInsets.symmetric(
+                        contentPadding: const EdgeInsets.symmetric(
                             horizontal: 25.0, vertical: kDefaultPadding),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         border: OutlineInputBorder(
@@ -167,112 +162,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       // borderRadius: BorderRadius.circular(15.0),
                       isExpanded: true),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 35,
                 ),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [
-                //     OutlineButton(
-                //       padding: EdgeInsets.symmetric(horizontal: 50),
-                //       shape: RoundedRectangleBorder(
-                //           borderRadius: BorderRadius.circular(20)),
-                //       onPressed: () {},
-                //       child: Text("CANCEL",
-                //           style: TextStyle(
-                //               fontSize: 14,
-                //               letterSpacing: 2.2,
-                //               color: Colors.black)),
-                //     ),
-                //     RaisedButton(
-                //       onPressed: () {},
-                //       color: Colors.green,
-                //       padding: EdgeInsets.symmetric(horizontal: 50),
-                //       elevation: 2,
-                //       shape: RoundedRectangleBorder(
-                //           borderRadius: BorderRadius.circular(20)),
-                //       child: Text(
-                //         "SAVE",
-                //         style: TextStyle(
-                //             fontSize: 14,
-                //             letterSpacing: 2.2,
-                //             color: Colors.white),
-                //       ),
-                //     )
-                //   ],
-                // )
-                // GestureDetector(
-                //   // onTap: () async {
-                //   //   if (_formKey.currentState!.validate()) {
-                //   //     dynamic result =
-                //   //         await _auth.signInWithEmailAndPassword(
-                //   //             username, password);
-                //   //     if (result == null) {
-                //   //       if (this.mounted) {
-                //   //         setState(() {
-                //   //           error = "Something went wrong";
-                //   //         });
-                //   //       }
-                //   //     }
-                //   //   }
-                //   // },
-                //   onTap: () async {
-                //     // if (_formKey.currentState!.validate()) {
-                //     //   Response response = await dio.post(
-                //     //     "https://api-tassie.herokuapp.com/user/login/",
-                //     //     options: Options(headers: {
-                //     //       HttpHeaders.contentTypeHeader: "application/json",
-                //     //     }),
-                //     //     // data: jsonEncode(value),
-                //     //     data: email != ""
-                //     //         ? {"email": email, "password": password}
-                //     //         : {"username": username, "password": password},
-                //     //   );
-                //     //   print('1');
-                //     //   if (response.data != null) {
-                //     //     if (response.data['status'] == true) {
-                //     //       await storage.write(
-                //     //           key: "token",
-                //     //           value: response.data['data']['token']);
-                //     //       await storage.write(
-                //     //           key: "uuid", value: response.data['data']['uuid']);
-                //     //       print(response.data['data']['uuid']);
-                //     //       Navigator.pushReplacement(
-                //     //         context,
-                //     //         MaterialPageRoute(builder: (context) {
-                //     //           return Home();
-                //     //         }),
-                //     //       );
-                //     //       print(response.toString());
-                //     //     } else {
-                //     //       print(response.toString());
-                //     //       showSnack(
-                //     //           context, response.data['message'], () {}, 'OK', 4);
-                //     //     }
-                //     //   }
-                //     // }
-                //   },
-                //   child: Container(
-                //     height: 50.0,
-                //     child: Material(
-                //       borderRadius: BorderRadius.circular(25.0),
-                //       shadowColor: kPrimaryColorAccent,
-                //       color: kPrimaryColor,
-                //       elevation: 5.0,
-                //       child: Center(
-                //         child: Text(
-                //           'SAVE',
-                //           style: TextStyle(
-                //             // fontFamily: 'Raleway',
-                //             letterSpacing: 2.2,
-                //             color: Colors.white,
-                //             fontWeight: FontWeight.bold,
-                //           ),
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -298,8 +190,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ? kPrimaryColor
                 : kDark[900],
           ),
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
+          contentPadding: const EdgeInsets.symmetric(
+              horizontal: 25.0, vertical: kDefaultPadding),
           floatingLabelBehavior: FloatingLabelBehavior.always,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15.0),

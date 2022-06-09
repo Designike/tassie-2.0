@@ -11,39 +11,13 @@ class ChangePassword extends StatefulWidget {
   const ChangePassword({Key? key}) : super(key: key);
 
   @override
-  _ChangePasswordState createState() => _ChangePasswordState();
+  ChangePasswordState createState() => ChangePasswordState();
 }
 
-class _ChangePasswordState extends State<ChangePassword> {
-  // bool uniqueUsername = false;
+class ChangePasswordState extends State<ChangePassword> {
   final _formKey = GlobalKey<FormState>();
   String oldpass = "";
   String newpass = "";
-  // Future<void> checkUsername(username) async {
-  //   var dio = Dio();
-  //   // print(username);
-  //   try {
-  //     // print('');
-  //     Response response =
-  //         await dio.get("https://api-tassie.herokuapp.com/user/username/" + username);
-  //     // var res = jsonDecode(response.toString());
-
-  //     // if(response)
-  //     // return res.status;
-  //     // print(response);
-  //     setState(() {
-  //       uniqueUsername = response.data['status'];
-  //     });
-  //   } on DioError catch (e) {
-  //     if (e.response != null) {
-  //       setState(() {
-  //         uniqueUsername = e.response!.data['status'];
-  //       });
-  //     }
-  //   }
-  //   print(uniqueUsername);
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,28 +33,27 @@ class _ChangePasswordState extends State<ChangePassword> {
                 Theme.of(context).brightness == Brightness.light
                     ? Brightness.dark
                     : Brightness.light),
-        title: Text(
+        title: const Text(
           "Change Password",
           // style: TextStyle(fontWeight: FontWeight.w500),
         ),
         actions: [
           IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.done_rounded,
                 // color: Colors.green,
               ),
               onPressed: () async {
                 FocusScope.of(context).unfocus();
                 var dio = Dio();
-                var storage = FlutterSecureStorage();
+                var storage = const FlutterSecureStorage();
                 var token = await storage.read(key: "token");
                 if (_formKey.currentState!.validate()) {
-                  print(oldpass);
                   Response response = await dio.post(
                       "https://api-tassie.herokuapp.com/user/updatePassword",
                       options: Options(headers: {
                         HttpHeaders.contentTypeHeader: "application/json",
-                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                        HttpHeaders.authorizationHeader: "Bearer ${token!}"
                       }),
                       // data: jsonEncode(value),
                       data: {
@@ -89,12 +62,21 @@ class _ChangePasswordState extends State<ChangePassword> {
                       });
                   if (response.data != null) {
                     if (response.data['status'] == true) {
+                      await Future.delayed(const Duration(seconds: 1));
+
+                      if (!mounted) return;
                       Navigator.pop(context);
                     } else {
+                      await Future.delayed(const Duration(seconds: 1));
+
+                      if (!mounted) return;
                       showSnack(
                           context, response.data['message'], () {}, 'OK', 4);
                     }
                   } else {
+                    await Future.delayed(const Duration(seconds: 1));
+
+                    if (!mounted) return;
                     showSnack(context, 'Server error', () {}, 'OK', 4);
                   }
                 }
@@ -103,7 +85,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       ),
       resizeToAvoidBottomInset: true,
       body: Container(
-        padding: EdgeInsets.all(kDefaultPadding),
+        padding: const EdgeInsets.all(kDefaultPadding),
         child: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -112,7 +94,7 @@ class _ChangePasswordState extends State<ChangePassword> {
             key: _formKey,
             child: ListView(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 15.0,
                 ),
                 buildTextField(
@@ -122,7 +104,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                   TextInputType.text,
                   (val) async {
                     oldpass = val;
-                    // print(username);
                   },
                   (val) => val!.length < 6
                       ? 'Enter password 6+ characters long'
@@ -135,7 +116,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                   TextInputType.text,
                   (val) async {
                     newpass = val;
-                    // print(username);
                   },
                   (val) => val!.length < 6
                       ? 'Enter password 6+ characters long'
@@ -171,8 +151,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                 ? kPrimaryColor
                 : kDark[900],
           ),
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
+          contentPadding: const EdgeInsets.symmetric(
+              horizontal: 25.0, vertical: kDefaultPadding),
           floatingLabelBehavior: FloatingLabelBehavior.always,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15.0),
@@ -187,8 +167,6 @@ class _ChangePasswordState extends State<ChangePassword> {
         ),
         onChanged: (val) {
           onChange(val);
-          // print(val);
-          // print(username);
         },
         validator: validator,
       ),

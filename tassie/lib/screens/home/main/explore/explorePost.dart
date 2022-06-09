@@ -211,14 +211,13 @@ class ExplorePostState extends State<ExplorePost> {
                                       onTap: () {
                                         setState(() {});
                                       },
-                                      child: Container(
-                                          child: const Center(
+                                      child: const Center(
                                         child: Icon(
-                                          Icons.refresh,
-                                          size: 50.0,
-                                          color: kDark,
+                                      Icons.refresh,
+                                      size: 50.0,
+                                      color: kDark,
                                         ),
-                                      )));
+                                      ));
                                 }
                                 return Image(
                                   height: (size.width - 42.0) / 12,

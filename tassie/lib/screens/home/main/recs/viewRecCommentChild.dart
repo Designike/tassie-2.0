@@ -7,7 +7,6 @@ import 'package:async/async.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/main/profile/profile.dart';
-import 'package:tassie/utils/imgLoader.dart';
 
 class CreateComment extends StatefulWidget {
   const CreateComment(
@@ -30,11 +29,11 @@ class CreateComment extends StatefulWidget {
   final bool isPost;
   final Future storedFuture;
   @override
-  _CreateCommentState createState() => _CreateCommentState();
+  CreateCommentState createState() => CreateCommentState();
 }
 
-class _CreateCommentState extends State<CreateComment> {
-  final storage = FlutterSecureStorage();
+class CreateCommentState extends State<CreateComment> {
+  final storage = const FlutterSecureStorage();
   AsyncMemoizer memoizerComment = AsyncMemoizer();
   late Future storedFuture;
   final dio = Dio();
@@ -42,7 +41,6 @@ class _CreateCommentState extends State<CreateComment> {
   void initState() {
     super.initState();
     memoizerComment = AsyncMemoizer();
-    print(widget.recost['profilePic']);
     // storedFuture = loadImg(widget.recost['profilePic'], memoizerComment);
     storedFuture = widget.storedFuture;
   }
@@ -56,12 +54,12 @@ class _CreateCommentState extends State<CreateComment> {
   Widget build(BuildContext context) {
     // print(comment);
     return Padding(
-      padding: EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10.0),
       child: ListTile(
         leading: Container(
           width: 50.0,
           height: 50.0,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             shape: BoxShape.circle,
           ),
           child: CircleAvatar(
@@ -86,11 +84,11 @@ class _CreateCommentState extends State<CreateComment> {
                               onTap: () {
                                 setState(() {});
                               },
-                              child: Container(
+                              child: const SizedBox(
                                   height: 50.0,
                                   width: 50.0,
                                   child: Center(
-                                    child: Icon(
+                                    child:  Icon(
                                       Icons.refresh,
                                       // size: 50.0,
                                       color: kDark,
@@ -144,7 +142,7 @@ class _CreateCommentState extends State<CreateComment> {
         trailing: (widget.userUuid == widget.uuid ||
                 widget.recost['uuid'].split('_comment_')[0] == widget.uuid)
             ? IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.delete_rounded,
                 ),
                 color: Colors.grey,
@@ -162,10 +160,10 @@ class _CreateCommentState extends State<CreateComment> {
                           'recipeUuid': widget.recipeUuid,
                           'commentUuid': widget.recost['uuid'],
                         };
-                  Response response = await dio.post(url,
+                  await dio.post(url,
                       options: Options(headers: {
                         HttpHeaders.contentTypeHeader: "application/json",
-                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                        HttpHeaders.authorizationHeader: "Bearer ${token!}"
                       }),
                       data: data);
 

@@ -1,14 +1,9 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/utils/leftSwipe.dart';
@@ -26,7 +21,9 @@ class FeedPost extends StatefulWidget {
       required this.bookmark,
       required this.funcB,
       // required this.image,
-      required this.minusComment});
+      required this.minusComment,
+      Key? key})
+      : super(key: key);
   final Map post;
   final Map noOfComment;
   final Map noOfLike;
@@ -37,10 +34,10 @@ class FeedPost extends StatefulWidget {
   final void Function() plusComment;
   final void Function() minusComment;
   @override
-  _FeedPostState createState() => _FeedPostState();
+  FeedPostState createState() => FeedPostState();
 }
 
-class _FeedPostState extends State<FeedPost> {
+class FeedPostState extends State<FeedPost> {
   // final Map post;
   String? dp;
   AsyncMemoizer memoizer = AsyncMemoizer();
@@ -48,7 +45,7 @@ class _FeedPostState extends State<FeedPost> {
   late Future storedFuture;
   late Future storedFuture1;
   final dio = Dio();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   // String _image = "";
   // bool isImage = false;
 
@@ -58,27 +55,17 @@ class _FeedPostState extends State<FeedPost> {
 
   @override
   void initState() {
-    // TODO: implement initState
     getdp();
     memoizer = AsyncMemoizer();
     memoizer1 = AsyncMemoizer();
     storedFuture = loadImg(widget.post['postID'], memoizer);
     storedFuture1 = loadImg(widget.post['profilePic'], memoizer1);
     super.initState();
-    // loadImg(widget.post['postID'],memoizer).then((result) {
-    //   // print('hello');
-    //   // print(result);
-    //   setState(() {
-    //     _image = result;
-    //     isImage = true;
-    //   });
-    // });
   }
 
   @override
   Widget build(BuildContext context) {
     // Future<Uint8List> load = loadImg(widget.post['postID']);
-    print(widget.bookmark);
     Map post = widget.post;
     bool isBookmarked = widget.bookmark['isBookmarked'];
     bool liked = widget.noOfLike['isLiked'];
@@ -86,7 +73,7 @@ class _FeedPostState extends State<FeedPost> {
     Size size = MediaQuery.of(context).size;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
       child: Container(
         width: double.infinity,
         // height: 560.0,
@@ -99,14 +86,14 @@ class _FeedPostState extends State<FeedPost> {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.0),
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: Column(
                 children: <Widget>[
                   ListTile(
                     leading: Container(
                       width: 50.0,
                       height: 50.0,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                       ),
                       child: CircleAvatar(
@@ -124,7 +111,7 @@ class _FeedPostState extends State<FeedPost> {
                                 if ((text.connectionState ==
                                         ConnectionState.waiting ||
                                     text.hasError)) {
-                                  return Image(
+                                  return const Image(
                                     height: 50.0,
                                     width: 50.0,
                                     image:
@@ -141,7 +128,7 @@ class _FeedPostState extends State<FeedPost> {
                                         onTap: () {
                                           setState(() {});
                                         },
-                                        child: Container(
+                                        child: const SizedBox(
                                             height: 50.0,
                                             width: 50.0,
                                             child: Center(
@@ -192,18 +179,16 @@ class _FeedPostState extends State<FeedPost> {
                           ),
                         ])),
                     subtitle: Text(
-                      DateTime.parse(post['createdAt']).hour.toString() +
-                          ":" +
-                          DateTime.parse(post['createdAt']).minute.toString(),
+                      "${DateTime.parse(post['createdAt']).hour}:${DateTime.parse(post['createdAt']).minute}",
                       style: TextStyle(
                           color: Theme.of(context).brightness == Brightness.dark
                               ? kLight
                               : kDark[900]),
                     ),
                     trailing: IconButton(
-                      icon: Icon(Icons.more_horiz),
+                      icon: const Icon(Icons.more_horiz),
                       // color: Colors.black,
-                      onPressed: () => print('More'),
+                      onPressed: () => {},
                     ),
                   ),
                   InkWell(
@@ -214,26 +199,12 @@ class _FeedPostState extends State<FeedPost> {
                             options: Options(headers: {
                               HttpHeaders.contentTypeHeader: "application/json",
                               HttpHeaders.authorizationHeader:
-                                  "Bearer " + token!
+                                  "Bearer ${token!}"
                             }),
                             data: {'uuid': post['uuid']});
                         widget.func(true);
                       }
                     },
-                    // child: Container(
-                    //   margin: EdgeInsets.all(10.0),
-                    //   width: double.infinity,
-                    //   height: size.width - 40.0,
-                    //   // height: 400.0,
-                    //   decoration: BoxDecoration(
-                    //     borderRadius: BorderRadius.circular(25.0),
-                    //     image: DecorationImage(
-                    //       // image: NetworkImage(post['url']),
-                    //       image: Image.network(_image).image,
-                    //       fit: BoxFit.cover,
-                    //     ),
-                    //   ),
-                    // ),
                     child: FutureBuilder(
                         future: storedFuture,
                         builder: (BuildContext context, AsyncSnapshot text) {
@@ -241,13 +212,13 @@ class _FeedPostState extends State<FeedPost> {
                                   ConnectionState.waiting) ||
                               text.hasError) {
                             return Container(
-                              margin: EdgeInsets.all(10.0),
+                              margin: const EdgeInsets.all(10.0),
                               width: double.infinity,
                               height: size.width - 40.0,
                               // height: 400.0,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(25.0),
-                                image: DecorationImage(
+                                image: const DecorationImage(
                                   image: AssetImage(
                                     'assets/images/broken.png',
                                   ),
@@ -256,20 +227,16 @@ class _FeedPostState extends State<FeedPost> {
                               ),
                             );
                           } else {
-                            // return Image(
-                            //   image: NetworkImage(text.data.toString()),
-                            //   fit: BoxFit.cover,
-                            // );
                             if (!text.hasData) {
                               return GestureDetector(
                                   onTap: () {
                                     setState(() {});
                                   },
                                   child: Container(
-                                      margin: EdgeInsets.all(10.0),
+                                      margin: const EdgeInsets.all(10.0),
                                       width: double.infinity,
                                       height: size.width - 40.0,
-                                      child: Center(
+                                      child: const Center(
                                         child: Icon(
                                           Icons.refresh,
                                           size: 50.0,
@@ -278,7 +245,7 @@ class _FeedPostState extends State<FeedPost> {
                                       )));
                             }
                             return Container(
-                              margin: EdgeInsets.all(10.0),
+                              margin: const EdgeInsets.all(10.0),
                               width: double.infinity,
                               height: size.width - 40.0,
                               // height: 400.0,
@@ -294,7 +261,7 @@ class _FeedPostState extends State<FeedPost> {
                         }),
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -304,8 +271,8 @@ class _FeedPostState extends State<FeedPost> {
                               children: [
                                 IconButton(
                                   icon: (!liked)
-                                      ? Icon(Icons.favorite_border)
-                                      : Icon(
+                                      ? const Icon(Icons.favorite_border)
+                                      : const Icon(
                                           Icons.favorite,
                                           color: kPrimaryColor,
                                         ),
@@ -322,7 +289,7 @@ class _FeedPostState extends State<FeedPost> {
                                             HttpHeaders.contentTypeHeader:
                                                 "application/json",
                                             HttpHeaders.authorizationHeader:
-                                                "Bearer " + token!
+                                                "Bearer ${token!}"
                                           }),
                                           data: {'uuid': post['uuid']});
                                       widget.func(false);
@@ -337,28 +304,27 @@ class _FeedPostState extends State<FeedPost> {
                                             HttpHeaders.contentTypeHeader:
                                                 "application/json",
                                             HttpHeaders.authorizationHeader:
-                                                "Bearer " + token!
+                                                "Bearer ${token!}"
                                           }),
                                           data: {'uuid': post['uuid']});
                                       widget.func(true);
                                     }
-                                    print(likeNumber.toString());
                                   },
                                 ),
                                 Text(
                                   likeNumber.toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 14.0,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
                             ),
-                            SizedBox(width: 20.0),
+                            const SizedBox(width: 20.0),
                             Row(
                               children: <Widget>[
                                 IconButton(
-                                  icon: Icon(Icons.chat),
+                                  icon: const Icon(Icons.chat),
                                   iconSize: 30.0,
                                   onPressed: () {
                                     Navigator.of(context, rootNavigator: true)
@@ -384,7 +350,7 @@ class _FeedPostState extends State<FeedPost> {
                                 ),
                                 Text(
                                   widget.noOfComment['count'].toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 14.0,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -395,31 +361,31 @@ class _FeedPostState extends State<FeedPost> {
                         ),
                         IconButton(
                           icon: (isBookmarked)
-                              ? Icon(Icons.bookmark)
-                              : Icon(Icons.bookmark_border),
+                              ? const Icon(Icons.bookmark)
+                              : const Icon(Icons.bookmark_border),
                           iconSize: 30.0,
                           onPressed: () async {
                             if (!isBookmarked) {
                               var token = await storage.read(key: "token");
-                              Response response = await dio.post(
+                              await dio.post(
                                   "https://api-tassie.herokuapp.com/feed/bookmark",
                                   options: Options(headers: {
                                     HttpHeaders.contentTypeHeader:
                                         "application/json",
                                     HttpHeaders.authorizationHeader:
-                                        "Bearer " + token!
+                                        "Bearer ${token!}"
                                   }),
                                   data: {'uuid': post['uuid']});
                               widget.funcB(true);
                             } else {
                               var token = await storage.read(key: "token");
-                              Response response = await dio.post(
+                              await dio.post(
                                   "https://api-tassie.herokuapp.com/feed/removeBookmark",
                                   options: Options(headers: {
                                     HttpHeaders.contentTypeHeader:
                                         "application/json",
                                     HttpHeaders.authorizationHeader:
-                                        "Bearer " + token!
+                                        "Bearer ${token!}"
                                   }),
                                   data: {'uuid': post['uuid']});
                               widget.funcB(false);
@@ -438,11 +404,6 @@ class _FeedPostState extends State<FeedPost> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  // Text(
-                  //   posts[index]['description'],
-                  //   overflow: TextOverflow.ellipsis,
-                  //   textAlign: TextAlign.start,
-                  // ),
                   Flexible(
                     child: GestureDetector(
                       onTap: () {
@@ -484,7 +445,7 @@ class _FeedPostState extends State<FeedPost> {
                                   ));
                                 },
                             ),
-                            TextSpan(text: " "),
+                            const TextSpan(text: " "),
                             TextSpan(
                               text: post['description'],
                               style: TextStyle(

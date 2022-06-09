@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,50 +11,22 @@ class ChangeEmail extends StatefulWidget {
   const ChangeEmail({Key? key}) : super(key: key);
 
   @override
-  _ChangeEmailState createState() => _ChangeEmailState();
+  ChangeEmailState createState() => ChangeEmailState();
 }
 
-class _ChangeEmailState extends State<ChangeEmail> {
+class ChangeEmailState extends State<ChangeEmail> {
   // bool uniqueUsername = false;
   final _formKey = GlobalKey<FormState>();
   String email = "";
   String newpass = "";
   bool uniqueEmail = true;
   String notUniqText = "";
-  // Future<void> checkUsername(username) async {
-  //   var dio = Dio();
-  //   // print(username);
-  //   try {
-  //     // print('');
-  //     Response response =
-  //         await dio.get("https://api-tassie.herokuapp.com/user/username/" + username);
-  //     // var res = jsonDecode(response.toString());
-
-  //     // if(response)
-  //     // return res.status;
-  //     // print(response);
-  //     setState(() {
-  //       uniqueUsername = response.data['status'];
-  //     });
-  //   } on DioError catch (e) {
-  //     if (e.response != null) {
-  //       setState(() {
-  //         uniqueUsername = e.response!.data['status'];
-  //       });
-  //     }
-  //   }
-  //   print(uniqueUsername);
-  // }
 
   Future<void> checkEmail(email) async {
     var dio = Dio();
     try {
       Response response = await dio
-          .get("https://api-tassie.herokuapp.com/user/checkEmail/" + email);
-      // var res = jsonDecode(response.toString());
-
-      // if(response)
-      // return res.status;
+          .get("https://api-tassie.herokuapp.com/user/checkEmail/$email");
       setState(() {
         uniqueEmail = response.data['status'];
         notUniqText = response.data['message'];
@@ -82,37 +53,37 @@ class _ChangeEmailState extends State<ChangeEmail> {
                 Theme.of(context).brightness == Brightness.light
                     ? Brightness.dark
                     : Brightness.light),
-        title: Text(
+        title: const Text(
           "Change Email",
-          // style: TextStyle(fontWeight: FontWeight.w500),
         ),
         actions: [
           uniqueEmail
               ? IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.done_rounded,
                     // color: Colors.green,
                   ),
                   onPressed: () async {
                     FocusScope.of(context).unfocus();
                     var dio = Dio();
-                    var storage = FlutterSecureStorage();
+                    var storage = const FlutterSecureStorage();
                     var token = await storage.read(key: "token");
                     if (_formKey.currentState!.validate()) {
-                      print(email);
                       Response response = await dio.post(
                           "https://api-tassie.herokuapp.com/user/email",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
-                            HttpHeaders.authorizationHeader: "Bearer " + token!
+                            HttpHeaders.authorizationHeader: "Bearer ${token!}"
                           }),
                           // data: jsonEncode(value),
                           data: {
                             "email": email,
                           });
                       if (response.data != null) {
-                        print(response.data);
                         if (response.data['status'] == true) {
+                          await Future.delayed(const Duration(seconds: 1));
+
+                          if (!mounted) return;
                           Navigator.of(context, rootNavigator: true).push(
                             MaterialPageRoute(builder: (context) {
                               return OTP2(
@@ -121,24 +92,30 @@ class _ChangeEmailState extends State<ChangeEmail> {
                             }),
                           );
                         } else {
+                          await Future.delayed(const Duration(seconds: 1));
+
+                          if (!mounted) return;
                           showSnack(context, response.data['message'], () {},
                               'OK', 4);
                         }
                       } else {
+                        await Future.delayed(const Duration(seconds: 1));
+
+                        if (!mounted) return;
                         showSnack(context, 'Server error', () {}, 'OK', 4);
                       }
                     }
                   })
               : Transform.scale(
                   scale: 0.4,
-                  child: Container(
-                    child: CircularProgressIndicator(),
+                  child: const SizedBox(
                     width: 55.0,
+                    child: CircularProgressIndicator(),
                   )),
         ],
       ),
       body: Container(
-        padding: EdgeInsets.all(kDefaultPadding),
+        padding: const EdgeInsets.all(kDefaultPadding),
         child: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -147,7 +124,7 @@ class _ChangeEmailState extends State<ChangeEmail> {
             key: _formKey,
             child: ListView(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 15.0,
                 ),
                 buildTextField(
@@ -160,7 +137,6 @@ class _ChangeEmailState extends State<ChangeEmail> {
                     if (val.contains('@') && val.length > 8) {
                       await checkEmail(val);
                     }
-                    // print(username);
                   },
                   (val) {
                     if (!RegExp(
@@ -174,24 +150,11 @@ class _ChangeEmailState extends State<ChangeEmail> {
                     return null;
                   },
                 ),
-                // buildTextField(
-                //   "New password",
-                //   '',
-                //   true,
-                //   TextInputType.text,
-                //   (val) async {
-                //     newpass = val;
-                //     // print(username);
-                //   },
-                //   (val) => val!.length < 6
-                //       ? 'Enter password 6+ characters long'
-                //       : null,
-                // ),
-                SizedBox(height: 20.0),
-                Text(
+                const SizedBox(height: 20.0),
+                const Text(
                     'Type your new email, if it is available the save button on corner will be enabled.'),
-                SizedBox(height: 20.0),
-                Text(notUniqText, style: TextStyle(color: kPrimaryColor)),
+                const SizedBox(height: 20.0),
+                Text(notUniqText, style: const TextStyle(color: kPrimaryColor)),
               ],
             ),
           ),
@@ -216,14 +179,13 @@ class _ChangeEmailState extends State<ChangeEmail> {
         decoration: InputDecoration(
           labelText: labelText,
           labelStyle: TextStyle(
-            // fontFamily: 'Raleway',
             fontSize: 16.0,
             color: Theme.of(context).brightness == Brightness.dark
                 ? kPrimaryColor
                 : kDark[900],
           ),
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
+          contentPadding: const EdgeInsets.symmetric(
+              horizontal: 25.0, vertical: kDefaultPadding),
           floatingLabelBehavior: FloatingLabelBehavior.always,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15.0),
@@ -238,8 +200,6 @@ class _ChangeEmailState extends State<ChangeEmail> {
         ),
         onChanged: (val) {
           onChange(val);
-          // print(val);
-          // print(username);
         },
         validator: validator,
       ),

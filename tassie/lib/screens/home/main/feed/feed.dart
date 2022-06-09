@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors,avoid_print
-
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -7,22 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:provider/provider.dart';
 import 'package:tassie/constants.dart';
-import 'package:tassie/utils/leftSwipe.dart';
 import 'package:tassie/screens/authenticate/authenticate.dart';
 import 'package:tassie/screens/home/main/feed/feedChild.dart';
-import 'package:tassie/screens/home/main/profile/profile.dart';
-import 'package:tassie/utils/imgLoader.dart';
-import 'package:tassie/screens/wrapper.dart';
 
 class Feed extends StatefulWidget {
   const Feed({Key? key}) : super(key: key);
   @override
-  _FeedState createState() => _FeedState();
+  FeedState createState() => FeedState();
 }
 
-class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
+class FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   // List<Map> posts = [
@@ -41,63 +34,18 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
   static bool isLoading = true;
   bool isEnd = false;
   final dio = Dio();
-  final storage = FlutterSecureStorage();
-  // Future<void> load() async {
-  //   var token = await storage.read(key: "token");
-  //   // try {https://api-tassie.herokuapp.com/feed/
-  //   Response response = await dio.post("https://api-tassie.herokuapp.com/feed/",
-  //       options: Options(headers: {
-  //         HttpHeaders.contentTypeHeader: "application/json",
-  //         HttpHeaders.authorizationHeader: "Bearer " + token!
-  //       }),
-  //       data: {});
-
-  //   // to fix error
-  //   if (response.data['data'] != null) {
-  //     print(response.data['data']['post']);
-
-  //     posts = response.data['data']['post'][0];
-  //   } else {
-  //     posts = [];
-  //   }
-  //   if (response.data['data']['nameList'] != null) {
-  //     nameList = response.data['data']['nameList'];
-  //   } else {
-  //     nameList = [];
-  //   }
-  //   setState(() {
-  //     isLoading = false;
-  //   });
-  // } on DioError catch (e) {
-  //   if (e.response!.statusCode == 401 &&
-  //       e.response!.statusMessage == "Unauthorized") {
-  //     await storage.delete(key: "token");
-  //     Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(builder: (context) {
-  //         return Wrapper();
-  //       }),
-  //     );
-  //   } else {
-  //     print(e);
-  //   }
-  // } catch (e) {
-  //   print(e);
-  // }
-  // }
+  final storage = const FlutterSecureStorage();
 
   void _getMoreData(int index) async {
     // Provider.of<LeftSwipe>(context, listen: false).setSwipe(true);
     if (!isEnd) {
       if (!isLazyLoading) {
-        print('calling...');
         setState(() {
           isLazyLoading = true;
         });
         // var url = "https://api-tassie.herokuapp.com/feed/lazyfeed/" +
         //     index.toString();
-        var url = "https://api-tassie.herokuapp.com/feed/lazyfeed/" +
-            index.toString();
+        var url = "https://api-tassie.herokuapp.com/feed/lazyfeed/$index";
 
         var token = await storage.read(key: "token");
         // print(token);
@@ -105,17 +53,12 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
           url,
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer " + token!
+            HttpHeaders.authorizationHeader: "Bearer ${token!}"
           }),
         );
         // List tList = [];
         if (response.data['status'] == true) {
           if (response.data['data']['posts'] != null) {
-            //   for (int i = 0;
-            //       i < response.data['data']['posts']['results'].length;
-            //       i++) {
-            //     tList.add(response.data['data']['posts']['results'][i]);
-            //   }
             setState(() {
               if (index == 1) {
                 isLoading = false;
@@ -129,15 +72,10 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
               }
               if (response.data['data']['posts']['noOfLikes'] != null) {
                 noOfLikes.addAll(response.data['data']['posts']['noOfLikes']);
-                print(noOfLikes);
               }
               if (response.data['data']['posts']['bookmarks'] != null) {
                 bookmark.addAll(response.data['data']['posts']['bookmarks']);
-                print(noOfLikes);
               }
-              // for (var item in response.data['data']['posts']['results']) {
-              //   images.add(await loadImg(item['postID']));
-              // }
               page++;
             });
             // print(response.data['data']['posts']);
@@ -154,10 +92,13 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
           }
         } else {
           await storage.delete(key: "token");
+          await Future.delayed(const Duration(seconds: 1));
+
+          if (!mounted) return;
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) {
-              return Authenticate();
+              return const Authenticate();
             }),
           );
         }
@@ -171,7 +112,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
       child: Center(
         child: Opacity(
           opacity: isLazyLoading ? 0.8 : 00,
-          child: CircularProgressIndicator(
+          child: const CircularProgressIndicator(
             color: kPrimaryColor,
             strokeWidth: 2.0,
           ),
@@ -181,9 +122,8 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _endMessage() {
-    print(isEnd);
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
+    return const Padding(
+      padding: EdgeInsets.all(kDefaultPadding),
       child: Center(
         child: Opacity(
           opacity: 0.8,
@@ -237,7 +177,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
     super.build(context);
     Size size = MediaQuery.of(context).size;
     return (isLoading == true)
-        ? Scaffold(
+        ? const Scaffold(
             // backgroundColor: Colors.white,
             body: Center(
               child: SpinKitThreeBounce(
@@ -256,7 +196,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                       Theme.of(context).brightness == Brightness.light
                           ? Brightness.dark
                           : Brightness.light),
-              title: Text(
+              title: const Text(
                 'Tassie',
                 style: TextStyle(
                   color: kPrimaryColor,
@@ -272,11 +212,11 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Divider(
+                  const Divider(
                     height: 10,
                     thickness: 0.5,
                   ),
-                  if (posts.length > 0) ...[
+                  if (posts.isNotEmpty) ...[
                     Expanded(
                       // child: ListView.builder(
                       //     itemCount: posts.length,
@@ -333,7 +273,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                     // isEnd ? _endMessage() : SizedBox(height: 1.0),
 
                     SingleChildScrollView(
-                      physics: AlwaysScrollableScrollPhysics(),
+                      physics: const AlwaysScrollableScrollPhysics(),
                       child: Center(
                         child: Column(
                           children: [
@@ -341,20 +281,21 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                               height: size.height * 0.25,
                             ),
                             Image(
-                              image: MediaQuery.of(context)
-                                          .platformBrightness ==
-                                      Brightness.dark
-                                  ? AssetImage('assets/images/no_feed_dark.png')
-                                  : AssetImage(
-                                      'assets/images/no_feed_light.png'),
+                              image:
+                                  MediaQuery.of(context).platformBrightness ==
+                                          Brightness.dark
+                                      ? const AssetImage(
+                                          'assets/images/no_feed_dark.png')
+                                      : const AssetImage(
+                                          'assets/images/no_feed_light.png'),
                               width: size.width * 0.75,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 30.0,
                             ),
                             SizedBox(
                               width: size.width * 0.75,
-                              child: Text(
+                              child: const Text(
                                 'Hey! Subscribe other Tassites to get them in feed.',
                                 style: TextStyle(fontSize: 18.0),
                                 textAlign: TextAlign.center,

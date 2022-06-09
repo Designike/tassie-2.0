@@ -509,7 +509,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                     'https://api-tassie.herokuapp.com/search/guess',
                     options: Options(headers: {
                       HttpHeaders.contentTypeHeader: "application/json",
-                      HttpHeaders.authorizationHeader: "Bearer " + token!
+                      HttpHeaders.authorizationHeader: "Bearer ${token!}"
                     }),
                     data: {
                       'veg': isVeg,

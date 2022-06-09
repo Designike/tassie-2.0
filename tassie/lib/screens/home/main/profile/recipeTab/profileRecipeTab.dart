@@ -1,6 +1,4 @@
-import 'dart:typed_data';
 
-// import 'package:cached_network_image/cached_network_image.dart';
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:tassie/constants.dart';
@@ -9,39 +7,19 @@ import 'package:tassie/utils/imgLoader.dart';
 
 class RecipeTab extends StatefulWidget {
   const RecipeTab(
-      {required this.refreshPage, required this.recipes, required this.isEnd});
+      {required this.refreshPage, required this.recipes, required this.isEnd, Key? key}): super(key: key);
   final Future<void> Function() refreshPage;
   final List recipes;
   final bool isEnd;
   @override
-  _RecipeTabState createState() => _RecipeTabState();
+  RecipeTabState createState() => RecipeTabState();
 }
 
-class _RecipeTabState extends State<RecipeTab> {
-  // final ScrollController _sc = ScrollController();
-  // List<Map> recs = [
-  //   {
-  //     "name": "Paneer Tikka",
-  //     "user": "Sommy21",
-  //     "url": "https://picsum.photos/200",
-  //     "profilePic": "https://picsum.photos/200"
-  //   },
-  //   {
-  //     "name": "Dhokla",
-  //     "user": "parthnamdev",
-  //     "url": "https://picsum.photos/200",
-  //     "profilePic": "https://picsum.photos/200"
-  //   },
-  //   {
-  //     "name": "Khamman",
-  //     "user": "rishabh",
-  //     "url": "https://picsum.photos/200",
-  //     "profilePic": "https://picsum.photos/200"
-  //   }
-  // ];
+class RecipeTabState extends State<RecipeTab> {
+
   Widget _buildProgressIndicator() {
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
+    return const Padding(
+      padding: EdgeInsets.all(kDefaultPadding),
       child: Center(
         child: Opacity(
           opacity: 1,
@@ -56,8 +34,8 @@ class _RecipeTabState extends State<RecipeTab> {
 
   Widget _endMessage() {
     // print(isEnd);
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
+    return const Padding(
+      padding: EdgeInsets.all(kDefaultPadding),
       child: Center(
         child: Opacity(
           opacity: 0.8,
@@ -69,27 +47,23 @@ class _RecipeTabState extends State<RecipeTab> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    print(widget.recipes);
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     List recs = widget.recipes;
-    print('1');
-    print(recs);
     return RefreshIndicator(
       onRefresh: widget.refreshPage,
       child: ListView(
         children: [
-          recs.length > 0
+          recs.isNotEmpty
               ? GridView.builder(
                   shrinkWrap: true,
                   // controller: _sc,
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
                     crossAxisSpacing: 2,
                     mainAxisSpacing: 2,
@@ -124,7 +98,7 @@ class _RecipeTabState extends State<RecipeTab> {
               : Center(
                   child: Padding(
                     padding: EdgeInsets.all(size.width * 0.15),
-                    child: Text(
+                    child: const Text(
                       'No recipes yet',
                       style: TextStyle(fontSize: 18),
                     ),
@@ -163,10 +137,8 @@ class _ProfileRecipeTabChildState extends State<ProfileRecipeTabChild>
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     memoizer = AsyncMemoizer();
-    print(widget.recID);
     storedFuture = loadImg(widget.recID, memoizer);
     // _image = "";
     // loadImg(widget.recID,memoizer).then((result) {
@@ -188,7 +160,7 @@ class _ProfileRecipeTabChildState extends State<ProfileRecipeTabChild>
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    super.build(context);
     // return !isImage ? Container() : Image.network(_image);
     return FutureBuilder(
         future: storedFuture,
@@ -204,14 +176,13 @@ class _ProfileRecipeTabChildState extends State<ProfileRecipeTabChild>
                   onTap: () {
                     setState(() {});
                   },
-                  child: Container(
-                      child: Center(
+                  child: const Center(
                     child: Icon(
-                      Icons.refresh,
-                      // size: 50.0,
-                      color: kDark,
+                  Icons.refresh,
+                  // size: 50.0,
+                  color: kDark,
                     ),
-                  )));
+                  ));
             }
             return Image(
               image: NetworkImage(text.data.toString()),

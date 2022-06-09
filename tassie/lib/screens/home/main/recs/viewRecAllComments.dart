@@ -19,15 +19,15 @@ class ViewRecAllComments extends StatefulWidget {
   final String recipeUuid;
   final String? dp;
   @override
-  _ViewRecAllCommentsState createState() => _ViewRecAllCommentsState();
+  ViewRecAllCommentsState createState() => ViewRecAllCommentsState();
 }
 
-class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
+class ViewRecAllCommentsState extends State<ViewRecAllComments> {
   List comments = [];
   List commentStoredFutures = [];
   String? uuid;
   final dio = Dio();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   AsyncMemoizer memoizer = AsyncMemoizer();
   late Future storedFuture;
   Animation<double>? animation;
@@ -35,8 +35,6 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
   // String? dp;
   final ScrollController _sc = ScrollController();
   final TextEditingController _tc = TextEditingController();
-  final GlobalKey<AnimatedListState> _commentsListKey =
-      GlobalKey<AnimatedListState>();
   // static List comments = [];
   bool isLazyLoading = false;
   static bool isLoading = true;
@@ -53,7 +51,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
       child: Center(
         child: Opacity(
           opacity: isLazyLoading ? 0.8 : 00,
-          child: CircularProgressIndicator(
+          child: const CircularProgressIndicator(
             color: kPrimaryColor,
             strokeWidth: 2.0,
           ),
@@ -62,103 +60,14 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
     );
   }
 
-  // Widget _createComment(Map comment, int index) {
-  //   // Map post = widget.post;
-  //   AsyncMemoizer memoizerComment = AsyncMemoizer();
-  //   print(comment);
-  //   return Padding(
-  //     padding: EdgeInsets.all(10.0),
-  //     child: ListTile(
-  //       leading: Container(
-  //         width: 50.0,
-  //         height: 50.0,
-  //         decoration: BoxDecoration(
-  //           shape: BoxShape.circle,
-  //         ),
-  //         child: CircleAvatar(
-  //           child: ClipOval(
-  //               // child: Image(
-  //               //   height: 50.0,
-  //               //   width: 50.0,
-  //               //   image: NetworkImage(comment['profilePic']),
-  //               //   fit: BoxFit.cover,
-  //               // ),
-  //               child: FutureBuilder(
-  //                   future: loadImg(comment['profilePic'], memoizerComment),
-  //                   // future: loadImg('assets/Banana.png',memoizer),
-  //                   builder: (BuildContext context, AsyncSnapshot text) {
-  //                     if (text.connectionState == ConnectionState.waiting) {
-  //                       return Image.asset("assets/images/broken.png",
-  //                           fit: BoxFit.cover, height: 50.0, width: 50.0);
-  //                     } else {
-  //                       return Image(
-  //                         height: 50.0,
-  //                         width: 50.0,
-  //                         image: NetworkImage(text.data.toString()),
-  //                         fit: BoxFit.cover,
-  //                       );
-  //                     }
-  //                   })),
-  //         ),
-  //       ),
-  //       title: Text(
-  //         comment['username'],
-  //         style: TextStyle(
-  //           fontWeight: FontWeight.bold,
-  //         ),
-  //       ),
-  //       subtitle: Text(
-  //         comment['comment'],
-  //         style: TextStyle(
-  //           color: Theme.of(context).brightness == Brightness.dark
-  //               ? kLight
-  //               : kDark[900],
-  //         ),
-  //       ),
-  //       trailing: (widget.userUuid == uuid ||
-  //               comment['uuid'].split('_comment_')[0] == uuid)
-  //           ? IconButton(
-  //               icon: Icon(
-  //                 Icons.delete_rounded,
-  //               ),
-  //               color: Colors.grey,
-  //               onPressed: () async {
-  //                 var token = await storage.read(key: "token");
-  //                 Response response =
-  //                     await dio.post("https://api-tassie.herokuapp.com/recs/removeComment",
-  //                         options: Options(headers: {
-  //                           HttpHeaders.contentTypeHeader: "application/json",
-  //                           HttpHeaders.authorizationHeader: "Bearer " + token!
-  //                         }),
-  //                         data: {
-  //                       'recipeUuid': widget.recipeUuid,
-  //                       'commentUuid': comment['uuid'],
-  //                     });
-  //                 setState(() {
-  //                   comments.remove(index);
-  //                 });
-  //                 // widget.minusComment();
-  //               },
-  //             )
-  //           : null,
-  //     ),
-  //   );
-  // }
-
   void _getMoreData(int index) async {
     if (!isEnd) {
-      print('1');
       if (!isLazyLoading) {
-        print('2');
         setState(() {
           isLazyLoading = true;
         });
-        var url = "https://api-tassie.herokuapp.com/recs/lazyreccomment/" +
-            widget.recipeUuid +
-            '/' +
-            widget.userUuid +
-            '/' +
-            index.toString();
+        var url =
+            'https://api-tassie.herokuapp.com/recs/lazyreccomment/${widget.recipeUuid}/${widget.userUuid}/$index';
 
         var token = await storage.read(key: "token");
         uuid = await storage.read(key: "uuid");
@@ -166,11 +75,10 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
           url,
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer " + token!
+            HttpHeaders.authorizationHeader: "Bearer ${token!}"
           }),
         );
         List tList = [];
-        print(response);
         if (response.data['data']['comments']['results'] != null) {
           for (int i = 0;
               i <
@@ -248,11 +156,9 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
 
   @override
   Widget build(BuildContext context) {
-    print(comments);
-    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Comments"),
+        title: const Text("Comments"),
         centerTitle: false,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         foregroundColor: Theme.of(context).brightness == Brightness.dark
@@ -300,7 +206,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
         child: Container(
           height: 100.0,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(30.0),
               topRight: Radius.circular(30.0),
             ),
@@ -309,7 +215,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
                 : kLight,
           ),
           child: Padding(
-            padding: EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(12.0),
             child: TextField(
               onChanged: (val) {
                 comm = val;
@@ -319,19 +225,19 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
                 border: InputBorder.none,
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),
-                  borderSide: BorderSide(color: Colors.grey),
+                  borderSide: const BorderSide(color: Colors.grey),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),
-                  borderSide: BorderSide(color: Colors.grey),
+                  borderSide: const BorderSide(color: Colors.grey),
                 ),
-                contentPadding: EdgeInsets.all(20.0),
+                contentPadding: const EdgeInsets.all(20.0),
                 hintText: 'Add a comment',
                 prefixIcon: Container(
-                  margin: EdgeInsets.all(4.0),
+                  margin: const EdgeInsets.all(4.0),
                   width: 48.0,
                   height: 48.0,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                   ),
                   child: CircleAvatar(
@@ -360,7 +266,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
                                       onTap: () {
                                         setState(() {});
                                       },
-                                      child: Container(
+                                      child: const SizedBox(
                                           height: 48.0,
                                           width: 48.0,
                                           child: Center(
@@ -382,7 +288,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
                   ),
                 ),
                 suffixIcon: Container(
-                  margin: EdgeInsets.only(right: 4.0),
+                  margin: const EdgeInsets.only(right: 4.0),
                   width: 70.0,
                   child: IconButton(
                     // shape: RoundedRectangleBorder(
@@ -395,7 +301,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
                           "https://api-tassie.herokuapp.com/recs/addComment",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
-                            HttpHeaders.authorizationHeader: "Bearer " + token!
+                            HttpHeaders.authorizationHeader: "Bearer ${token!}"
                           }),
                           data: {
                             'comment': comm,
@@ -403,6 +309,9 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
                           });
                       if (response.data['status'] == true) {
                         // widget.plusComment();
+                        await Future.delayed(const Duration(seconds: 1));
+
+                        if (!mounted) return;
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -410,7 +319,7 @@ class _ViewRecAllCommentsState extends State<ViewRecAllComments> {
                                     super.widget));
                       }
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.send,
                       size: 25.0,
                       // color: Colors.white,

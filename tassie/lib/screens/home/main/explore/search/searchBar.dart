@@ -100,7 +100,6 @@ class SearchBarState extends State<SearchBar> {
             isLazyLoadingR = false;
             isLazyLoadingU = false;
             isLazyLoadingT = false;
-            ;
           });
         }
       }

@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:io';
 
 import 'package:async/async.dart';
@@ -8,7 +6,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:tassie/screens/home/main/add/addPost.dart';
 import 'package:tassie/screens/home/main/profile/postTab/editPost.dart';
 import 'package:tassie/screens/home/main/profile/profile.dart';
 import 'package:tassie/utils/snackbar.dart';
@@ -27,13 +24,15 @@ class ViewCommentsPost extends StatefulWidget {
   // final void Function() plusComment;
   final Future<void> Function() refreshPage;
   // final String? dp;
-  ViewCommentsPost({required this.post, required this.refreshPage});
+  const ViewCommentsPost(
+      {required this.post, required this.refreshPage, Key? key})
+      : super(key: key);
 
   @override
-  _ViewCommentsPostState createState() => _ViewCommentsPostState();
+  ViewCommentsPostState createState() => ViewCommentsPostState();
 }
 
-class _ViewCommentsPostState extends State<ViewCommentsPost> {
+class ViewCommentsPostState extends State<ViewCommentsPost> {
   final ScrollController _sc = ScrollController();
   final TextEditingController _tc = TextEditingController();
   AsyncMemoizer memoizer = AsyncMemoizer();
@@ -52,7 +51,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
   static int page = 1;
   bool isEnd = false;
   final dio = Dio();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   String comment = '';
   String? uuid;
   int noOfComment = 0;
@@ -101,14 +100,13 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
       url,
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "application/json",
-        HttpHeaders.authorizationHeader: "Bearer " + token!
+        HttpHeaders.authorizationHeader: "Bearer ${token!}"
       }),
       data: {
         "postUuid": widget.post["uuid"],
       },
     );
     if (response.data["status"] == true) {
-      print(response.data);
       setState(() {
         noOfComment = response.data['data']['comments'];
         noOfLikes = response.data['data']['likes'];
@@ -126,32 +124,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
   Future<void> getdp() async {
     dp = await storage.read(key: "profilePic");
     isLoading3 = false;
-    print(dp);
   }
-
-  // List<Map> comments = [
-  //   {
-  //     "image": "https://picsum.photos/200",
-  //     "name": "soham",
-  //     "text": "Fuck off!"
-  //   },
-  //   {
-  //     "image": "https://picsum.photos/200",
-  //     "name": "soham",
-  //     "text": "Fuck off!"
-  //   },
-  //   {
-  //     "image": "https://picsum.photos/200",
-  //     "name": "soham",
-  //     "text": "Fuck off!"
-  //   },
-  //   {
-  //     "image": "https://picsum.photos/200",
-  //     "name": "soham",
-  //     "text": "Fuck off!"
-  //   },
-  //   {"image": "https://picsum.photos/200", "name": "soham", "text": "Fuck off!"}
-  // ];
 
   Widget _buildProgressIndicator() {
     return Padding(
@@ -159,7 +132,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
       child: Center(
         child: Opacity(
           opacity: isLazyLoading ? 0.8 : 00,
-          child: CircularProgressIndicator(
+          child: const CircularProgressIndicator(
             color: kPrimaryColor,
             strokeWidth: 2.0,
           ),
@@ -168,97 +141,9 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
     );
   }
 
-  Widget _createComment(int index) {
-    Map post = widget.post;
-    print(comments[index]);
-    return Padding(
-      padding: EdgeInsets.all(10.0),
-      child: ListTile(
-        leading: Container(
-          width: 50.0,
-          height: 50.0,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-          ),
-          child: CircleAvatar(
-            child: ClipOval(
-              child: Image(
-                height: 50.0,
-                width: 50.0,
-                image: NetworkImage(comments[index]['profilePic']),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        ),
-        // title: Text(
-        //   comments[index]['username'],
-        //   style: TextStyle(
-        //     fontWeight: FontWeight.bold,
-        //   ),
-        // ),
-        title: RichText(
-            overflow: TextOverflow.ellipsis,
-            text: TextSpan(children: [
-              TextSpan(
-                text: comments[index]['username'],
-                style: TextStyle(
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? kDark[900]
-                      : kLight,
-                ),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => Profile(
-                        uuid: comments[index]['userUuid'],
-                      ),
-                    ));
-                  },
-              ),
-            ])),
-        subtitle: Text(
-          comments[index]['comment'],
-          style: TextStyle(
-            color: MediaQuery.of(context).platformBrightness == Brightness.dark
-                ? kLight
-                : kDark[900],
-          ),
-        ),
-        trailing: (widget.post['userUuid'] == uuid ||
-                comments[index]['uuid'].split('_comment_')[0] == uuid)
-            ? IconButton(
-                icon: Icon(
-                  Icons.delete_rounded,
-                ),
-                color: Colors.grey,
-                onPressed: () async {
-                  var token = await storage.read(key: "token");
-                  Response response = await dio.post(
-                      "https://api-tassie.herokuapp.com/feed/removeComment",
-                      options: Options(headers: {
-                        HttpHeaders.contentTypeHeader: "application/json",
-                        HttpHeaders.authorizationHeader: "Bearer " + token!
-                      }),
-                      data: {
-                        'postUuid': widget.post['uuid'],
-                        'commentUuid': comments[index]['uuid'],
-                      });
-                  setState(() {
-                    comments.remove(index);
-                  });
-                  minusComment();
-                },
-              )
-            : null,
-      ),
-    );
-  }
-
   Widget _endMessage() {
-    print(isEnd);
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
+    return const Padding(
+      padding: EdgeInsets.all(kDefaultPadding),
       child: Center(
         child: Opacity(
           opacity: 0.8,
@@ -270,18 +155,12 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
 
   void _getMoreData(int index) async {
     if (!isEnd) {
-      print('1');
       if (!isLazyLoading) {
-        print('2');
         setState(() {
           isLazyLoading = true;
         });
-        var url = "https://api-tassie.herokuapp.com/feed/lazycomment/" +
-            widget.post['uuid'] +
-            '/' +
-            widget.post['userUuid'] +
-            '/' +
-            index.toString();
+        var url =
+            "https://api-tassie.herokuapp.com/feed/lazycomment/${widget.post['uuid']}/${widget.post['userUuid']}/$index";
         var token = await storage.read(key: "token");
 
         uuid = await storage.read(key: "uuid");
@@ -289,11 +168,10 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
           url,
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer " + token!
+            HttpHeaders.authorizationHeader: "Bearer ${token!}"
           }),
         );
         List tList = [];
-        print(response);
         if (response.data['data']['comments']['results'] != null) {
           for (int i = 0;
               i <
@@ -338,7 +216,6 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
     _getMoreData(page);
     super.initState();
     // load();
-    print(widget.post);
     memoizer = AsyncMemoizer();
     memoizer1 = AsyncMemoizer();
     memoizer2 = AsyncMemoizer();
@@ -360,12 +237,9 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
 
   @override
   Widget build(BuildContext context) {
-    // bool liked = widget.noOfLike;
-    // int no_of_comments = comments.length;
     Size size = MediaQuery.of(context).size;
-    // bool isBookmarked = widget.bookmark['isBookmarked'];
     return isLoading && isLoading2 && isLoading3
-        ? Scaffold(
+        ? const Scaffold(
             // backgroundColor: Colors.white,
             body: Center(
               child: SpinKitThreeBounce(
@@ -385,7 +259,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Container(
-                        padding: EdgeInsets.only(top: 40.0),
+                        padding: const EdgeInsets.only(top: 40.0),
                         width: double.infinity,
                         // height: 600.0,
                         decoration: BoxDecoration(
@@ -395,7 +269,8 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                         child: Column(
                           children: <Widget>[
                             Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10.0),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 10.0),
                               child: Column(
                                 children: <Widget>[
                                   Row(
@@ -403,15 +278,14 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       IconButton(
-                                        icon: Icon(Icons.arrow_back),
+                                        icon: const Icon(Icons.arrow_back),
                                         iconSize: 30.0,
                                         // color: Colors.black,
                                         onPressed: () {
-                                          print('henlo');
                                           Navigator.pop(context);
                                         },
                                       ),
-                                      Container(
+                                      SizedBox(
                                         width:
                                             MediaQuery.of(context).size.width *
                                                 0.8,
@@ -419,18 +293,11 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                           leading: Container(
                                             width: 50.0,
                                             height: 50.0,
-                                            decoration: BoxDecoration(
+                                            decoration: const BoxDecoration(
                                               shape: BoxShape.circle,
                                             ),
                                             child: CircleAvatar(
                                               child: ClipOval(
-                                                // child: Image(
-                                                //   height: 50.0,
-                                                //   width: 50.0,
-                                                //   image: NetworkImage(
-                                                //       widget.post['url']),
-                                                //   fit: BoxFit.cover,
-                                                // ),
                                                 child: FutureBuilder(
                                                     future: storedFuture,
                                                     builder: (BuildContext
@@ -440,7 +307,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                               ConnectionState
                                                                   .waiting) ||
                                                           text.hasError) {
-                                                        return Image(
+                                                        return const Image(
                                                           height: 50.0,
                                                           width: 50.0,
                                                           image: AssetImage(
@@ -448,29 +315,28 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                           fit: BoxFit.cover,
                                                         );
                                                       } else {
-                                                        // return Image(
-                                                        //   image: NetworkImage(text.data.toString()),
-                                                        //   fit: BoxFit.cover,
-                                                        // );
-                                                        print(text.data
-                                                            .toString());
                                                         if (!text.hasData) {
                                                           return GestureDetector(
                                                               onTap: () {
                                                                 setState(() {});
                                                               },
-                                                              child: Container(
-                                                                  height: 50.0,
-                                                                  width: 50.0,
-                                                                  child: Center(
-                                                                    child: Icon(
-                                                                      Icons
-                                                                          .refresh,
-                                                                      // size: 50.0,
-                                                                      color:
-                                                                          kDark,
-                                                                    ),
-                                                                  )));
+                                                              child:
+                                                                  const SizedBox(
+                                                                      height:
+                                                                          50.0,
+                                                                      width:
+                                                                          50.0,
+                                                                      child:
+                                                                          Center(
+                                                                        child:
+                                                                            Icon(
+                                                                          Icons
+                                                                              .refresh,
+                                                                          // size: 50.0,
+                                                                          color:
+                                                                              kDark,
+                                                                        ),
+                                                                      )));
                                                         }
                                                         return Image(
                                                           height: 50.0,
@@ -485,12 +351,6 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                               ),
                                             ),
                                           ),
-                                          // title: Text(
-                                          //   username,
-                                          //   style: TextStyle(
-                                          //     fontWeight: FontWeight.bold,
-                                          //   ),
-                                          // ),
                                           title: RichText(
                                               overflow: TextOverflow.ellipsis,
                                               text: TextSpan(children: [
@@ -526,29 +386,8 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                     ? kLight
                                                     : kDark[900]),
                                           ),
-                                          // trailing: DropdownButton(
-                                          //   underline: null,
-                                          //   icon: Icon(Icons.more_horiz),
-                                          //   items: items.map((String items) {
-                                          //     return DropdownMenuItem(
-                                          //         child: Text(items),
-                                          //         value: items);
-                                          //   }).toList(),
-                                          //   // color: Colors.black,
-                                          //   onChanged: (value) {
-                                          //     if (value == "Edit") {
-                                          //       Navigator.push(context,
-                                          //           MaterialPageRoute(
-                                          //               builder: (context) {
-                                          //         return EditPost(
-                                          //             uuid:
-                                          //                 widget.post['uuid']);
-                                          //       }));
-                                          //     }
-                                          //   },
-                                          // ),
                                           trailing: PopupMenuButton(
-                                            icon: Icon(Icons.more_horiz),
+                                            icon: const Icon(Icons.more_horiz),
                                             elevation: 20,
                                             enabled: true,
                                             onSelected: (value) async {
@@ -566,15 +405,14 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                       .read(key: "token");
                                                   Response response =
                                                       await dio.get(
-                                                    "https://api-tassie.herokuapp.com/feed/deletePost/" +
-                                                        widget.post['uuid'],
+                                                    "https://api-tassie.herokuapp.com/feed/deletePost/${widget.post['uuid']}",
                                                     options: Options(headers: {
                                                       HttpHeaders
                                                               .contentTypeHeader:
                                                           "application/json",
                                                       HttpHeaders
                                                               .authorizationHeader:
-                                                          "Bearer " + token!
+                                                          "Bearer ${token!}"
                                                     }),
                                                   );
 
@@ -582,10 +420,20 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                     if (response
                                                             .data['status'] ==
                                                         true) {
+                                                      await Future.delayed(
+                                                          const Duration(
+                                                              seconds: 1));
+
+                                                      if (!mounted) return;
                                                       Navigator.of(context)
                                                           .pop();
                                                       widget.refreshPage();
                                                     } else {
+                                                      await Future.delayed(
+                                                          const Duration(
+                                                              seconds: 1));
+
+                                                      if (!mounted) return;
                                                       Navigator.of(context)
                                                           .pop();
                                                       showSnack(
@@ -608,13 +456,13 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                               }
                                             },
                                             itemBuilder: (context) => [
-                                              PopupMenuItem(
-                                                child: Text("Edit"),
+                                              const PopupMenuItem(
                                                 value: "edit",
+                                                child: Text("Edit"),
                                               ),
-                                              PopupMenuItem(
-                                                child: Text("Delete"),
+                                              const PopupMenuItem(
                                                 value: "delete",
+                                                child: Text("Delete"),
                                               ),
                                             ],
                                           ),
@@ -633,7 +481,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                               HttpHeaders.contentTypeHeader:
                                                   "application/json",
                                               HttpHeaders.authorizationHeader:
-                                                  "Bearer " + token!
+                                                  "Bearer ${token!}"
                                             }),
                                             data: {
                                               'uuid': widget.post['uuid']
@@ -644,19 +492,6 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                     },
                                     splashColor: Colors.transparent,
                                     highlightColor: Colors.transparent,
-                                    // child: Container(
-                                    //   margin: EdgeInsets.all(10.0),
-                                    //   width: double.infinity,
-                                    //   height: 400.0,
-                                    //   decoration: BoxDecoration(
-                                    //     borderRadius: BorderRadius.circular(25.0),
-                                    //     image: DecorationImage(
-                                    //       image:
-                                    //           NetworkImage(widget.post['profilePic']),
-                                    //       fit: BoxFit.cover,
-                                    //     ),
-                                    //   ),
-                                    // ),
                                     child: FutureBuilder(
                                         future: storedFuture,
                                         builder: (BuildContext context,
@@ -665,14 +500,15 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                   ConnectionState.waiting) ||
                                               text.hasError) {
                                             return Container(
-                                              margin: EdgeInsets.all(10.0),
+                                              margin:
+                                                  const EdgeInsets.all(10.0),
                                               width: double.infinity,
                                               height: size.width - 40.0,
                                               // height: 400.0,
                                               decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(25.0),
-                                                image: DecorationImage(
+                                                image: const DecorationImage(
                                                   image: AssetImage(
                                                     'assets/images/broken.png',
                                                   ),
@@ -681,11 +517,6 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                               ),
                                             );
                                           } else {
-                                            // return Image(
-                                            //   image: NetworkImage(text.data.toString()),
-                                            //   fit: BoxFit.cover,
-                                            // );
-                                            print(text.data.toString());
                                             if (!text.hasData) {
                                               return GestureDetector(
                                                   onTap: () {
@@ -693,10 +524,11 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                   },
                                                   child: Container(
                                                       margin:
-                                                          EdgeInsets.all(10.0),
+                                                          const EdgeInsets.all(
+                                                              10.0),
                                                       width: double.infinity,
                                                       height: size.width - 40.0,
-                                                      child: Center(
+                                                      child: const Center(
                                                         child: Icon(
                                                           Icons.refresh,
                                                           size: 50.0,
@@ -705,7 +537,8 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                       )));
                                             }
                                             return Container(
-                                              margin: EdgeInsets.all(10.0),
+                                              margin:
+                                                  const EdgeInsets.all(10.0),
                                               width: double.infinity,
                                               height: size.width - 40.0,
                                               // height: 400.0,
@@ -723,8 +556,8 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                         }),
                                   ),
                                   Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 20.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20.0),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -735,9 +568,9 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                               children: <Widget>[
                                                 IconButton(
                                                   icon: (!isLiked)
-                                                      ? Icon(
+                                                      ? const Icon(
                                                           Icons.favorite_border)
-                                                      : Icon(
+                                                      : const Icon(
                                                           Icons.favorite,
                                                           color: kPrimaryColor,
                                                         ),
@@ -756,8 +589,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                                 "application/json",
                                                             HttpHeaders
                                                                     .authorizationHeader:
-                                                                "Bearer " +
-                                                                    token!
+                                                                "Bearer ${token!}"
                                                           }),
                                                           data: {
                                                             'uuid': widget
@@ -777,8 +609,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                                 "application/json",
                                                             HttpHeaders
                                                                     .authorizationHeader:
-                                                                "Bearer " +
-                                                                    token!
+                                                                "Bearer ${token!}"
                                                           }),
                                                           data: {
                                                             'uuid': widget
@@ -787,31 +618,29 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                       func(true);
                                                     }
                                                     setState(() {});
-                                                    // print(likeNumber.toString());
                                                   },
                                                 ),
                                                 Text(
                                                   noOfLikes.toString(),
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     fontSize: 14.0,
                                                     fontWeight: FontWeight.w600,
                                                   ),
                                                 ),
                                               ],
                                             ),
-                                            SizedBox(width: 20.0),
+                                            const SizedBox(width: 20.0),
                                             Row(
                                               children: <Widget>[
                                                 IconButton(
-                                                  icon: Icon(Icons.chat),
+                                                  icon: const Icon(Icons.chat),
                                                   iconSize: 30.0,
                                                   onPressed: () {
-                                                    print('Chat');
                                                   },
                                                 ),
                                                 Text(
                                                   noOfComment.toString(),
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     fontSize: 14.0,
                                                     fontWeight: FontWeight.w600,
                                                   ),
@@ -822,14 +651,15 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                         ),
                                         IconButton(
                                           icon: (isBookmarked)
-                                              ? Icon(Icons.bookmark)
-                                              : Icon(Icons.bookmark_border),
+                                              ? const Icon(Icons.bookmark)
+                                              : const Icon(
+                                                  Icons.bookmark_border),
                                           iconSize: 30.0,
                                           onPressed: () async {
                                             if (!isBookmarked) {
                                               var token = await storage.read(
                                                   key: "token");
-                                              Response response = await dio.post(
+                                              await dio.post(
                                                   "https://api-tassie.herokuapp.com/feed/bookmark",
                                                   options: Options(headers: {
                                                     HttpHeaders
@@ -837,7 +667,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                         "application/json",
                                                     HttpHeaders
                                                             .authorizationHeader:
-                                                        "Bearer " + token!
+                                                        "Bearer ${token!}"
                                                   }),
                                                   data: {
                                                     'uuid': widget.post['uuid']
@@ -846,7 +676,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                             } else {
                                               var token = await storage.read(
                                                   key: "token");
-                                              Response response = await dio.post(
+                                              await dio.post(
                                                   "https://api-tassie.herokuapp.com/feed/removeBookmark",
                                                   options: Options(headers: {
                                                     HttpHeaders
@@ -854,7 +684,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                         "application/json",
                                                     HttpHeaders
                                                             .authorizationHeader:
-                                                        "Bearer " + token!
+                                                        "Bearer ${token!}"
                                                   }),
                                                   data: {
                                                     'uuid': widget.post['uuid']
@@ -876,11 +706,6 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  // Text(
-                                  //   posts[index]['description'],
-                                  //   overflow: TextOverflow.ellipsis,
-                                  //   textAlign: TextAlign.start,
-                                  // ),
                                   Flexible(
                                     child: RichText(
                                       overflow: TextOverflow.clip,
@@ -901,11 +726,12 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                                   Navigator.of(context)
                                                       .push(MaterialPageRoute(
                                                     builder: (_) => Profile(
-                                                      uuid: widget.post['userUuid'],
+                                                      uuid: widget
+                                                          .post['userUuid'],
                                                     ),
                                                   ));
                                                 }),
-                                          TextSpan(text: " "),
+                                          const TextSpan(text: " "),
                                           TextSpan(
                                             // text: widget.post['description'],
                                             text: description,
@@ -964,7 +790,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
               child: Container(
                 height: 100.0,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(30.0),
                     topRight: Radius.circular(30.0),
                   ),
@@ -974,7 +800,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                       : kLight,
                 ),
                 child: Padding(
-                  padding: EdgeInsets.all(12.0),
+                  padding: const EdgeInsets.all(12.0),
                   child: TextField(
                     onChanged: (val) {
                       comment = val;
@@ -984,29 +810,23 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                       border: InputBorder.none,
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30.0),
-                        borderSide: BorderSide(color: Colors.grey),
+                        borderSide: const BorderSide(color: Colors.grey),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30.0),
-                        borderSide: BorderSide(color: Colors.grey),
+                        borderSide: const BorderSide(color: Colors.grey),
                       ),
-                      contentPadding: EdgeInsets.all(20.0),
+                      contentPadding: const EdgeInsets.all(20.0),
                       hintText: 'Add a comment',
                       prefixIcon: Container(
-                        margin: EdgeInsets.all(4.0),
+                        margin: const EdgeInsets.all(4.0),
                         width: 48.0,
                         height: 48.0,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                         ),
                         child: CircleAvatar(
                           child: ClipOval(
-                            // child: Image(
-                            //   height: 48.0,
-                            //   width: 48.0,
-                            //   image: NetworkImage(widget.post['url']),
-                            //   fit: BoxFit.cover,
-                            // ),
                             child: FutureBuilder(
                                 future: storedFuture1,
                                 builder:
@@ -1014,7 +834,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                   if ((text.connectionState ==
                                           ConnectionState.waiting) ||
                                       text.hasError) {
-                                    return Image(
+                                    return const Image(
                                       height: 48.0,
                                       width: 48.0,
                                       image: AssetImage(
@@ -1022,17 +842,12 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                       fit: BoxFit.cover,
                                     );
                                   } else {
-                                    print(text.data.toString());
-                                    // return Image(
-                                    //   image: NetworkImage(text.data.toString()),
-                                    //   fit: BoxFit.cover,
-                                    // );
                                     if (!text.hasData) {
                                       return GestureDetector(
                                           onTap: () {
                                             setState(() {});
                                           },
-                                          child: Container(
+                                          child: const SizedBox(
                                               height: 48.0,
                                               width: 48.0,
                                               child: Center(
@@ -1055,13 +870,9 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                         ),
                       ),
                       suffixIcon: Container(
-                        margin: EdgeInsets.only(right: 4.0),
+                        margin: const EdgeInsets.only(right: 4.0),
                         width: 70.0,
                         child: IconButton(
-                          // shape: RoundedRectangleBorder(
-                          //   borderRadius: BorderRadius.circular(30.0),
-                          // ),
-                          // color: Color(0xFF23B66F),
                           onPressed: () async {
                             var token = await storage.read(key: "token");
                             Response response = await dio.post(
@@ -1070,7 +881,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                   HttpHeaders.contentTypeHeader:
                                       "application/json",
                                   HttpHeaders.authorizationHeader:
-                                      "Bearer " + token!
+                                      "Bearer ${token!}"
                                 }),
                                 data: {
                                   'comment': comment,
@@ -1078,6 +889,9 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                 });
                             if (response.data['status'] == true) {
                               plusComment();
+                              await Future.delayed(const Duration(seconds: 1));
+
+                              if (!mounted) return;
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
@@ -1085,7 +899,7 @@ class _ViewCommentsPostState extends State<ViewCommentsPost> {
                                           super.widget));
                             }
                           },
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.send,
                             size: 25.0,
                             // color: Colors.white,

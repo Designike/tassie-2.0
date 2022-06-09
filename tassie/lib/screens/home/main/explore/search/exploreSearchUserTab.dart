@@ -8,7 +8,8 @@ class ExploreSearchUserTab extends StatefulWidget {
   const ExploreSearchUserTab(
       {required this.users,
       required this.isEndU,
-      required this.isLazyLoadingU});
+      required this.isLazyLoadingU,
+      Key? key}): super(key: key);
   final List users;
   final bool isEndU;
   final bool isLazyLoadingU;

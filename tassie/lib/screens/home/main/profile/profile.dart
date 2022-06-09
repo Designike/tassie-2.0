@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:io';
 
 import 'package:async/async.dart';
@@ -18,7 +16,6 @@ import 'package:tassie/utils/showMoreText.dart';
 import 'package:tassie/utils/snackbar.dart';
 import 'package:tassie/utils/imgLoader.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:provider/provider.dart';
 
 import 'recipeTab/profileRecipeTab.dart';
 
@@ -27,16 +24,16 @@ class Profile extends StatefulWidget {
   final String uuid;
 
   @override
-  _ProfileState createState() => _ProfileState();
+  ProfileState createState() => ProfileState();
 }
 
-class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
+class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   AsyncMemoizer memoizer = AsyncMemoizer();
   late Future storedFuture;
   var dio = Dio();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   static int pageR = 1;
   static int pageP = 1;
   List recipes = [];
@@ -63,96 +60,18 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
   bool isSubscribed = false;
   String profilePic = "";
   bool isLoading = true;
-  // bool isEndT = false;
-  // final dio = Dio();
-  // final storage = FlutterSecureStorage();
-  final TextEditingController _tc = TextEditingController();
-  // Future<void> _getRecipes(int index) async {
-  //   if (!isEndR || !isEndP) {
-  //     if (!isLazyLoadingR || !isLazyLoadingP) {
-  //       print('calling...');
-  //       // showSuggestions(context);
-  //       setState(() {
-  //         isLazyLoadingR = true;
-  //         isLazyLoadingP = true;
-  //         // isLazyLoadingT = true;
-  //       });
-
-  //       // print(query);
-  //       var url =
-  //           "https://api-tassie.herokuapp.com/profile/lazyProfile/" + index.toString();
-  //       var token = await storage.read(key: "token");
-  //       Response response = await dio.get(
-  //         url,
-  //         options: Options(headers: {
-  //           HttpHeaders.contentTypeHeader: "application/json",
-  //           HttpHeaders.authorizationHeader: "Bearer " + token!
-  //         }),
-  //       );
-  //       print(response);
-  //       // print(response.data);
-  //       if (response.data['data'] != null) {
-  //         setState(() {
-  //           // if (index == 1) {
-  //           //   isLoading = false;
-  //           // }
-  //           isLazyLoadingR = false;
-  //           isLazyLoadingP = false;
-  //           // posts.addAll(tList);
-  //           // print(recs);
-  //           if (response.data['data']['recs'] != null) {
-  //             recipes.addAll(response.data['data']['recs']);
-  //             // print(noOfLikes);
-  //           }
-  //           // if (response.data['data']['tags'] != null) {
-  //           //   tags.addAll(response.data['data']['tags']);
-  //           //   // print(noOfLikes);
-  //           // }
-  //           if (response.data['data']['posts'] != null) {
-  //             posts.addAll(response.data['data']['posts']);
-  //             print(posts);
-  //           }
-  //           isLoading = false;
-  //           page++;
-  //         });
-  //         // print(response.data['data']['posts']);
-  //         if (response.data['data']['recs'] == null) {
-  //           setState(() {
-  //             isEndR = true;
-  //           });
-  //         }
-  //         if (response.data['data']['posts'] == null) {
-  //           setState(() {
-  //             isEndP = true;
-  //           });
-  //         }
-
-  //         // print(recs);
-  //       } else {
-  //         setState(() {
-  //           isLoading = false;
-  //           isLazyLoadingR = false;
-  //           isLazyLoadingP = false;
-  //         });
-  //       }
-  //     }
-  //   }
-  // }
 
   Future<void> _getProfile(memoizer) async {
-    print("profile func calling ...");
-    print(widget.uuid);
     var url =
-        "https://api-tassie.herokuapp.com/profile/getProfile/" + widget.uuid;
+        'https://api-tassie.herokuapp.com/profile/getProfile/${widget.uuid}';
     var token = await storage.read(key: "token");
     Response response = await dio.get(
       url,
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "application/json",
-        HttpHeaders.authorizationHeader: "Bearer " + token!
+        HttpHeaders.authorizationHeader: "Bearer ${token!}"
       }),
     );
-    print(response.data);
     if (response.data['data'] != null) {
       setState(() {
         subscribeds = response.data['data']['noOfSub']['subscribed'];
@@ -168,9 +87,10 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
         isLoading = false;
         storedFuture = loadImg(profilePic, memoizer);
       });
-      print("profile data");
-      print(response.data['data']);
     } else {
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (!mounted) return;
       showSnack(context, "Unable to update", () {}, "OK", 3);
     }
   }
@@ -178,7 +98,6 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
   Future<void> _getRecipes(int index) async {
     if (!isEndR) {
       if (!isLazyLoadingR) {
-        print('calling...');
         // showSuggestions(context);
         setState(() {
           isLazyLoadingR = true;
@@ -186,19 +105,16 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
         });
 
         // print(query);
-        var url = "https://api-tassie.herokuapp.com/profile/lazyProfileRecs/" +
-            widget.uuid +
-            "/" +
-            index.toString();
+        var url =
+            "https://api-tassie.herokuapp.com/profile/lazyProfileRecs/${widget.uuid}/$index";
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer " + token!
+            HttpHeaders.authorizationHeader: "Bearer ${token!}"
           }),
         );
-        print(response);
         // print(response.data);
         if (response.data['data'] != null) {
           setState(() {
@@ -244,7 +160,6 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
   Future<void> _getPosts(int index) async {
     if (!isEndP) {
       if (!isLazyLoadingP) {
-        print('calling...');
         // showSuggestions(context);
         setState(() {
           isLazyLoadingP = true;
@@ -252,19 +167,16 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
         });
 
         // print(query);
-        var url = "https://api-tassie.herokuapp.com/profile/lazyProfilePost/" +
-            widget.uuid +
-            "/" +
-            index.toString();
+        var url =
+            "https://api-tassie.herokuapp.com/profile/lazyProfilePost/${widget.uuid}/$index";
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer " + token!
+            HttpHeaders.authorizationHeader: "Bearer ${token!}"
           }),
         );
-        print(response);
         // print(response.data);
         if (response.data['data'] != null) {
           setState(() {
@@ -281,7 +193,6 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
             // }
             if (response.data['data']['posts'] != null) {
               posts.addAll(response.data['data']['posts']);
-              print(posts);
             }
             isLoadingP = false;
             pageP++;
@@ -306,8 +217,8 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _buildProgressIndicator() {
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
+    return const Padding(
+      padding: EdgeInsets.all(kDefaultPadding),
       child: Center(
         child: Opacity(
           opacity: 1,
@@ -322,7 +233,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
 
   void _launchURL(url) async {
     try {
-      if (!await launch(url)) {
+      if (!await launchUrl(url)) {
         showSnack(context, 'Could not launch $url', () {}, 'OK', 4);
       }
     } catch (e) {
@@ -448,7 +359,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
           ),
           title: Text(
             username,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 24,
               // color: Theme.of(context).brightness == Brightness.dark
@@ -458,23 +369,23 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
           ),
           actions: [
             IconButton(
-              icon: Icon(Icons.bookmark_rounded),
+              icon: const Icon(Icons.bookmark_rounded),
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) {
-                    return ProfileBookmarks();
+                    return const ProfileBookmarks();
                   }),
                 );
               },
             ),
             IconButton(
-              icon: Icon(Icons.more_vert_rounded),
+              icon: const Icon(Icons.more_vert_rounded),
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) {
-                    return SettingsPage();
+                    return const SettingsPage();
                   }),
                 );
               },
@@ -483,13 +394,13 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
         ),
         body: NestedScrollView(
           controller: _sc,
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           headerSliverBuilder: (context, isScrollable) {
             return [
               SliverToBoxAdapter(
                 child: Column(
                   children: [
-                    SizedBox(height: 20.0),
+                    const SizedBox(height: 20.0),
                     Center(
                       child: Stack(
                         children: [
@@ -524,7 +435,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                                 onTap: () {
                                                   setState(() {});
                                                 },
-                                                child: Container(
+                                                child: const SizedBox(
                                                     height: 128,
                                                     width: 128,
                                                     child: Center(
@@ -547,7 +458,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) {
-                                                    return EditProfileImage();
+                                                    return const EditProfileImage();
                                                   }),
                                                 );
                                               },
@@ -571,19 +482,19 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(builder: (context) {
-                                        return EditProfileImage();
+                                        return const EditProfileImage();
                                       }),
                                     );
                                   },
                                   child: Container(
-                                    padding: EdgeInsets.all(4.0),
+                                    padding: const EdgeInsets.all(4.0),
                                     color: Theme.of(context)
                                         .scaffoldBackgroundColor,
                                     child: ClipOval(
                                       child: Container(
-                                        padding: EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(8.0),
                                         color: kPrimaryColor,
-                                        child: Icon(
+                                        child: const Icon(
                                           Icons.edit,
                                           size: 20,
                                         ),
@@ -609,27 +520,27 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                 children: [
                                   Text(
                                     noOfPosts.toString(),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16),
                                   ),
-                                  Text('Posts'),
+                                  const Text('Posts'),
                                 ],
                               ),
                               Column(
                                 children: [
                                   Text(
                                     noOfRecipes.toString(),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16),
                                   ),
-                                  Text('Recipes'),
+                                  const Text('Recipes'),
                                 ],
                               ),
                             ],
                           ),
-                          Divider(
+                          const Divider(
                             height: 50.0,
                             thickness: 1,
                           ),
@@ -639,19 +550,19 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                               Column(
                                 children: [
                                   Text(subscribers.toString(),
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16)),
-                                  Text('Subscribers'),
+                                  const Text('Subscribers'),
                                 ],
                               ),
                               Column(
                                 children: [
                                   Text(subscribeds.toString(),
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16)),
-                                  Text('Subscribed'),
+                                  const Text('Subscribed'),
                                 ],
                               ),
                             ],
@@ -671,7 +582,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                             name,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.left,
                           ),
                           if (bio != "") ...[
@@ -680,7 +591,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                   const EdgeInsets.symmetric(vertical: 2.0),
                               child: ShowMoreText(text: bio),
                             ),
-                            SizedBox(height: 10.0)
+                            const SizedBox(height: 10.0)
                           ],
                           // Text(
                           //   'm.youtube.com/mitchkoko/',
@@ -692,7 +603,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                             RichText(
                               text: TextSpan(
                                 text: website,
-                                style: TextStyle(color: Colors.blue),
+                                style: const TextStyle(color: Colors.blue),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     _launchURL(website);
@@ -727,7 +638,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                               HttpHeaders.contentTypeHeader:
                                                   "application/json",
                                               HttpHeaders.authorizationHeader:
-                                                  "Bearer " + token!
+                                                  "Bearer ${token!}"
                                             }),
                                             // data: jsonEncode(value),
                                             data: {});
@@ -735,6 +646,10 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                           editBtnClicked = false;
                                         });
                                         // print(response.data);
+                                        await Future.delayed(
+                                            const Duration(seconds: 1));
+
+                                        if (!mounted) return;
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(builder: (context) {
@@ -754,11 +669,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                         );
                                       },
                                       child: Container(
-                                        padding: EdgeInsets.all(10.0),
-                                        child: Center(
-                                            child: editBtnClicked
-                                                ? Text('Loading ...')
-                                                : Text('Edit Profile')),
+                                        padding: const EdgeInsets.all(10.0),
                                         decoration: BoxDecoration(
                                             color:
                                                 Theme.of(context).brightness ==
@@ -767,6 +678,10 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                                     : kLight,
                                             borderRadius:
                                                 BorderRadius.circular(10.0)),
+                                        child: Center(
+                                            child: editBtnClicked
+                                                ? const Text('Loading ...')
+                                                : const Text('Edit Profile')),
                                       ),
                                     )
                                   : GestureDetector(
@@ -783,7 +698,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                                 HttpHeaders.contentTypeHeader:
                                                     "application/json",
                                                 HttpHeaders.authorizationHeader:
-                                                    "Bearer " + token!
+                                                    "Bearer ${token!}"
                                               }),
                                               // data: jsonEncode(value),
                                               data: {'uuid': widget.uuid});
@@ -793,6 +708,10 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                               editBtnClicked = false;
                                             });
                                           } else {
+                                            await Future.delayed(
+                                                const Duration(seconds: 1));
+
+                                            if (!mounted) return;
                                             showSnack(
                                                 context,
                                                 "Unable to unsubscribe, try again!",
@@ -815,7 +734,7 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                                 HttpHeaders.contentTypeHeader:
                                                     "application/json",
                                                 HttpHeaders.authorizationHeader:
-                                                    "Bearer " + token!
+                                                    "Bearer ${token!}"
                                               }),
                                               // data: jsonEncode(value),
                                               data: {'uuid': widget.uuid});
@@ -825,6 +744,10 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                               editBtnClicked = false;
                                             });
                                           } else {
+                                            await Future.delayed(
+                                                const Duration(seconds: 1));
+
+                                            if (!mounted) return;
                                             showSnack(
                                                 context,
                                                 "Unable to subscribe, try again!",
@@ -871,16 +794,24 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                         // );
                                       },
                                       child: Container(
-                                        padding: EdgeInsets.all(10.0),
+                                        padding: const EdgeInsets.all(10.0),
+                                        decoration: BoxDecoration(
+                                            color:
+                                                Theme.of(context).brightness ==
+                                                        Brightness.dark
+                                                    ? kDark[900]
+                                                    : kLight,
+                                            borderRadius:
+                                                BorderRadius.circular(10.0)),
                                         child: Center(
                                           child: editBtnClicked
-                                              ? Text('Loading ...')
+                                              ? const Text('Loading ...')
                                               : isSubscribed
                                                   ? Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
                                                               .center,
-                                                      children: [
+                                                      children: const [
                                                         Text('Subscribed',
                                                             style: TextStyle(
                                                                 color:
@@ -890,16 +821,8 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                                                 kPrimaryColor)
                                                       ],
                                                     )
-                                                  : Text('Subscribe'),
+                                                  : const Text('Subscribe'),
                                         ),
-                                        decoration: BoxDecoration(
-                                            color:
-                                                Theme.of(context).brightness ==
-                                                        Brightness.dark
-                                                    ? kDark[900]
-                                                    : kLight,
-                                            borderRadius:
-                                                BorderRadius.circular(10.0)),
                                       ),
                                     ),
                             ),
@@ -908,27 +831,6 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                       ),
                     ),
 
-                    // stories
-                    // Padding(
-                    //   padding:
-                    //       const EdgeInsets.symmetric(horizontal: 0.0, vertical: 20),
-                    //   child: Container(
-                    //     height: 110,
-                    //     child: ListView(
-                    //       scrollDirection: Axis.horizontal,
-                    //       children: [
-                    //         BubbleStories(text: 'story 1'),
-                    //         BubbleStories(text: 'story 2'),
-                    //         BubbleStories(text: 'story 3'),
-                    //         BubbleStories(text: 'story 4'),
-                    //         BubbleStories(text: 'story 5'),
-                    //         BubbleStories(text: 'story 6'),
-                    //         BubbleStories(text: 'story 7'),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
-
                     TabBar(
                       indicatorColor: kPrimaryColor,
                       unselectedLabelColor: kDark,
@@ -936,14 +838,14 @@ class _ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                           Theme.of(context).brightness == Brightness.dark
                               ? kLight
                               : kDark[900],
-                      tabs: [
+                      tabs: const [
                         Tab(icon: Icon(Icons.photo_rounded)),
                         Tab(
                           icon: Icon(Icons.fastfood_rounded),
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 2.0,
                     )
                   ],

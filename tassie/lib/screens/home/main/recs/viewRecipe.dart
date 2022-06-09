@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-// import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/main/profile/recipeTab/editRecipe.dart';
@@ -22,15 +21,16 @@ import 'viewRecAllComments.dart';
 
 class ViewRecPost extends StatefulWidget {
   const ViewRecPost(
-      {required this.recs, required this.funcB, this.refreshPage});
+      {required this.recs, required this.funcB, this.refreshPage, Key? key})
+      : super(key: key);
   final Map recs;
   final void Function(bool) funcB;
   final void Function()? refreshPage;
   @override
-  _ViewRecPostState createState() => _ViewRecPostState();
+  ViewRecPostState createState() => ViewRecPostState();
 }
 
-class _ViewRecPostState extends State<ViewRecPost> {
+class ViewRecPostState extends State<ViewRecPost> {
   bool isPop = false;
   bool isSubscribed = false;
   bool isExpandedIng = false;
@@ -64,7 +64,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
   double meanRating = 4.7;
   // String profilePic = "";
   final dio = Dio();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   AsyncMemoizer memoizer = AsyncMemoizer();
   AsyncMemoizer memoizer3 = AsyncMemoizer();
   late Future storedFuture;
@@ -145,7 +145,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
         'https://api-tassie.herokuapp.com/recs/getRecipe/',
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
-          HttpHeaders.authorizationHeader: "Bearer " + token!
+          HttpHeaders.authorizationHeader: "Bearer ${token!}"
         }),
         data: {
           'uuid': widget.recs['uuid'],
@@ -293,7 +293,6 @@ class _ViewRecPostState extends State<ViewRecPost> {
 
   // Column myList(size, listItems, listImages, showMoreBtn, isIng) {
   Column myList(showMoreBtn, isIng) {
-    print(checker);
     checker++;
     return Column(
       children: [
@@ -358,32 +357,30 @@ class _ViewRecPostState extends State<ViewRecPost> {
             ? TextButton.icon(
                 icon: isIng
                     ? isExpandedIng
-                        ? Icon(Icons.keyboard_arrow_up_rounded)
-                        : Icon(Icons.keyboard_arrow_down_rounded)
+                        ? const Icon(Icons.keyboard_arrow_up_rounded)
+                        : const Icon(Icons.keyboard_arrow_down_rounded)
                     : isExpandedSteps
-                        ? Icon(Icons.keyboard_arrow_up_rounded)
-                        : Icon(Icons.keyboard_arrow_down_rounded),
+                        ? const Icon(Icons.keyboard_arrow_up_rounded)
+                        : const Icon(Icons.keyboard_arrow_down_rounded),
                 label: isIng
                     ? isExpandedIng
-                        ? Text('Show less')
-                        : Text('Show more')
+                        ? const Text('Show less')
+                        : const Text('Show more')
                     : isExpandedSteps
-                        ? Text('Show less')
-                        : Text('Show more'),
+                        ? const Text('Show less')
+                        : const Text('Show more'),
                 onPressed: () {
                   setState(() {
                     if (isIng == true) {
                       isExpandedIng = !isExpandedIng;
-                      print(isExpandedIng);
                     } else {
                       isExpandedSteps = !isExpandedSteps;
-                      print(isExpandedSteps);
                     }
                   });
                 },
                 style: TextButton.styleFrom(primary: kPrimaryColor),
               )
-            : SizedBox(
+            : const SizedBox(
                 height: 0.0,
               ),
       ],
@@ -393,7 +390,6 @@ class _ViewRecPostState extends State<ViewRecPost> {
   Future<List<Widget>> generateList(listItems, listImages, isIng) async {
     List<bool> isImage = List.filled(listItems.length, false, growable: true);
     for (int k = 0; k < listImages.length; k++) {
-      print(listImages[k]);
       AsyncMemoizer memoizer4 = AsyncMemoizer();
       String storedFuture = await loadImg(listImages[k]['fileID'], memoizer4);
       if (isIng) {
@@ -403,9 +399,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
       }
       isImage[int.parse(listImages[k]['index']) - 1] = true;
     }
-    print(isImage);
-    print(ingStoredFutures);
-    print(stepStoredFutures);
+
     return [
       for (int k = 0; k < listItems.length; k++) ...[
         // storedFuture = loadImg();
@@ -441,7 +435,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
   }
 
   Future<List<Widget>> generateCommentList() async {
-    if (comments.length == 0) return [];
+    if (comments.isEmpty) return [];
     for (int k = 0; k < 2; k++) {
       AsyncMemoizer memoizer1 = AsyncMemoizer();
       Future storedFuture1 = loadImg(comments[k]['profilePic'], memoizer1);
@@ -486,9 +480,9 @@ class _ViewRecPostState extends State<ViewRecPost> {
   Widget _createRatingPercentBar(Size size, int star, int rating, Color color) {
     return Row(children: [
       Text(star.toString()),
-      Icon(Icons.star, size: 14.0, color: kDark),
-      SizedBox(width: 5.0),
-      Container(
+      const Icon(Icons.star, size: 14.0, color: kDark),
+      const SizedBox(width: 5.0),
+      SizedBox(
         width: size.width * 0.45,
         child: LinearProgressIndicator(
           value: totalRatings == 0 ? 0.0 : rating / totalRatings,
@@ -536,7 +530,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                         : Brightness.light),
             leading: ClipOval(
               child: Container(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 color: Colors.transparent,
                 child: ClipOval(
                   child: Container(
@@ -547,7 +541,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                       onPressed: () {
                         Navigator.of(context, rootNavigator: false).pop();
                       },
-                      icon: Icon(Icons.chevron_left_rounded),
+                      icon: const Icon(Icons.chevron_left_rounded),
                     ),
                   ),
                 ),
@@ -556,7 +550,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
             actions: [
               ClipOval(
                 child: Container(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   color: Colors.transparent,
                   child: ClipOval(
                     child: Container(
@@ -565,19 +559,19 @@ class _ViewRecPostState extends State<ViewRecPost> {
                       color: kPrimaryColor,
                       child: IconButton(
                         icon: (isBookmarked)
-                            ? Icon(Icons.bookmark)
-                            : Icon(Icons.bookmark_border),
+                            ? const Icon(Icons.bookmark)
+                            : const Icon(Icons.bookmark_border),
                         iconSize: 30.0,
                         onPressed: () async {
                           if (!isBookmarked) {
                             var token = await storage.read(key: "token");
-                            Response response = await dio.post(
+                            await dio.post(
                                 "https://api-tassie.herokuapp.com/recs/bookmark",
                                 options: Options(headers: {
                                   HttpHeaders.contentTypeHeader:
                                       "application/json",
                                   HttpHeaders.authorizationHeader:
-                                      "Bearer " + token!
+                                      "Bearer ${token!}"
                                 }),
                                 data: {'uuid': widget.recs['uuid']});
                             widget.funcB(false);
@@ -586,13 +580,13 @@ class _ViewRecPostState extends State<ViewRecPost> {
                             });
                           } else {
                             var token = await storage.read(key: "token");
-                            Response response = await dio.post(
+                            await dio.post(
                                 "https://api-tassie.herokuapp.com/recs/removeBookmark",
                                 options: Options(headers: {
                                   HttpHeaders.contentTypeHeader:
                                       "application/json",
                                   HttpHeaders.authorizationHeader:
-                                      "Bearer " + token!
+                                      "Bearer ${token!}"
                                 }),
                                 data: {'uuid': widget.recs['uuid']});
                             widget.funcB(true);
@@ -608,7 +602,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
               ),
               ClipOval(
                 child: Container(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   color: Colors.transparent,
                   child: ClipOval(
                     child: Container(
@@ -627,7 +621,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                   HttpHeaders.contentTypeHeader:
                                       "application/json",
                                   HttpHeaders.authorizationHeader:
-                                      "Bearer " + token!
+                                      "Bearer ${token!}"
                                 }),
                                 data: {'uuid': widget.recs['uuid']});
                             // widget.func(false);
@@ -642,7 +636,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                   HttpHeaders.contentTypeHeader:
                                       "application/json",
                                   HttpHeaders.authorizationHeader:
-                                      "Bearer " + token!
+                                      "Bearer ${token!}"
                                 }),
                                 data: {'uuid': widget.recs['uuid']});
                             // widget.func(true);
@@ -653,8 +647,8 @@ class _ViewRecPostState extends State<ViewRecPost> {
                           // print(likeNumber.toString());
                         },
                         icon: (!isLiked)
-                            ? Icon(Icons.favorite_border)
-                            : Icon(
+                            ? const Icon(Icons.favorite_border)
+                            : const Icon(
                                 Icons.favorite,
                                 color: Colors.white,
                               ),
@@ -666,7 +660,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
               if (uuid == widget.recs['userUuid']) ...[
                 ClipOval(
                   child: Container(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     color: Colors.transparent,
                     child: ClipOval(
                       child: Container(
@@ -704,9 +698,9 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      title: Text("Delete"),
-                                      content: Text("Are you sure?"),
-                                      actionsPadding: EdgeInsets.only(
+                                      title: const Text("Delete"),
+                                      content: const Text("Are you sure?"),
+                                      actionsPadding: const EdgeInsets.only(
                                           bottom: 20.0, right: 20.0),
                                       actions: [
                                         Padding(
@@ -716,10 +710,10 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                             onTap: () {
                                               Navigator.of(context).pop(false);
                                             },
-                                            child: Text("No"),
+                                            child: const Text("No"),
                                           ),
                                         ),
-                                        SizedBox(height: 16),
+                                        const SizedBox(height: 16),
                                         GestureDetector(
                                           onTap: () async {
                                             setState(() {
@@ -739,7 +733,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                           "application/json",
                                                       HttpHeaders
                                                               .authorizationHeader:
-                                                          "Bearer " + token!
+                                                          "Bearer ${token!}"
                                                     }),
                                                     data: {
                                                   'uuid': widget.recs['uuid'],
@@ -747,9 +741,11 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                 });
                                             if (response.data['status'] ==
                                                 true) {
-                                              print('deleted');
                                             } else {
-                                              print('not deleted');
+                                              await Future.delayed(
+                                                  const Duration(seconds: 1));
+
+                                              if (!mounted) return;
                                               showSnack(
                                                   context,
                                                   response.data['message'],
@@ -758,22 +754,27 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                   4);
                                             }
                                           },
-                                          child: Text("Yes"),
+                                          child: const Text("Yes"),
                                         ),
                                       ],
                                     );
                                   });
                               if (isPop) {
+                                await Future.delayed(
+                                    const Duration(seconds: 1));
+
+                                if (!mounted) return;
                                 Navigator.of(context).pop();
                               }
                             }
                           },
                           itemBuilder: (context) => [
-                            PopupMenuItem(
-                              child: Text("Edit"),
+                            const PopupMenuItem(
                               value: "edit",
+                              child: Text("Edit"),
                             ),
-                            PopupMenuItem(
+                            const PopupMenuItem(
+                              // ignore: sort_child_properties_last
                               child: Text("Delete"),
                               value: "delete",
                             ),
@@ -806,19 +807,19 @@ class _ViewRecPostState extends State<ViewRecPost> {
             ],
           ),
           body: isLoading
-              ? Center(
+              ? const Center(
                   child: CircularProgressIndicator(
                     strokeWidth: 2.0,
                   ),
                 )
               : ListView(
-                  padding: EdgeInsets.only(top: 0),
+                  padding: const EdgeInsets.only(top: 0),
                   children: [
                     Hero(
                       tag: widget.recs['uuid'],
                       child: GestureDetector(
                         onTap: () {},
-                        child: Container(
+                        child: SizedBox(
                           width: size.width,
                           height: size.width,
                           // child: recipeImageID != " "
@@ -842,14 +843,13 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                         onTap: () {
                                           setState(() {});
                                         },
-                                        child: Container(
-                                            child: Center(
+                                        child: const Center(
                                           child: Icon(
-                                            Icons.refresh,
-                                            size: 50.0,
-                                            color: kDark,
+                                        Icons.refresh,
+                                        size: 50.0,
+                                        color: kDark,
                                           ),
-                                        )));
+                                        ));
                                   }
                                   return Image.network(text.data.toString());
                                 }
@@ -858,12 +858,12 @@ class _ViewRecPostState extends State<ViewRecPost> {
                       ),
                     ),
                     Transform.translate(
-                      offset: Offset(0, -20.0),
+                      offset: const Offset(0, -20.0),
                       child: Container(
-                        padding: EdgeInsets.all(kDefaultPadding),
+                        padding: const EdgeInsets.all(kDefaultPadding),
                         decoration: BoxDecoration(
                           color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.only(
+                          borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(25.0),
                             topRight: Radius.circular(25.0),
                           ),
@@ -871,18 +871,18 @@ class _ViewRecPostState extends State<ViewRecPost> {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(
+                              const SizedBox(
                                 height: 30.0,
                               ),
                               Text(
                                 recipeName.capitaliz(),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   // color: kPrimaryColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 25.0,
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 15.0,
                               ),
                               Row(
@@ -890,7 +890,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                     MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
+                                  SizedBox(
                                     width: size.width * 0.7,
                                     child: Wrap(
                                       runSpacing: 10.0,
@@ -900,22 +900,24 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                               right: 10.0),
                                           child: OutlinedButton(
                                             onPressed: () {},
-                                            child: Text(
-                                              flavour,
-                                              style: TextStyle(color: kDark),
-                                            ),
                                             style: OutlinedButton.styleFrom(
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           10.0)),
-                                              padding: EdgeInsets.all(10.0),
-                                              side: BorderSide(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              side: const BorderSide(
                                                 color: kDark,
                                                 width: 1,
                                               ),
                                               backgroundColor:
                                                   Colors.transparent,
+                                            ),
+                                            child: Text(
+                                              flavour,
+                                              style:
+                                                  const TextStyle(color: kDark),
                                             ),
                                           ),
                                         ),
@@ -924,22 +926,24 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                               right: 10.0),
                                           child: OutlinedButton(
                                             onPressed: () {},
-                                            child: Text(
-                                              course,
-                                              style: TextStyle(color: kDark),
-                                            ),
                                             style: OutlinedButton.styleFrom(
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           10.0)),
-                                              padding: EdgeInsets.all(10.0),
-                                              side: BorderSide(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              side: const BorderSide(
                                                 color: kDark,
                                                 width: 1,
                                               ),
                                               backgroundColor:
                                                   Colors.transparent,
+                                            ),
+                                            child: Text(
+                                              course,
+                                              style:
+                                                  const TextStyle(color: kDark),
                                             ),
                                           ),
                                         ),
@@ -949,22 +953,23 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                 right: 10.0),
                                             child: OutlinedButton(
                                               onPressed: () {},
-                                              child: Text(
-                                                'Lunch',
-                                                style: TextStyle(color: kDark),
-                                              ),
                                               style: OutlinedButton.styleFrom(
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             10.0)),
-                                                padding: EdgeInsets.all(10.0),
-                                                side: BorderSide(
+                                                padding:
+                                                    const EdgeInsets.all(10.0),
+                                                side: const BorderSide(
                                                   color: kDark,
                                                   width: 1,
                                                 ),
                                                 backgroundColor:
                                                     Colors.transparent,
+                                              ),
+                                              child: const Text(
+                                                'Lunch',
+                                                style: TextStyle(color: kDark),
                                               ),
                                             ),
                                           )
@@ -975,22 +980,23 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                 right: 10.0),
                                             child: OutlinedButton(
                                               onPressed: () {},
-                                              child: Text(
-                                                'Breakfast',
-                                                style: TextStyle(color: kDark),
-                                              ),
                                               style: OutlinedButton.styleFrom(
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             10.0)),
-                                                padding: EdgeInsets.all(10.0),
-                                                side: BorderSide(
+                                                padding:
+                                                    const EdgeInsets.all(10.0),
+                                                side: const BorderSide(
                                                   color: kDark,
                                                   width: 1,
                                                 ),
                                                 backgroundColor:
                                                     Colors.transparent,
+                                              ),
+                                              child: const Text(
+                                                'Breakfast',
+                                                style: TextStyle(color: kDark),
                                               ),
                                             ),
                                           )
@@ -1001,22 +1007,23 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                 right: 10.0),
                                             child: OutlinedButton(
                                               onPressed: () {},
-                                              child: Text(
-                                                'Dinner',
-                                                style: TextStyle(color: kDark),
-                                              ),
                                               style: OutlinedButton.styleFrom(
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             10.0)),
-                                                padding: EdgeInsets.all(10.0),
-                                                side: BorderSide(
+                                                padding:
+                                                    const EdgeInsets.all(10.0),
+                                                side: const BorderSide(
                                                   color: kDark,
                                                   width: 1,
                                                 ),
                                                 backgroundColor:
                                                     Colors.transparent,
+                                              ),
+                                              child: const Text(
+                                                'Dinner',
+                                                style: TextStyle(color: kDark),
                                               ),
                                             ),
                                           )
@@ -1027,22 +1034,23 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                 right: 10.0),
                                             child: OutlinedButton(
                                               onPressed: () {},
-                                              child: Text(
-                                                'Craving',
-                                                style: TextStyle(color: kDark),
-                                              ),
                                               style: OutlinedButton.styleFrom(
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             10.0)),
-                                                padding: EdgeInsets.all(10.0),
-                                                side: BorderSide(
+                                                padding:
+                                                    const EdgeInsets.all(10.0),
+                                                side: const BorderSide(
                                                   color: kDark,
                                                   width: 1,
                                                 ),
                                                 backgroundColor:
                                                     Colors.transparent,
+                                              ),
+                                              child: const Text(
+                                                'Craving',
+                                                style: TextStyle(color: kDark),
                                               ),
                                             ),
                                           )
@@ -1053,8 +1061,8 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                   Container(
                                     height: 36.0,
                                     width: 36.0,
-                                    margin: EdgeInsets.only(top: 8.0),
-                                    padding: EdgeInsets.all(10.0),
+                                    margin: const EdgeInsets.only(top: 8.0),
+                                    padding: const EdgeInsets.all(10.0),
                                     decoration: BoxDecoration(
                                         borderRadius:
                                             BorderRadius.circular(5.0),
@@ -1074,13 +1082,13 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                   )
                                 ],
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 20.0,
                               ),
                               Row(
                                 children: [
-                                  Icon(Icons.timer),
-                                  SizedBox(
+                                  const Icon(Icons.timer),
+                                  const SizedBox(
                                     width: 5.0,
                                   ),
                                   RichText(
@@ -1088,7 +1096,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                       children: [
                                         if (hours != 0) ...[
                                           TextSpan(
-                                            text: hours.toString() + 'h ',
+                                            text: '${hours}h ',
                                             style: TextStyle(
                                               fontSize: 18.0,
                                               color: MediaQuery.of(context)
@@ -1100,7 +1108,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                           ),
                                         ],
                                         TextSpan(
-                                          text: mins.toString() + 'm',
+                                          text: '${mins}m',
                                           style: TextStyle(
                                             fontSize: 18.0,
                                             color: MediaQuery.of(context)
@@ -1115,17 +1123,17 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                   )
                                 ],
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 20.0,
                               ),
                               ListTile(
                                 minLeadingWidth: (size.width - 40.0) / 10,
                                 contentPadding:
-                                    EdgeInsets.symmetric(horizontal: 0),
+                                    const EdgeInsets.symmetric(horizontal: 0),
                                 leading: Container(
                                   width: (size.width - 40.0) / 10,
                                   height: (size.width - 40.0) / 10,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
                                   ),
                                   child: CircleAvatar(
@@ -1148,7 +1156,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                 height:
                                                     (size.width - 40.0) / 10,
                                                 width: (size.width - 40.0) / 10,
-                                                image: AssetImage(
+                                                image: const AssetImage(
                                                     'assets/images/broken.png'),
                                                 fit: BoxFit.cover,
                                               );
@@ -1158,14 +1166,14 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                     onTap: () {
                                                       setState(() {});
                                                     },
-                                                    child: Container(
+                                                    child: SizedBox(
                                                         height: (size.width -
                                                                 40.0) /
                                                             10,
                                                         width: (size.width -
                                                                 40.0) /
                                                             10,
-                                                        child: Center(
+                                                        child: const Center(
                                                           child: Icon(
                                                             Icons.refresh,
                                                             // size: 50.0,
@@ -1188,7 +1196,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                 ),
                                 title: Text(
                                   chefName,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     overflow: TextOverflow.ellipsis,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -1197,8 +1205,9 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                     ? null
                                     : isSubscribed
                                         ? TextButton.icon(
-                                            icon: Icon(Icons.check_circle),
-                                            label: Text('SUBSCRIBED'),
+                                            icon:
+                                                const Icon(Icons.check_circle),
+                                            label: const Text('SUBSCRIBED'),
                                             onPressed: () async {
                                               var token = await storage.read(
                                                   key: "token");
@@ -1210,7 +1219,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                         "application/json",
                                                     HttpHeaders
                                                             .authorizationHeader:
-                                                        "Bearer " + token!
+                                                        "Bearer ${token!}"
                                                   }),
                                                   // data: jsonEncode(value),
                                                   data: {
@@ -1223,6 +1232,10 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                   isSubscribed = false;
                                                 });
                                               } else {
+                                                await Future.delayed(
+                                                    const Duration(seconds: 1));
+
+                                                if (!mounted) return;
                                                 showSnack(
                                                     context,
                                                     "Unable to unsubscribe, try again!",
@@ -1235,7 +1248,6 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                 primary: kPrimaryColor),
                                           )
                                         : TextButton(
-                                            child: Text('SUBSCRIBE'),
                                             onPressed: () async {
                                               var token = await storage.read(
                                                   key: "token");
@@ -1247,7 +1259,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                         "application/json",
                                                     HttpHeaders
                                                             .authorizationHeader:
-                                                        "Bearer " + token!
+                                                        "Bearer ${token!}"
                                                   }),
                                                   // data: jsonEncode(value),
                                                   data: {
@@ -1260,6 +1272,10 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                                   isSubscribed = true;
                                                 });
                                               } else {
+                                                await Future.delayed(
+                                                    const Duration(seconds: 1));
+
+                                                if (!mounted) return;
                                                 showSnack(
                                                     context,
                                                     "Unable to subscribe, try again!",
@@ -1270,12 +1286,13 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                             },
                                             style: TextButton.styleFrom(
                                                 primary: kPrimaryColor),
+                                            child: const Text('SUBSCRIBE'),
                                           ),
                               ),
                             ]),
                       ),
                     ),
-                    Divider(
+                    const Divider(
                       thickness: 8,
                     ),
                     if (desc != "") ...[
@@ -1283,7 +1300,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                         padding: const EdgeInsets.all(kDefaultPadding),
                         child: ShowMoreText(text: desc.capitaliz()),
                       ),
-                      SizedBox(height: 10.0)
+                      const SizedBox(height: 10.0)
                     ],
                     // Divider(
                     //   thickness: 5,
@@ -1292,14 +1309,14 @@ class _ViewRecPostState extends State<ViewRecPost> {
                     //   height: 10.0,
                     // ),
                     Container(
-                      padding: EdgeInsets.all(kDefaultPadding),
+                      padding: const EdgeInsets.all(kDefaultPadding),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
+                              const Text(
                                 'Ingredients',
                                 style: TextStyle(
                                   // color: kPrimaryColor,
@@ -1315,20 +1332,20 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                         });
                                       },
                                       icon: isExpandedIng
-                                          ? Icon(
+                                          ? const Icon(
                                               Icons.keyboard_arrow_up_rounded)
-                                          : Icon(Icons
+                                          : const Icon(Icons
                                               .keyboard_arrow_down_rounded),
                                       iconSize: 35.0,
-                                      padding: EdgeInsets.all(0.0),
+                                      padding: const EdgeInsets.all(0.0),
                                       color: kDark,
                                     )
-                                  : SizedBox(
+                                  : const SizedBox(
                                       width: 0.0,
                                     ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10.0,
                           ),
                           // !isExpandedIng
@@ -1365,21 +1382,21 @@ class _ViewRecPostState extends State<ViewRecPost> {
                         ],
                       ),
                     ),
-                    Divider(
+                    const Divider(
                       thickness: 8,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10.0,
                     ),
                     Container(
-                      padding: EdgeInsets.all(kDefaultPadding),
+                      padding: const EdgeInsets.all(kDefaultPadding),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
+                              const Text(
                                 'Recipe steps',
                                 style: TextStyle(
                                   // color: kPrimaryColor,
@@ -1395,20 +1412,20 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                         });
                                       },
                                       icon: isExpandedSteps
-                                          ? Icon(
+                                          ? const Icon(
                                               Icons.keyboard_arrow_up_rounded)
-                                          : Icon(Icons
+                                          : const Icon(Icons
                                               .keyboard_arrow_down_rounded),
                                       iconSize: 35.0,
-                                      padding: EdgeInsets.all(0.0),
+                                      padding: const EdgeInsets.all(0.0),
                                       color: kDark,
                                     )
-                                  : SizedBox(
+                                  : const SizedBox(
                                       width: 0.0,
                                     ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10.0,
                           ),
                           // !isExpandedSteps
@@ -1430,19 +1447,19 @@ class _ViewRecPostState extends State<ViewRecPost> {
                         ],
                       ),
                     ),
-                    Divider(
+                    const Divider(
                       thickness: 8,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10.0,
                     ),
 
                     Container(
-                      padding: EdgeInsets.all(kDefaultPadding),
+                      padding: const EdgeInsets.all(kDefaultPadding),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          const Text(
                             'Ratings',
                             style: TextStyle(
                               // color: kPrimaryColor,
@@ -1452,7 +1469,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                           ),
                           if (totalRatings != 0) ...[
                             Container(
-                              margin: EdgeInsets.symmetric(
+                              margin: const EdgeInsets.symmetric(
                                   vertical: kDefaultPadding),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1497,7 +1514,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                           RatingBarIndicator(
                                             rating: meanRating,
                                             itemBuilder: (context, index) =>
-                                                Icon(
+                                                const Icon(
                                               Icons.star,
                                               color: kPrimaryColor,
                                             ),
@@ -1527,18 +1544,18 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 10.0),
+                                  const SizedBox(height: 10.0),
                                   RichText(
                                     text: TextSpan(
                                       children: [
                                         TextSpan(
                                           text: totalRatings.toString(),
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             // color: kDark,
                                             fontSize: 18.0,
                                           ),
                                         ),
-                                        TextSpan(
+                                        const TextSpan(
                                           text: ' tassite ratings.',
                                           style: TextStyle(
                                             color: kDark,
@@ -1562,15 +1579,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                 );
                               },
                               child: Container(
-                                padding: EdgeInsets.all(10.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('Show ratings'),
-                                    Icon(Icons.keyboard_arrow_right_rounded),
-                                  ],
-                                ),
+                                padding: const EdgeInsets.all(10.0),
                                 decoration: BoxDecoration(
                                     // color: Theme.of(context).brightness ==
                                     //         Brightness.dark
@@ -1578,6 +1587,14 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                     //     : kLight,
                                     border: Border.all(color: kDark),
                                     borderRadius: BorderRadius.circular(10.0)),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: const [
+                                    Text('Show ratings'),
+                                    Icon(Icons.keyboard_arrow_right_rounded),
+                                  ],
+                                ),
                               ),
                             ),
                           ] else ...[
@@ -1591,12 +1608,13 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                         : kLight,
                                     // border: Border.all(color: kDark),
                                     borderRadius: BorderRadius.circular(10.0)),
-                                padding: EdgeInsets.all(kDefaultPadding * 1.5),
-                                margin: EdgeInsets.only(top: 20.0),
+                                padding:
+                                    const EdgeInsets.all(kDefaultPadding * 1.5),
+                                margin: const EdgeInsets.only(top: 20.0),
                                 width: double.infinity,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
+                                  children: const [
                                     Icon(Icons.icecream_outlined,
                                         size: 35.0, color: kDark),
                                     SizedBox(height: 10.0),
@@ -1606,9 +1624,9 @@ class _ViewRecPostState extends State<ViewRecPost> {
                               ),
                             )
                           ],
-                          SizedBox(height: 40.0),
-                          Text('Rate this recipe!'),
-                          SizedBox(height: 10.0),
+                          const SizedBox(height: 40.0),
+                          const Text('Rate this recipe!'),
+                          const SizedBox(height: 10.0),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -1619,7 +1637,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                 allowHalfRating: false,
                                 itemCount: 5,
                                 itemPadding:
-                                    EdgeInsets.symmetric(horizontal: 4.0),
+                                    const EdgeInsets.symmetric(horizontal: 4.0),
                                 itemBuilder: (context, _) => Icon(
                                   Icons.star,
                                   color: Theme.of(context).brightness ==
@@ -1641,7 +1659,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                         HttpHeaders.contentTypeHeader:
                                             "application/json",
                                         HttpHeaders.authorizationHeader:
-                                            "Bearer " + token!
+                                            "Bearer ${token!}"
                                       }),
                                       data: {
                                         'uuid': widget.recs['uuid'],
@@ -1649,9 +1667,17 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                       });
                                   if (response.data != null) {
                                     if (response.data['status'] == true) {
+                                      await Future.delayed(
+                                          const Duration(seconds: 1));
+
+                                      if (!mounted) return;
                                       showSnack(context, "Thanks for rating!",
                                           () {}, 'OK', 3);
                                     } else {
+                                      await Future.delayed(
+                                          const Duration(seconds: 1));
+
+                                      if (!mounted) return;
                                       showSnack(
                                           context,
                                           "Unable to update rating!",
@@ -1673,7 +1699,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                           HttpHeaders.contentTypeHeader:
                                               "application/json",
                                           HttpHeaders.authorizationHeader:
-                                              "Bearer " + token!
+                                              "Bearer ${token!}"
                                         }),
                                         data: {
                                           'uuid': widget.recs['uuid'],
@@ -1685,9 +1711,17 @@ class _ViewRecPostState extends State<ViewRecPost> {
 
                                     if (response.data != null) {
                                       if (response.data['status'] == true) {
+                                        await Future.delayed(
+                                            const Duration(seconds: 1));
+
+                                        if (!mounted) return;
                                         showSnack(context, "Rating deleted!",
                                             () {}, 'OK', 3);
                                       } else {
+                                        await Future.delayed(
+                                            const Duration(seconds: 1));
+
+                                        if (!mounted) return;
                                         showSnack(
                                             context,
                                             "Unable to reset rating!",
@@ -1697,26 +1731,26 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                       }
                                     }
                                   },
-                                  icon: Icon(Icons.restart_alt))
+                                  icon: const Icon(Icons.restart_alt))
                             ],
                           ),
                         ],
                       ),
                     ),
-                    Divider(
+                    const Divider(
                       thickness: 8,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10.0,
                     ),
                     Container(
-                        padding: EdgeInsets.all(kDefaultPadding),
+                        padding: const EdgeInsets.all(kDefaultPadding),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               'Comments',
-                              style: TextStyle(
+                              style:  TextStyle(
                                 // color: kPrimaryColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20.0,
@@ -1762,15 +1796,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                   );
                                 },
                                 child: Container(
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text('Show all comments'),
-                                      Icon(Icons.keyboard_arrow_right_rounded),
-                                    ],
-                                  ),
+                                  padding: const EdgeInsets.all(10.0),
                                   decoration: BoxDecoration(
                                       // color: Theme.of(context).brightness ==
                                       //         Brightness.dark
@@ -1779,6 +1805,15 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                       border: Border.all(color: kDark),
                                       borderRadius:
                                           BorderRadius.circular(10.0)),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: const [
+                                       Text('Show all comments'),
+                                       Icon(
+                                          Icons.keyboard_arrow_right_rounded),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ] else ...[
@@ -1793,24 +1828,24 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                       // border: Border.all(color: kDark),
                                       borderRadius:
                                           BorderRadius.circular(10.0)),
-                                  padding:
-                                      EdgeInsets.all(kDefaultPadding * 1.5),
-                                  margin: EdgeInsets.only(top: 20.0),
+                                  padding: const EdgeInsets.all(
+                                      kDefaultPadding * 1.5),
+                                  margin: const EdgeInsets.only(top: 20.0),
                                   width: double.infinity,
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.question_answer_rounded,
+                                    children: const  [
+                                       Icon(Icons.question_answer_rounded,
                                           size: 35.0, color: kDark),
-                                      SizedBox(height: 10.0),
-                                      Text('No comments yet'),
+                                       SizedBox(height: 10.0),
+                                       Text('No comments yet'),
                                     ],
                                   ),
                                 ),
                               )
                             ],
-                            SizedBox(height: 10.0),
+                            const SizedBox(height: 10.0),
                             Center(
                                 child: TextButton.icon(
                                     onPressed: () {
@@ -1827,18 +1862,18 @@ class _ViewRecPostState extends State<ViewRecPost> {
                                         ),
                                       );
                                     },
-                                    icon: Icon(Icons.add_comment_rounded),
-                                    label: Text('Add Comment'))),
+                                    icon: const Icon(Icons.add_comment_rounded),
+                                    label: const Text('Add Comment'))),
                           ],
                         )),
-                    Divider(
+                    const Divider(
                       thickness: 8,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10.0,
                     ),
                     Container(
-                        padding: EdgeInsets.all(kDefaultPadding),
+                        padding: const EdgeInsets.all(kDefaultPadding),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -1912,9 +1947,9 @@ class _ViewRecPostState extends State<ViewRecPost> {
                             ],
                             Container(
                               width: size.width,
-                              padding: EdgeInsets.only(top: 30.0),
+                              padding: const EdgeInsets.only(top: 30.0),
                               child: SingleChildScrollView(
-                                physics: BouncingScrollPhysics(),
+                                physics: const BouncingScrollPhysics(),
                                 scrollDirection: Axis.horizontal,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -1929,7 +1964,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                             )
                           ],
                         )),
-                    SizedBox(
+                    const SizedBox(
                       height: 100.0,
                     ),
                   ],
@@ -1939,125 +1974,9 @@ class _ViewRecPostState extends State<ViewRecPost> {
   }
 }
 
-// class TitleWithCustomUnderline extends StatelessWidget {
-//   const TitleWithCustomUnderline({required this.text});
-
-//   final String text;
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       height: 24,
-//       child: Stack(
-//         children: [
-//           Padding(
-//             padding: const EdgeInsets.only(left: kDefaultPadding / 4),
-//             child: Text(
-//               text,
-//               style: TextStyle(
-//                   fontSize: 20,
-//                   fontWeight: FontWeight.bold,
-//                   // color: kDark[900],
-//                   color: kPrimaryColor),
-//             ),
-//           ),
-//           Positioned(
-//             bottom: 0,
-//             left: 0,
-//             right: 0,
-//             child: Container(
-//               height: 7,
-//               margin: EdgeInsets.only(
-//                 right: kDefaultPadding / 4,
-//               ),
-//               color: kDark.withOpacity(0.4),
-//             ),
-//           )
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// class MyList extends StatelessWidget {
-//   MyList(
-//       {required this.listItems,
-//       required this.listImages,
-//       required this.showMoreBtn,
-//       required this.showLessBtn, required this.expandToggle});
-//   final List<String> listItems;
-//   final List<Map> listImages;
-//   final bool showMoreBtn;
-//   final bool showLessBtn;
-//   final void Function() expandToggle;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     Size size = MediaQuery.of(context).size;
-//     return Column(
-//       children: [
-//         ListView.builder(
-//             padding: EdgeInsets.only(bottom: 30.0),
-//             itemCount: listItems.length,
-//             shrinkWrap: true,
-//             physics: NeverScrollableScrollPhysics(),
-//             itemBuilder: (context, index) {
-//               String url = "";
-//               for (var i = 0; i < listImages.length; i++) {
-//                 if (listImages[i]["index"] == (index + 1).toString()) {
-//                   url = listImages[i]['url'];
-//                 }
-//               }
-//               return Column(
-//                 children: [
-//                   ListTile(
-//                     leading: MyBullet(index: (index + 1).toString()),
-//                     title: Text(listItems[index]),
-//                     contentPadding:
-//                         EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
-//                   ),
-//                   url == ""
-//                       ? Container()
-//                       : Padding(
-//                           padding: const EdgeInsets.only(top: 10.0),
-//                           child: GestureDetector(
-//                             onTap: () {},
-//                             child: ClipRRect(
-//                               borderRadius: BorderRadius.circular(15.0),
-//                               child: SizedBox(
-//                                 width: size.width - (2 * kDefaultPadding),
-//                                 height: size.width - (2 * kDefaultPadding),
-//                                 child: Image(
-//                                   image: NetworkImage(url),
-//                                   fit: BoxFit.cover,
-//                                 ),
-//                               ),
-//                             ),
-//                           ),
-//                         ),
-//                   if (index != listItems.length - 1) ...[
-//                     SizedBox(
-//                       height: 15.0,
-//                     ),
-//                     Divider(
-//                       thickness: 1.0,
-//                     )
-//                   ],
-//                 ],
-//               );
-//             }),
-//           TextButton.icon(icon: Icon(Icons.keyboard_arrow_down_rounded),
-//                                 label: Text('Show more'),
-//                                 onPressed: expandToggle,
-//                                 style: TextButton.styleFrom(
-//                                     primary: kPrimaryColor),
-//                               )
-//       ],
-//     );
-//   }
-// }
 
 class MyBullet extends StatelessWidget {
-  MyBullet({required this.index});
+  const MyBullet({required this.index, Key? key}) : super(key: key);
   final String index;
   @override
   Widget build(BuildContext context) {
@@ -2071,108 +1990,7 @@ class MyBullet extends StatelessWidget {
     // );
     return Text(
       index,
-      style: TextStyle(fontSize: 30.0, color: kPrimaryColor),
+      style: const TextStyle(fontSize: 30.0, color: kPrimaryColor),
     );
   }
 }
-
-// class StepIngImage extends StatefulWidget {
-//   const StepIngImage(
-//       {Key? key,
-//       required this.index,
-//       required this.text,
-//       required this.count,
-//       required this.size,
-//       required this.url})
-//       : super(key: key);
-//   final int index;
-//   final int count;
-//   final String text;
-//   final Size size;
-//   final String url;
-//   @override
-//   _StepIngImageState createState() => _StepIngImageState();
-// }
-
-// class _StepIngImageState extends State<StepIngImage> {
-//   AsyncMemoizer _memoizer1 = AsyncMemoizer();
-//   late Future _storedFuture1;
-//   bool _isLoading1 = true;
-//   Future<void> _getImage() async {
-//     _storedFuture1 = loadImg(widget.url, _memoizer1);
-//     _isLoading1 = false;
-//   }
-
-//   @override
-//   void initState() {
-//     // TODO: implement initState
-//     _memoizer1 = AsyncMemoizer();
-//     _getImage();
-//     super.initState();
-    
-    
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return (_isLoading1)
-//               ? Center(
-//                   child: CircularProgressIndicator(
-//                     strokeWidth: 2.0,
-//                   ),
-//                 )
-//               :  Column(
-//       children: [
-//         ListTile(
-//           leading: MyBullet(index: (widget.index + 1).toString()),
-//           title: Text(widget.text),
-//           contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
-//         ),
-//         widget.url == ""
-//             ? SizedBox(
-//                 height: 0,
-//               )
-//             : Padding(
-//                 padding: const EdgeInsets.only(top: 10.0),
-//                 child: GestureDetector(
-//                   onTap: () {},
-//                   child: ClipRRect(
-//                     borderRadius: BorderRadius.circular(15.0),
-//                     child: SizedBox(
-//                       width: widget.size.width - (2 * kDefaultPadding),
-//                       height: widget.size.width - (2 * kDefaultPadding),
-//                       // child: Image(
-//                       //   // image: NetworkImage(url),
-//                       //   image:
-//                       //       NetworkImage('https://picsum.photos/200'),
-//                       //   fit: BoxFit.cover,
-//                       // ),
-//                       child: FutureBuilder(
-//                           future: _storedFuture1,
-//                           builder: (BuildContext context, AsyncSnapshot text) {
-//                             if (text.connectionState ==
-//                                 ConnectionState.waiting) {
-//                               return Image.asset("assets/images/broken.png");
-//                             } else {
-//                               return Image(
-//                                 image: NetworkImage(text.data.toString()),
-//                                 fit: BoxFit.cover,
-//                               );
-//                             }
-//                           }),
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//         if (widget.index != widget.count - 1) ...[
-//           SizedBox(
-//             height: 15.0,
-//           ),
-//           Divider(
-//             thickness: 1.0,
-//           )
-//         ],
-//       ],
-//     );
-//   }
-// }

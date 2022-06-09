@@ -20,12 +20,12 @@ void main() {
   thc.getThemeModeFromPreferences();
   runApp(ChangeNotifierProvider(
     create: (_) => LeftSwipe(),
-    child: MyApp()));
+    child: const MyApp()));
   // runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // MyApp({Key? key});
+  const MyApp({Key? key}): super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
       theme: lightThemeData(context),
       darkTheme: darkThemeData(context),
       themeMode: ThemeMode.dark,
-      home: Wrapper(),
+      home: const Wrapper(),
       debugShowCheckedModeBanner: false,
     );
 

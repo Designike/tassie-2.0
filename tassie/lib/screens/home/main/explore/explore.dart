@@ -39,7 +39,6 @@ class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
   void _getRecosts(int index) async {
     if (!isEnd) {
       if (!isLazyLoading) {
-        print('calling...');
         setState(() {
           isLazyLoading = true;
         });

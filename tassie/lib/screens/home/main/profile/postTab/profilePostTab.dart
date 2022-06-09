@@ -1,53 +1,25 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
-
-// import 'package:cached_network_image/cached_network_image.dart';
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:tassie/constants.dart';
-import 'package:tassie/screens/home/main/profile/profile.dart';
-import 'package:tassie/screens/home/main/feed/viewPost.dart';
 import 'package:tassie/screens/home/main/profile/postTab/viewProfilePost.dart';
 import 'package:tassie/utils/imgLoader.dart';
 
 class PostTab extends StatefulWidget {
   const PostTab(
-      {required this.refreshPage, required this.posts, required this.isEnd});
+      {required this.refreshPage, required this.posts, required this.isEnd, Key? key}): super(key: key);
   final Future<void> Function() refreshPage;
   final List posts;
   final bool isEnd;
   @override
-  _PostTabState createState() => _PostTabState();
+  PostTabState createState() => PostTabState();
 }
 
-class _PostTabState extends State<PostTab> with AutomaticKeepAliveClientMixin {
+class PostTabState extends State<PostTab> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  // final ScrollController _sc = ScrollController();
-  // List<Map> recs = [
-  //   {
-  //     "name": "Paneer Tikka",
-  //     "user": "Sommy21",
-  //     "url": "https://picsum.photos/200",
-  //     "profilePic": "https://picsum.photos/200"
-  //   },
-  //   {
-  //     "name": "Dhokla",
-  //     "user": "parthnamdev",
-  //     "url": "https://picsum.photos/200",
-  //     "profilePic": "https://picsum.photos/200"
-  //   },
-  //   {
-  //     "name": "Khamman",
-  //     "user": "rishabh",
-  //     "url": "https://picsum.photos/200",
-  //     "profilePic": "https://picsum.photos/200"
-  //   }
-  // ];
   Widget _buildProgressIndicator() {
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
+    return const Padding(
+      padding: EdgeInsets.all(kDefaultPadding),
       child: Center(
         child: Opacity(
           opacity: 1,
@@ -62,8 +34,8 @@ class _PostTabState extends State<PostTab> with AutomaticKeepAliveClientMixin {
 
   Widget _endMessage() {
     // print(isEnd);
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
+    return const Padding(
+      padding: EdgeInsets.all(kDefaultPadding),
       child: Center(
         child: Opacity(
           opacity: 0.8,
@@ -75,27 +47,25 @@ class _PostTabState extends State<PostTab> with AutomaticKeepAliveClientMixin {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     List posts = widget.posts;
     // print(posts);
     Size size = MediaQuery.of(context).size;
-    print('henlo');
-    print(posts);
     return RefreshIndicator(
       onRefresh: widget.refreshPage,
       child: ListView(
         children: [
-          posts.length > 0
+          posts.isNotEmpty
               ? GridView.builder(
                   shrinkWrap: true,
                   // controller: _sc,
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
                     crossAxisSpacing: 2,
                     mainAxisSpacing: 2,
@@ -129,7 +99,7 @@ class _PostTabState extends State<PostTab> with AutomaticKeepAliveClientMixin {
               : Center(
                   child: Padding(
                     padding: EdgeInsets.all(size.width * 0.15),
-                    child: Text(
+                    child: const Text(
                       'No posts yet',
                       style: TextStyle(fontSize: 18),
                     ),
@@ -138,7 +108,6 @@ class _PostTabState extends State<PostTab> with AutomaticKeepAliveClientMixin {
         ],
       ),
     );
-    // return Container();
   }
 }
 
@@ -167,21 +136,9 @@ class _ProfilePostTabChildState extends State<ProfilePostTabChild> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     memoizer = AsyncMemoizer();
     storedFuture = loadImg(widget.postID, memoizer);
-    // _image = "";
-    // loadImg(widget.postID,memoizer).then((result) {
-    //   print('post refresh');
-    //   if (mounted) {
-    //     setState(() {
-    //       print(result);
-    //       _image = result;
-    //       isImage = true;
-    //     });
-    //   }
-    // });
   }
 
   @override
@@ -191,15 +148,11 @@ class _ProfilePostTabChildState extends State<ProfilePostTabChild> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    // return !isImage ? Container() : Image.network(_image);
     return FutureBuilder(
         future: storedFuture,
         builder: (BuildContext context, AsyncSnapshot text) {
           if ((text.connectionState == ConnectionState.waiting) ||
               text.hasError) {
-            // return Image.asset("assets/images/broken.png",
-            //     fit: BoxFit.cover, height: 128, width: 128);
             return Container();
           } else {
             if (!text.hasData) {
@@ -207,14 +160,13 @@ class _ProfilePostTabChildState extends State<ProfilePostTabChild> {
                   onTap: () {
                     setState(() {});
                   },
-                  child: Container(
-                      child: Center(
+                  child: const Center(
                     child: Icon(
-                      Icons.refresh,
-                      // size: 50.0,
-                      color: kDark,
+                  Icons.refresh,
+                  // size: 50.0,
+                  color: kDark,
                     ),
-                  )));
+                  ));
             }
             return Image(
               image: NetworkImage(text.data.toString()),

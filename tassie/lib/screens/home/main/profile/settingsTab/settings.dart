@@ -14,13 +14,15 @@ import 'package:tassie/utils/snackbar.dart';
 import 'package:tassie/screens/wrapper.dart';
 
 class SettingsPage extends StatefulWidget {
+  const SettingsPage({Key? key}) : super(key: key);
+
   @override
-  _SettingsPageState createState() => _SettingsPageState();
+  SettingsPageState createState() => SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class SettingsPageState extends State<SettingsPage> {
   var dio = Dio();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   bool isClicked = false;
   @override
   Widget build(BuildContext context) {
@@ -37,13 +39,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 Theme.of(context).brightness == Brightness.light
                     ? Brightness.dark
                     : Brightness.light),
-        title: Text(
+        title: const Text(
           "Settings",
           // style: TextStyle(fontWeight: FontWeight.w500),
         ),
       ),
       body: Container(
-        padding: EdgeInsets.all(kDefaultPadding),
+        padding: const EdgeInsets.all(kDefaultPadding),
         child: ListView(
           children: [
             // Text(
@@ -54,7 +56,7 @@ class _SettingsPageState extends State<SettingsPage> {
             //   height: 40,
             // ),
             Row(
-              children: [
+              children: const [
                 Icon(
                   Icons.person,
                   color: kPrimaryColor,
@@ -62,24 +64,24 @@ class _SettingsPageState extends State<SettingsPage> {
                 SizedBox(
                   width: 8,
                 ),
-                Text(
+                 Text(
                   "Account",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
-            Divider(
+            const Divider(
               height: 15,
               thickness: 2,
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             buildAccountOptionRow("Change username", () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) {
-                  return ChangeUsername();
+                  return const ChangeUsername();
                 }),
               );
             }),
@@ -87,7 +89,7 @@ class _SettingsPageState extends State<SettingsPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) {
-                  return ChangePassword();
+                  return const ChangePassword();
                 }),
               );
             }),
@@ -95,33 +97,34 @@ class _SettingsPageState extends State<SettingsPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) {
-                  return ChangeEmail();
+                  return const ChangeEmail();
                 }),
               );
             }),
-            SizedBox(
+            const SizedBox(
               height: 40,
             ),
             Row(
-              children: [
-                Icon(
+              children: const [
+                 Icon(
                   Icons.settings,
                   color: kPrimaryColor,
                 ),
-                SizedBox(
+                 SizedBox(
                   width: 8,
                 ),
-                Text(
+                 Text(
                   "General",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style:  TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
-            Divider(
+            const Divider(
               height: 15,
               thickness: 2,
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
 
@@ -136,7 +139,7 @@ class _SettingsPageState extends State<SettingsPage> {
             }),
             buildAccountOptionRow("Opportunity", () {}),
 
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
             Center(
@@ -156,21 +159,23 @@ class _SettingsPageState extends State<SettingsPage> {
                       isClicked = true;
                     });
                     var token = await storage.read(key: "token");
-                    print('1');
-                    Response response = await dio.get(
+                    await dio.get(
                       "https://api-tassie.herokuapp.com/user/logout/",
                       options: Options(headers: {
                         HttpHeaders.contentTypeHeader: "application/json",
-                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                        HttpHeaders.authorizationHeader: "Bearer ${token!}"
                       }),
                     );
                     await storage.delete(key: "token");
+                    await Future.delayed(const Duration(seconds: 1));
+
+                    if (!mounted) return;
                     Navigator.pop(context);
                     Navigator.of(
                       context,
                       rootNavigator: true,
                     ).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (_) => Wrapper()),
+                        MaterialPageRoute(builder: (_) => const Wrapper()),
                         (route) => false);
                     // Navigator.pushReplacement(
                     //   context,
@@ -189,14 +194,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: isClicked
                     ? Transform.scale(
                         scale: 0.6,
-                        child: CircularProgressIndicator(
+                        child: const CircularProgressIndicator(
                           color: kPrimaryColor,
                           strokeWidth: 3.0,
                         ),
                       )
-                    : Text(
+                    : const Text(
                         "SIGN OUT",
-                        style: TextStyle(
+                        style:  TextStyle(
                           fontSize: 16,
                           letterSpacing: 2,
                           // color: Colors.black,
@@ -250,7 +255,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 color: Colors.grey[600],
               ),
             ),
-            Icon(
+            const Icon(
               Icons.arrow_forward_ios,
               color: Colors.grey,
             ),

@@ -1,6 +1,4 @@
-import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:async/async.dart';
@@ -27,11 +25,11 @@ class CreateRating extends StatefulWidget {
   final void Function(int) removeRating;
   final String? uuid;
   @override
-  _CreateRatingState createState() => _CreateRatingState();
+  CreateRatingState createState() => CreateRatingState();
 }
 
-class _CreateRatingState extends State<CreateRating> {
-  final storage = FlutterSecureStorage();
+class CreateRatingState extends State<CreateRating> {
+  final storage = const FlutterSecureStorage();
   AsyncMemoizer memoizerComment = AsyncMemoizer();
   late Future storedFuture;
 
@@ -40,19 +38,18 @@ class _CreateRatingState extends State<CreateRating> {
     super.initState();
     memoizerComment = AsyncMemoizer();
     storedFuture = loadImg(widget.rating['profilePic'], memoizerComment);
-    print(widget.rating['profilePic']);
   }
 
   @override
   Widget build(BuildContext context) {
     // print(comment);
     return Padding(
-      padding: EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10.0),
       child: ListTile(
         leading: Container(
           width: 50.0,
           height: 50.0,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             shape: BoxShape.circle,
           ),
           child: CircleAvatar(
@@ -77,7 +74,7 @@ class _CreateRatingState extends State<CreateRating> {
                               onTap: () {
                                 setState(() {});
                               },
-                              child: Container(
+                              child: const SizedBox(
                                   height: 50.0,
                                   width: 50.0,
                                   child: Center(
@@ -129,7 +126,7 @@ class _CreateRatingState extends State<CreateRating> {
                             ),])),
         subtitle: RatingBarIndicator(
           rating: widget.rating['star'].toDouble(),
-          itemBuilder: (context, index) => Icon(
+          itemBuilder: (context, index) => const Icon(
             Icons.star,
             color: kPrimaryColor,
           ),
@@ -165,7 +162,7 @@ class _CreateRatingState extends State<CreateRating> {
         //         },
         //       )
         //     : null,
-      ),
+      ),    
     );
   }
 }

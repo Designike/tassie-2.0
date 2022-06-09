@@ -6,14 +6,14 @@ import 'package:tassie/utils/snackbar.dart';
 import '../../constants.dart';
 
 class OTP2Form extends StatefulWidget {
-  const OTP2Form({required this.uuid,Key? key}) : super(key: key);
+  const OTP2Form({required this.uuid, Key? key}) : super(key: key);
   final String uuid;
 
   @override
-  _OTP2FormState createState() => _OTP2FormState();
+  OTP2FormState createState() => OTP2FormState();
 }
 
-class _OTP2FormState extends State<OTP2Form> {
+class OTP2FormState extends State<OTP2Form> {
   FocusNode? pin2FocusNode;
   FocusNode? pin3FocusNode;
   FocusNode? pin4FocusNode;
@@ -258,9 +258,10 @@ class _OTP2FormState extends State<OTP2Form> {
 
                 // print(widget.uuid);
                 // print(response.data);
-              } on DioError catch (e) {
+              } on DioError {
                 // if (e.response != null) {
                 // }
+                showSnack(context, 'Unable to connect', () {}, 'OK', 4);
               }
             },
             child: SizedBox(
@@ -365,7 +366,8 @@ class _OTP2FormState extends State<OTP2Form> {
 class OTP2 extends StatefulWidget {
   final String uuid;
   final int time;
-  const OTP2({required this.uuid, required this.time,Key? key}) : super(key: key);
+  const OTP2({required this.uuid, required this.time, Key? key})
+      : super(key: key);
 
   @override
   OTP2State createState() => OTP2State();

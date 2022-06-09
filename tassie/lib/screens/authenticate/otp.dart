@@ -255,15 +255,16 @@ class OTPFormState extends State<OTPForm> {
                   }
                 } else {
                   await Future.delayed(const Duration(seconds: 1));
-                    if (!mounted) return;
+                  if (!mounted) return;
                   showSnack(context, 'Unable to connect', () {}, 'OK', 4);
                 }
 
                 // print(widget.uuid);
                 // print(response.data);
-              } on DioError catch (e) {
+              } on DioError {
                 // if (e.response != null) {
                 // }
+                showSnack(context, 'Unable to connect', () {}, 'OK', 4);
               }
             },
             child: SizedBox(
@@ -318,7 +319,7 @@ class OTPFormState extends State<OTPForm> {
                   }
                 } else {
                   await Future.delayed(const Duration(seconds: 1));
-                    if (!mounted) return;
+                  if (!mounted) return;
                   showSnack(context, 'Unable to connect', () {}, 'OK', 4);
                 }
               } on DioError catch (e) {
@@ -367,7 +368,8 @@ class OTPFormState extends State<OTPForm> {
 class OTP extends StatefulWidget {
   final String uuid;
   final int time;
-  const OTP({required this.uuid, required this.time, Key? key}): super(key: key);
+  const OTP({required this.uuid, required this.time, Key? key})
+      : super(key: key);
 
   @override
   OTPState createState() => OTPState();

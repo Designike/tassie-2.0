@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:io';
 
 import 'package:async/async.dart';
@@ -16,18 +14,18 @@ import '../../../../constants.dart';
 
 class RecPost extends StatefulWidget {
   const RecPost(
-      {required this.recs, required this.recipeData, required this.funcB});
+      {required this.recs, required this.recipeData, required this.funcB, Key? key}) : super(key: key);
   final Map recs;
   final Map recipeData;
   final void Function(bool) funcB;
   // final int index;
 
   @override
-  _RecPostState createState() => _RecPostState();
+  RecPostState createState() => RecPostState();
 }
 
-class _RecPostState extends State<RecPost> {
-  var storage = FlutterSecureStorage();
+class RecPostState extends State<RecPost> {
+  var storage = const FlutterSecureStorage();
   var dio = Dio();
   // String _image = "";
   // bool isImage = false;
@@ -39,13 +37,11 @@ class _RecPostState extends State<RecPost> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     memoizer = AsyncMemoizer();
     memoizer1 = AsyncMemoizer();
     storedFuture = loadImg(widget.recs['recipeImageID'], memoizer);
-    print("HENLO");
-    print(storedFuture);
+
     storedFuture1 = loadImg(widget.recs['profilePic'], memoizer1);
     isLoading = false;
     // loadImg(widget.recs['recipeImageID'],memoizer).then((result) {
@@ -62,14 +58,14 @@ class _RecPostState extends State<RecPost> {
     Size size = MediaQuery.of(context).size;
     Map recs = widget.recs;
     return (isLoading)
-        ? Center(
-            child: SpinKitThreeBounce(
+        ? const Center(
+            child:  SpinKitThreeBounce(
               color: kPrimaryColor,
               size: 50.0,
             ),
           )
         : Padding(
-            padding: EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(10.0),
             child: Container(
               width: double.infinity,
               height: ((size.width - 40.0) / 2) +
@@ -115,13 +111,13 @@ class _RecPostState extends State<RecPost> {
                                         ConnectionState.waiting) ||
                                     text.hasError) {
                                   return Container(
-                                    margin: EdgeInsets.all(10.0),
+                                    margin: const EdgeInsets.all(10.0),
                                     width: double.infinity,
                                     height: ((size.width - 40.0) / 2) - 20.0,
                                     // height: 400.0,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(25.0),
-                                      image: DecorationImage(
+                                      image: const DecorationImage(
                                         image: AssetImage(
                                           'assets/images/broken.png',
                                         ),
@@ -140,11 +136,11 @@ class _RecPostState extends State<RecPost> {
                                           setState(() {});
                                         },
                                         child: Container(
-                                            margin: EdgeInsets.all(10.0),
+                                            margin: const EdgeInsets.all(10.0),
                                             width: double.infinity,
                                             height: ((size.width - 40.0) / 2) -
                                                 20.0,
-                                            child: Center(
+                                            child: const Center(
                                               child: Icon(
                                                 Icons.refresh,
                                                 size: 50.0,
@@ -153,7 +149,7 @@ class _RecPostState extends State<RecPost> {
                                             )));
                                   }
                                   return Container(
-                                    margin: EdgeInsets.all(10.0),
+                                    margin: const EdgeInsets.all(10.0),
                                     width: double.infinity,
                                     height: ((size.width - 40.0) / 2) - 20.0,
                                     // height: 400.0,
@@ -175,7 +171,7 @@ class _RecPostState extends State<RecPost> {
                         leading: Container(
                           width: (size.width - 40.0) / 12,
                           height: (size.width - 40.0) / 12,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                           ),
                           child: CircleAvatar(
@@ -195,7 +191,7 @@ class _RecPostState extends State<RecPost> {
                                       return Image(
                                         height: (size.width - 40.0) / 12,
                                         width: (size.width - 40.0) / 12,
-                                        image: AssetImage(
+                                        image: const AssetImage(
                                             'assets/images/broken.png'),
                                         fit: BoxFit.cover,
                                       );
@@ -209,11 +205,11 @@ class _RecPostState extends State<RecPost> {
                                             onTap: () {
                                               setState(() {});
                                             },
-                                            child: Container(
+                                            child: SizedBox(
                                                 height:
                                                     (size.width - 40.0) / 12,
                                                 width: (size.width - 40.0) / 12,
-                                                child: Center(
+                                                child: const Center(
                                                   child: Icon(
                                                     Icons.refresh,
                                                     // size: 50.0,
@@ -235,31 +231,31 @@ class _RecPostState extends State<RecPost> {
                         ),
                         trailing: IconButton(
                             icon: (isBookmarked)
-                                ? Icon(Icons.bookmark)
-                                : Icon(Icons.bookmark_border),
+                                ? const Icon(Icons.bookmark)
+                                : const Icon(Icons.bookmark_border),
                             // color: Colors.black,
                             onPressed: () async {
                               if (!isBookmarked) {
                                 var token = await storage.read(key: "token");
-                                Response response = await dio.post(
+                                await dio.post(
                                     "https://api-tassie.herokuapp.com/recs/bookmark",
                                     options: Options(headers: {
                                       HttpHeaders.contentTypeHeader:
                                           "application/json",
                                       HttpHeaders.authorizationHeader:
-                                          "Bearer " + token!
+                                          "Bearer ${token!}"
                                     }),
                                     data: {'uuid': recs['uuid']});
                                 widget.funcB(true);
                               } else {
                                 var token = await storage.read(key: "token");
-                                Response response = await dio.post(
+                                await dio.post(
                                     "https://api-tassie.herokuapp.com/recs/removeBookmark",
                                     options: Options(headers: {
                                       HttpHeaders.contentTypeHeader:
                                           "application/json",
                                       HttpHeaders.authorizationHeader:
-                                          "Bearer " + token!
+                                          "Bearer ${token!}"
                                     }),
                                     data: {'uuid': recs['uuid']});
                                 widget.funcB(false);
@@ -283,7 +279,7 @@ class _RecPostState extends State<RecPost> {
                             recs['name'],
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -321,125 +317,10 @@ class _RecPostState extends State<RecPost> {
                           isThreeLine: true,
                         ),
                       ),
-                      // Padding(
-                      //   padding: EdgeInsets.symmetric(horizontal: 20.0),
-                      //   child: Row(
-                      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //     children: [
-                      //       Row(
-                      //         children: [
-                      //           Row(
-                      //             children: [
-                      //               IconButton(
-                      //                 icon: Icon(Icons.favorite_border),
-                      //                 iconSize: 30.0,
-                      //                 onPressed: () => print('Like post'),
-                      //               ),
-                      //               Text(
-                      //                 '2,515',
-                      //                 style: TextStyle(
-                      //                   fontSize: 14.0,
-                      //                   fontWeight: FontWeight.w600,
-                      //                 ),
-                      //               ),
-                      //             ],
-                      //           ),
-                      //           SizedBox(width: 20.0),
-                      //           Row(
-                      //             children: <Widget>[
-                      //               IconButton(
-                      //                 icon: Icon(Icons.chat),
-                      //                 iconSize: 30.0,
-                      //                 onPressed: () {
-                      //                   Navigator.push(
-                      //                     context,
-                      //                     MaterialPageRoute(
-                      //                       builder: (_) => ViewRecPost(
-                      //                         recs: recs[index],
-                      //                       ),
-                      //                     ),
-                      //                   );
-                      //                 },
-                      //               ),
-                      //               Text(
-                      //                 '350',
-                      //                 style: TextStyle(
-                      //                   fontSize: 14.0,
-                      //                   fontWeight: FontWeight.w600,
-                      //                 ),
-                      //               ),
-                      //             ],
-                      //           ),
-                      //         ],
-                      //       ),
-                      //       IconButton(
-                      //         icon: Icon(Icons.bookmark_border),
-                      //         iconSize: 30.0,
-                      //         onPressed: () => print('Save post'),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
+                      
                     ],
                   ),
-                  // Padding(
-                  //   padding:
-                  //       const EdgeInsets.only(left: 32.0, right: 32.0, bottom: 20.0),
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.start,
-                  //     children: [
-                  //       // Text(
-                  //       //   recs[index]['description'],
-                  //       //   overflow: TextOverflow.ellipsis,
-                  //       //   textAlign: TextAlign.start,
-                  //       // ),
-                  //       Flexible(
-                  //         child: GestureDetector(
-                  //           onTap: () {
-                  //             Navigator.push(
-                  //               context,
-                  //               MaterialPageRoute(
-                  //                 builder: (_) => ViewRecPost(
-                  //                   recs: recs[index],
-                  //                 ),
-                  //               ),
-                  //             );
-                  //           },
-                  //           child: RichText(
-                  //             overflow: TextOverflow.ellipsis,
-                  //             text: TextSpan(
-                  //               children: [
-                  //                 TextSpan(
-                  //                   text: recs[index]['username'],
-                  //                   style: TextStyle(
-                  //                     fontWeight: FontWeight.bold,
-                  //                     color:
-                  //                         Theme.of(context).brightness ==
-                  //                                 Brightness.light
-                  //                             ? kDark[900]
-                  //                             : kLight,
-                  //                   ),
-                  //                 ),
-                  //                 TextSpan(text: " "),
-                  //                 TextSpan(
-                  //                   text: recs[index]['description'],
-                  //                   style: TextStyle(
-                  //                     color:
-                  //                         Theme.of(context).brightness ==
-                  //                                 Brightness.light
-                  //                             ? kDark[900]
-                  //                             : kLight,
-                  //                   ),
-                  //                 )
-                  //               ],
-                  //             ),
-                  //             textAlign: TextAlign.start,
-                  //           ),
-                  //         ),
-                  //       )
-                  //     ],
-                  //   ),
-                  // ),
+                  
                 ],
               ),
             ),

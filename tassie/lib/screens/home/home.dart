@@ -57,7 +57,6 @@ class HomeHomeState extends State<HomeHome>
       // print(json.decode(lstorage.getItem('ingreds')).runtimeType);
       if ((lstorage.getItem('ingreds') == null) ||
           DateTime.parse(date!).isBefore(DateTime.now())) {
-        print('thai che');
         var url = "https://api-tassie.herokuapp.com/recs/getIng/";
         var token = await storage.read(key: "token");
         Response response = await dio.get(
@@ -99,7 +98,6 @@ class HomeHomeState extends State<HomeHome>
   }
 
   void _selectTab(int index) {
-    print('thai che');
     if (index == _selectedIndex) {
       _navigatorKeys[index]!.currentState?.popUntil((route) => route.isFirst);
     } else {
@@ -306,7 +304,7 @@ class HomeHomeState extends State<HomeHome>
                 : kLight,
             // color: kLight,
             notchMargin: 6.0,
-            child: Container(
+            child: SizedBox(
               height: 65.0,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,

@@ -11,10 +11,10 @@ class ChangeUsername extends StatefulWidget {
   const ChangeUsername({Key? key}) : super(key: key);
 
   @override
-  _ChangeUsernameState createState() => _ChangeUsernameState();
+  ChangeUsernameState createState() => ChangeUsernameState();
 }
 
-class _ChangeUsernameState extends State<ChangeUsername> {
+class ChangeUsernameState extends State<ChangeUsername> {
   bool uniqueUsername = false;
   final _formKey = GlobalKey<FormState>();
   String username = "";
@@ -24,8 +24,8 @@ class _ChangeUsernameState extends State<ChangeUsername> {
     // print(username);
     try {
       // print('');
-      Response response = await dio.get(
-          "https://api-tassie.herokuapp.com/user/username/" + username);
+      Response response = await dio
+          .get("https://api-tassie.herokuapp.com/user/username/$username");
       // var res = jsonDecode(response.toString());
 
       // if(response)
@@ -43,7 +43,6 @@ class _ChangeUsernameState extends State<ChangeUsername> {
         });
       }
     }
-    print(uniqueUsername);
   }
 
   @override
@@ -61,28 +60,27 @@ class _ChangeUsernameState extends State<ChangeUsername> {
                 Theme.of(context).brightness == Brightness.light
                     ? Brightness.dark
                     : Brightness.light),
-        title: Text(
+        title: const Text(
           "Change Username",
           // style: TextStyle(fontWeight: FontWeight.w500),
         ),
         actions: [
           uniqueUsername
               ? IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.done_rounded,
                     // color: Colors.green,
                   ),
                   onPressed: () async {
                     var dio = Dio();
-                    var storage = FlutterSecureStorage();
+                    var storage = const FlutterSecureStorage();
                     var token = await storage.read(key: "token");
                     if (_formKey.currentState!.validate()) {
-                      print(username);
                       Response response = await dio.post(
                           "https://api-tassie.herokuapp.com/profile/updateUsername/",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
-                            HttpHeaders.authorizationHeader: "Bearer " + token!
+                            HttpHeaders.authorizationHeader: "Bearer ${token!}"
                           }),
                           // data: jsonEncode(value),
                           data: {
@@ -90,27 +88,36 @@ class _ChangeUsernameState extends State<ChangeUsername> {
                           });
                       if (response.data != null) {
                         if (response.data['status'] == true) {
+                          await Future.delayed(const Duration(seconds: 1));
+
+                          if (!mounted) return;
                           Navigator.pop(context);
                           showSnack(context, 'Username update in progress',
                               () {}, 'OK', 3);
                         } else {
+                          await Future.delayed(const Duration(seconds: 1));
+
+                          if (!mounted) return;
                           showSnack(context, 'Server error', () {}, 'OK', 4);
                         }
                       } else {
+                        await Future.delayed(const Duration(seconds: 1));
+
+                        if (!mounted) return;
                         showSnack(context, 'Server error', () {}, 'OK', 4);
                       }
                     }
                   })
               : Transform.scale(
                   scale: 0.4,
-                  child: Container(
-                    child: CircularProgressIndicator(),
+                  child: const SizedBox(
                     width: 55.0,
+                    child: CircularProgressIndicator(),
                   )),
         ],
       ),
       body: Container(
-        padding: EdgeInsets.all(kDefaultPadding),
+        padding: const EdgeInsets.all(kDefaultPadding),
         child: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -119,7 +126,7 @@ class _ChangeUsernameState extends State<ChangeUsername> {
             key: _formKey,
             child: ListView(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 15.0,
                 ),
                 buildTextField(
@@ -146,11 +153,11 @@ class _ChangeUsernameState extends State<ChangeUsername> {
                     return null;
                   },
                 ),
-                SizedBox(height: 20.0),
-                Text(
+                const SizedBox(height: 20.0),
+                const Text(
                     'Type your new username, if it is available the save button on corner will be enabled.'),
-                SizedBox(height: 20.0),
-                Text(notUniqText, style: TextStyle(color: kPrimaryColor)),
+                const SizedBox(height: 20.0),
+                Text(notUniqText, style: const TextStyle(color: kPrimaryColor)),
               ],
             ),
           ),
@@ -181,8 +188,8 @@ class _ChangeUsernameState extends State<ChangeUsername> {
                 ? kPrimaryColor
                 : kDark[900],
           ),
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
+          contentPadding: const EdgeInsets.symmetric(
+              horizontal: 25.0, vertical: kDefaultPadding),
           floatingLabelBehavior: FloatingLabelBehavior.always,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15.0),

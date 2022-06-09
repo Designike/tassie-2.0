@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_const_constructors
 
 import 'dart:io';
 
@@ -14,10 +13,10 @@ import '../../../../constants.dart';
 class Recipes extends StatefulWidget {
   const Recipes({Key? key}) : super(key: key);
   @override
-  _RecipesState createState() => _RecipesState();
+  RecipesState createState() => RecipesState();
 }
 
-class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
+class RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   // recs to be fetched from api
@@ -35,7 +34,7 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
   static bool isLoading = true;
   bool isEnd = false;
   final dio = Dio();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
   Widget _buildProgressIndicator() {
     return Padding(
@@ -43,7 +42,7 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
       child: Center(
         child: Opacity(
           opacity: isLazyLoading ? 0.8 : 00,
-          child: CircularProgressIndicator(
+          child: const CircularProgressIndicator(
             color: kPrimaryColor,
             strokeWidth: 2.0,
           ),
@@ -53,10 +52,10 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _endMessage() {
-    print(isEnd);
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
-      child: Center(
+    return const Padding(
+      padding: EdgeInsets.all(kDefaultPadding),
+      // ignore: unnecessary_const
+      child: const Center(
         child: Opacity(
           opacity: 0.8,
           child: Text('That\'s all for now!'),
@@ -68,18 +67,16 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
   void _getMoreData(int index) async {
     if (!isEnd) {
       if (!isLazyLoading) {
-        print('calling...');
         setState(() {
           isLazyLoading = true;
         });
-        var url = "https://api-tassie.herokuapp.com/recs/lazyrecs/" +
-            index.toString();
+        var url = 'https://api-tassie.herokuapp.com/recs/lazyrecs/$index';
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer " + token!
+            HttpHeaders.authorizationHeader: "Bearer ${token!}"
           }),
         );
         // print(response);
@@ -184,7 +181,7 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
     super.build(context);
     Size size = MediaQuery.of(context).size;
     return (isLoading == true)
-        ? Scaffold(
+        ? const Scaffold(
             // backgroundColor: Colors.white,
             body: Center(
               child: SpinKitThreeBounce(
@@ -203,7 +200,7 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
                       Theme.of(context).brightness == Brightness.light
                           ? Brightness.dark
                           : Brightness.light),
-              title: Text(
+              title: const Text(
                 'Yumminess ahead !',
                 style: TextStyle(
                   color: kPrimaryColor,
@@ -218,15 +215,15 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Divider(
+                  const Divider(
                     height: 10,
                     thickness: 0.5,
                   ),
-                  if (recs.length > 0) ...[
+                  if (recs.isNotEmpty) ...[
                     Expanded(
                       child: GridView.builder(
                         controller: _sc,
-                        physics: AlwaysScrollableScrollPhysics(),
+                        physics: const AlwaysScrollableScrollPhysics(),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio: (size.width / 2) /
@@ -257,7 +254,7 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
                     ),
                   ] else ...[
                     SingleChildScrollView(
-                      physics: AlwaysScrollableScrollPhysics(),
+                      physics: const AlwaysScrollableScrollPhysics(),
                       child: Center(
                         child: Column(
                           children: [
@@ -268,17 +265,17 @@ class _RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
                               image: MediaQuery.of(context)
                                           .platformBrightness ==
                                       Brightness.dark
-                                  ? AssetImage('assets/images/no_feed_dark.png')
-                                  : AssetImage(
+                                  ? const AssetImage('assets/images/no_feed_dark.png')
+                                  : const AssetImage(
                                       'assets/images/no_feed_light.png'),
                               width: size.width * 0.75,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 30.0,
                             ),
                             SizedBox(
                               width: size.width * 0.75,
-                              child: Text(
+                              child: const Text(
                                 'Subscribe to see others\' recs.',
                                 style: TextStyle(fontSize: 18.0),
                                 textAlign: TextAlign.center,

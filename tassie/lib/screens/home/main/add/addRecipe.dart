@@ -90,7 +90,6 @@ class AddRecipeState extends State<AddRecipe> {
             uuid: widget.uuid,
             clearRecost: key == 'i' ? clearIngs[index] : clearSteps[index],
             falseResp: () {
-              print("working");
               setState(() {
                 if (key == 'r') {
                   recipePic = null;
@@ -888,7 +887,6 @@ class AddRecipeState extends State<AddRecipe> {
 
   /// Remove image
   Future<void> _clear(key, index, imgName, [clearRecost = false]) async {
-    print(widget.uuid);
     if (key == 'r') {
       setState(() {
         recipePic = null;
@@ -897,7 +895,7 @@ class AddRecipeState extends State<AddRecipe> {
 
       var token = await storage.read(key: "token");
       // print(formData.files[0]);
-      Response response = await dio.post(
+      await dio.post(
           // 'https://api-tassie.herokuapp.com/drive/upload',
           'https://api-tassie.herokuapp.com/recs/resetImage/',
           options: Options(headers: {
@@ -912,10 +910,9 @@ class AddRecipeState extends State<AddRecipe> {
           clearIngs[index] = true;
         }
       });
-      print(widget.uuid);
       var token = await storage.read(key: "token");
       // print(formData.files[0]);
-      Response response = await dio.post(
+      await dio.post(
           // 'https://api-tassie.herokuapp.com/drive/upload',
           'https://api-tassie.herokuapp.com/recs/resetImage/',
           options: Options(headers: {
@@ -933,7 +930,7 @@ class AddRecipeState extends State<AddRecipe> {
 
       var token = await storage.read(key: "token");
       // print(formData.files[0]);
-      Response response = await dio.post(
+      await dio.post(
           // 'https://api-tassie.herokuapp.com/drive/upload',
           'https://api-tassie.herokuapp.com/recs/resetImage/',
           options: Options(headers: {
@@ -973,7 +970,7 @@ class AddRecipeState extends State<AddRecipe> {
       // print(l);
       // print("send");
       // print(send);
-      if (send.length != 0) {
+      if (send.isNotEmpty) {
         Response response = await dio.post(
           // 'https://api-tassie.herokuapp.com/drive/upload',
           'https://api-tassie.herokuapp.com/recs/renameImages',

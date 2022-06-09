@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -11,12 +9,12 @@ class ProfileBookmarks extends StatefulWidget {
   const ProfileBookmarks({Key? key}) : super(key: key);
 
   @override
-  _ProfileBookmarksState createState() => _ProfileBookmarksState();
+  ProfileBookmarksState createState() => ProfileBookmarksState();
 }
 
-class _ProfileBookmarksState extends State<ProfileBookmarks> {
+class ProfileBookmarksState extends State<ProfileBookmarks> {
   var dio = Dio();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   List posts = [];
   List recs = [];
   static int page = 1;
@@ -38,23 +36,17 @@ class _ProfileBookmarksState extends State<ProfileBookmarks> {
       isEndP = false;
       isLoading = true;
       getBookmarks();
-
-      // recosts_toggle = [];
-      // isEnd = false;
-      // isLoading = true;
-      // _getRecosts(page);
     });
   }
 
   Future<void> getBookmarks() async {
-    var url = "https://api-tassie.herokuapp.com/profile/lazyBookmark/" +
-        page.toString();
+    var url = "https://api-tassie.herokuapp.com/profile/lazyBookmark/$page";
     var token = await storage.read(key: "token");
     Response response = await dio.get(
       url,
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "application/json",
-        HttpHeaders.authorizationHeader: "Bearer " + token!
+        HttpHeaders.authorizationHeader: "Bearer ${token!}"
       }),
     );
     if (response.data['data'] != null) {
@@ -64,20 +56,15 @@ class _ProfileBookmarksState extends State<ProfileBookmarks> {
         }
         isLazyLoadingR = false;
         isLazyLoadingP = false;
-        // posts.addAll(tList);
-        // print(recs);
         if (response.data['data']['recs'] != null) {
           recs.addAll(response.data['data']['recs']);
-          // print(noOfLikes);
         }
         if (response.data['data']['posts'] != null) {
           posts.addAll(response.data['data']['posts']);
-          // print(noOfLikes);
         }
         isLoading = false;
         page++;
       });
-      // print(response.data['data']['posts']);
       if (response.data['data']['recs'] == null) {
         setState(() {
           isEndR = true;
@@ -88,8 +75,6 @@ class _ProfileBookmarksState extends State<ProfileBookmarks> {
           isEndP = true;
         });
       }
-
-      // print(recs);
     } else {
       setState(() {
         isLoading = false;
@@ -100,8 +85,8 @@ class _ProfileBookmarksState extends State<ProfileBookmarks> {
   }
 
   Widget _buildProgressIndicator() {
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
+    return const Padding(
+      padding: EdgeInsets.all(kDefaultPadding),
       child: Center(
         child: Opacity(
           opacity: 1,
@@ -115,8 +100,8 @@ class _ProfileBookmarksState extends State<ProfileBookmarks> {
   }
 
   Widget _endMessage() {
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
+    return const Padding(
+      padding: EdgeInsets.all(kDefaultPadding),
       child: Center(
         child: Opacity(
           opacity: 0.8,
@@ -148,7 +133,7 @@ class _ProfileBookmarksState extends State<ProfileBookmarks> {
       child: Scaffold(
         body: NestedScrollView(
           floatHeaderSlivers: true,
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           headerSliverBuilder: (context, isScrollable) {
             return [
               SliverAppBar(
@@ -159,23 +144,14 @@ class _ProfileBookmarksState extends State<ProfileBookmarks> {
                 foregroundColor: Theme.of(context).brightness == Brightness.dark
                     ? kLight
                     : kDark[900],
-                title: Text('Your bookmarks'),
-                // actions: [
-                //   IconButton(
-                //     icon: Icon(Icons.clear_rounded),
-                //     onPressed: () {
-                //       // clear query
-                //     },
-                //   ),
-
-                // ],
+                title: const Text('Your bookmarks'),
                 bottom: TabBar(
                   indicatorColor: kPrimaryColor,
                   unselectedLabelColor: kDark,
                   labelColor: Theme.of(context).brightness == Brightness.dark
                       ? kLight
                       : kDark[900],
-                  tabs: [
+                  tabs: const [
                     Tab(icon: Icon(Icons.photo_rounded)),
                     Tab(
                       icon: Icon(Icons.fastfood_rounded),
@@ -193,13 +169,13 @@ class _ProfileBookmarksState extends State<ProfileBookmarks> {
                       onRefresh: _refreshPage,
                       child: ListView(
                         children: [
-                          posts.length > 0
+                          posts.isNotEmpty
                               ? GridView.builder(
                                   shrinkWrap: true,
                                   // controller: _sc,
-                                  physics: NeverScrollableScrollPhysics(),
+                                  physics: const NeverScrollableScrollPhysics(),
                                   gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 3,
                                     crossAxisSpacing: 2,
                                     mainAxisSpacing: 2,
@@ -222,7 +198,7 @@ class _ProfileBookmarksState extends State<ProfileBookmarks> {
                               : Center(
                                   child: Padding(
                                     padding: EdgeInsets.all(size.width * 0.15),
-                                    child: Text(
+                                    child: const Text(
                                       'No posts saved',
                                       style: TextStyle(fontSize: 18),
                                     ),
@@ -235,36 +211,30 @@ class _ProfileBookmarksState extends State<ProfileBookmarks> {
                       onRefresh: _refreshPage,
                       child: ListView(
                         children: [
-                          recs.length > 0
+                          recs.isNotEmpty
                               ? GridView.builder(
                                   shrinkWrap: true,
                                   // controller: _sc,
-                                  physics: NeverScrollableScrollPhysics(),
+                                  physics: const NeverScrollableScrollPhysics(),
                                   gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 3,
                                     crossAxisSpacing: 2,
                                     mainAxisSpacing: 2,
-                                    // childAspectRatio: (size.width / 2) /
-                                    //     ((size.width / 2) + (size.width / 10) + 100.0),
                                   ),
                                   itemBuilder: (context, index) {
                                     return index == recs.length
                                         ? isEndR
                                             ? _endMessage()
                                             : _buildProgressIndicator()
-                                        // : FeedPost(index: index, posts: posts);
                                         : Image.network(recs[index]['url']);
-                                    // return Container(
-                                    //   color: Colors.red,
-                                    // );
                                   },
                                   itemCount: recs.length,
                                 )
                               : Center(
                                   child: Padding(
                                     padding: EdgeInsets.all(size.width * 0.15),
-                                    child: Text(
+                                    child: const Text(
                                       'No recipes saved',
                                       style: TextStyle(fontSize: 18),
                                     ),

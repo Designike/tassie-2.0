@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Hashtags {
-  static final storage = FlutterSecureStorage();
+  static const storage = FlutterSecureStorage();
 
   // static final LocalStorage lstorage = LocalStorage('tassie');
 
