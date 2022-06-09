@@ -418,6 +418,7 @@ class AddRecipeState extends State<AddRecipe> {
               Padding(
                 padding: const EdgeInsets.all(kDefaultPadding),
                 child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -439,6 +440,7 @@ class AddRecipeState extends State<AddRecipe> {
               Padding(
                 padding: const EdgeInsets.all(kDefaultPadding),
                 child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -462,6 +464,7 @@ class AddRecipeState extends State<AddRecipe> {
                 padding: const EdgeInsets.all(kDefaultPadding),
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -1234,7 +1237,7 @@ class AddRecipeState extends State<AddRecipe> {
                       }
                     } else {
                       await Future.delayed(const Duration(seconds: 1));
-                        if (!mounted) return;
+                      if (!mounted) return;
                       showSnack(context, 'Add cooking time', () {}, 'OK', 4);
                     }
                   }

@@ -109,6 +109,9 @@ class EditRecipeState extends State<EditRecipe> {
   List<String> hours = ['0', '1', '2', '3'];
   final minutes = ['00', '15', '30', '45'];
 
+  List flavours = ['Spicy', 'Sweet', 'Sour', 'Salty', 'Bitter'];
+  List courses = ['Snack', 'Starter', 'Farali', 'Main course', 'Dessert', 'Drinks'];
+
   String hour = '0';
   String min = '15';
   int counter = 0;
@@ -225,7 +228,7 @@ class EditRecipeState extends State<EditRecipe> {
             imgName: key + '_' + (index + 1).toString(),
             uuid: widget.uuid,
             clearRecost: key == 'r'
-                ? true
+                ? isUpload
                 : key == 'i'
                     ? _ingFlags.contains(index)
                         ? !_clearIngs[index]
@@ -567,6 +570,7 @@ class EditRecipeState extends State<EditRecipe> {
               Padding(
                 padding: const EdgeInsets.all(kDefaultPadding),
                 child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -588,6 +592,7 @@ class EditRecipeState extends State<EditRecipe> {
               Padding(
                 padding: const EdgeInsets.all(kDefaultPadding),
                 child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -610,6 +615,7 @@ class EditRecipeState extends State<EditRecipe> {
               Padding(
                 padding: const EdgeInsets.all(kDefaultPadding),
                 child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -1249,6 +1255,10 @@ class EditRecipeState extends State<EditRecipe> {
       ];
       course = widget.course;
       flavour = widget.flavour;
+
+      selectedFlavour = flavours.indexOf(widget.flavour);
+      selectedCourse = courses.indexOf(widget.course);
+      
       _tagController.selection = TextSelection.fromPosition(
           TextPosition(offset: _tagController.text.length));
       _tagController.text = desc;
@@ -1312,6 +1322,16 @@ class EditRecipeState extends State<EditRecipe> {
                     //   //aama uuid send karvani che, get -> post kari nakh
                     //   print('not deleted');
                     // }
+                  } else {
+                    await Future.delayed(const Duration(seconds: 1));
+
+                    if (!mounted) return;
+                    showSnack(
+                        context,
+                        "Check missing ingredients, description, steps or recipe image!",
+                        () {},
+                        'OK',
+                        4);
                   }
                 },
                 child: const Text("Yes"),
@@ -1448,7 +1468,7 @@ class EditRecipeState extends State<EditRecipe> {
                         } else {
                           showSnack(
                               context,
-                              'Check missing ingredients or steps or recipe image!',
+                              'Check missing ingredients, description, steps or recipe image!',
                               () {},
                               'OK',
                               4);
