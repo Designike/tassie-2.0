@@ -123,7 +123,7 @@ class _EditRecipeState extends State<EditRecipe> {
   // bool isPop = false;
   bool isLoading = true;
   bool isPop = false;
-  bool isUpload = false;
+  bool isUpload = true;
 
   Future<File> _fileFromImageUrl(filepath) async {
     // print(filepath);
@@ -144,8 +144,8 @@ class _EditRecipeState extends State<EditRecipe> {
   }
 
   Map falsify(dict1, dict2) {
-    for (var key in dict1) {
-      dict2[int.parse(key['index']) - 1] = false;
+    for (int i = 0; i < dict1.length; i++) {
+      dict2[i] = false;
     }
     return dict2;
   }
@@ -158,10 +158,26 @@ class _EditRecipeState extends State<EditRecipe> {
   }
 
   Future<void> urlToFile() async {
+    _clearIngs = falsify(widget.ingredients, _clearIngs);
+    _clearSteps = falsify(widget.steps, _clearSteps);
+
+    _ingFlags = falsify2(widget.ingredientPics, _ingFlags);
+    // print("inggggg");
+    print(_ingFlags);
+    _stepFlags = falsify2(widget.stepPics, _stepFlags);
+    // print("stepppp");
+    print(_stepFlags);
+    // print("toppa");
+    // print(_clearSteps);
+    // print(_clearIngs);
+    recipePic = await _fileFromImageUrl(widget.recipeImageID);
     if (widget.stepPics.isEmpty) {
       if (widget.ingredientPics.isEmpty) {
         setState(() {
           isLoading = false;
+          print("toppa3");
+          print(_clearSteps);
+          print(_clearIngs);
         });
       } else {
         widget.ingredientPics.forEach((element) async {
@@ -171,13 +187,6 @@ class _EditRecipeState extends State<EditRecipe> {
           // print(ingredientPics[element['index']]);
           if (widget.ingredientPics.length == ingredientPics.length) {
             setState(() {
-              _clearIngs = falsify(widget.ingredientPics, _clearIngs);
-              _clearSteps = falsify(widget.stepPics, _clearSteps);
-
-              _ingFlags = falsify2(widget.ingredientPics, _ingFlags);
-              _stepFlags = falsify2(widget.stepPics, _stepFlags);
-              print(_clearSteps);
-              print(_clearIngs);
               isLoading = false;
             });
           }
@@ -200,11 +209,12 @@ class _EditRecipeState extends State<EditRecipe> {
             // print(ingredientPics[element['index']]);
             if (widget.ingredientPics.length == ingredientPics.length) {
               setState(() {
-                _clearIngs = falsify(widget.ingredientPics, _clearIngs);
-                _clearSteps = falsify(widget.stepPics, _clearSteps);
+                // _clearIngs = falsify(widget.ingredients, _clearIngs);
+                // _clearSteps = falsify(widget.steps, _clearSteps);
 
-                _ingFlags = falsify2(widget.ingredientPics, _ingFlags);
-                _stepFlags = falsify2(widget.stepPics, _stepFlags);
+                // _ingFlags = falsify2(widget.ingredientPics, _ingFlags);
+                // _stepFlags = falsify2(widget.stepPics, _stepFlags);
+                print("toppa2");
                 print(_clearSteps);
                 print(_clearIngs);
                 isLoading = false;
@@ -243,13 +253,15 @@ class _EditRecipeState extends State<EditRecipe> {
             keyName: 'name',
             imgName: key + '_' + (index + 1).toString(),
             uuid: widget.uuid,
-            clearRecost: key == 'i'
-                ? _ingFlags.contains(index)
-                    ? !_clearIngs[index]
-                    : _clearIngs[index]
-                : _stepFlags.contains(index)
-                    ? !_clearSteps[index]
-                    : _clearSteps[index],
+            clearRecost: key == 'r'
+                ? true
+                : key == 'i'
+                    ? _ingFlags.contains(index)
+                        ? !_clearIngs[index]
+                        : _clearIngs[index]
+                    : _stepFlags.contains(index)
+                        ? !_clearSteps[index]
+                        : _clearSteps[index],
             falseResp: () {
               print("working"); //((index.toInt())-1).toString()
               setState(() {
@@ -890,7 +902,7 @@ class _EditRecipeState extends State<EditRecipe> {
 
   List<Widget> _getRecipe(size) {
     List<Widget> recipeTextFields = [];
-    print(stepsList);
+    // print(stepsList);
     for (int i = 0; i < stepsList.length; i++) {
       // print(i);
       // print(stepPics[i.toString()]);
@@ -953,7 +965,7 @@ class _EditRecipeState extends State<EditRecipe> {
 
   List<Widget> _getIngredient(size) {
     List<Widget> ingredientsTextFields = [];
-    print(ingredientsList);
+    // print(ingredientsList);
     for (int i = 0; i < ingredientsList.length; i++) {
       ingredientsTextFields.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -963,7 +975,9 @@ class _EditRecipeState extends State<EditRecipe> {
               children: [
                 Expanded(
                     child: IngredientTextField(
-                        index: i, ingredientsList: ingredientsList)),
+                  index: i,
+                  ingredientsList: ingredientsList,
+                )),
                 SizedBox(
                   width: 16,
                 ),
@@ -1069,6 +1083,7 @@ class _EditRecipeState extends State<EditRecipe> {
     if (key == 'r') {
       setState(() {
         recipePic = null;
+        isUpload = false;
       });
 
       var token = await storage.read(key: "token");
@@ -1278,6 +1293,7 @@ class _EditRecipeState extends State<EditRecipe> {
       flavour = widget.flavour;
       _tagController.selection = TextSelection.fromPosition(
           TextPosition(offset: _tagController.text.length));
+      _tagController.text = desc;
     });
     urlToFile();
     // print("ncaisadhuashuduasihduiasuiduiashudh2");
@@ -1309,6 +1325,7 @@ class _EditRecipeState extends State<EditRecipe> {
               SizedBox(height: 16),
               GestureDetector(
                 onTap: () async {
+                  if (_formKey.currentState!.validate() && isUpload) {
                   print("henlooooooooo");
                   setState(() {
                     isPop = true;
@@ -1337,6 +1354,7 @@ class _EditRecipeState extends State<EditRecipe> {
                   //   //aama uuid send karvani che, get -> post kari nakh
                   //   print('not deleted');
                   // }
+                  }
                 },
                 child: Text("Yes"),
               ),

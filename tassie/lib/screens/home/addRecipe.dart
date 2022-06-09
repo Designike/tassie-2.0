@@ -917,6 +917,7 @@ class _AddRecipeState extends State<AddRecipe> {
     if (key == 'r') {
       setState(() {
         recipePic = null;
+        isUpload = false;
       });
 
       var token = await storage.read(key: "token");

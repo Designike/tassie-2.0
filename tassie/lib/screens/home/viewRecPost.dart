@@ -677,7 +677,7 @@ class _ViewRecPostState extends State<ViewRecPost> {
                         enabled: true,
                         onSelected: (value) async {
                           if (value == "edit") {
-                            Navigator.of(context).push(MaterialPageRoute(
+                            Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
                                 builder: (context) => EditRecipe(
                                       recipeName: recipeName,
                                       uuid: widget.recs['uuid'],

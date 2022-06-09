@@ -22,6 +22,7 @@ class _IngredientTextFieldState extends State<IngredientTextField> {
     super.initState();
     // _ingredientController = TextEditingController();
     _ingredientController.selection = TextSelection.fromPosition(TextPosition(offset: _ingredientController.text.length));
+    _ingredientController.text = widget.ingredientsList[widget.index!];
   }
 
   @override
