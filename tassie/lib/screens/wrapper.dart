@@ -4,7 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tassie/constants.dart';
 
 import 'authenticate/authenticate.dart';
-import 'home/home.dart';
+import 'home/homeMapPageContoller.dart';
 
 // ignore: use_key_in_widget_constructors
 class Wrapper extends StatefulWidget {

@@ -7,7 +7,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:tassie/screens/authenticate/otp.dart';
-import 'package:tassie/screens/home/snackbar.dart';
+import 'package:tassie/utils/snackbar.dart';
 
 import '../../constants.dart';
 

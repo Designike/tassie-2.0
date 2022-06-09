@@ -5,8 +5,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:tassie/screens/home/home.dart';
-import 'package:tassie/screens/home/snackbar.dart';
+import 'package:tassie/screens/home/homeMapPageContoller.dart';
+import 'package:tassie/utils/snackbar.dart';
 
 import '../../constants.dart';
 

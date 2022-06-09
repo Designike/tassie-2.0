@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:tassie/leftSwipe.dart';
+import 'package:tassie/utils/leftSwipe.dart';
 import 'package:tassie/screens/wrapper.dart';
 import 'package:tassie/theme.dart';
-import 'package:tassie/themePreferences.dart';
-import 'package:tassie/theme_model.dart';
+import 'package:tassie/utils/themePreferences.dart';
+import 'package:tassie/utils/themeModel.dart';
 import 'package:provider/provider.dart';
 
 void main() {
