@@ -60,9 +60,11 @@ class UploaderState extends State<Uploader> {
           "postUuid": widget.postUuid,
         },
         onSendProgress: (int sent, int total) {
-          setState(() {
-            progress = (sent / total * 100);
-          });
+          if (mounted) {
+            setState(() {
+              progress = (sent / total * 100);
+            });
+          }
         },
       );
       if (response.data['status'] == true) {
@@ -100,9 +102,11 @@ class UploaderState extends State<Uploader> {
         }),
         data: formData,
         onSendProgress: (int sent, int total) {
-          setState(() {
-            progress = (sent / total * 100);
-          });
+          if (mounted) {
+            setState(() {
+              progress = (sent / total * 100);
+            });
+          }
         },
       );
       if (response.data['status'] == true) {

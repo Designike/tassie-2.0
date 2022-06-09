@@ -154,9 +154,11 @@ class SignInState extends State<SignIn> {
                         if (RegExp(
                                 r"(^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+)")
                             .hasMatch(val!)) {
-                          setState(() {
-                            email = val;
-                          });
+                          if (mounted) {
+                            setState(() {
+                              email = val;
+                            });
+                          }
                           return null;
                         }
                         // if (!RegExp(r"^[a-zA-Z0-9!#$%&-^_]+").hasMatch(val)) {
@@ -203,9 +205,11 @@ class SignInState extends State<SignIn> {
                       // },
                       onTap: () async {
                         if (_formKey.currentState!.validate()) {
-                          setState(() {
-                            isClicked = true;
-                          });
+                          if (mounted) {
+                            setState(() {
+                              isClicked = true;
+                            });
+                          }
                           Response response = await dio.post(
                             "https://api-tassie.herokuapp.com/user/login/",
                             options: Options(headers: {
@@ -261,9 +265,11 @@ class SignInState extends State<SignIn> {
                               if (!mounted) return;
                               showSnack(context, response.data['message'],
                                   () {}, 'OK', 4);
-                              setState(() {
-                                isClicked = false;
-                              });
+                              if (mounted) {
+                                setState(() {
+                                  isClicked = false;
+                                });
+                              }
                             }
                           }
                         }

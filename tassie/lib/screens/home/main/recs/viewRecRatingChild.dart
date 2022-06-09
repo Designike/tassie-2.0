@@ -1,4 +1,3 @@
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:async/async.dart';
@@ -77,7 +76,9 @@ class CreateRatingState extends State<CreateRating> {
                         if (!text.hasData) {
                           return GestureDetector(
                               onTap: () {
-                                setState(() {});
+                                if (mounted) {
+                                  setState(() {});
+                                }
                               },
                               child: const SizedBox(
                                   height: 50.0,
@@ -106,29 +107,26 @@ class CreateRatingState extends State<CreateRating> {
         //     fontWeight: FontWeight.bold,
         //   ),
         // ),
-        title:RichText(
-                        overflow: TextOverflow.ellipsis,
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: widget.rating['username'],
-                              style: TextStyle(
-                                color: Theme.of(context).brightness ==
-                                        Brightness.light
-                                    ? kDark[900]
-                                    : kLight,
-                                    
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.of(context)
-                                      .push(MaterialPageRoute(
-                                    builder: (_) => Profile(
-                                      uuid: widget.rating['uuid'],
-                                    ),
-                                  ));
-                                },
-                            ),])),
+        title: RichText(
+            overflow: TextOverflow.ellipsis,
+            text: TextSpan(children: [
+              TextSpan(
+                text: widget.rating['username'],
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? kDark[900]
+                      : kLight,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => Profile(
+                        uuid: widget.rating['uuid'],
+                      ),
+                    ));
+                  },
+              ),
+            ])),
         subtitle: RatingBarIndicator(
           rating: widget.rating['star'].toDouble(),
           itemBuilder: (context, index) => const Icon(
@@ -167,7 +165,7 @@ class CreateRatingState extends State<CreateRating> {
         //         },
         //       )
         //     : null,
-      ),    
+      ),
     );
   }
 }

@@ -9,7 +9,8 @@ class ExploreSearchUserTab extends StatefulWidget {
       {required this.users,
       required this.isEndU,
       required this.isLazyLoadingU,
-      Key? key}): super(key: key);
+      Key? key})
+      : super(key: key);
   final List users;
   final bool isEndU;
   final bool isLazyLoadingU;
@@ -18,8 +19,6 @@ class ExploreSearchUserTab extends StatefulWidget {
 }
 
 class ExploreSearchUserTabState extends State<ExploreSearchUserTab> {
-
-
   @override
   void initState() {
     super.initState();
@@ -118,7 +117,9 @@ class _ExploreUserAvatarState extends State<ExploreUserAvatar> {
             if (!text.hasData) {
               return GestureDetector(
                   onTap: () {
-                    setState(() {});
+                    if (mounted) {
+                      setState(() {});
+                    }
                   },
                   child: const SizedBox(
                       height: 50.0,

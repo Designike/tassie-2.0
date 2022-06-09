@@ -35,14 +35,16 @@ class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
   final dio = Dio();
   final storage = const FlutterSecureStorage();
 
-
   void _getRecosts(int index) async {
     if (!isEnd) {
       if (!isLazyLoading) {
-        setState(() {
-          isLazyLoading = true;
-        });
-        var url = "https://api-tassie.herokuapp.com/search/lazyExplore/${index.toString()}/${previousLength.toString()}";
+        if (mounted) {
+          setState(() {
+            isLazyLoading = true;
+          });
+        }
+        var url =
+            "https://api-tassie.herokuapp.com/search/lazyExplore/${index.toString()}/${previousLength.toString()}";
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
@@ -52,53 +54,61 @@ class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
           }),
         );
         if (response.data['data'] != null) {
-          setState(() {
-            if (index == 1) {
-              isLoading = false;
-            }
-            isLazyLoading = false;
-            recosts.addAll(response.data['data']['results']);
-            // posts.addAll(tList);
-            // print(recs);
-            if (response.data['data']['data'] != null) {
-              recostsData.addAll(response.data['data']['data']);
-              // print(recostsData);
-            }
-            if (response.data['data']['indices'] != null) {
-              recostsToggle.addAll(response.data['data']['indices']);
-              // print(noOfLikes);
+          if (mounted) {
+            setState(() {
+              if (index == 1) {
+                isLoading = false;
+              }
+              isLazyLoading = false;
+              recosts.addAll(response.data['data']['results']);
+              // posts.addAll(tList);
+              // print(recs);
+              if (response.data['data']['data'] != null) {
+                recostsData.addAll(response.data['data']['data']);
+                // print(recostsData);
+              }
+              if (response.data['data']['indices'] != null) {
+                recostsToggle.addAll(response.data['data']['indices']);
+                // print(noOfLikes);
 
-            }
-            previousLength = (response.data['data']['results']).length;
-            page++;
-          });
+              }
+              previousLength = (response.data['data']['results']).length;
+              page++;
+            });
+          }
           // print(response.data['data']['posts']);
           if (response.data['data']['results'].length == 0) {
-            setState(() {
-              isEnd = true;
-            });
+            if (mounted) {
+              setState(() {
+                isEnd = true;
+              });
+            }
           }
           // print(recs);
         } else {
-          setState(() {
-            isLoading = false;
-            isLazyLoading = false;
-          });
+          if (mounted) {
+            setState(() {
+              isLoading = false;
+              isLazyLoading = false;
+            });
+          }
         }
       }
     }
   }
 
   Future<void> _refreshPage() async {
-    setState(() {
-      page = 1;
-      recosts = [];
-      recostsData = [];
-      recostsToggle = [];
-      isEnd = false;
-      isLoading = true;
-      _getRecosts(page);
-    });
+    if (mounted) {
+      setState(() {
+        page = 1;
+        recosts = [];
+        recostsData = [];
+        recostsToggle = [];
+        isEnd = false;
+        isLoading = true;
+        _getRecosts(page);
+      });
+    }
   }
 
   @override
@@ -166,8 +176,8 @@ class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     width: size.width * 0.8,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 15.0),
                     child: const Text('Search', style: TextStyle(color: kDark)),
                   ),
                 ),
@@ -278,8 +288,8 @@ class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                   ),
                   SliverToBoxAdapter(
                     child: Container(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 50.0, horizontal: 7.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 50.0, horizontal: 7.0),
                       child: MasonryGridView.count(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
@@ -302,12 +312,14 @@ class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                                       recostData:
                                           recostsData[recostsToggle[index]],
                                       funcB: (isBook) {
-                                        setState(() {
-                                          recostsData[recostsToggle[index]]
-                                              ['isBookmarked'] = !recostsData[
-                                                  recostsToggle[index]]
-                                              ['isBookmarked'];
-                                        });
+                                        if (mounted) {
+                                          setState(() {
+                                            recostsData[recostsToggle[index]]
+                                                ['isBookmarked'] = !recostsData[
+                                                    recostsToggle[index]]
+                                                ['isBookmarked'];
+                                          });
+                                        }
                                       },
                                     ),
                                   )
@@ -324,38 +336,42 @@ class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                                       noOfComment:
                                           recostsData[recostsToggle[index]]
                                               ['comments'],
-                                      isLiked:
-                                          recostsData[recostsToggle[index]]
-                                              ['isLiked'],
+                                      isLiked: recostsData[recostsToggle[index]]
+                                          ['isLiked'],
                                       funcB: (isBook) {
-                                        setState(() {
-                                          recostsData[recostsToggle[index]]
-                                              ['isBookmarked'] = !recostsData[
-                                                  recostsToggle[index]]
-                                              ['isBookmarked'];
-                                        });
+                                        if (mounted) {
+                                          setState(() {
+                                            recostsData[recostsToggle[index]]
+                                                ['isBookmarked'] = !recostsData[
+                                                    recostsToggle[index]]
+                                                ['isBookmarked'];
+                                          });
+                                        }
                                       },
                                       plusComment: () {
-                                        setState(() {
-                                          recostsData[recostsToggle[index]]
-                                              ['comments'] += 1;
-                                        });
+                                        if (mounted) {
+                                          setState(() {
+                                            recostsData[recostsToggle[index]]
+                                                ['comments'] += 1;
+                                          });
+                                        }
                                       },
                                       func: (islike) {
-                                        setState(() {
-                                          if (islike) {
+                                        if (mounted) {
+                                          setState(() {
+                                            if (islike) {
+                                              recostsData[recostsToggle[index]]
+                                                  ['likes'] += 1;
+                                            } else {
+                                              recostsData[recostsToggle[index]]
+                                                  ['likes'] -= 1;
+                                            }
                                             recostsData[recostsToggle[index]]
-                                                ['likes'] += 1;
-                                          } else {
-                                            recostsData[recostsToggle[index]]
-                                                ['likes'] -= 1;
-                                          }
-                                          recostsData[recostsToggle[index]]
-                                                  ['isLiked'] =
-                                              !recostsData[
-                                                      recostsToggle[index]]
-                                                  ['isLiked'];
-                                        });
+                                                ['isLiked'] = !recostsData[
+                                                    recostsToggle[index]]
+                                                ['isLiked'];
+                                          });
+                                        }
                                       },
                                       bookmark:
                                           recostsData[recostsToggle[index]]
@@ -367,10 +383,12 @@ class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                                       //   });
                                       // },
                                       minusComment: () {
-                                        setState(() {
-                                          recostsData[recostsToggle[index]]
-                                              ['comments'] -= 1;
-                                        });
+                                        if (mounted) {
+                                          setState(() {
+                                            recostsData[recostsToggle[index]]
+                                                ['comments'] -= 1;
+                                          });
+                                        }
                                       },
                                     ),
                                   );

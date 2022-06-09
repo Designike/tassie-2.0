@@ -12,7 +12,8 @@ import '../home.dart';
 // }
 
 class TabNavigator2 extends StatefulWidget {
-  const TabNavigator2({Key? key, 
+  const TabNavigator2({
+    Key? key,
     required this.navigatorKey,
     required this.tabItem,
     required this.rightSwipe,
@@ -32,9 +33,11 @@ class _TabNavigator2State extends State<TabNavigator2> {
 
   Future<void> getdp() async {
     dp = await storage.read(key: "profilePic");
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override

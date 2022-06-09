@@ -46,9 +46,11 @@ class ProfileUploaderState extends State<ProfileUploader> {
       }),
       data: formData,
       onSendProgress: (int sent, int total) {
-        setState(() {
-          progress = (sent / total * 100);
-        });
+        if (mounted) {
+          setState(() {
+            progress = (sent / total * 100);
+          });
+        }
       },
     );
     if (response.data['status'] == true) {
@@ -64,7 +66,9 @@ class ProfileUploaderState extends State<ProfileUploader> {
       Navigator.of(context).pop();
       await storage.write(
           key: "profilePic", value: response.data['data']['profilePic']);
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     } else {
       // handle error
       await Future.delayed(const Duration(seconds: 1));

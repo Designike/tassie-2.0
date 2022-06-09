@@ -73,20 +73,22 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
       }),
     );
     if (response.data['data'] != null) {
-      setState(() {
-        subscribeds = response.data['data']['noOfSub']['subscribed'];
-        subscribers = response.data['data']['noOfSub']['subscriber'];
-        isSubscribed = response.data['data']['noOfSub']['isSubscribed'];
-        noOfPosts = response.data['data']['noOfPosts'];
-        noOfRecipes = response.data['data']['noOfRecipes'];
-        username = response.data['data']['userData']['username'];
-        bio = response.data['data']['userData']['bio'];
-        website = response.data['data']['userData']['website'];
-        name = response.data['data']['userData']['name'];
-        profilePic = response.data['data']['userData']['profilePic'];
-        isLoading = false;
-        storedFuture = loadImg(profilePic, memoizer);
-      });
+      if (mounted) {
+        setState(() {
+          subscribeds = response.data['data']['noOfSub']['subscribed'];
+          subscribers = response.data['data']['noOfSub']['subscriber'];
+          isSubscribed = response.data['data']['noOfSub']['isSubscribed'];
+          noOfPosts = response.data['data']['noOfPosts'];
+          noOfRecipes = response.data['data']['noOfRecipes'];
+          username = response.data['data']['userData']['username'];
+          bio = response.data['data']['userData']['bio'];
+          website = response.data['data']['userData']['website'];
+          name = response.data['data']['userData']['name'];
+          profilePic = response.data['data']['userData']['profilePic'];
+          isLoading = false;
+          storedFuture = loadImg(profilePic, memoizer);
+        });
+      }
     } else {
       await Future.delayed(const Duration(seconds: 1));
 
@@ -99,10 +101,12 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
     if (!isEndR) {
       if (!isLazyLoadingR) {
         // showSuggestions(context);
-        setState(() {
-          isLazyLoadingR = true;
-          // isLazyLoadingT = true;
-        });
+        if (mounted) {
+          setState(() {
+            isLazyLoadingR = true;
+            // isLazyLoadingT = true;
+          });
+        }
 
         // print(query);
         var url =
@@ -117,41 +121,47 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
         );
         // print(response.data);
         if (response.data['data'] != null) {
-          setState(() {
-            // if (index == 1) {
-            //   isLoading = false;
-            // }
-            isLazyLoadingR = false;
-            // posts.addAll(tList);
-            // print(recs);
-            if (response.data['data']['recs'] != null) {
-              recipes.addAll(response.data['data']['recs']);
-              // print(noOfLikes);
-            }
-            // if (response.data['data']['tags'] != null) {
-            //   tags.addAll(response.data['data']['tags']);
-            //   // print(noOfLikes);
-            // }
-            // if (response.data['data']['posts'] != null) {
-            //   posts.addAll(response.data['data']['posts']);
-            //   print(posts);
-            // }
-            isLoadingR = false;
-            pageR++;
-          });
+          if (mounted) {
+            setState(() {
+              // if (index == 1) {
+              //   isLoading = false;
+              // }
+              isLazyLoadingR = false;
+              // posts.addAll(tList);
+              // print(recs);
+              if (response.data['data']['recs'] != null) {
+                recipes.addAll(response.data['data']['recs']);
+                // print(noOfLikes);
+              }
+              // if (response.data['data']['tags'] != null) {
+              //   tags.addAll(response.data['data']['tags']);
+              //   // print(noOfLikes);
+              // }
+              // if (response.data['data']['posts'] != null) {
+              //   posts.addAll(response.data['data']['posts']);
+              //   print(posts);
+              // }
+              isLoadingR = false;
+              pageR++;
+            });
+          }
           // print(response.data['data']['posts']);
           if (response.data['data']['recs'] == null) {
-            setState(() {
-              isEndR = true;
-            });
+            if (mounted) {
+              setState(() {
+                isEndR = true;
+              });
+            }
           }
 
           // print(recs);
         } else {
-          setState(() {
-            isLoadingR = false;
-            isLazyLoadingR = false;
-          });
+          if (mounted) {
+            setState(() {
+              isLoadingR = false;
+              isLazyLoadingR = false;
+            });
+          }
         }
       }
     }
@@ -161,10 +171,12 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
     if (!isEndP) {
       if (!isLazyLoadingP) {
         // showSuggestions(context);
-        setState(() {
-          isLazyLoadingP = true;
-          // isLazyLoadingT = true;
-        });
+        if (mounted) {
+          setState(() {
+            isLazyLoadingP = true;
+            // isLazyLoadingT = true;
+          });
+        }
 
         // print(query);
         var url =
@@ -179,38 +191,44 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
         );
         // print(response.data);
         if (response.data['data'] != null) {
-          setState(() {
-            // if (index == 1) {
-            //   isLoading = false;
-            // }
-            isLazyLoadingP = false;
-            // posts.addAll(tList);
-            // print(recs);
+          if (mounted) {
+            setState(() {
+              // if (index == 1) {
+              //   isLoading = false;
+              // }
+              isLazyLoadingP = false;
+              // posts.addAll(tList);
+              // print(recs);
 
-            // if (response.data['data']['tags'] != null) {
-            //   tags.addAll(response.data['data']['tags']);
-            //   // print(noOfLikes);
-            // }
-            if (response.data['data']['posts'] != null) {
-              posts.addAll(response.data['data']['posts']);
-            }
-            isLoadingP = false;
-            pageP++;
-          });
+              // if (response.data['data']['tags'] != null) {
+              //   tags.addAll(response.data['data']['tags']);
+              //   // print(noOfLikes);
+              // }
+              if (response.data['data']['posts'] != null) {
+                posts.addAll(response.data['data']['posts']);
+              }
+              isLoadingP = false;
+              pageP++;
+            });
+          }
           // print(response.data['data']['posts']);
 
           if (response.data['data']['posts'] == null) {
-            setState(() {
-              isEndP = true;
-            });
+            if (mounted) {
+              setState(() {
+                isEndP = true;
+              });
+            }
           }
 
           // print(recs);
         } else {
-          setState(() {
-            isLoadingP = false;
-            isLazyLoadingP = false;
-          });
+          if (mounted) {
+            setState(() {
+              isLoadingP = false;
+              isLazyLoadingP = false;
+            });
+          }
         }
       }
     }
@@ -439,7 +457,9 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                           if (!text.hasData) {
                                             return GestureDetector(
                                                 onTap: () {
-                                                  setState(() {});
+                                                  if (mounted) {
+                                                    setState(() {});
+                                                  }
                                                 },
                                                 child: const SizedBox(
                                                     height: 128,
@@ -633,9 +653,11 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                               child: widget.uuid == "user"
                                   ? GestureDetector(
                                       onTap: () async {
-                                        setState(() {
-                                          editBtnClicked = true;
-                                        });
+                                        if (mounted) {
+                                          setState(() {
+                                            editBtnClicked = true;
+                                          });
+                                        }
                                         var token =
                                             await storage.read(key: "token");
                                         Response response = await dio.post(
@@ -648,9 +670,11 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                             }),
                                             // data: jsonEncode(value),
                                             data: {});
-                                        setState(() {
-                                          editBtnClicked = false;
-                                        });
+                                        if (mounted) {
+                                          setState(() {
+                                            editBtnClicked = false;
+                                          });
+                                        }
                                         // print(response.data);
                                         await Future.delayed(
                                             const Duration(seconds: 1));
@@ -693,9 +717,11 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                   : GestureDetector(
                                       onTap: () async {
                                         if (isSubscribed) {
-                                          setState(() {
-                                            editBtnClicked = true;
-                                          });
+                                          if (mounted) {
+                                            setState(() {
+                                              editBtnClicked = true;
+                                            });
+                                          }
                                           var token =
                                               await storage.read(key: "token");
                                           Response response = await dio.post(
@@ -709,10 +735,12 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                               // data: jsonEncode(value),
                                               data: {'uuid': widget.uuid});
                                           if (response.data['status'] == true) {
-                                            setState(() {
-                                              isSubscribed = false;
-                                              editBtnClicked = false;
-                                            });
+                                            if (mounted) {
+                                              setState(() {
+                                                isSubscribed = false;
+                                                editBtnClicked = false;
+                                              });
+                                            }
                                           } else {
                                             await Future.delayed(
                                                 const Duration(seconds: 1));
@@ -724,14 +752,18 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                                 () {},
                                                 "OK",
                                                 3);
-                                            setState(() {
-                                              editBtnClicked = false;
-                                            });
+                                            if (mounted) {
+                                              setState(() {
+                                                editBtnClicked = false;
+                                              });
+                                            }
                                           }
                                         } else {
-                                          setState(() {
-                                            editBtnClicked = true;
-                                          });
+                                          if (mounted) {
+                                            setState(() {
+                                              editBtnClicked = true;
+                                            });
+                                          }
                                           var token =
                                               await storage.read(key: "token");
                                           Response response = await dio.post(
@@ -745,10 +777,12 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                               // data: jsonEncode(value),
                                               data: {'uuid': widget.uuid});
                                           if (response.data['status'] == true) {
-                                            setState(() {
-                                              isSubscribed = true;
-                                              editBtnClicked = false;
-                                            });
+                                            if (mounted) {
+                                              setState(() {
+                                                isSubscribed = true;
+                                                editBtnClicked = false;
+                                              });
+                                            }
                                           } else {
                                             await Future.delayed(
                                                 const Duration(seconds: 1));
@@ -760,9 +794,11 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                                 () {},
                                                 "OK",
                                                 3);
-                                            setState(() {
-                                              editBtnClicked = false;
-                                            });
+                                            if (mounted) {
+                                              setState(() {
+                                                editBtnClicked = false;
+                                              });
+                                            }
                                           }
                                         }
                                         // var token =

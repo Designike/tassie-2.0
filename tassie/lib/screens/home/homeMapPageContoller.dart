@@ -39,13 +39,14 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
         navigatorKey: _navigatorKeys[index]!,
         tabItem: index,
         rightSwipe: () {
-          setState(() {
-            _selectedIndex = 0;
-            _pageController.jumpToPage(0);
-          });
+          if (mounted) {
+            setState(() {
+              _selectedIndex = 0;
+              _pageController.jumpToPage(0);
+            });
+          }
         });
   }
-
 
   @override
   void initState() {

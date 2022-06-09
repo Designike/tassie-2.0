@@ -20,10 +20,12 @@ class _WrapperState extends State<Wrapper> {
   Future<void> check() async {
     const storage = FlutterSecureStorage();
     var x = await storage.read(key: "token");
-    setState(() {
-      value = x;
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        value = x;
+        isLoading = false;
+      });
+    }
   }
 
   @override

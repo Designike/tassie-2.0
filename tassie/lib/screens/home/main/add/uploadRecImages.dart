@@ -68,11 +68,13 @@ class RecImageUploaderState extends State<RecImageUploader> {
       }),
       data: formData,
       onSendProgress: (int sent, int total) {
-        setState(() {
-          // print(progress);
-          progress = (sent / total * 100);
-          // print(progress);
-        });
+        if (mounted) {
+          setState(() {
+            // print(progress);
+            progress = (sent / total * 100);
+            // print(progress);
+          });
+        }
       },
     );
 
@@ -84,9 +86,11 @@ class RecImageUploaderState extends State<RecImageUploader> {
     }
     if (response.data['status'] == true) {
       widget.trueResp();
-      setState(() {
-        isUploaded = true;
-      });
+      if (mounted) {
+        setState(() {
+          isUploaded = true;
+        });
+      }
       await Future.delayed(const Duration(seconds: 1));
       if (!mounted) return;
       showSnack(context, response.data['message'], () {}, 'OK', 3);

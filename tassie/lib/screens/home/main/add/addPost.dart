@@ -62,10 +62,11 @@ class AddPostState extends State<AddPost> {
           ),
           IOSUiSettings(title: 'Garnish it,')
         ]);
-
-    setState(() {
-      _imageFile = cropped == null ? null : File(cropped.path);
-    });
+    if (mounted) {
+      setState(() {
+        _imageFile = cropped == null ? null : File(cropped.path);
+      });
+    }
   }
 
   /// Select an image via gallery or camera
@@ -76,10 +77,12 @@ class AddPostState extends State<AddPost> {
     if (permissionStatus.isGranted) {
       XFile? selected = await ImagePicker().pickImage(source: source);
       if (selected == null) return;
-      setState(() {
-        _imageFile = File(selected.path);
-        _cropImage();
-      });
+      if (mounted) {
+        setState(() {
+          _imageFile = File(selected.path);
+          _cropImage();
+        });
+      }
     }
   }
 
@@ -95,7 +98,9 @@ class AddPostState extends State<AddPost> {
 
   /// Remove image
   void _clear() {
-    setState(() => _imageFile = null);
+    if (mounted) {
+      setState(() => _imageFile = null);
+    }
   }
 
   @override

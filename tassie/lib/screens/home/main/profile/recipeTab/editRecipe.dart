@@ -110,7 +110,14 @@ class EditRecipeState extends State<EditRecipe> {
   final minutes = ['00', '15', '30', '45'];
 
   List flavours = ['Spicy', 'Sweet', 'Sour', 'Salty', 'Bitter'];
-  List courses = ['Snack', 'Starter', 'Farali', 'Main course', 'Dessert', 'Drinks'];
+  List courses = [
+    'Snack',
+    'Starter',
+    'Farali',
+    'Main course',
+    'Dessert',
+    'Drinks'
+  ];
 
   String hour = '0';
   String min = '15';
@@ -162,9 +169,11 @@ class EditRecipeState extends State<EditRecipe> {
     recipePic = await _fileFromImageUrl(widget.recipeImageID);
     if (widget.stepPics.isEmpty) {
       if (widget.ingredientPics.isEmpty) {
-        setState(() {
-          isLoading = false;
-        });
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+          });
+        }
       } else {
         widget.ingredientPics.forEach((element) async {
           ingredientPics[(int.parse(element['index']) - 1).toString()] =
@@ -172,9 +181,11 @@ class EditRecipeState extends State<EditRecipe> {
           // print('2');
           // print(ingredientPics[element['index']]);
           if (widget.ingredientPics.length == ingredientPics.length) {
-            setState(() {
-              isLoading = false;
-            });
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
           }
         });
       }
@@ -190,9 +201,11 @@ class EditRecipeState extends State<EditRecipe> {
             // print('2');
             // print(ingredientPics[element['index']]);
             if (widget.ingredientPics.length == ingredientPics.length) {
-              setState(() {
-                isLoading = false;
-              });
+              if (mounted) {
+                setState(() {
+                  isLoading = false;
+                });
+              }
             }
           });
         }
@@ -237,30 +250,36 @@ class EditRecipeState extends State<EditRecipe> {
                         ? !_clearSteps[index]
                         : _clearSteps[index],
             falseResp: () {
-              setState(() {
-                if (key == 'r') {
-                  recipePic = null;
-                  _imageFile = null;
-                } else if (key == 'i') {
-                  ingredientPics[(index).toString()] = null;
-                  _imageFile = null;
-                } else {
-                  stepPics[(index).toString()] = null;
-                  _imageFile = null;
-                }
-              });
+              if (mounted) {
+                setState(() {
+                  if (key == 'r') {
+                    recipePic = null;
+                    _imageFile = null;
+                  } else if (key == 'i') {
+                    ingredientPics[(index).toString()] = null;
+                    _imageFile = null;
+                  } else {
+                    stepPics[(index).toString()] = null;
+                    _imageFile = null;
+                  }
+                });
+              }
 
               if (key + '_' + (index + 1).toString() == 'r_1') {
-                setState(() {
-                  isUpload = false;
-                });
+                if (mounted) {
+                  setState(() {
+                    isUpload = false;
+                  });
+                }
               }
             },
             trueResp: () {
               if (key + '_' + (index + 1).toString() == 'r_1') {
-                setState(() {
-                  isUpload = true;
-                });
+                if (mounted) {
+                  setState(() {
+                    isUpload = true;
+                  });
+                }
               }
             },
             imageNull: () {
@@ -354,25 +373,31 @@ class EditRecipeState extends State<EditRecipe> {
   }
 
   void changeFlavour(int index, String flav) {
-    setState(() {
-      flavour = flav;
-      selectedFlavour = index;
-    });
+    if (mounted) {
+      setState(() {
+        flavour = flav;
+        selectedFlavour = index;
+      });
+    }
     // print(flavour);
   }
 
   void changeCourse(int index, String cour) {
-    setState(() {
-      course = cour;
-      selectedCourse = index;
-    });
+    if (mounted) {
+      setState(() {
+        course = cour;
+        selectedCourse = index;
+      });
+    }
     // print(course);
   }
 
   void changeMeal(int index, bool check) {
-    setState(() {
-      mealType[index] = check;
-    });
+    if (mounted) {
+      setState(() {
+        mealType[index] = check;
+      });
+    }
     // print(course);
   }
 
@@ -519,9 +544,11 @@ class EditRecipeState extends State<EditRecipe> {
                       padding: const EdgeInsets.only(right: kDefaultPadding),
                       child: OutlinedButton(
                         onPressed: () {
-                          setState(() {
-                            isVeg = true;
-                          });
+                          if (mounted) {
+                            setState(() {
+                              isVeg = true;
+                            });
+                          }
                         },
                         style: OutlinedButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -540,9 +567,11 @@ class EditRecipeState extends State<EditRecipe> {
                     ),
                     OutlinedButton(
                       onPressed: () {
-                        setState(() {
-                          isVeg = false;
-                        });
+                        if (mounted) {
+                          setState(() {
+                            isVeg = false;
+                          });
+                        }
                       },
                       style: OutlinedButton.styleFrom(
                         shape: RoundedRectangleBorder(
@@ -655,9 +684,11 @@ class EditRecipeState extends State<EditRecipe> {
                               );
                             }).toList(),
                             onChanged: (value) {
-                              setState(() {
-                                hour = value!;
-                              });
+                              if (mounted) {
+                                setState(() {
+                                  hour = value!;
+                                });
+                              }
                             },
                             borderRadius: BorderRadius.circular(15.0),
                             isExpanded: true),
@@ -683,9 +714,11 @@ class EditRecipeState extends State<EditRecipe> {
                               );
                             }).toList(),
                             onChanged: (value) {
-                              setState(() {
-                                min = value!;
-                              });
+                              if (mounted) {
+                                setState(() {
+                                  min = value!;
+                                });
+                              }
                             },
                             borderRadius: BorderRadius.circular(15.0),
                             isExpanded: true),
@@ -897,16 +930,20 @@ class EditRecipeState extends State<EditRecipe> {
         if (add) {
           stepsList.insert(index + 1, "");
           stepPics[(index + 1).toString()] = '';
-          setState(() {
-            _clearSteps[index + 1] = false;
-          });
+          if (mounted) {
+            setState(() {
+              _clearSteps[index + 1] = false;
+            });
+          }
           // print(_clearSteps);
         } else {
           stepsList.removeAt(i);
           stepPics[i.toString()] = '';
           await _clear('s', i, 's_${i + 1}', true);
           stepPics = await _adjustImages(i, stepPics, false, "s_");
-          setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
         }
         if (mounted) {
           setState(() {});
@@ -967,7 +1004,9 @@ class EditRecipeState extends State<EditRecipe> {
           ingredientPics[i.toString()] = '';
           await _clear('i', i, 'i_${i + 1}', true);
           ingredientPics = await _adjustImages(i, ingredientPics, true, "i_");
-          setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
         }
         if (mounted) {
           setState(() {});
@@ -1011,19 +1050,20 @@ class EditRecipeState extends State<EditRecipe> {
           ),
           IOSUiSettings(title: 'Garnish it,')
         ]);
-
-    setState(() {
-      if (key == 'r') {
-        recipePic = File(cropped!.path);
-        _imageFile = null;
-      } else if (key == 'i') {
-        ingredientPics[(index).toString()] = cropped;
-        _imageFile = null;
-      } else {
-        stepPics[(index).toString()] = cropped;
-        _imageFile = null;
-      }
-    });
+    if (mounted) {
+      setState(() {
+        if (key == 'r') {
+          recipePic = File(cropped!.path);
+          _imageFile = null;
+        } else if (key == 'i') {
+          ingredientPics[(index).toString()] = cropped;
+          _imageFile = null;
+        } else {
+          stepPics[(index).toString()] = cropped;
+          _imageFile = null;
+        }
+      });
+    }
   }
 
   /// Select an image via gallery or camera
@@ -1034,20 +1074,24 @@ class EditRecipeState extends State<EditRecipe> {
     if (permissionStatus.isGranted) {
       XFile? selected = await ImagePicker().pickImage(source: source);
       if (selected == null) return;
-      setState(() {
-        _imageFile = File(selected.path);
-        _cropImage(key, index);
-      });
+      if (mounted) {
+        setState(() {
+          _imageFile = File(selected.path);
+          _cropImage(key, index);
+        });
+      }
     }
   }
 
   /// Remove image
   Future<void> _clear(key, index, imgName, [clearRecost = false]) async {
     if (key == 'r') {
-      setState(() {
-        recipePic = null;
-        isUpload = false;
-      });
+      if (mounted) {
+        setState(() {
+          recipePic = null;
+          isUpload = false;
+        });
+      }
 
       var token = await storage.read(key: "token");
       // print(formData.files[0]);
@@ -1060,20 +1104,22 @@ class EditRecipeState extends State<EditRecipe> {
           }),
           data: {'uuid': widget.uuid, 'imgName': imgName});
     } else if (key == 'i') {
-      setState(() {
-        ingredientPics[(index).toString()] = '';
-        if (clearRecost) {
-          _clearIngs[index] = true;
-        }
-        if (_ingFlags.contains(index)) {
-          _ingFlags.remove(index);
-          for (var i = 0; i < _ingFlags.length; i++) {
-            if (_ingFlags[i] > index) {
-              _ingFlags[index] = _ingFlags[index] - 1;
+      if (mounted) {
+        setState(() {
+          ingredientPics[(index).toString()] = '';
+          if (clearRecost) {
+            _clearIngs[index] = true;
+          }
+          if (_ingFlags.contains(index)) {
+            _ingFlags.remove(index);
+            for (var i = 0; i < _ingFlags.length; i++) {
+              if (_ingFlags[i] > index) {
+                _ingFlags[index] = _ingFlags[index] - 1;
+              }
             }
           }
-        }
-      });
+        });
+      }
       var token = await storage.read(key: "token");
       // print(formData.files[0]);
       await dio.post(
@@ -1085,20 +1131,22 @@ class EditRecipeState extends State<EditRecipe> {
           }),
           data: {'uuid': widget.uuid, 'imgName': imgName});
     } else {
-      setState(() {
-        stepPics[(index).toString()] = '';
-        if (clearRecost) {
-          _clearSteps[index] = true;
-        }
-        if (_stepFlags.contains(index)) {
-          _stepFlags.remove(index);
-          for (var i = 0; i < _stepFlags.length; i++) {
-            if (_stepFlags[i] > index) {
-              _stepFlags[index] = _stepFlags[index] - 1;
+      if (mounted) {
+        setState(() {
+          stepPics[(index).toString()] = '';
+          if (clearRecost) {
+            _clearSteps[index] = true;
+          }
+          if (_stepFlags.contains(index)) {
+            _stepFlags.remove(index);
+            for (var i = 0; i < _stepFlags.length; i++) {
+              if (_stepFlags[i] > index) {
+                _stepFlags[index] = _stepFlags[index] - 1;
+              }
             }
           }
-        }
-      });
+        });
+      }
 
       var token = await storage.read(key: "token");
       // print(formData.files[0]);
@@ -1210,9 +1258,11 @@ class EditRecipeState extends State<EditRecipe> {
     if (response.data['status'] == false) {
       _imageFile = null;
       if (imgName == 'r_1') {
-        setState(() {
-          isUpload = false;
-        });
+        if (mounted) {
+          setState(() {
+            isUpload = false;
+          });
+        }
       }
       await Future.delayed(const Duration(seconds: 1));
 
@@ -1221,9 +1271,11 @@ class EditRecipeState extends State<EditRecipe> {
     }
     if (response.data['status'] == true) {
       if (imgName == 'r_1') {
-        setState(() {
-          isUpload = true;
-        });
+        if (mounted) {
+          setState(() {
+            isUpload = true;
+          });
+        }
       }
       await Future.delayed(const Duration(seconds: 1));
 
@@ -1235,34 +1287,36 @@ class EditRecipeState extends State<EditRecipe> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      desc = widget.desc;
-      widget.steps.forEach((element) {
-        stepsList.add(element);
-      });
-      widget.ingredients.forEach((element) {
-        ingredientsList.add(element);
-      });
-      hour = widget.hours.toString();
-      min = widget.mins.toString();
-      recipeName = widget.recipeName;
-      isVeg = widget.isVeg;
-      mealType = [
-        widget.isLunch,
-        widget.isBreakfast,
-        widget.isDinner,
-        widget.isCraving
-      ];
-      course = widget.course;
-      flavour = widget.flavour;
+    if (mounted) {
+      setState(() {
+        desc = widget.desc;
+        widget.steps.forEach((element) {
+          stepsList.add(element);
+        });
+        widget.ingredients.forEach((element) {
+          ingredientsList.add(element);
+        });
+        hour = widget.hours.toString();
+        min = widget.mins.toString();
+        recipeName = widget.recipeName;
+        isVeg = widget.isVeg;
+        mealType = [
+          widget.isLunch,
+          widget.isBreakfast,
+          widget.isDinner,
+          widget.isCraving
+        ];
+        course = widget.course;
+        flavour = widget.flavour;
 
-      selectedFlavour = flavours.indexOf(widget.flavour);
-      selectedCourse = courses.indexOf(widget.course);
-      
-      _tagController.selection = TextSelection.fromPosition(
-          TextPosition(offset: _tagController.text.length));
-      _tagController.text = desc;
-    });
+        selectedFlavour = flavours.indexOf(widget.flavour);
+        selectedCourse = courses.indexOf(widget.course);
+
+        _tagController.selection = TextSelection.fromPosition(
+            TextPosition(offset: _tagController.text.length));
+        _tagController.text = desc;
+      });
+    }
     urlToFile();
     // print("ncaisadhuashuduasihduiasuiduiashudh2");
     // print(stepPics);
@@ -1300,9 +1354,11 @@ class EditRecipeState extends State<EditRecipe> {
               GestureDetector(
                 onTap: () async {
                   if (_formKey.currentState!.validate() && isUpload) {
-                    setState(() {
-                      isPop = true;
-                    });
+                    if (mounted) {
+                      setState(() {
+                        isPop = true;
+                      });
+                    }
                     Provider.of<LeftSwipe>(context, listen: false)
                         .setSwipe(true);
                     // Navigator.of(context, rootNavigator: true).popUntil((route) => route.isFirst);
@@ -1480,9 +1536,11 @@ class EditRecipeState extends State<EditRecipe> {
                               4);
                         }
                       } else {
-                        setState(() {
-                          _currentStep += 1;
-                        });
+                        if (mounted) {
+                          setState(() {
+                            _currentStep += 1;
+                          });
+                        }
                         if (_currentStep == 1) {
                           var url =
                               "https://api-tassie.herokuapp.com/recs/updateRecipe";
@@ -1601,9 +1659,11 @@ class EditRecipeState extends State<EditRecipe> {
                     onStepCancel: () {
                       _currentStep == 0
                           ? null
-                          : setState(() {
-                              _currentStep -= 1;
-                            });
+                          : (mounted)
+                              ? setState(() {
+                                  _currentStep -= 1;
+                                })
+                              : null;
                     },
                     steps: steps(size),
                   ),

@@ -36,26 +36,32 @@ class AdvancedSearchState extends State<AdvancedSearch> {
   final storage = const FlutterSecureStorage();
   final dio = Dio();
   void changeFlavour(int index, String flav) {
-    setState(() {
-      flavour = flav;
-      selectedFlavour = index;
-    });
+    if (mounted) {
+      setState(() {
+        flavour = flav;
+        selectedFlavour = index;
+      });
+    }
   }
 
   void changeCourse(int index, String cour) {
-    setState(() {
-      course = cour;
-      selectedCourse = index;
-    });
+    if (mounted) {
+      setState(() {
+        course = cour;
+        selectedCourse = index;
+      });
+    }
   }
 
   void changeMeal(int index, String m) {
-    setState(() {
-      // mealType[index] = check;
-      meal = List.filled(4, false);
-      meal[index] = true;
-      selectedMeal = index;
-    });
+    if (mounted) {
+      setState(() {
+        // mealType[index] = check;
+        meal = List.filled(4, false);
+        meal[index] = true;
+        selectedMeal = index;
+      });
+    }
     // print(course);
   }
 
@@ -175,17 +181,21 @@ class AdvancedSearchState extends State<AdvancedSearch> {
   void _appendIngredient(ing) {
     // String desc1 = desc;
     if (!ingredients.contains(ing)) {
-      setState(() {
-        ingredients.add(ing);
-      });
+      if (mounted) {
+        setState(() {
+          ingredients.add(ing);
+        });
+      }
     }
   }
 
   void _removeIngredient(ind) {
     // String desc1 = desc;
-    setState(() {
-      ingredients.removeAt(ind);
-    });
+    if (mounted) {
+      setState(() {
+        ingredients.removeAt(ind);
+      });
+    }
   }
 
   @override
@@ -243,9 +253,11 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                   padding: const EdgeInsets.only(right: kDefaultPadding),
                   child: OutlinedButton(
                     onPressed: () {
-                      setState(() {
-                        isVeg = true;
-                      });
+                      if (mounted) {
+                        setState(() {
+                          isVeg = true;
+                        });
+                      }
                     },
                     style: OutlinedButton.styleFrom(
                       shape: RoundedRectangleBorder(
@@ -264,9 +276,11 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                 ),
                 OutlinedButton(
                   onPressed: () {
-                    setState(() {
-                      isVeg = false;
-                    });
+                    if (mounted) {
+                      setState(() {
+                        isVeg = false;
+                      });
+                    }
                   },
                   style: OutlinedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -364,9 +378,11 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                           );
                         }).toList(),
                         onChanged: (value) {
-                          setState(() {
-                            hour = value!;
-                          });
+                          if (mounted) {
+                            setState(() {
+                              hour = value!;
+                            });
+                          }
                         },
                         borderRadius: BorderRadius.circular(15.0),
                         isExpanded: true),
@@ -392,9 +408,11 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                           );
                         }).toList(),
                         onChanged: (value) {
-                          setState(() {
-                            min = value!;
-                          });
+                          if (mounted) {
+                            setState(() {
+                              min = value!;
+                            });
+                          }
                         },
                         borderRadius: BorderRadius.circular(15.0),
                         isExpanded: true),

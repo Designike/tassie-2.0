@@ -58,10 +58,13 @@ class ViewRecAllRatingsState extends State<ViewRecAllRatings> {
   void _getMoreData(int index) async {
     if (!isEnd) {
       if (!isLazyLoading) {
-        setState(() {
-          isLazyLoading = true;
-        });
-        var url = "https://api-tassie.herokuapp.com/recs/lazyrating/${widget.recipeUuid}/${widget.userUuid}/${index.toString()}";
+        if (mounted) {
+          setState(() {
+            isLazyLoading = true;
+          });
+        }
+        var url =
+            "https://api-tassie.herokuapp.com/recs/lazyrating/${widget.recipeUuid}/${widget.userUuid}/${index.toString()}";
 
         var token = await storage.read(key: "token");
         uuid = await storage.read(key: "uuid");
@@ -82,19 +85,23 @@ class ViewRecAllRatingsState extends State<ViewRecAllRatings> {
           }
 
           // print(dp);
-          setState(() {
-            if (index == 1) {
-              isLoading = false;
-            }
-            isLazyLoading = false;
-            ratings.addAll(tList);
-            page++;
-          });
+          if (mounted) {
+            setState(() {
+              if (index == 1) {
+                isLoading = false;
+              }
+              isLazyLoading = false;
+              ratings.addAll(tList);
+              page++;
+            });
+          }
           if (response.data['data']['ratings']['results']['ratings'].length ==
               0) {
-            setState(() {
-              isEnd = true;
-            });
+            if (mounted) {
+              setState(() {
+                isEnd = true;
+              });
+            }
           }
         }
         // print(comments);
@@ -153,9 +160,11 @@ class ViewRecAllRatingsState extends State<ViewRecAllRatings> {
                         userUuid: widget.userUuid,
                         recipeUuid: widget.recipeUuid,
                         removeRating: (ind) {
-                          setState(() {
-                            ratings.remove(ind);
-                          });
+                          if (mounted) {
+                            setState(() {
+                              ratings.remove(ind);
+                            });
+                          }
                         },
                         uuid: uuid,
                       );

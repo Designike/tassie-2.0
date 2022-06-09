@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tassie/constants.dart';
 
 class ShowMoreText extends StatefulWidget {
-  const ShowMoreText({ required this.text, Key? key}) : super(key: key);
+  const ShowMoreText({required this.text, Key? key}) : super(key: key);
 
   final String text;
 
@@ -17,9 +17,9 @@ class ShowMoreTextState extends State<ShowMoreText> {
   @override
   void initState() {
     super.initState();
-    
-    if(widget.text.length > 100){
-      firstPart = "${widget.text.substring(0,60)}...";
+
+    if (widget.text.length > 100) {
+      firstPart = "${widget.text.substring(0, 60)}...";
       secondPart = widget.text.substring(61, widget.text.length);
     } else {
       firstPart = widget.text;
@@ -34,17 +34,27 @@ class ShowMoreTextState extends State<ShowMoreText> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: secondPart == "" ? Text(widget.text) : Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(isMore ? widget.text : firstPart),
-          InkWell(child: Text( isMore ? 'Show less' : 'Show more', style: const TextStyle(color: kDark),), onTap: () {
-            setState(() {
-              isMore = !isMore;
-            });
-          },)
-        ],
-      ),
+      child: secondPart == ""
+          ? Text(widget.text)
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(isMore ? widget.text : firstPart),
+                InkWell(
+                  child: Text(
+                    isMore ? 'Show less' : 'Show more',
+                    style: const TextStyle(color: kDark),
+                  ),
+                  onTap: () {
+                    if (mounted) {
+                      setState(() {
+                        isMore = !isMore;
+                      });
+                    }
+                  },
+                )
+              ],
+            ),
     );
   }
 }

@@ -131,7 +131,9 @@ class FeedPostState extends State<FeedPost> {
                                   if (!text.hasData) {
                                     return GestureDetector(
                                         onTap: () {
-                                          setState(() {});
+                                          if (mounted) {
+                                            setState(() {});
+                                          }
                                         },
                                         child: const SizedBox(
                                             height: 50.0,
@@ -235,7 +237,9 @@ class FeedPostState extends State<FeedPost> {
                             if (!text.hasData) {
                               return GestureDetector(
                                   onTap: () {
-                                    setState(() {});
+                                    if (mounted) {
+                                      setState(() {});
+                                    }
                                   },
                                   child: Container(
                                       margin: const EdgeInsets.all(10.0),

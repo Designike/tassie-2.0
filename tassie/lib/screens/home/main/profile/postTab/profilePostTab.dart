@@ -6,7 +6,11 @@ import 'package:tassie/utils/imgLoader.dart';
 
 class PostTab extends StatefulWidget {
   const PostTab(
-      {required this.refreshPage, required this.posts, required this.isEnd, Key? key}): super(key: key);
+      {required this.refreshPage,
+      required this.posts,
+      required this.isEnd,
+      Key? key})
+      : super(key: key);
   final Future<void> Function() refreshPage;
   final List posts;
   final bool isEnd;
@@ -163,13 +167,15 @@ class _ProfilePostTabChildState extends State<ProfilePostTabChild> {
             if (!text.hasData) {
               return GestureDetector(
                   onTap: () {
-                    setState(() {});
+                    if (mounted) {
+                      setState(() {});
+                    }
                   },
                   child: const Center(
                     child: Icon(
-                  Icons.refresh,
-                  // size: 50.0,
-                  color: kDark,
+                      Icons.refresh,
+                      // size: 50.0,
+                      color: kDark,
                     ),
                   ));
             }

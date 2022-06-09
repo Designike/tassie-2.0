@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -67,9 +66,11 @@ class RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
   void _getMoreData(int index) async {
     if (!isEnd) {
       if (!isLazyLoading) {
-        setState(() {
-          isLazyLoading = true;
-        });
+        if (mounted) {
+          setState(() {
+            isLazyLoading = true;
+          });
+        }
         var url = 'https://api-tassie.herokuapp.com/recs/lazyrecs/$index';
         var token = await storage.read(key: "token");
         Response response = await dio.get(
@@ -82,74 +83,55 @@ class RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
         // print(response);
         // print(response.data);
         if (response.data['data'] != null) {
-          setState(() {
-            if (index == 1) {
-              isLoading = false;
-            }
-            isLazyLoading = false;
-            recs.addAll(response.data['data']['results']);
-            // posts.addAll(tList);
-            // print(recs);
-            if (response.data['data']['recipeData'] != null) {
-              recipeData.addAll(response.data['data']['recipeData']);
-              // print(noOfLikes);
+          if (mounted) {
+            setState(() {
+              if (index == 1) {
+                isLoading = false;
+              }
+              isLazyLoading = false;
+              recs.addAll(response.data['data']['results']);
+              // posts.addAll(tList);
+              // print(recs);
+              if (response.data['data']['recipeData'] != null) {
+                recipeData.addAll(response.data['data']['recipeData']);
+                // print(noOfLikes);
 
-            }
-            page++;
-          });
+              }
+              page++;
+            });
+          }
           // print(response.data['data']['posts']);
           if (response.data['data']['results'].length == 0) {
-            setState(() {
-              isEnd = true;
-            });
+            if (mounted) {
+              setState(() {
+                isEnd = true;
+              });
+            }
           }
           // print(recs);
         } else {
-          setState(() {
-            isLoading = false;
-            isLazyLoading = false;
-          });
+          if (mounted) {
+            setState(() {
+              isLoading = false;
+              isLazyLoading = false;
+            });
+          }
         }
-        // List tList = [];
-        // if (response.data['data']['recs'] != null) {
-        //   for (int i = 0;
-        //       i < response.data['data']['recs']['results'].length;
-        //       i++) {
-        //     tList.add(response.data['data']['recs']['results'][i]);
-        //   }
-        //   setState(() {
-        //     if (index == 1) {
-        //       isLoading = false;
-        //     }
-        //     isLazyLoading = false;
-        //     recs.addAll(tList);
-        //     // print(recs[0]['name']);
-        //     page++;
-        //   });
-        //   if (response.data['data']['recs']['results'].length == 0) {
-        //     setState(() {
-        //       isEnd = true;
-        //     });
-        //   }
-        // } else {
-        //   setState(() {
-        //     isLoading = false;
-        //     isLazyLoading = false;
-        //   });
-        // }
       }
     }
   }
 
   Future<void> _refreshPage() async {
-    setState(() {
-      page = 1;
-      recs = [];
-      recipeData = [];
-      isEnd = false;
-      isLoading = true;
-      _getMoreData(page);
-    });
+    if (mounted) {
+      setState(() {
+        page = 1;
+        recs = [];
+        recipeData = [];
+        isEnd = false;
+        isLoading = true;
+        _getMoreData(page);
+      });
+    }
   }
 
   @override
@@ -239,10 +221,12 @@ class RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
                                   recs: recs[index],
                                   recipeData: recipeData[index],
                                   funcB: (isBook) {
-                                    setState(() {
-                                      recipeData[index]['isBookmarked'] =
-                                          !recipeData[index]['isBookmarked'];
-                                    });
+                                    if (mounted) {
+                                      setState(() {
+                                        recipeData[index]['isBookmarked'] =
+                                            !recipeData[index]['isBookmarked'];
+                                      });
+                                    }
                                   },
                                 );
                           // return Container(
@@ -262,12 +246,13 @@ class RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
                               height: size.height * 0.25,
                             ),
                             Image(
-                              image: MediaQuery.of(context)
-                                          .platformBrightness ==
-                                      Brightness.dark
-                                  ? const AssetImage('assets/images/no_feed_dark.png')
-                                  : const AssetImage(
-                                      'assets/images/no_feed_light.png'),
+                              image:
+                                  MediaQuery.of(context).platformBrightness ==
+                                          Brightness.dark
+                                      ? const AssetImage(
+                                          'assets/images/no_feed_dark.png')
+                                      : const AssetImage(
+                                          'assets/images/no_feed_light.png'),
                               width: size.width * 0.75,
                             ),
                             const SizedBox(

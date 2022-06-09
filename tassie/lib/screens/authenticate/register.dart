@@ -227,9 +227,11 @@ class RegisterState extends State<Register> {
                           //       : {"username": username, "password": password},
                           // );
                           // print(response.toString());
-                          setState(() {
-                            isClicked = true;
-                          });
+                          if (mounted) {
+                            setState(() {
+                              isClicked = true;
+                            });
+                          }
                           try {
                             Response response = await dio.post(
                                 // "https://api-tassie.herokuapp.com/user/",
@@ -260,9 +262,11 @@ class RegisterState extends State<Register> {
                               if (!mounted) return;
                               showSnack(context, response.data['message'],
                                   () {}, 'OK', 4);
-                              setState(() {
-                                isClicked = false;
-                              });
+                              if (mounted) {
+                                setState(() {
+                                  isClicked = false;
+                                });
+                              }
                             }
                           } on DioError catch (e) {
                             if (e.response != null) {
@@ -271,9 +275,12 @@ class RegisterState extends State<Register> {
                               if (!mounted) return;
                               showSnack(context, e.response!.data['message'],
                                   () {}, 'OK', 4);
-                              setState(() {
-                                isClicked = false;
-                              });
+
+                              if (mounted) {
+                                setState(() {
+                                  isClicked = false;
+                                });
+                              }
                             }
                           }
                         }

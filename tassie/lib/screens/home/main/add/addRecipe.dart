@@ -90,30 +90,36 @@ class AddRecipeState extends State<AddRecipe> {
             uuid: widget.uuid,
             clearRecost: key == 'i' ? clearIngs[index] : clearSteps[index],
             falseResp: () {
-              setState(() {
-                if (key == 'r') {
-                  recipePic = null;
-                  _imageFile = null;
-                } else if (key == 'i') {
-                  ingredientPics[(index).toString()] = null;
-                  _imageFile = null;
-                } else {
-                  stepPics[(index).toString()] = null;
-                  _imageFile = null;
-                }
-              });
+              if (mounted) {
+                setState(() {
+                  if (key == 'r') {
+                    recipePic = null;
+                    _imageFile = null;
+                  } else if (key == 'i') {
+                    ingredientPics[(index).toString()] = null;
+                    _imageFile = null;
+                  } else {
+                    stepPics[(index).toString()] = null;
+                    _imageFile = null;
+                  }
+                });
+              }
 
               if (key + '_' + (index + 1).toString() == 'r_1') {
-                setState(() {
-                  isUpload = false;
-                });
+                if (mounted) {
+                  setState(() {
+                    isUpload = false;
+                  });
+                }
               }
             },
             trueResp: () {
               if (key + '_' + (index + 1).toString() == 'r_1') {
-                setState(() {
-                  isUpload = true;
-                });
+                if (mounted) {
+                  setState(() {
+                    isUpload = true;
+                  });
+                }
               }
             },
             imageNull: () {
@@ -204,23 +210,29 @@ class AddRecipeState extends State<AddRecipe> {
   }
 
   void changeFlavour(int index, String flav) {
-    setState(() {
-      flavour = flav;
-      selectedFlavour = index;
-    });
+    if (mounted) {
+      setState(() {
+        flavour = flav;
+        selectedFlavour = index;
+      });
+    }
   }
 
   void changeCourse(int index, String cour) {
-    setState(() {
-      course = cour;
-      selectedCourse = index;
-    });
+    if (mounted) {
+      setState(() {
+        course = cour;
+        selectedCourse = index;
+      });
+    }
   }
 
   void changeMeal(int index, bool check) {
-    setState(() {
-      mealType[index] = check;
-    });
+    if (mounted) {
+      setState(() {
+        mealType[index] = check;
+      });
+    }
     // print(course);
   }
 
@@ -367,9 +379,11 @@ class AddRecipeState extends State<AddRecipe> {
                       padding: const EdgeInsets.only(right: kDefaultPadding),
                       child: OutlinedButton(
                         onPressed: () {
-                          setState(() {
-                            isVeg = true;
-                          });
+                          if (mounted) {
+                            setState(() {
+                              isVeg = true;
+                            });
+                          }
                         },
                         style: OutlinedButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -388,9 +402,11 @@ class AddRecipeState extends State<AddRecipe> {
                     ),
                     OutlinedButton(
                       onPressed: () {
-                        setState(() {
-                          isVeg = false;
-                        });
+                        if (mounted) {
+                          setState(() {
+                            isVeg = false;
+                          });
+                        }
                       },
                       style: OutlinedButton.styleFrom(
                         shape: RoundedRectangleBorder(
@@ -503,9 +519,11 @@ class AddRecipeState extends State<AddRecipe> {
                               );
                             }).toList(),
                             onChanged: (value) {
-                              setState(() {
-                                hour = value!;
-                              });
+                              if (mounted) {
+                                setState(() {
+                                  hour = value!;
+                                });
+                              }
                             },
                             borderRadius: BorderRadius.circular(15.0),
                             isExpanded: true),
@@ -531,9 +549,11 @@ class AddRecipeState extends State<AddRecipe> {
                               );
                             }).toList(),
                             onChanged: (value) {
-                              setState(() {
-                                min = value!;
-                              });
+                              if (mounted) {
+                                setState(() {
+                                  min = value!;
+                                });
+                              }
                             },
                             borderRadius: BorderRadius.circular(15.0),
                             isExpanded: true),
@@ -744,16 +764,20 @@ class AddRecipeState extends State<AddRecipe> {
         if (add) {
           stepsList.insert(index + 1, "");
           stepPics[(index + 1).toString()] = '';
-          setState(() {
-            clearSteps[index + 1] = false;
-          });
+          if (mounted) {
+            setState(() {
+              clearSteps[index + 1] = false;
+            });
+          }
           // print(_clearSteps);
         } else {
           stepsList.removeAt(i);
           stepPics[i.toString()] = '';
           await _clear('s', i, 's_${i + 1}', true);
           stepPics = await _adjustImages(i, stepPics, false, "s_");
-          setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
         }
         if (mounted) {
           setState(() {});
@@ -806,15 +830,19 @@ class AddRecipeState extends State<AddRecipe> {
         if (add) {
           ingredientsList.insert(index + 1, "");
           ingredientPics[(index + 1).toString()] = '';
-          setState(() {
-            clearIngs[index + 1] = false;
-          });
+          if (mounted) {
+            setState(() {
+              clearIngs[index + 1] = false;
+            });
+          }
         } else {
           ingredientsList.removeAt(i);
           ingredientPics[i.toString()] = '';
           await _clear('i', i, 'i_${i + 1}', true);
           ingredientPics = await _adjustImages(i, ingredientPics, true, "i_");
-          setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
         }
         if (mounted) {
           setState(() {});
@@ -858,19 +886,20 @@ class AddRecipeState extends State<AddRecipe> {
           ),
           IOSUiSettings(title: 'Garnish it,')
         ]);
-
-    setState(() {
-      if (key == 'r') {
-        recipePic = File(cropped!.path);
-        _imageFile = null;
-      } else if (key == 'i') {
-        ingredientPics[(index).toString()] = cropped;
-        _imageFile = null;
-      } else {
-        stepPics[(index).toString()] = cropped;
-        _imageFile = null;
-      }
-    });
+    if (mounted) {
+      setState(() {
+        if (key == 'r') {
+          recipePic = File(cropped!.path);
+          _imageFile = null;
+        } else if (key == 'i') {
+          ingredientPics[(index).toString()] = cropped;
+          _imageFile = null;
+        } else {
+          stepPics[(index).toString()] = cropped;
+          _imageFile = null;
+        }
+      });
+    }
   }
 
   /// Select an image via gallery or camera
@@ -881,20 +910,24 @@ class AddRecipeState extends State<AddRecipe> {
     if (permissionStatus.isGranted) {
       XFile? selected = await ImagePicker().pickImage(source: source);
       if (selected == null) return;
-      setState(() {
-        _imageFile = File(selected.path);
-        _cropImage(key, index);
-      });
+      if (mounted) {
+        setState(() {
+          _imageFile = File(selected.path);
+          _cropImage(key, index);
+        });
+      }
     }
   }
 
   /// Remove image
   Future<void> _clear(key, index, imgName, [clearRecost = false]) async {
     if (key == 'r') {
-      setState(() {
-        recipePic = null;
-        isUpload = false;
-      });
+      if (mounted) {
+        setState(() {
+          recipePic = null;
+          isUpload = false;
+        });
+      }
 
       var token = await storage.read(key: "token");
       // print(formData.files[0]);
@@ -907,12 +940,14 @@ class AddRecipeState extends State<AddRecipe> {
           }),
           data: {'uuid': widget.uuid, 'imgName': imgName});
     } else if (key == 'i') {
-      setState(() {
-        ingredientPics[(index).toString()] = '';
-        if (clearRecost) {
-          clearIngs[index] = true;
-        }
-      });
+      if (mounted) {
+        setState(() {
+          ingredientPics[(index).toString()] = '';
+          if (clearRecost) {
+            clearIngs[index] = true;
+          }
+        });
+      }
       var token = await storage.read(key: "token");
       // print(formData.files[0]);
       await dio.post(
@@ -924,12 +959,14 @@ class AddRecipeState extends State<AddRecipe> {
           }),
           data: {'uuid': widget.uuid, 'imgName': imgName});
     } else {
-      setState(() {
-        stepPics[(index).toString()] = '';
-        if (clearRecost) {
-          clearSteps[index] = true;
-        }
-      });
+      if (mounted) {
+        setState(() {
+          stepPics[(index).toString()] = '';
+          if (clearRecost) {
+            clearSteps[index] = true;
+          }
+        });
+      }
 
       var token = await storage.read(key: "token");
       // print(formData.files[0]);
@@ -1015,7 +1052,6 @@ class AddRecipeState extends State<AddRecipe> {
   void dispose() {
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -1193,9 +1229,11 @@ class AddRecipeState extends State<AddRecipe> {
                         4);
                   }
                 } else {
-                  setState(() {
-                    _currentStep += 1;
-                  });
+                  if (mounted) {
+                    setState(() {
+                      _currentStep += 1;
+                    });
+                  }
                   if (_currentStep == 1) {
                     var url =
                         "https://api-tassie.herokuapp.com/recs/updateRecipe";
@@ -1302,9 +1340,11 @@ class AddRecipeState extends State<AddRecipe> {
               onStepCancel: () {
                 _currentStep == 0
                     ? null
-                    : setState(() {
-                        _currentStep -= 1;
-                      });
+                    : (mounted)
+                        ? setState(() {
+                            _currentStep -= 1;
+                          })
+                        : null;
               },
               steps: steps(size),
             ),

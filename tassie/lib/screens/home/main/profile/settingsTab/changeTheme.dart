@@ -68,7 +68,7 @@ class ChangeThemeState extends State<ChangeTheme> {
                 Theme.of(context).brightness == Brightness.light
                     ? Brightness.dark
                     : Brightness.light),
-        title: const Text( "Change Email"),
+        title: const Text("Change Email"),
         actions: [
           IconButton(
               icon: const Icon(
@@ -79,7 +79,6 @@ class ChangeThemeState extends State<ChangeTheme> {
                 FocusScope.of(context).unfocus();
 
                 Navigator.pop(context);
-               
               })
         ],
       ),
@@ -118,31 +117,33 @@ class ChangeThemeState extends State<ChangeTheme> {
   }
 
   void changeTheme(int index, String thme) {
-    setState(() {
-      theme = thme;
-      selectedTheme = index;
-      if (theme == "System") {
-        // if (themeNotifier.isDark['system'] == "false") {
-        // themeNotifier.isDark = {
-        //   "system": "true",
-        //   "light": "false"
-        // };
-        Get.changeThemeMode(ThemeMode.system);
-        // }
-      } else if (theme == "Light") {
-        // themeNotifier.isDark = {
-        //   "system": "false",
-        //   "light": "true"
-        // };
-        Get.changeThemeMode(ThemeMode.light);
-      } else {
-        // themeNotifier.isDark = {
-        //   "system": "false",
-        //   "light": "false"
-        // };
-        Get.changeThemeMode(ThemeMode.dark);
-      }
-    });
+    if (mounted) {
+      setState(() {
+        theme = thme;
+        selectedTheme = index;
+        if (theme == "System") {
+          // if (themeNotifier.isDark['system'] == "false") {
+          // themeNotifier.isDark = {
+          //   "system": "true",
+          //   "light": "false"
+          // };
+          Get.changeThemeMode(ThemeMode.system);
+          // }
+        } else if (theme == "Light") {
+          // themeNotifier.isDark = {
+          //   "system": "false",
+          //   "light": "true"
+          // };
+          Get.changeThemeMode(ThemeMode.light);
+        } else {
+          // themeNotifier.isDark = {
+          //   "system": "false",
+          //   "light": "false"
+          // };
+          Get.changeThemeMode(ThemeMode.dark);
+        }
+      });
+    }
     // print(flavour);
   }
 

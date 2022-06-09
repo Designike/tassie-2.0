@@ -63,9 +63,11 @@ class ViewRecAllCommentsState extends State<ViewRecAllComments> {
   void _getMoreData(int index) async {
     if (!isEnd) {
       if (!isLazyLoading) {
-        setState(() {
-          isLazyLoading = true;
-        });
+        if (mounted) {
+          setState(() {
+            isLazyLoading = true;
+          });
+        }
         var url =
             'https://api-tassie.herokuapp.com/recs/lazyreccomment/${widget.recipeUuid}/${widget.userUuid}/$index';
 
@@ -90,24 +92,29 @@ class ViewRecAllCommentsState extends State<ViewRecAllComments> {
           }
 
           // print(dp);
-          setState(() {
-            if (index == 1) {
-              isLoading = false;
-            }
-            isLazyLoading = false;
-            comments.addAll(tList);
-            for (int i = 0; i < tList.length; i++) {
-              AsyncMemoizer memoizer4 = AsyncMemoizer();
-              Future storedFuture = loadImg(tList[i]['profilePic'], memoizer4);
-              commentStoredFutures.add(storedFuture);
-            }
-            page++;
-          });
+          if (mounted) {
+            setState(() {
+              if (index == 1) {
+                isLoading = false;
+              }
+              isLazyLoading = false;
+              comments.addAll(tList);
+              for (int i = 0; i < tList.length; i++) {
+                AsyncMemoizer memoizer4 = AsyncMemoizer();
+                Future storedFuture =
+                    loadImg(tList[i]['profilePic'], memoizer4);
+                commentStoredFutures.add(storedFuture);
+              }
+              page++;
+            });
+          }
           if (response.data['data']['comments']['results']['comments'].length ==
               0) {
-            setState(() {
-              isEnd = true;
-            });
+            if (mounted) {
+              setState(() {
+                isEnd = true;
+              });
+            }
           }
         }
         // print(comments);
@@ -183,9 +190,11 @@ class ViewRecAllCommentsState extends State<ViewRecAllComments> {
                         recipeUuid: widget.recipeUuid,
                         storedFuture: commentStoredFutures[index],
                         removeComment: (ind) {
-                          setState(() {
-                            comments.removeAt(ind);
-                          });
+                          if (mounted) {
+                            setState(() {
+                              comments.removeAt(ind);
+                            });
+                          }
                           // Navigator.pushReplacement(
                           //     context,
                           //     MaterialPageRoute(
@@ -264,7 +273,9 @@ class ViewRecAllCommentsState extends State<ViewRecAllComments> {
                                 if (!text.hasData) {
                                   return GestureDetector(
                                       onTap: () {
-                                        setState(() {});
+                                        if (mounted) {
+                                          setState(() {});
+                                        }
                                       },
                                       child: const SizedBox(
                                           height: 48.0,

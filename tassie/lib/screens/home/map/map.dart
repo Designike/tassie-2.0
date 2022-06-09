@@ -11,7 +11,8 @@ import 'package:tassie/utils/imgLoader.dart';
 import 'package:tassie/utils/snackbar.dart';
 
 class TassieMap extends StatefulWidget {
-  const TassieMap({required this.dp, required this.rightSwipe, Key? key}) : super(key: key);
+  const TassieMap({required this.dp, required this.rightSwipe, Key? key})
+      : super(key: key);
   final String dp;
   final void Function() rightSwipe;
 
@@ -40,8 +41,8 @@ class _TassieMapState extends State<TassieMap> {
       if (!serviceEnabled) {
         await Future.delayed(const Duration(seconds: 1));
 
-      if (!mounted) return;
-        showSnack(context, 'please turn on location', (){}, 'OK', 4);
+        if (!mounted) return;
+        showSnack(context, 'please turn on location', () {}, 'OK', 4);
       }
     }
 
@@ -51,8 +52,8 @@ class _TassieMapState extends State<TassieMap> {
       if (permissionGranted != PermissionStatus.granted) {
         await Future.delayed(const Duration(seconds: 1));
 
-      if (!mounted) return;
-        showSnack(context, 'please turn on location', (){}, 'OK', 4);
+        if (!mounted) return;
+        showSnack(context, 'please turn on location', () {}, 'OK', 4);
       }
     }
   }
@@ -61,11 +62,13 @@ class _TassieMapState extends State<TassieMap> {
     LocationData locationData;
     Location location = Location();
     locationData = await location.getLocation();
-    setState(() {
-      lat = locationData.latitude!;
-      lng = locationData.longitude!;
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        lat = locationData.latitude!;
+        lng = locationData.longitude!;
+        isLoading = false;
+      });
+    }
     // location.onLocationChanged.listen((LocationData currentLocation) {
     //   setState(() {
     //     lat = currentLocation.latitude!;
@@ -100,7 +103,6 @@ class _TassieMapState extends State<TassieMap> {
   void dispose() {
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -184,13 +186,15 @@ class _TassieMapState extends State<TassieMap> {
                                       if (!text.hasData) {
                                         return GestureDetector(
                                             onTap: () {
-                                              setState(() {});
+                                              if (mounted) {
+                                                setState(() {});
+                                              }
                                             },
                                             child: const SizedBox(
                                                 height: 48,
                                                 width: 48,
                                                 child: Center(
-                                                  child:  Icon(
+                                                  child: Icon(
                                                     Icons.refresh,
                                                     // size: 50.0,
                                                     color: kDark,
@@ -200,8 +204,8 @@ class _TassieMapState extends State<TassieMap> {
                                       return Ink.image(
                                         height: 48,
                                         width: 48,
-                                        image: NetworkImage(
-                                            text.data.toString()),
+                                        image:
+                                            NetworkImage(text.data.toString()),
                                         fit: BoxFit.cover,
                                         child: InkWell(
                                           onTap: () {},

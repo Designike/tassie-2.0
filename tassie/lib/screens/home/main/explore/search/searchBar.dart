@@ -35,11 +35,13 @@ class SearchBarState extends State<SearchBar> {
     if (!isEndR || !isEndU || !isEndT) {
       if (!isLazyLoadingR || !isLazyLoadingU || !isLazyLoadingT) {
         // showSuggestions(context);
-        setState(() {
-          isLazyLoadingR = true;
-          isLazyLoadingU = true;
-          isLazyLoadingT = true;
-        });
+        if (mounted) {
+          setState(() {
+            isLazyLoadingR = true;
+            isLazyLoadingU = true;
+            isLazyLoadingT = true;
+          });
+        }
 
         var url =
             "https://api-tassie.herokuapp.com/search/lazySearch/${index.toString()}/$query";
@@ -53,54 +55,64 @@ class SearchBarState extends State<SearchBar> {
         );
         // print(response.data);
         if (response.data['data'] != null) {
-          setState(() {
-            // if (index == 1) {
-            //   isLoading = false;
-            // }
-            isLazyLoadingR = false;
-            isLazyLoadingU = false;
-            isLazyLoadingT = false;
-            // posts.addAll(tList);
-            // print(recs);
-            if (response.data['data']['recs'] != null) {
-              recipes.addAll(response.data['data']['recs']);
-              // print(noOfLikes);
-            }
-            if (response.data['data']['tags'] != null) {
-              tags.addAll(response.data['data']['tags']);
-              // print(noOfLikes);
-            }
-            if (response.data['data']['users'] != null) {
-              users.addAll(response.data['data']['users']);
-              // print(noOfLikes);
-            }
-            isLoading = false;
-            page++;
-          });
+          if (mounted) {
+            setState(() {
+              // if (index == 1) {
+              //   isLoading = false;
+              // }
+              isLazyLoadingR = false;
+              isLazyLoadingU = false;
+              isLazyLoadingT = false;
+              // posts.addAll(tList);
+              // print(recs);
+              if (response.data['data']['recs'] != null) {
+                recipes.addAll(response.data['data']['recs']);
+                // print(noOfLikes);
+              }
+              if (response.data['data']['tags'] != null) {
+                tags.addAll(response.data['data']['tags']);
+                // print(noOfLikes);
+              }
+              if (response.data['data']['users'] != null) {
+                users.addAll(response.data['data']['users']);
+                // print(noOfLikes);
+              }
+              isLoading = false;
+              page++;
+            });
+          }
           // print(response.data['data']['posts']);
           if (response.data['data']['recs'] == null) {
-            setState(() {
-              isEndR = true;
-            });
+            if (mounted) {
+              setState(() {
+                isEndR = true;
+              });
+            }
           }
           if (response.data['data']['users'] == null) {
-            setState(() {
-              isEndU = true;
-            });
+            if (mounted) {
+              setState(() {
+                isEndU = true;
+              });
+            }
           }
           if (response.data['data']['tags'] == null) {
-            setState(() {
-              isEndT = true;
-            });
+            if (mounted) {
+              setState(() {
+                isEndT = true;
+              });
+            }
           }
           // print(recs);
         } else {
-          setState(() {
-            isLoading = false;
-            isLazyLoadingR = false;
-            isLazyLoadingU = false;
-            isLazyLoadingT = false;
-          });
+          if (mounted) {
+            setState(() {
+              isLoading = false;
+              isLazyLoadingR = false;
+              isLazyLoadingU = false;
+              isLazyLoadingT = false;
+            });
+          }
         }
       }
     }
@@ -181,9 +193,11 @@ class SearchBarState extends State<SearchBar> {
                       recipes = [];
                       users = [];
                       tags = [];
-                      setState(() {
-                        isLoading = true;
-                      });
+                      if (mounted) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                      }
                       _getRecosts(page);
                     },
                   ),

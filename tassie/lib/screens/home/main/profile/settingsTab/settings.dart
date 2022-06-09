@@ -35,7 +35,6 @@ class SettingsPageState extends State<SettingsPage> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,7 +75,7 @@ class SettingsPageState extends State<SettingsPage> {
                 SizedBox(
                   width: 8,
                 ),
-                 Text(
+                Text(
                   "Account",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
@@ -118,17 +117,16 @@ class SettingsPageState extends State<SettingsPage> {
             ),
             Row(
               children: const [
-                 Icon(
+                Icon(
                   Icons.settings,
                   color: kPrimaryColor,
                 ),
-                 SizedBox(
+                SizedBox(
                   width: 8,
                 ),
-                 Text(
+                Text(
                   "General",
-                  style:  TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -167,9 +165,11 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
                 onPressed: () async {
                   try {
-                    setState(() {
-                      isClicked = true;
-                    });
+                    if (mounted) {
+                      setState(() {
+                        isClicked = true;
+                      });
+                    }
                     var token = await storage.read(key: "token");
                     await dio.get(
                       "https://api-tassie.herokuapp.com/user/logout/",
@@ -213,7 +213,7 @@ class SettingsPageState extends State<SettingsPage> {
                       )
                     : const Text(
                         "SIGN OUT",
-                        style:  TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           letterSpacing: 2,
                           // color: Colors.black,

@@ -130,9 +130,11 @@ class ViewRecPostState extends State<ViewRecPost> {
   Future<void> getImage() async {
     storedFuture = loadImg(recipeImageID, memoizer);
     storedFuture3 = loadImg(dp, memoizer3);
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> getRecipe() async {
@@ -153,58 +155,64 @@ class ViewRecPostState extends State<ViewRecPost> {
         });
 
     if (response.data != null) {
-      setState(() {
-        // print("ertyu");
-        desc = response.data['data']['recipe']['desc'];
-        stepPics.addAll(response.data['data']['recipe']['stepPics']);
-        steps.addAll(response.data['data']['recipe']['steps']);
-        ingredients.addAll(response.data['data']['recipe']['ingredients']);
-        // print(ingredients);
-        ingredientPics
-            .addAll(response.data['data']['recipe']['ingredientPics']);
-        comments.addAll(response.data['data']['recipe']['comments']);
-        similar.addAll(response.data['data']['similar']);
-        isBookmarked = response.data['data']['recipeData']['isBookmarked'];
-        isLiked = response.data['data']['recipeData']['isLiked'];
-        recipeImageID = response.data['data']['recipe']['recipeImageID'];
-        // isLazyLoading = false;
-        if (response.data['data']['recipeData']['userRating'].isNotEmpty) {
-          rating = response.data['data']['recipeData']['userRating'][0]['star']
-              .toDouble();
-        } else {
-          rating = 0.0;
-        }
-        estimatedTime = response.data['data']['recipe']['estimatedTime'];
-        setTime(estimatedTime);
-        isSubscribed = response.data['data']['isSubscribed'];
-        recipeName = response.data['data']['recipe']['name'];
-        chefName = response.data['data']['recipe']['username'];
-        isVeg = response.data['data']['recipe']['veg'];
-        course = response.data['data']['recipe']['course'];
-        flavour = response.data['data']['recipe']['flavour'];
-        isLunch = response.data['data']['recipe']['isLunch'];
-        isBreakfast = response.data['data']['recipe']['isBreakfast'];
-        isDinner = response.data['data']['recipe']['isDinner'];
-        isCraving = response.data['data']['recipe']['isCraving'];
-        one = response.data['data']['recipeData']['1'];
-        two = response.data['data']['recipeData']['2'];
-        three = response.data['data']['recipeData']['3'];
-        four = response.data['data']['recipeData']['4'];
-        five = response.data['data']['recipeData']['5'];
-        totalRatings = response.data['data']['recipeData']['ratings'];
-        if (totalRatings != 0) {
-          meanRating =
-              ((five * 5) + (four * 4) + (three * 3) + (two * 2) + (one * 1)) /
-                  totalRatings;
-        } else {
-          meanRating = 0;
-        }
+      if (mounted) {
+        setState(() {
+          // print("ertyu");
+          desc = response.data['data']['recipe']['desc'];
+          stepPics.addAll(response.data['data']['recipe']['stepPics']);
+          steps.addAll(response.data['data']['recipe']['steps']);
+          ingredients.addAll(response.data['data']['recipe']['ingredients']);
+          // print(ingredients);
+          ingredientPics
+              .addAll(response.data['data']['recipe']['ingredientPics']);
+          comments.addAll(response.data['data']['recipe']['comments']);
+          similar.addAll(response.data['data']['similar']);
+          isBookmarked = response.data['data']['recipeData']['isBookmarked'];
+          isLiked = response.data['data']['recipeData']['isLiked'];
+          recipeImageID = response.data['data']['recipe']['recipeImageID'];
+          // isLazyLoading = false;
+          if (response.data['data']['recipeData']['userRating'].isNotEmpty) {
+            rating = response.data['data']['recipeData']['userRating'][0]
+                    ['star']
+                .toDouble();
+          } else {
+            rating = 0.0;
+          }
+          estimatedTime = response.data['data']['recipe']['estimatedTime'];
+          setTime(estimatedTime);
+          isSubscribed = response.data['data']['isSubscribed'];
+          recipeName = response.data['data']['recipe']['name'];
+          chefName = response.data['data']['recipe']['username'];
+          isVeg = response.data['data']['recipe']['veg'];
+          course = response.data['data']['recipe']['course'];
+          flavour = response.data['data']['recipe']['flavour'];
+          isLunch = response.data['data']['recipe']['isLunch'];
+          isBreakfast = response.data['data']['recipe']['isBreakfast'];
+          isDinner = response.data['data']['recipe']['isDinner'];
+          isCraving = response.data['data']['recipe']['isCraving'];
+          one = response.data['data']['recipeData']['1'];
+          two = response.data['data']['recipeData']['2'];
+          three = response.data['data']['recipeData']['3'];
+          four = response.data['data']['recipeData']['4'];
+          five = response.data['data']['recipeData']['5'];
+          totalRatings = response.data['data']['recipeData']['ratings'];
+          if (totalRatings != 0) {
+            meanRating = ((five * 5) +
+                    (four * 4) +
+                    (three * 3) +
+                    (two * 2) +
+                    (one * 1)) /
+                totalRatings;
+          } else {
+            meanRating = 0;
+          }
 
-        // stepsWidgetList = generateList(steps, stepPics);
-        // commentsWidgetList = generateCommentList();
-        // similarWidgetList = generateSimilarList();
-        // isLoading = false;
-      });
+          // stepsWidgetList = generateList(steps, stepPics);
+          // commentsWidgetList = generateCommentList();
+          // similarWidgetList = generateSimilarList();
+          // isLoading = false;
+        });
+      }
       ingWidgetList = await generateList(ingredients, ingredientPics, true);
       // print
       stepsWidgetList = await generateList(steps, stepPics, false);
@@ -215,10 +223,12 @@ class ViewRecPostState extends State<ViewRecPost> {
   }
 
   void setTime(int time) {
-    setState(() {
-      hours = time ~/ 60;
-      mins = time % 60;
-    });
+    if (mounted) {
+      setState(() {
+        hours = time ~/ 60;
+        mins = time % 60;
+      });
+    }
   }
 
   String desc = "";
@@ -370,13 +380,15 @@ class ViewRecPostState extends State<ViewRecPost> {
                         ? const Text('Show less')
                         : const Text('Show more'),
                 onPressed: () {
-                  setState(() {
-                    if (isIng == true) {
-                      isExpandedIng = !isExpandedIng;
-                    } else {
-                      isExpandedSteps = !isExpandedSteps;
-                    }
-                  });
+                  if (mounted) {
+                    setState(() {
+                      if (isIng == true) {
+                        isExpandedIng = !isExpandedIng;
+                      } else {
+                        isExpandedSteps = !isExpandedSteps;
+                      }
+                    });
+                  }
                 },
                 style: TextButton.styleFrom(primary: kPrimaryColor),
               )
@@ -451,9 +463,11 @@ class ViewRecPostState extends State<ViewRecPost> {
           recipeUuid: widget.recs['uuid'],
           storedFuture: commentStoredFutures[(i + 1).toString()],
           removeComment: (ind) {
-            setState(() {
-              comments.remove(ind);
-            });
+            if (mounted) {
+              setState(() {
+                comments.remove(ind);
+              });
+            }
           },
           uuid: uuid,
           isPost: false,
@@ -575,9 +589,11 @@ class ViewRecPostState extends State<ViewRecPost> {
                                 }),
                                 data: {'uuid': widget.recs['uuid']});
                             widget.funcB(false);
-                            setState(() {
-                              isBookmarked = !isBookmarked;
-                            });
+                            if (mounted) {
+                              setState(() {
+                                isBookmarked = !isBookmarked;
+                              });
+                            }
                           } else {
                             var token = await storage.read(key: "token");
                             await dio.post(
@@ -590,9 +606,11 @@ class ViewRecPostState extends State<ViewRecPost> {
                                 }),
                                 data: {'uuid': widget.recs['uuid']});
                             widget.funcB(true);
-                            setState(() {
-                              isBookmarked = !isBookmarked;
-                            });
+                            if (mounted) {
+                              setState(() {
+                                isBookmarked = !isBookmarked;
+                              });
+                            }
                           }
                         },
                       ),
@@ -625,9 +643,11 @@ class ViewRecPostState extends State<ViewRecPost> {
                                 }),
                                 data: {'uuid': widget.recs['uuid']});
                             // widget.func(false);
-                            setState(() {
-                              isLiked = !isLiked;
-                            });
+                            if (mounted) {
+                              setState(() {
+                                isLiked = !isLiked;
+                              });
+                            }
                           } else {
                             var token = await storage.read(key: "token");
                             dio.post(
@@ -640,9 +660,11 @@ class ViewRecPostState extends State<ViewRecPost> {
                                 }),
                                 data: {'uuid': widget.recs['uuid']});
                             // widget.func(true);
-                            setState(() {
-                              isLiked = !isLiked;
-                            });
+                            if (mounted) {
+                              setState(() {
+                                isLiked = !isLiked;
+                              });
+                            }
                           }
                           // print(likeNumber.toString());
                         },
@@ -716,9 +738,11 @@ class ViewRecPostState extends State<ViewRecPost> {
                                         const SizedBox(height: 16),
                                         GestureDetector(
                                           onTap: () async {
-                                            setState(() {
-                                              isPop = true;
-                                            });
+                                            if (mounted) {
+                                              setState(() {
+                                                isPop = true;
+                                              });
+                                            }
                                             Navigator.of(context).pop(true);
                                             // Navigator.of(context, rootNavigator: false).pop();
                                             var url =
@@ -841,13 +865,15 @@ class ViewRecPostState extends State<ViewRecPost> {
                                   if (!text.hasData) {
                                     return GestureDetector(
                                         onTap: () {
-                                          setState(() {});
+                                          if (mounted) {
+                                            setState(() {});
+                                          }
                                         },
                                         child: const Center(
                                           child: Icon(
-                                        Icons.refresh,
-                                        size: 50.0,
-                                        color: kDark,
+                                            Icons.refresh,
+                                            size: 50.0,
+                                            color: kDark,
                                           ),
                                         ));
                                   }
@@ -1164,7 +1190,9 @@ class ViewRecPostState extends State<ViewRecPost> {
                                               if (!text.hasData) {
                                                 return GestureDetector(
                                                     onTap: () {
-                                                      setState(() {});
+                                                      if (mounted) {
+                                                        setState(() {});
+                                                      }
                                                     },
                                                     child: SizedBox(
                                                         height: (size.width -
@@ -1228,9 +1256,11 @@ class ViewRecPostState extends State<ViewRecPost> {
                                                   });
                                               if (response.data['status'] ==
                                                   true) {
-                                                setState(() {
-                                                  isSubscribed = false;
-                                                });
+                                                if (mounted) {
+                                                  setState(() {
+                                                    isSubscribed = false;
+                                                  });
+                                                }
                                               } else {
                                                 await Future.delayed(
                                                     const Duration(seconds: 1));
@@ -1268,9 +1298,11 @@ class ViewRecPostState extends State<ViewRecPost> {
                                                   });
                                               if (response.data['status'] ==
                                                   true) {
-                                                setState(() {
-                                                  isSubscribed = true;
-                                                });
+                                                if (mounted) {
+                                                  setState(() {
+                                                    isSubscribed = true;
+                                                  });
+                                                }
                                               } else {
                                                 await Future.delayed(
                                                     const Duration(seconds: 1));
@@ -1327,9 +1359,11 @@ class ViewRecPostState extends State<ViewRecPost> {
                               ingredients.length > 2
                                   ? IconButton(
                                       onPressed: () {
-                                        setState(() {
-                                          isExpandedIng = !isExpandedIng;
-                                        });
+                                        if (mounted) {
+                                          setState(() {
+                                            isExpandedIng = !isExpandedIng;
+                                          });
+                                        }
                                       },
                                       icon: isExpandedIng
                                           ? const Icon(
@@ -1407,9 +1441,11 @@ class ViewRecPostState extends State<ViewRecPost> {
                               steps.length > 2
                                   ? IconButton(
                                       onPressed: () {
-                                        setState(() {
-                                          isExpandedSteps = !isExpandedSteps;
-                                        });
+                                        if (mounted) {
+                                          setState(() {
+                                            isExpandedSteps = !isExpandedSteps;
+                                          });
+                                        }
                                       },
                                       icon: isExpandedSteps
                                           ? const Icon(
@@ -1648,9 +1684,11 @@ class ViewRecPostState extends State<ViewRecPost> {
                                 updateOnDrag: false,
                                 tapOnlyMode: true,
                                 onRatingUpdate: (rate) async {
-                                  setState(() {
-                                    rating = rate;
-                                  });
+                                  if (mounted) {
+                                    setState(() {
+                                      rating = rate;
+                                    });
+                                  }
                                   //to update user rating
                                   var token = await storage.read(key: "token");
                                   Response response = await dio.post(
@@ -1705,9 +1743,11 @@ class ViewRecPostState extends State<ViewRecPost> {
                                           'uuid': widget.recs['uuid'],
                                           'star': rating,
                                         });
-                                    setState(() {
-                                      rating = 0.0;
-                                    });
+                                    if (mounted) {
+                                      setState(() {
+                                        rating = 0.0;
+                                      });
+                                    }
 
                                     if (response.data != null) {
                                       if (response.data['status'] == true) {
@@ -1750,7 +1790,7 @@ class ViewRecPostState extends State<ViewRecPost> {
                           children: [
                             const Text(
                               'Comments',
-                              style:  TextStyle(
+                              style: TextStyle(
                                 // color: kPrimaryColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20.0,
@@ -1809,9 +1849,8 @@ class ViewRecPostState extends State<ViewRecPost> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: const [
-                                       Text('Show all comments'),
-                                       Icon(
-                                          Icons.keyboard_arrow_right_rounded),
+                                      Text('Show all comments'),
+                                      Icon(Icons.keyboard_arrow_right_rounded),
                                     ],
                                   ),
                                 ),
@@ -1835,11 +1874,11 @@ class ViewRecPostState extends State<ViewRecPost> {
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
-                                    children: const  [
-                                       Icon(Icons.question_answer_rounded,
+                                    children: const [
+                                      Icon(Icons.question_answer_rounded,
                                           size: 35.0, color: kDark),
-                                       SizedBox(height: 10.0),
-                                       Text('No comments yet'),
+                                      SizedBox(height: 10.0),
+                                      Text('No comments yet'),
                                     ],
                                   ),
                                 ),
@@ -1973,7 +2012,6 @@ class ViewRecPostState extends State<ViewRecPost> {
     // );
   }
 }
-
 
 class MyBullet extends StatelessWidget {
   const MyBullet({required this.index, Key? key}) : super(key: key);

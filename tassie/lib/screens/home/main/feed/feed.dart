@@ -39,7 +39,7 @@ class FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
   void _getMoreData(int index) async {
     // Provider.of<LeftSwipe>(context, listen: false).setSwipe(true);
     if (!isEnd) {
-      if (!isLazyLoading) {
+      if (mounted && !isLazyLoading) {
         setState(() {
           isLazyLoading = true;
         });
@@ -59,36 +59,42 @@ class FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
         // List tList = [];
         if (response.data['status'] == true) {
           if (response.data['data']['posts'] != null) {
-            setState(() {
-              if (index == 1) {
-                isLoading = false;
-              }
-              isLazyLoading = false;
-              posts.addAll(response.data['data']['posts']['results']);
-              // posts.addAll(tList);
-              if (response.data['data']['posts']['noOfComments'] != null) {
-                noOfComments
-                    .addAll(response.data['data']['posts']['noOfComments']);
-              }
-              if (response.data['data']['posts']['noOfLikes'] != null) {
-                noOfLikes.addAll(response.data['data']['posts']['noOfLikes']);
-              }
-              if (response.data['data']['posts']['bookmarks'] != null) {
-                bookmark.addAll(response.data['data']['posts']['bookmarks']);
-              }
-              page++;
-            });
-            // print(response.data['data']['posts']);
-            if (response.data['data']['posts']['results'].length == 0) {
+            if (mounted) {
               setState(() {
-                isEnd = true;
+                if (index == 1) {
+                  isLoading = false;
+                }
+                isLazyLoading = false;
+                posts.addAll(response.data['data']['posts']['results']);
+                // posts.addAll(tList);
+                if (response.data['data']['posts']['noOfComments'] != null) {
+                  noOfComments
+                      .addAll(response.data['data']['posts']['noOfComments']);
+                }
+                if (response.data['data']['posts']['noOfLikes'] != null) {
+                  noOfLikes.addAll(response.data['data']['posts']['noOfLikes']);
+                }
+                if (response.data['data']['posts']['bookmarks'] != null) {
+                  bookmark.addAll(response.data['data']['posts']['bookmarks']);
+                }
+                page++;
               });
             }
+            // print(response.data['data']['posts']);
+            if (response.data['data']['posts']['results'].length == 0) {
+              if (mounted) {
+                setState(() {
+                  isEnd = true;
+                });
+              }
+            }
           } else {
-            setState(() {
-              isLoading = false;
-              isLazyLoading = false;
-            });
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+                isLazyLoading = false;
+              });
+            }
           }
         } else {
           await storage.delete(key: "token");
@@ -134,16 +140,18 @@ class FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
   }
 
   Future<void> _refreshPage() async {
-    setState(() {
-      page = 1;
-      posts = [];
-      noOfComments = [];
-      noOfLikes = [];
-      bookmark = [];
-      isEnd = false;
-      isLoading = true;
-      _getMoreData(page);
-    });
+    if (mounted) {
+      setState(() {
+        page = 1;
+        posts = [];
+        noOfComments = [];
+        noOfLikes = [];
+        bookmark = [];
+        isEnd = false;
+        isLoading = true;
+        _getMoreData(page);
+      });
+    }
   }
 
   @override
@@ -237,32 +245,40 @@ class FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                                   noOfComment: noOfComments[index],
                                   noOfLike: noOfLikes[index],
                                   plusComment: () {
-                                    setState(() {
-                                      noOfComments[index]['count'] += 1;
-                                    });
+                                    if (mounted) {
+                                      setState(() {
+                                        noOfComments[index]['count'] += 1;
+                                      });
+                                    }
                                   },
                                   func: (islike) {
-                                    setState(() {
-                                      if (islike) {
-                                        noOfLikes[index]['count'] += 1;
-                                      } else {
-                                        noOfLikes[index]['count'] -= 1;
-                                      }
-                                      noOfLikes[index]['isLiked'] =
-                                          !noOfLikes[index]['isLiked'];
-                                    });
+                                    if (mounted) {
+                                      setState(() {
+                                        if (islike) {
+                                          noOfLikes[index]['count'] += 1;
+                                        } else {
+                                          noOfLikes[index]['count'] -= 1;
+                                        }
+                                        noOfLikes[index]['isLiked'] =
+                                            !noOfLikes[index]['isLiked'];
+                                      });
+                                    }
                                   },
                                   bookmark: bookmark[index],
                                   funcB: (isBook) {
-                                    setState(() {
-                                      bookmark[index]['isBookmarked'] =
-                                          !bookmark[index]['isBookmarked'];
-                                    });
+                                    if (mounted) {
+                                      setState(() {
+                                        bookmark[index]['isBookmarked'] =
+                                            !bookmark[index]['isBookmarked'];
+                                      });
+                                    }
                                   },
                                   minusComment: () {
-                                    setState(() {
-                                      noOfComments[index]['count'] -= 1;
-                                    });
+                                    if (mounted) {
+                                      setState(() {
+                                        noOfComments[index]['count'] -= 1;
+                                      });
+                                    }
                                   },
                                 );
                         },

@@ -27,16 +27,20 @@ class ChangeEmailState extends State<ChangeEmail> {
     try {
       Response response = await dio
           .get("https://api-tassie.herokuapp.com/user/checkEmail/$email");
-      setState(() {
-        uniqueEmail = response.data['status'];
-        notUniqText = response.data['message'];
-      });
+      if (mounted) {
+        setState(() {
+          uniqueEmail = response.data['status'];
+          notUniqText = response.data['message'];
+        });
+      }
     } on DioError catch (e) {
       if (e.response != null) {
-        setState(() {
-          uniqueEmail = e.response!.data['status'];
-          notUniqText = e.response!.data['message'];
-        });
+        if (mounted) {
+          setState(() {
+            uniqueEmail = e.response!.data['status'];
+            notUniqText = e.response!.data['message'];
+          });
+        }
       }
     }
   }

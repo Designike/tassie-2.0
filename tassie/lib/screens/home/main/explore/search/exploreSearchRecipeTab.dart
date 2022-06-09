@@ -8,7 +8,8 @@ class ExploreSearchRecipeTab extends StatefulWidget {
       {required this.recipes,
       required this.isEndR,
       required this.isLazyLoadingR,
-      Key? key}): super(key: key);
+      Key? key})
+      : super(key: key);
   final List recipes;
   final bool isEndR;
   final bool isLazyLoadingR;
@@ -18,7 +19,6 @@ class ExploreSearchRecipeTab extends StatefulWidget {
 }
 
 class ExploreSearchRecipeTabState extends State<ExploreSearchRecipeTab> {
-
   Widget _buildProgressIndicator() {
     return Padding(
       padding: const EdgeInsets.all(kDefaultPadding),
@@ -130,18 +130,20 @@ class _ExploreRecipeAvatarState extends State<ExploreRecipeAvatar> {
             if (!text.hasData) {
               return GestureDetector(
                   onTap: () {
-                    setState(() {});
+                    if (mounted) {
+                      setState(() {});
+                    }
                   },
                   child: const SizedBox(
-                    height: 50.0,
-              width: 50.0,
+                      height: 50.0,
+                      width: 50.0,
                       child: Center(
-                    child: Icon(
-                      Icons.refresh,
-                      // size: 50.0,
-                      color: kDark,
-                    ),
-                  )));
+                        child: Icon(
+                          Icons.refresh,
+                          // size: 50.0,
+                          color: kDark,
+                        ),
+                      )));
             }
             return Image(
               height: 50.0,

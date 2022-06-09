@@ -1,4 +1,3 @@
-
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:tassie/constants.dart';
@@ -7,7 +6,11 @@ import 'package:tassie/utils/imgLoader.dart';
 
 class RecipeTab extends StatefulWidget {
   const RecipeTab(
-      {required this.refreshPage, required this.recipes, required this.isEnd, Key? key}): super(key: key);
+      {required this.refreshPage,
+      required this.recipes,
+      required this.isEnd,
+      Key? key})
+      : super(key: key);
   final Future<void> Function() refreshPage;
   final List recipes;
   final bool isEnd;
@@ -16,7 +19,6 @@ class RecipeTab extends StatefulWidget {
 }
 
 class RecipeTabState extends State<RecipeTab> {
-
   Widget _buildProgressIndicator() {
     return const Padding(
       padding: EdgeInsets.all(kDefaultPadding),
@@ -179,13 +181,15 @@ class _ProfileRecipeTabChildState extends State<ProfileRecipeTabChild>
             if (!text.hasData) {
               return GestureDetector(
                   onTap: () {
-                    setState(() {});
+                    if (mounted) {
+                      setState(() {});
+                    }
                   },
                   child: const Center(
                     child: Icon(
-                  Icons.refresh,
-                  // size: 50.0,
-                  color: kDark,
+                      Icons.refresh,
+                      // size: 50.0,
+                      color: kDark,
                     ),
                   ));
             }

@@ -89,9 +89,11 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
   void _getMoreData(int index) async {
     if (!isEnd) {
       if (!isLazyLoading) {
-        setState(() {
-          isLazyLoading = true;
-        });
+        if (mounted) {
+          setState(() {
+            isLazyLoading = true;
+          });
+        }
         var url =
             "https://api-tassie.herokuapp.com/feed/lazycomment/${widget.post['uuid']}/${widget.post['userUuid']}/${index.toString()}";
         var token = await storage.read(key: "token");
@@ -114,25 +116,29 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
             tList.add(
                 response.data['data']['comments']['results']['comments'][i]);
           }
-
-          setState(() {
-            if (index == 1) {
-              isLoading = false;
-            }
-            isLazyLoading = false;
-            comments.addAll(tList);
-            for (int i = 0; i < tList.length; i++) {
-              AsyncMemoizer memoizer4 = AsyncMemoizer();
-              Future storedFuture = loadImg(tList[i]['profilePic'], memoizer4);
-              commentStoredFutures.add(storedFuture);
-            }
-            page++;
-          });
+          if (mounted) {
+            setState(() {
+              if (index == 1) {
+                isLoading = false;
+              }
+              isLazyLoading = false;
+              comments.addAll(tList);
+              for (int i = 0; i < tList.length; i++) {
+                AsyncMemoizer memoizer4 = AsyncMemoizer();
+                Future storedFuture =
+                    loadImg(tList[i]['profilePic'], memoizer4);
+                commentStoredFutures.add(storedFuture);
+              }
+              page++;
+            });
+          }
           if (response.data['data']['comments']['results']['comments'].length ==
               0) {
-            setState(() {
-              isEnd = true;
-            });
+            if (mounted) {
+              setState(() {
+                isEnd = true;
+              });
+            }
           }
         }
       }
@@ -248,7 +254,9 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                                   if (!text.hasData) {
                                                     return GestureDetector(
                                                         onTap: () {
-                                                          setState(() {});
+                                                          if (mounted) {
+                                                            setState(() {});
+                                                          }
                                                         },
                                                         child: const Center(
                                                           child: Icon(
@@ -325,7 +333,9 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                     if (!text.hasData) {
                                       return GestureDetector(
                                         onTap: () {
-                                          setState(() {});
+                                          if (mounted) {
+                                            setState(() {});
+                                          }
                                         },
                                         child: Container(
                                             margin: const EdgeInsets.all(10.0),
@@ -362,7 +372,9 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                                 'uuid': widget.post['uuid']
                                               });
                                           widget.func(true);
-                                          setState(() {});
+                                          if (mounted) {
+                                            setState(() {});
+                                          }
                                         }
                                       },
                                       splashColor: Colors.transparent,
@@ -447,7 +459,9 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                                     });
                                                 widget.func(true);
                                               }
-                                              setState(() {});
+                                              if (mounted) {
+                                                setState(() {});
+                                              }
                                               // print(likeNumber.toString());
                                             },
                                           ),
@@ -516,7 +530,9 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                             });
                                         widget.funcB(false);
                                       }
-                                      setState(() {});
+                                      if (mounted) {
+                                        setState(() {});
+                                      }
                                     },
                                   ),
                                 ],
@@ -586,9 +602,11 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                         recipeUuid: widget.post['uuid'],
                         storedFuture: commentStoredFutures[index],
                         removeComment: (ind) {
-                          setState(() {
-                            comments.remove(ind);
-                          });
+                          if (mounted) {
+                            setState(() {
+                              comments.remove(ind);
+                            });
+                          }
                         },
                         uuid: uuid,
                         isPost: true,
@@ -666,7 +684,9 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                               if (!text.hasData) {
                                 return GestureDetector(
                                     onTap: () {
-                                      setState(() {});
+                                      if (mounted) {
+                                        setState(() {});
+                                      }
                                     },
                                     child: const SizedBox(
                                         height: 48.0,

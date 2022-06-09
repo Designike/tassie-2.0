@@ -25,18 +25,20 @@ class ProfileBookmarksState extends State<ProfileBookmarks> {
   bool isLoading = true;
 
   Future<void> _refreshPage() async {
-    setState(() {
-      // page = 1;
-      page = 1;
-      recs = [];
-      posts = [];
-      isLazyLoadingR = false;
-      isLazyLoadingP = false;
-      isEndR = false;
-      isEndP = false;
-      isLoading = true;
-      getBookmarks();
-    });
+    if (mounted) {
+      setState(() {
+        // page = 1;
+        page = 1;
+        recs = [];
+        posts = [];
+        isLazyLoadingR = false;
+        isLazyLoadingP = false;
+        isEndR = false;
+        isEndP = false;
+        isLoading = true;
+        getBookmarks();
+      });
+    }
   }
 
   Future<void> getBookmarks() async {
@@ -50,37 +52,45 @@ class ProfileBookmarksState extends State<ProfileBookmarks> {
       }),
     );
     if (response.data['data'] != null) {
-      setState(() {
-        if (page == 1) {
-          isLoading = false;
-        }
-        isLazyLoadingR = false;
-        isLazyLoadingP = false;
-        if (response.data['data']['recs'] != null) {
-          recs.addAll(response.data['data']['recs']);
-        }
-        if (response.data['data']['posts'] != null) {
-          posts.addAll(response.data['data']['posts']);
-        }
-        isLoading = false;
-        page++;
-      });
-      if (response.data['data']['recs'] == null) {
+      if (mounted) {
         setState(() {
-          isEndR = true;
+          if (page == 1) {
+            isLoading = false;
+          }
+          isLazyLoadingR = false;
+          isLazyLoadingP = false;
+          if (response.data['data']['recs'] != null) {
+            recs.addAll(response.data['data']['recs']);
+          }
+          if (response.data['data']['posts'] != null) {
+            posts.addAll(response.data['data']['posts']);
+          }
+          isLoading = false;
+          page++;
         });
+      }
+      if (response.data['data']['recs'] == null) {
+        if (mounted) {
+          setState(() {
+            isEndR = true;
+          });
+        }
       }
       if (response.data['data']['posts'] == null) {
-        setState(() {
-          isEndP = true;
-        });
+        if (mounted) {
+          setState(() {
+            isEndP = true;
+          });
+        }
       }
     } else {
-      setState(() {
-        isLoading = false;
-        isLazyLoadingR = false;
-        isLazyLoadingP = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+          isLazyLoadingR = false;
+          isLazyLoadingP = false;
+        });
+      }
     }
   }
 

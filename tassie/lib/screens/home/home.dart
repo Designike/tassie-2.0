@@ -101,10 +101,12 @@ class HomeHomeState extends State<HomeHome>
     if (index == _selectedIndex) {
       _navigatorKeys[index]!.currentState?.popUntil((route) => route.isFirst);
     } else {
-      setState(() {
-        _selectedIndex = index;
-        _pageController.jumpToPage(index);
-      });
+      if (mounted) {
+        setState(() {
+          _selectedIndex = index;
+          _pageController.jumpToPage(index);
+        });
+      }
       if (index == 0) {
         // widget.toggleLeftSwipe(true);
         Provider.of<LeftSwipe>(context, listen: false).setSwipe(true);

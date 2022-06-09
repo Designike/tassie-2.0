@@ -65,32 +65,40 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
   var items = ["Edit", "Delete"];
 
   void func(bool islike) {
-    setState(() {
-      if (islike) {
-        noOfLikes += 1;
-      } else {
-        noOfLikes -= 1;
-      }
-      isLiked = !isLiked;
-    });
+    if (mounted) {
+      setState(() {
+        if (islike) {
+          noOfLikes += 1;
+        } else {
+          noOfLikes -= 1;
+        }
+        isLiked = !isLiked;
+      });
+    }
   }
 
   void funcB(bool isBook) {
-    setState(() {
-      isBookmarked = !isBookmarked;
-    });
+    if (mounted) {
+      setState(() {
+        isBookmarked = !isBookmarked;
+      });
+    }
   }
 
   void plusComment() {
-    setState(() {
-      noOfComment += 1;
-    });
+    if (mounted) {
+      setState(() {
+        noOfComment += 1;
+      });
+    }
   }
 
   void minusComment() {
-    setState(() {
-      noOfComment -= 1;
-    });
+    if (mounted) {
+      setState(() {
+        noOfComment -= 1;
+      });
+    }
   }
 
   void getStats() async {
@@ -107,17 +115,19 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
       },
     );
     if (response.data["status"] == true) {
-      setState(() {
-        noOfComment = response.data['data']['comments'];
-        noOfLikes = response.data['data']['likes'];
-        isBookmarked = response.data['data']['isBookmarked'];
-        isLiked = response.data['data']['isLiked'];
-        username = response.data['data']['username'];
-        createdAt = response.data['data']['createdAt'];
-        description = response.data['data']['description'];
-        // getdp();
-        isLoading2 = false;
-      });
+      if (mounted) {
+        setState(() {
+          noOfComment = response.data['data']['comments'];
+          noOfLikes = response.data['data']['likes'];
+          isBookmarked = response.data['data']['isBookmarked'];
+          isLiked = response.data['data']['isLiked'];
+          username = response.data['data']['username'];
+          createdAt = response.data['data']['createdAt'];
+          description = response.data['data']['description'];
+          // getdp();
+          isLoading2 = false;
+        });
+      }
     }
   }
 
@@ -156,9 +166,11 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
   void _getMoreData(int index) async {
     if (!isEnd) {
       if (!isLazyLoading) {
-        setState(() {
-          isLazyLoading = true;
-        });
+        if (mounted) {
+          setState(() {
+            isLazyLoading = true;
+          });
+        }
         var url =
             "https://api-tassie.herokuapp.com/feed/lazycomment/${widget.post['uuid']}/${widget.post['userUuid']}/$index";
         var token = await storage.read(key: "token");
@@ -181,25 +193,29 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
             tList.add(
                 response.data['data']['comments']['results']['comments'][i]);
           }
-
-          setState(() {
-            if (index == 1) {
-              isLoading = false;
-            }
-            isLazyLoading = false;
-            comments.addAll(tList);
-            for (int i = 0; i < tList.length; i++) {
-              AsyncMemoizer memoizer4 = AsyncMemoizer();
-              Future storedFuture = loadImg(tList[i]['profilePic'], memoizer4);
-              commentStoredFutures.add(storedFuture);
-            }
-            page++;
-          });
+          if (mounted) {
+            setState(() {
+              if (index == 1) {
+                isLoading = false;
+              }
+              isLazyLoading = false;
+              comments.addAll(tList);
+              for (int i = 0; i < tList.length; i++) {
+                AsyncMemoizer memoizer4 = AsyncMemoizer();
+                Future storedFuture =
+                    loadImg(tList[i]['profilePic'], memoizer4);
+                commentStoredFutures.add(storedFuture);
+              }
+              page++;
+            });
+          }
           if (response.data['data']['comments']['results']['comments'].length ==
               0) {
-            setState(() {
-              isEnd = true;
-            });
+            if (mounted) {
+              setState(() {
+                isEnd = true;
+              });
+            }
           }
         }
         // print(comments);
@@ -318,7 +334,10 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                                         if (!text.hasData) {
                                                           return GestureDetector(
                                                               onTap: () {
-                                                                setState(() {});
+                                                                if (mounted) {
+                                                                  setState(
+                                                                      () {});
+                                                                }
                                                               },
                                                               child:
                                                                   const SizedBox(
@@ -487,7 +506,9 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                               'uuid': widget.post['uuid']
                                             });
                                         func(true);
-                                        setState(() {});
+                                        if (mounted) {
+                                          setState(() {});
+                                        }
                                       }
                                     },
                                     splashColor: Colors.transparent,
@@ -520,7 +541,9 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                             if (!text.hasData) {
                                               return GestureDetector(
                                                   onTap: () {
-                                                    setState(() {});
+                                                    if (mounted) {
+                                                      setState(() {});
+                                                    }
                                                   },
                                                   child: Container(
                                                       margin:
@@ -617,7 +640,9 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                                           });
                                                       func(true);
                                                     }
-                                                    setState(() {});
+                                                    if (mounted) {
+                                                      setState(() {});
+                                                    }
                                                   },
                                                 ),
                                                 Text(
@@ -635,8 +660,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                                 IconButton(
                                                   icon: const Icon(Icons.chat),
                                                   iconSize: 30.0,
-                                                  onPressed: () {
-                                                  },
+                                                  onPressed: () {},
                                                 ),
                                                 Text(
                                                   noOfComment.toString(),
@@ -691,7 +715,9 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                                   });
                                               funcB(false);
                                             }
-                                            setState(() {});
+                                            if (mounted) {
+                                              setState(() {});
+                                            }
                                           },
                                         ),
                                       ],
@@ -771,9 +797,11 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                               recipeUuid: widget.post['uuid'],
                               storedFuture: commentStoredFutures[index],
                               removeComment: (ind) {
-                                setState(() {
-                                  comments.remove(ind);
-                                });
+                                if (mounted) {
+                                  setState(() {
+                                    comments.remove(ind);
+                                  });
+                                }
                               },
                               uuid: uuid,
                               isPost: true,
@@ -845,7 +873,9 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                     if (!text.hasData) {
                                       return GestureDetector(
                                           onTap: () {
-                                            setState(() {});
+                                            if (mounted) {
+                                              setState(() {});
+                                            }
                                           },
                                           child: const SizedBox(
                                               height: 48.0,

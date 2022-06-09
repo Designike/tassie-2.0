@@ -44,10 +44,11 @@ class EditProfileImageState extends State<EditProfileImage> {
           ),
           IOSUiSettings(title: 'Few touch-ups!,')
         ]);
-
-    setState(() {
-      _imageFile = File(cropped!.path);
-    });
+    if (mounted) {
+      setState(() {
+        _imageFile = File(cropped!.path);
+      });
+    }
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -57,15 +58,19 @@ class EditProfileImageState extends State<EditProfileImage> {
     if (permissionStatus.isGranted) {
       XFile? selected = await ImagePicker().pickImage(source: source);
       if (selected == null) return;
-      setState(() {
-        _imageFile = File(selected.path);
-        _cropImage();
-      });
+      if (mounted) {
+        setState(() {
+          _imageFile = File(selected.path);
+          _cropImage();
+        });
+      }
     }
   }
 
   void _clear() {
-    setState(() => _imageFile = null);
+    if (mounted) {
+      setState(() => _imageFile = null);
+    }
   }
 
   @override

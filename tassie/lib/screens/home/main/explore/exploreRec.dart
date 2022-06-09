@@ -116,7 +116,9 @@ class ExploreRecState extends State<ExploreRec> {
                       if (!text.hasData) {
                         return GestureDetector(
                             onTap: () {
-                              setState(() {});
+                              if (mounted) {
+                                setState(() {});
+                              }
                             },
                             child: Container(
                                 margin: const EdgeInsets.all(10.0),
@@ -177,13 +179,15 @@ class ExploreRecState extends State<ExploreRec> {
                               if (!text.hasData) {
                                 return GestureDetector(
                                     onTap: () {
-                                      setState(() {});
+                                      if (mounted) {
+                                        setState(() {});
+                                      }
                                     },
                                     child: const Center(
                                       child: Icon(
-                                    Icons.refresh,
-                                    // size: 50.0,
-                                    color: kDark,
+                                        Icons.refresh,
+                                        // size: 50.0,
+                                        color: kDark,
                                       ),
                                     ));
                               }

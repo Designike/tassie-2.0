@@ -60,10 +60,13 @@ class AdvancedSearchResultsState extends State<AdvancedSearchResults>
   void _getMoreData(int index) async {
     if (!isEnd) {
       if (!isLazyLoading) {
-        setState(() {
-          isLazyLoading = true;
-        });
-        var url = "https://api-tassie.herokuapp.com/search/lazyguess/$index/${widget.suggestionID}";
+        if (mounted) {
+          setState(() {
+            isLazyLoading = true;
+          });
+        }
+        var url =
+            "https://api-tassie.herokuapp.com/search/lazyguess/$index/${widget.suggestionID}";
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
@@ -74,50 +77,58 @@ class AdvancedSearchResultsState extends State<AdvancedSearchResults>
         );
         // print(response.data);
         if (response.data['data'] != null) {
-          setState(() {
-            if (index == 1) {
-              isLoading = false;
-            }
-            isLazyLoading = false;
-            if (response.data['data']['results'] != null) {
-              recs.addAll(response.data['data']['results']['suggest']);
-            }
-            // posts.addAll(tList);
-            // print(recs);
-            if (response.data['data']['recipeData'] != null) {
-              recipeData.addAll(response.data['data']['recipeData']);
-              // print(noOfLikes);
+          if (mounted) {
+            setState(() {
+              if (index == 1) {
+                isLoading = false;
+              }
+              isLazyLoading = false;
+              if (response.data['data']['results'] != null) {
+                recs.addAll(response.data['data']['results']['suggest']);
+              }
+              // posts.addAll(tList);
+              // print(recs);
+              if (response.data['data']['recipeData'] != null) {
+                recipeData.addAll(response.data['data']['recipeData']);
+                // print(noOfLikes);
 
-            }
-            page++;
-          });
+              }
+              page++;
+            });
+          }
           // print(response.data['data']['posts']);
           if (response.data['data']['results'] == null ||
               response.data['data']['results']['suggest'].length == 0) {
-            setState(() {
-              isEnd = true;
-            });
+            if (mounted) {
+              setState(() {
+                isEnd = true;
+              });
+            }
           }
           // print(recs);
         } else {
-          setState(() {
-            isLoading = false;
-            isLazyLoading = false;
-          });
+          if (mounted) {
+            setState(() {
+              isLoading = false;
+              isLazyLoading = false;
+            });
+          }
         }
       }
     }
   }
 
   Future<void> _refreshPage() async {
-    setState(() {
-      page = 1;
-      recs = [];
-      recipeData = [];
-      isEnd = false;
-      isLoading = true;
-      _getMoreData(page);
-    });
+    if (mounted) {
+      setState(() {
+        page = 1;
+        recs = [];
+        recipeData = [];
+        isEnd = false;
+        isLoading = true;
+        _getMoreData(page);
+      });
+    }
   }
 
   @override
@@ -207,10 +218,12 @@ class AdvancedSearchResultsState extends State<AdvancedSearchResults>
                                   recs: recs[index],
                                   recipeData: recipeData[index],
                                   funcB: (isBook) {
-                                    setState(() {
-                                      recipeData[index]['isBookmarked'] =
-                                          !recipeData[index]['isBookmarked'];
-                                    });
+                                    if (mounted) {
+                                      setState(() {
+                                        recipeData[index]['isBookmarked'] =
+                                            !recipeData[index]['isBookmarked'];
+                                      });
+                                    }
                                   },
                                 );
                           // return Container(
@@ -230,12 +243,13 @@ class AdvancedSearchResultsState extends State<AdvancedSearchResults>
                               height: size.height * 0.25,
                             ),
                             Image(
-                              image: MediaQuery.of(context)
-                                          .platformBrightness ==
-                                      Brightness.dark
-                                  ? const AssetImage('assets/images/no_feed_dark.png')
-                                  : const AssetImage(
-                                      'assets/images/no_feed_light.png'),
+                              image:
+                                  MediaQuery.of(context).platformBrightness ==
+                                          Brightness.dark
+                                      ? const AssetImage(
+                                          'assets/images/no_feed_dark.png')
+                                      : const AssetImage(
+                                          'assets/images/no_feed_light.png'),
                               width: size.width * 0.75,
                             ),
                             const SizedBox(

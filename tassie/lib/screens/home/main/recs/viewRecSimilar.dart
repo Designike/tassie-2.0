@@ -7,7 +7,11 @@ import '../../../../constants.dart';
 
 class ViewRecSimilarRec extends StatefulWidget {
   const ViewRecSimilarRec(
-      {required this.recs, required this.funcB, required this.storedFuture, Key? key}) : super(key: key);
+      {required this.recs,
+      required this.funcB,
+      required this.storedFuture,
+      Key? key})
+      : super(key: key);
 
   final Map recs;
   // final Map recostData;
@@ -108,7 +112,9 @@ class ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
                           if (!text.hasData) {
                             return GestureDetector(
                                 onTap: () {
-                                  setState(() {});
+                                  if (mounted) {
+                                    setState(() {});
+                                  }
                                 },
                                 child: Container(
                                     margin: const EdgeInsets.all(10.0),
@@ -140,7 +146,6 @@ class ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
                           );
                         }
                       })),
-              
               GestureDetector(
                 onTap: () {
                   // Navigator.push(
@@ -192,10 +197,8 @@ class ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
                   isThreeLine: true,
                 ),
               ),
-              
             ],
           ),
-          
         ],
       ),
     );

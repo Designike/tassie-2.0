@@ -11,7 +11,7 @@ import '../../../../../constants.dart';
 import '../../../../../utils/hashtagSuggestions.dart';
 
 class EditPost extends StatefulWidget {
-  const EditPost({required this.uuid, Key? key}): super(key: key);
+  const EditPost({required this.uuid, Key? key}) : super(key: key);
   final String uuid;
   @override
   EditPostState createState() => EditPostState();
@@ -40,11 +40,13 @@ class EditPostState extends State<EditPost> {
         HttpHeaders.authorizationHeader: "Bearer ${token!}",
       }),
     );
-    setState(() {
-      post = response.data['data'];
-      _tagController = TextEditingController(text: post['description']);
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        post = response.data['data'];
+        _tagController = TextEditingController(text: post['description']);
+        isLoading = false;
+      });
+    }
   }
 
   checkFields() {
@@ -81,7 +83,6 @@ class EditPostState extends State<EditPost> {
 
   @override
   Widget build(BuildContext context) {
-
     return isLoading
         ? Scaffold(
             body: Container(),
@@ -118,13 +119,15 @@ class EditPostState extends State<EditPost> {
                           if (!text.hasData) {
                             return GestureDetector(
                                 onTap: () {
-                                  setState(() {});
+                                  if (mounted) {
+                                    setState(() {});
+                                  }
                                 },
                                 child: const Center(
                                   child: Icon(
-                                Icons.refresh,
-                                size: 50.0,
-                                color: kDark,
+                                    Icons.refresh,
+                                    size: 50.0,
+                                    color: kDark,
                                   ),
                                 ));
                           }
@@ -137,7 +140,6 @@ class EditPostState extends State<EditPost> {
                         }
                       }),
                 ),
-                
                 Padding(
                   padding: const EdgeInsets.all(kDefaultPadding * 1.5),
                   child: Form(

@@ -142,7 +142,9 @@ class RecPostState extends State<RecPost> {
                                   if (!text.hasData) {
                                     return GestureDetector(
                                         onTap: () {
-                                          setState(() {});
+                                          if (mounted) {
+                                            setState(() {});
+                                          }
                                         },
                                         child: Container(
                                             margin: const EdgeInsets.all(10.0),
@@ -212,7 +214,9 @@ class RecPostState extends State<RecPost> {
                                       if (!text.hasData) {
                                         return GestureDetector(
                                             onTap: () {
-                                              setState(() {});
+                                              if (mounted) {
+                                                setState(() {});
+                                              }
                                             },
                                             child: SizedBox(
                                                 height:

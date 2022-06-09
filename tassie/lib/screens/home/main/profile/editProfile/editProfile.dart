@@ -160,9 +160,11 @@ class EditProfilePageState extends State<EditProfilePage> {
                         );
                       }).toList(),
                       onChanged: (value) {
-                        setState(() {
-                          gender = value!;
-                        });
+                        if (mounted) {
+                          setState(() {
+                            gender = value!;
+                          });
+                        }
                       },
                       // borderRadius: BorderRadius.circular(15.0),
                       isExpanded: true),

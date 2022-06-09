@@ -40,12 +40,14 @@ class GoogleRegisterState extends State<GoogleRegister> {
       // if(response)
       // return res.status;
       // print(response);
-      setState(() {
-        uniqueUsername = response.data['status'];
-        notUniqText = response.data['message'];
-      });
+      if (mounted) {
+        setState(() {
+          uniqueUsername = response.data['status'];
+          notUniqText = response.data['message'];
+        });
+      }
     } on DioError catch (e) {
-      if (e.response != null) {
+      if (mounted && e.response != null) {
         setState(() {
           uniqueUsername = e.response!.data['status'];
           notUniqText = e.response!.data['message'];

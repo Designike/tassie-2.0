@@ -119,13 +119,15 @@ class StepIngImageState extends State<StepIngImage> {
                                   if (!text.hasData) {
                                     return GestureDetector(
                                         onTap: () {
-                                          setState(() {});
+                                          if (mounted) {
+                                            setState(() {});
+                                          }
                                         },
                                         child: const Center(
                                           child: Icon(
-                                        Icons.refresh,
-                                        size: 50.0,
-                                        color: kDark,
+                                            Icons.refresh,
+                                            size: 50.0,
+                                            color: kDark,
                                           ),
                                         ));
                                   }
