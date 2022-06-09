@@ -1,7 +1,4 @@
-// ignore_for_file: prefer_const_constructors, avoid_print
-
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -14,33 +11,26 @@ import '../../constants.dart';
 
 class SignIn extends StatefulWidget {
   final Function? func;
-  // ignore: use_key_in_widget_constructors
-  const SignIn({this.func});
+  const SignIn({this.func, Key? key}) : super(key: key);
   @override
-  _SignInState createState() => _SignInState();
+  SignInState createState() => SignInState();
 }
 
-class _SignInState extends State<SignIn> {
+class SignInState extends State<SignIn> {
   String password = "";
   String username = "";
   String email = "";
   String error = "";
   final _formKey = GlobalKey<FormState>();
   String? value;
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   var dio = Dio();
   final google = GoogleSignIn();
   bool isClicked = false;
 
   // Future<GoogleSignInAuthentication?> login()
   Future<GoogleSignInAccount?> login() => google.signIn().then((result) {
-        // print(result);
         result?.authentication.then((googleKey) async {
-          print(googleKey.accessToken);
-          // print(result);
-          // print(googleKey.idToken);
-          // print(google.currentUser?.displayName);
-          // var token = await storage.read(key: "token");
           Response response = await dio.post(
               // "https://api-tassie.herokuapp.com/user/tsa/" + widget.uuid,
               "https://api-tassie.herokuapp.com/user/googleSignin",
@@ -58,17 +48,17 @@ class _SignInState extends State<SignIn> {
               await storage.write(
                   key: "profilePic",
                   value: response.data['data']['profilePic']);
-
+              await Future.delayed(const Duration(seconds: 1));
+              if (!mounted) return;
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) {
-                  return Home();
+                  return const Home();
                 }),
               );
             } else {
-              // String name = result.displayName!;
-              // print(result);
-              // print(result.displayName);
+              await Future.delayed(const Duration(seconds: 1));
+              if (!mounted) return;
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) {
@@ -80,20 +70,21 @@ class _SignInState extends State<SignIn> {
               );
             }
           } else {
-            showSnack(context, 'Unable to connect', () {}, 'OK', 4);
+            await Future.delayed(const Duration(seconds: 1));
+            if (!mounted) return;
+            showSnack(context, 'Unable to connect 1A', () {}, 'OK', 4);
           }
         }).catchError((err) {
-          print('inner error');
-          print(err);
+          showSnack(context, 'Unable to connect 2B', () {}, 'OK', 4);
         });
       }).catchError((err) {
-        print(err);
-        print('error occured');
+        showSnack(context, 'Unable to connect 3C', () {}, 'OK', 4);
       });
 
   Future<String?> check() async {
     const storage = FlutterSecureStorage();
     value = await storage.read(key: "token");
+    return null;
   }
 
   @override
@@ -130,8 +121,8 @@ class _SignInState extends State<SignIn> {
               height: size.height * 0.15,
             ),
             Container(
-              padding: EdgeInsets.all(kDefaultPadding * 1.2),
-              child: Text(
+              padding: const EdgeInsets.all(kDefaultPadding * 1.2),
+              child: const Text(
                 'Welcome\nBack!',
                 style: TextStyle(
                   fontSize: 60.0,
@@ -141,13 +132,13 @@ class _SignInState extends State<SignIn> {
               ),
             ),
             Container(
-              padding: EdgeInsets.all(kDefaultPadding * 1.2),
+              padding: const EdgeInsets.all(kDefaultPadding * 1.2),
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: [
                     TextFormField(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           labelText: 'USERNAME OR EMAIL',
                           labelStyle: TextStyle(
                             fontFamily: 'Raleway',
@@ -177,7 +168,7 @@ class _SignInState extends State<SignIn> {
                       },
                     ),
                     TextFormField(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           labelText: 'PASSWORD',
                           labelStyle: TextStyle(
                             fontFamily: 'Raleway',
@@ -194,7 +185,7 @@ class _SignInState extends State<SignIn> {
                           ? 'Enter password 6+ characters long'
                           : null,
                     ),
-                    SizedBox(height: 50.0),
+                    const SizedBox(height: 50.0),
                     GestureDetector(
                       // onTap: () async {
                       //   if (_formKey.currentState!.validate()) {
@@ -225,7 +216,6 @@ class _SignInState extends State<SignIn> {
                                 ? {"email": email, "password": password}
                                 : {"username": username, "password": password},
                           );
-                          print('1');
                           if (response.data != null) {
                             if (response.data['status'] == true) {
                               await storage.write(
@@ -243,7 +233,6 @@ class _SignInState extends State<SignIn> {
                               //           response.data['data']['token']
                               //     }));
                               // if (response.data['data']['profilePic'] != "") {
-                              print(response.data['data']['profilePic']);
                               await storage.write(
                                   key: "profilePic",
                                   value: response.data['data']['profilePic']);
@@ -259,16 +248,17 @@ class _SignInState extends State<SignIn> {
                               //   await storage.write(
                               //       key: "profilePic", value: randomItem);
                               // }
-                              print(response.data['data']['uuid']);
+                              await Future.delayed(const Duration(seconds: 1));
+                              if (!mounted) return;
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(builder: (context) {
-                                  return Home();
+                                  return const Home();
                                 }),
                               );
-                              print(response.toString());
                             } else {
-                              print(response.toString());
+                              await Future.delayed(const Duration(seconds: 1));
+                              if (!mounted) return;
                               showSnack(context, response.data['message'],
                                   () {}, 'OK', 4);
                               setState(() {
@@ -278,7 +268,7 @@ class _SignInState extends State<SignIn> {
                           }
                         }
                       },
-                      child: Container(
+                      child: SizedBox(
                         height: 50.0,
                         child: Material(
                           borderRadius: BorderRadius.circular(25.0),
@@ -289,12 +279,12 @@ class _SignInState extends State<SignIn> {
                             child: isClicked
                                 ? Transform.scale(
                                     scale: 0.6,
-                                    child: CircularProgressIndicator(
+                                    child: const CircularProgressIndicator(
                                       color: kLight,
                                       strokeWidth: 3.0,
                                     ),
                                   )
-                                : Text(
+                                : const Text(
                                     'LOGIN',
                                     style: TextStyle(
                                       fontFamily: 'Raleway',
@@ -307,14 +297,13 @@ class _SignInState extends State<SignIn> {
                       ),
                     ),
 
-                    SizedBox(height: 20.0),
+                    const SizedBox(height: 20.0),
                     GestureDetector(
                       onTap: () async {
                         try {
                           await login();
-                          // print(x);
                         } catch (e) {
-                          print(e);
+                          showSnack(context, "Error", () {}, 'OK', 4);
                         }
                       },
                       child: Container(
@@ -334,14 +323,12 @@ class _SignInState extends State<SignIn> {
                               borderRadius: BorderRadius.circular(25.0)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            // ignore: prefer_const_literals_to_create_immutables
                             children: [
                               Center(
                                 child: Row(
-                                  children: [
+                                  children: const [
                                     Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 10.0),
+                                      padding: EdgeInsets.only(left: 10.0),
                                       child: Image(
                                         image: AssetImage(
                                             'assets/images/google.png'),
@@ -363,7 +350,7 @@ class _SignInState extends State<SignIn> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20.0),
+                    const SizedBox(height: 20.0),
                     GestureDetector(
                       onTap: () {
                         widget.func!();
@@ -385,8 +372,7 @@ class _SignInState extends State<SignIn> {
                               borderRadius: BorderRadius.circular(25.0)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            // ignore: prefer_const_literals_to_create_immutables
-                            children: [
+                            children: const [
                               Center(
                                 child: Text(
                                   'Don\'t have an account? Register',
@@ -412,11 +398,11 @@ class _SignInState extends State<SignIn> {
                     //   },
                     //   icon: Icon(Icons.login_rounded),
                     // ),
-                    SizedBox(height: 20.0),
+                    const SizedBox(height: 20.0),
                     Center(
                       child: Text(
                         error,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.red,
                           fontSize: 14.0,
                         ),

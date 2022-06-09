@@ -1,7 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
-import 'dart:convert';
-// import 'dart:ffi';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -13,15 +9,14 @@ import '../../constants.dart';
 
 class Register extends StatefulWidget {
   final Function? func;
-  // ignore: use_key_in_widget_constructors
-  const Register({this.func});
+  const Register({this.func, Key? key}) : super(key: key);
 
   @override
-  _RegisterState createState() => _RegisterState();
+  RegisterState createState() => RegisterState();
 }
 
 //CHANGE KRVANU CHE AYA
-class _RegisterState extends State<Register> {
+class RegisterState extends State<Register> {
   bool uniqueUsername = true;
   bool uniqueEmail = true;
   var dio = Dio();
@@ -30,8 +25,8 @@ class _RegisterState extends State<Register> {
   Future<void> checkUsername(username) async {
     // var dio = Dio();
     try {
-      Response response = await dio.get(
-          "https://api-tassie.herokuapp.com/user/username/" + username);
+      Response response = await dio
+          .get("https://api-tassie.herokuapp.com/user/username/$username");
       // var res = jsonDecode(response.toString());
 
       // if(response)
@@ -49,7 +44,7 @@ class _RegisterState extends State<Register> {
     // var dio = Dio();
     try {
       Response response = await dio
-          .get("https://api-tassie.herokuapp.com/user/checkEmail/" + email);
+          .get("https://api-tassie.herokuapp.com/user/checkEmail/$email");
       // var res = jsonDecode(response.toString());
 
       // if(response)
@@ -97,8 +92,8 @@ class _RegisterState extends State<Register> {
               height: size.height * 0.15,
             ),
             Container(
-              padding: EdgeInsets.all(kDefaultPadding * 1.2),
-              child: Text(
+              padding: const EdgeInsets.all(kDefaultPadding * 1.2),
+              child: const Text(
                 'Hey\nThere!',
                 style: TextStyle(
                   fontSize: 60.0,
@@ -108,13 +103,13 @@ class _RegisterState extends State<Register> {
               ),
             ),
             Container(
-              padding: EdgeInsets.all(kDefaultPadding * 1.2),
+              padding: const EdgeInsets.all(kDefaultPadding * 1.2),
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: [
                     TextFormField(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           labelText: 'NAME',
                           labelStyle: TextStyle(
                             fontFamily: 'Raleway',
@@ -130,7 +125,7 @@ class _RegisterState extends State<Register> {
                           val!.length < 2 ? 'Enter valid name' : null,
                     ),
                     TextFormField(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           labelText: 'USERNAME',
                           labelStyle: TextStyle(
                             fontFamily: 'Raleway',
@@ -160,7 +155,7 @@ class _RegisterState extends State<Register> {
                       },
                     ),
                     TextFormField(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           labelText: 'EMAIL',
                           labelStyle: TextStyle(
                             fontFamily: 'Raleway',
@@ -188,7 +183,7 @@ class _RegisterState extends State<Register> {
                       },
                     ),
                     TextFormField(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           labelText: 'PASSWORD',
                           labelStyle: TextStyle(
                             fontFamily: 'Raleway',
@@ -205,7 +200,7 @@ class _RegisterState extends State<Register> {
                           ? 'Enter password 6+ characters long'
                           : null,
                     ),
-                    SizedBox(height: 50.0),
+                    const SizedBox(height: 50.0),
                     GestureDetector(
                       onTap: () async {
                         // if (_formKey.currentState!.validate()) {
@@ -249,8 +244,9 @@ class _RegisterState extends State<Register> {
                                   "email": email,
                                   "password": password,
                                 });
-                            print(response.data['data']['uuid']);
                             if (response.data['status'] == true) {
+                              await Future.delayed(const Duration(seconds: 1));
+                              if (!mounted) return;
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) {
@@ -260,6 +256,8 @@ class _RegisterState extends State<Register> {
                                 }),
                               );
                             } else {
+                              await Future.delayed(const Duration(seconds: 1));
+                              if (!mounted) return;
                               showSnack(context, response.data['message'],
                                   () {}, 'OK', 4);
                               setState(() {
@@ -268,13 +266,19 @@ class _RegisterState extends State<Register> {
                             }
                           } on DioError catch (e) {
                             if (e.response != null) {
-                              var errorMessage = e.response!.data;
-                              print(errorMessage);
+                              // var errorMessage = e.response!.data;
+                              await Future.delayed(const Duration(seconds: 1));
+                              if (!mounted) return;
+                              showSnack(context, e.response!.data['message'],
+                                  () {}, 'OK', 4);
+                              setState(() {
+                                isClicked = false;
+                              });
                             }
                           }
                         }
                       },
-                      child: Container(
+                      child: SizedBox(
                         height: 50.0,
                         child: Material(
                           borderRadius: BorderRadius.circular(25.0),
@@ -285,12 +289,12 @@ class _RegisterState extends State<Register> {
                             child: isClicked
                                 ? Transform.scale(
                                     scale: 0.6,
-                                    child: CircularProgressIndicator(
+                                    child: const CircularProgressIndicator(
                                       color: kLight,
                                       strokeWidth: 3.0,
                                     ),
                                   )
-                                : Text(
+                                : const Text(
                                     'REGISTER',
                                     style: TextStyle(
                                       fontFamily: 'Raleway',
@@ -302,7 +306,7 @@ class _RegisterState extends State<Register> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20.0),
+                    const SizedBox(height: 20.0),
                     GestureDetector(
                       onTap: () {
                         widget.func!();
@@ -326,7 +330,7 @@ class _RegisterState extends State<Register> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             // ignore: prefer_const_literals_to_create_immutables
                             children: [
-                              Center(
+                              const Center(
                                 child: Text(
                                   'Already have an account? Sign In',
                                   style: TextStyle(
@@ -340,11 +344,11 @@ class _RegisterState extends State<Register> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20.0),
+                    const SizedBox(height: 20.0),
                     Center(
                       child: Text(
                         error,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.red,
                           fontSize: 14.0,
                         ),

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,10 +20,10 @@ class GoogleRegister extends StatefulWidget {
   final String email;
   final String password;
   @override
-  _GoogleRegisterState createState() => _GoogleRegisterState();
+  GoogleRegisterState createState() => GoogleRegisterState();
 }
 
-class _GoogleRegisterState extends State<GoogleRegister> {
+class GoogleRegisterState extends State<GoogleRegister> {
   bool uniqueUsername = false;
   final _formKey = GlobalKey<FormState>();
   String username = "";
@@ -34,8 +33,8 @@ class _GoogleRegisterState extends State<GoogleRegister> {
     // print(username);
     try {
       // print('');
-      Response response = await dio.get(
-          "https://api-tassie.herokuapp.com/user/username/" + username);
+      Response response = await dio
+          .get("https://api-tassie.herokuapp.com/user/username/$username");
       // var res = jsonDecode(response.toString());
 
       // if(response)

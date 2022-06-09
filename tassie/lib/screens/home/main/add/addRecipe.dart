@@ -1,10 +1,5 @@
-// ignore_for_file: prefer_const_constructors
-
-import 'dart:convert';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -17,7 +12,6 @@ import 'package:provider/provider.dart';
 import 'package:tassie/utils/leftSwipe.dart';
 import 'package:tassie/screens/home/home.dart';
 import 'package:tassie/utils/snackbar.dart';
-import 'package:tassie/screens/home/main/add/uploadPostImage.dart';
 import 'package:tassie/screens/home/main/add/uploadRecImages.dart';
 import 'package:path/path.dart' as p;
 import '../../../../constants.dart';
@@ -29,17 +23,15 @@ import '../../homeMapPageContoller.dart';
 class AddRecipe extends StatefulWidget {
   final String uuid;
   // final String folder;
-  const AddRecipe({required this.uuid
-      // , required this.folder
-      });
+  const AddRecipe({required this.uuid, Key? key}) : super(key: key);
 
   @override
-  _AddRecipeState createState() => _AddRecipeState();
+  AddRecipeState createState() => AddRecipeState();
 }
 
-class _AddRecipeState extends State<AddRecipe> {
+class AddRecipeState extends State<AddRecipe> {
   final dio = Dio();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   int _currentStep = 0;
   File? _imageFile;
   String recipeName = "";
@@ -54,8 +46,8 @@ class _AddRecipeState extends State<AddRecipe> {
   //ama bhi same
   Map stepPics = {'0': ''};
 
-  Map _clearSteps = {0: false};
-  Map _clearIngs = {0: false};
+  Map clearSteps = {0: false};
+  Map clearIngs = {0: false};
 
   final LocalStorage lstorage = LocalStorage('tassie');
 
@@ -80,7 +72,7 @@ class _AddRecipeState extends State<AddRecipe> {
   List<Widget> _uploadImg(size, key, index, image) {
     // print(image);
     // image = File(image.path);
-    List<Widget> _upload = [
+    List<Widget> upload = [
       if (image != '' && image != null) ...[
         Padding(
           padding: const EdgeInsets.symmetric(
@@ -96,7 +88,7 @@ class _AddRecipeState extends State<AddRecipe> {
             keyName: 'name',
             imgName: key + '_' + (index + 1).toString(),
             uuid: widget.uuid,
-            clearRecost: key == 'i' ? _clearIngs[index] : _clearSteps[index],
+            clearRecost: key == 'i' ? clearIngs[index] : clearSteps[index],
             falseResp: () {
               print("working");
               setState(() {
@@ -137,84 +129,78 @@ class _AddRecipeState extends State<AddRecipe> {
           ),
         ),
       ] else ...[
-        Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(kDefaultPadding),
-                child: Text('Choose recipe image'),
-              ),
-              // SizedBox(height: 3 * kDefaultPadding,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(left: kDefaultPadding),
-                    child: IconButton(
-                      padding: EdgeInsets.all(size.width * 0.05),
-                      icon: Icon(Icons.camera_alt_rounded),
-                      iconSize: 50.0,
-                      onPressed: () =>
-                          _pickImage(ImageSource.camera, key, index),
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(size.width),
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? kDark[900]
-                          : kLight,
-                    ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(kDefaultPadding),
+              child: Text('Choose recipe image'),
+            ),
+            // SizedBox(height: 3 * kDefaultPadding,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(left: kDefaultPadding),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(size.width),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? kDark[900]
+                        : kLight,
                   ),
-                  // SizedBox(height: kDefaultPadding,),
-                  Container(
-                    margin: EdgeInsets.only(left: kDefaultPadding),
-                    child: IconButton(
-                      padding: EdgeInsets.all(size.width * 0.05),
-                      icon: Icon(Icons.photo_library_rounded),
-                      iconSize: 50.0,
-                      onPressed: () =>
-                          _pickImage(ImageSource.gallery, key, index),
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(size.width),
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? kDark[900]
-                          : kLight,
-                    ),
+                  child: IconButton(
+                    padding: EdgeInsets.all(size.width * 0.05),
+                    icon: const Icon(Icons.camera_alt_rounded),
+                    iconSize: 50.0,
+                    onPressed: () => _pickImage(ImageSource.camera, key, index),
                   ),
-                  // SizedBox(height: 2 * kDefaultPadding,),
-                  //     Container(
-                  //       width: size.width * 0.5,
-                  //       child: Text(
-                  //   'Hey! pick some appetizing stuff !',
-                  //   textAlign: TextAlign.center,
-                  //   style: TextStyle(
-                  //       fontSize: 18.0,
-                  //       height: 1.5
+                ),
+                // SizedBox(height: kDefaultPadding,),
+                Container(
+                  margin: const EdgeInsets.only(left: kDefaultPadding),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(size.width),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? kDark[900]
+                        : kLight,
+                  ),
+                  child: IconButton(
+                    padding: EdgeInsets.all(size.width * 0.05),
+                    icon: const Icon(Icons.photo_library_rounded),
+                    iconSize: 50.0,
+                    onPressed: () =>
+                        _pickImage(ImageSource.gallery, key, index),
+                  ),
+                ),
+                // SizedBox(height: 2 * kDefaultPadding,),
+                //     Container(
+                //       width: size.width * 0.5,
+                //       child: Text(
+                //   'Hey! pick some appetizing stuff !',
+                //   textAlign: TextAlign.center,
+                //   style: TextStyle(
+                //       fontSize: 18.0,
+                //       height: 1.5
 
-                  //   ),
-                  // ),
-                  //     ),
-                ],
-              ),
-            ],
-          ),
+                //   ),
+                // ),
+                //     ),
+              ],
+            ),
+          ],
         )
       ]
     ];
-    return _upload;
+    return upload;
   }
 
   String _appendHashtag(desc1, tag) {
-    print(desc1);
-    print(tag);
     // String desc1 = desc;
     String last = desc1.substring(desc1.length - 1);
     while (last != '#') {
       desc1 = desc1.substring(0, desc1.length - 1);
       last = desc1.substring(desc1.length - 1);
     }
-    print(desc1 + tag.substring(1, tag.length));
     return desc1 + tag.substring(1, tag.length);
   }
 
@@ -223,7 +209,6 @@ class _AddRecipeState extends State<AddRecipe> {
       flavour = flav;
       selectedFlavour = index;
     });
-    print(flavour);
   }
 
   void changeCourse(int index, String cour) {
@@ -231,7 +216,6 @@ class _AddRecipeState extends State<AddRecipe> {
       course = cour;
       selectedCourse = index;
     });
-    print(course);
   }
 
   void changeMeal(int index, bool check) {
@@ -246,11 +230,10 @@ class _AddRecipeState extends State<AddRecipe> {
       padding: const EdgeInsets.only(right: kDefaultPadding),
       child: OutlinedButton(
         onPressed: () => changeMeal(index, !mealType[index]),
-        child: Text(flav),
         style: OutlinedButton.styleFrom(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-          padding: EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(15.0),
           side: BorderSide(
             color: mealType[index] ? kPrimaryColor : kDark,
             width: mealType[index] ? 2 : 1,
@@ -259,6 +242,7 @@ class _AddRecipeState extends State<AddRecipe> {
               ? kPrimaryColor.withOpacity(0.1)
               : Colors.transparent,
         ),
+        child: Text(flav),
       ),
     );
   }
@@ -268,11 +252,10 @@ class _AddRecipeState extends State<AddRecipe> {
       padding: const EdgeInsets.only(right: kDefaultPadding),
       child: OutlinedButton(
         onPressed: () => changeFlavour(index, flav),
-        child: Text(flav),
         style: OutlinedButton.styleFrom(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-          padding: EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(15.0),
           side: BorderSide(
             color: selectedFlavour == index ? kPrimaryColor : kDark,
             width: selectedFlavour == index ? 2 : 1,
@@ -281,6 +264,7 @@ class _AddRecipeState extends State<AddRecipe> {
               ? kPrimaryColor.withOpacity(0.1)
               : Colors.transparent,
         ),
+        child: Text(flav),
       ),
     );
   }
@@ -290,11 +274,10 @@ class _AddRecipeState extends State<AddRecipe> {
       padding: const EdgeInsets.only(right: kDefaultPadding),
       child: OutlinedButton(
         onPressed: () => changeCourse(index, cour),
-        child: Text(cour),
         style: OutlinedButton.styleFrom(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-          padding: EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(15.0),
           side: BorderSide(
             color: selectedCourse == index ? kPrimaryColor : kDark,
             width: selectedCourse == index ? 2 : 1,
@@ -303,6 +286,7 @@ class _AddRecipeState extends State<AddRecipe> {
               ? kPrimaryColor.withOpacity(0.1)
               : Colors.transparent,
         ),
+        child: Text(cour),
       ),
     );
   }
@@ -311,7 +295,7 @@ class _AddRecipeState extends State<AddRecipe> {
         Step(
           isActive: _currentStep >= 0,
           state: _currentStep > 0 ? StepState.complete : StepState.indexed,
-          title: Text('Recipe'),
+          title: const Text('Recipe'),
           content: Padding(
             padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
             child: Column(
@@ -330,7 +314,7 @@ class _AddRecipeState extends State<AddRecipe> {
                           ? kPrimaryColor
                           : kDark[900],
                     ),
-                    contentPadding: EdgeInsets.symmetric(
+                    contentPadding: const EdgeInsets.symmetric(
                         horizontal: 25.0, vertical: kDefaultPadding),
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     border: OutlineInputBorder(
@@ -362,7 +346,7 @@ class _AddRecipeState extends State<AddRecipe> {
         Step(
           isActive: _currentStep >= 1,
           state: _currentStep > 1 ? StepState.complete : StepState.indexed,
-          title: Text('Tags'),
+          title: const Text('Tags'),
           // subtitle: Text('Images are optional',
           //           style: TextStyle(color: Theme.of(context).brightness == Brightness.dark
           //             ? kDark
@@ -370,9 +354,8 @@ class _AddRecipeState extends State<AddRecipe> {
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
                 child: Text('Category'),
               ),
               // SizedBox(height: 3 * kDefaultPadding,),
@@ -389,11 +372,10 @@ class _AddRecipeState extends State<AddRecipe> {
                             isVeg = true;
                           });
                         },
-                        child: Text('Veg'),
                         style: OutlinedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15.0)),
-                          padding: EdgeInsets.all(15.0),
+                          padding: const EdgeInsets.all(15.0),
                           side: BorderSide(
                             color: isVeg ? Colors.green : kDark,
                             width: isVeg ? 2 : 1,
@@ -402,6 +384,7 @@ class _AddRecipeState extends State<AddRecipe> {
                               ? kPrimaryColor.withOpacity(0.1)
                               : Colors.transparent,
                         ),
+                        child: const Text('Veg'),
                       ),
                     ),
                     OutlinedButton(
@@ -410,11 +393,10 @@ class _AddRecipeState extends State<AddRecipe> {
                           isVeg = false;
                         });
                       },
-                      child: Text('Non Veg'),
                       style: OutlinedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.0)),
-                        padding: EdgeInsets.all(15.0),
+                        padding: const EdgeInsets.all(15.0),
                         side: BorderSide(
                           color: !isVeg ? Colors.red : kDark,
                           width: !isVeg ? 2 : 1,
@@ -423,13 +405,13 @@ class _AddRecipeState extends State<AddRecipe> {
                             ? kPrimaryColor.withOpacity(0.1)
                             : Colors.transparent,
                       ),
+                      child: const Text('Non Veg'),
                     ),
                   ],
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
                 child: Text('Meal Type'),
               ),
 
@@ -449,9 +431,8 @@ class _AddRecipeState extends State<AddRecipe> {
                   ),
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
                 child: Text('Flavour'),
               ),
 
@@ -472,9 +453,8 @@ class _AddRecipeState extends State<AddRecipe> {
                   ),
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
                 child: Text('Course'),
               ),
 
@@ -496,9 +476,8 @@ class _AddRecipeState extends State<AddRecipe> {
                   ),
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
                 child: Text('Cooking Time (HH : MM)'),
               ),
               Padding(
@@ -506,7 +485,7 @@ class _AddRecipeState extends State<AddRecipe> {
                 child: Row(
                   children: [
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       width: size.width * 0.25,
                       decoration: BoxDecoration(
                         border: Border.all(color: kDark),
@@ -530,11 +509,11 @@ class _AddRecipeState extends State<AddRecipe> {
                             isExpanded: true),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10.0,
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       width: size.width * 0.25,
                       decoration: BoxDecoration(
                         border: Border.all(color: kDark),
@@ -567,7 +546,7 @@ class _AddRecipeState extends State<AddRecipe> {
         Step(
           isActive: _currentStep >= 2,
           state: _currentStep > 2 ? StepState.complete : StepState.indexed,
-          title: Text('Ingredients'),
+          title: const Text('Ingredients'),
           subtitle: Text(
             'Images are optional',
             style: TextStyle(
@@ -582,7 +561,7 @@ class _AddRecipeState extends State<AddRecipe> {
         Step(
           isActive: _currentStep >= 3,
           state: _currentStep > 3 ? StepState.complete : StepState.indexed,
-          title: Text('Steps'),
+          title: const Text('Steps'),
           subtitle: Text(
             'Images are optional',
             style: TextStyle(
@@ -596,7 +575,7 @@ class _AddRecipeState extends State<AddRecipe> {
         ),
         Step(
           isActive: _currentStep >= 4,
-          title: Text('Description'),
+          title: const Text('Description'),
           subtitle: Text(
             'You can also add hashtags and mentions',
             style: TextStyle(
@@ -610,7 +589,7 @@ class _AddRecipeState extends State<AddRecipe> {
               children: [
                 TypeAheadFormField<String?>(
                   hideOnEmpty: true,
-                  debounceDuration: Duration(seconds: 1),
+                  debounceDuration: const Duration(seconds: 1),
                   // direction: AxisDirection.up,
                   autoFlipDirection: true,
                   keepSuggestionsOnSuggestionSelected: true,
@@ -632,7 +611,7 @@ class _AddRecipeState extends State<AddRecipe> {
                             ? kPrimaryColor
                             : kDark[900],
                       ),
-                      contentPadding: EdgeInsets.symmetric(
+                      contentPadding: const EdgeInsets.symmetric(
                           horizontal: 25.0, vertical: kDefaultPadding),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       border: OutlineInputBorder(
@@ -653,11 +632,7 @@ class _AddRecipeState extends State<AddRecipe> {
                   ),
                   onSuggestionSelected: (v) {
                     // setState(() {
-                    print("first");
-                    print(_appendHashtag(desc, v));
                     _tagController.text = _appendHashtag(desc, v);
-                    print("second");
-                    print(_tagController.text);
                     // });
                   },
                   validator: (val) => val!.isEmpty || val.length > 500
@@ -670,7 +645,7 @@ class _AddRecipeState extends State<AddRecipe> {
         ),
         Step(
           isActive: _currentStep >= 5,
-          title: Text('Youtube link'),
+          title: const Text('Youtube link'),
           subtitle: Text(
             'Namak Swaad Anusaar!  (Optional)',
             style: TextStyle(
@@ -696,7 +671,7 @@ class _AddRecipeState extends State<AddRecipe> {
                           ? kPrimaryColor
                           : kDark[900],
                     ),
-                    contentPadding: EdgeInsets.symmetric(
+                    contentPadding: const EdgeInsets.symmetric(
                         horizontal: 25.0, vertical: kDefaultPadding),
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     border: OutlineInputBorder(
@@ -747,7 +722,7 @@ class _AddRecipeState extends State<AddRecipe> {
             Row(
               children: [
                 Expanded(child: StepTextField(index: i, stepsList: stepsList)),
-                SizedBox(
+                const SizedBox(
                   width: 16,
                 ),
                 _addRemoveButtonR(i == 0, stepsList.length - 1, i),
@@ -768,13 +743,13 @@ class _AddRecipeState extends State<AddRecipe> {
           stepsList.insert(index + 1, "");
           stepPics[(index + 1).toString()] = '';
           setState(() {
-            _clearSteps[index + 1] = false;
+            clearSteps[index + 1] = false;
           });
           // print(_clearSteps);
         } else {
           stepsList.removeAt(i);
           stepPics[i.toString()] = '';
-          await _clear('s', i, 's_' + (i + 1).toString(), true);
+          await _clear('s', i, 's_${i + 1}', true);
           stepPics = await _adjustImages(i, stepPics, false, "s_");
           setState(() {});
         }
@@ -809,7 +784,7 @@ class _AddRecipeState extends State<AddRecipe> {
                 Expanded(
                     child: IngredientTextField(
                         index: i, ingredientsList: ingredientsList)),
-                SizedBox(
+                const SizedBox(
                   width: 16,
                 ),
                 _addRemoveButtonI(i == 0, ingredientsList.length - 1, i),
@@ -830,12 +805,12 @@ class _AddRecipeState extends State<AddRecipe> {
           ingredientsList.insert(index + 1, "");
           ingredientPics[(index + 1).toString()] = '';
           setState(() {
-            _clearIngs[index + 1] = false;
+            clearIngs[index + 1] = false;
           });
         } else {
           ingredientsList.removeAt(i);
           ingredientPics[i.toString()] = '';
-          await _clear('i', i, 'i_' + (i + 1).toString(), true);
+          await _clear('i', i, 'i_${i + 1}', true);
           ingredientPics = await _adjustImages(i, ingredientPics, true, "i_");
           setState(() {});
         }
@@ -927,14 +902,14 @@ class _AddRecipeState extends State<AddRecipe> {
           'https://api-tassie.herokuapp.com/recs/resetImage/',
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer " + token!
+            HttpHeaders.authorizationHeader: "Bearer ${token!}"
           }),
           data: {'uuid': widget.uuid, 'imgName': imgName});
     } else if (key == 'i') {
       setState(() {
         ingredientPics[(index).toString()] = '';
         if (clearRecost) {
-          _clearIngs[index] = true;
+          clearIngs[index] = true;
         }
       });
       print(widget.uuid);
@@ -945,14 +920,14 @@ class _AddRecipeState extends State<AddRecipe> {
           'https://api-tassie.herokuapp.com/recs/resetImage/',
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer " + token!
+            HttpHeaders.authorizationHeader: "Bearer ${token!}"
           }),
           data: {'uuid': widget.uuid, 'imgName': imgName});
     } else {
       setState(() {
         stepPics[(index).toString()] = '';
         if (clearRecost) {
-          _clearSteps[index] = true;
+          clearSteps[index] = true;
         }
       });
 
@@ -963,7 +938,7 @@ class _AddRecipeState extends State<AddRecipe> {
           'https://api-tassie.herokuapp.com/recs/resetImage/',
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer " + token!
+            HttpHeaders.authorizationHeader: "Bearer ${token!}"
           }),
           data: {'uuid': widget.uuid, 'imgName': imgName});
     }
@@ -1004,7 +979,7 @@ class _AddRecipeState extends State<AddRecipe> {
           'https://api-tassie.herokuapp.com/recs/renameImages',
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer " + token!
+            HttpHeaders.authorizationHeader: "Bearer ${token!}"
           }),
           data: {
             "index": index + 1,
@@ -1015,13 +990,14 @@ class _AddRecipeState extends State<AddRecipe> {
           },
         );
         if (response.data["status"] == false) {
+          await Future.delayed(const Duration(seconds: 1));
+          if (!mounted) return {};
           showSnack(context, "Oops something went wrong. Please try again!",
               () {}, "OK", 4);
         }
       }
       return x;
     } catch (e) {
-      print(e);
       showSnack(context, "Oops something went wrong. Please try again!", () {},
           "OK", 4);
       return x;
@@ -1029,58 +1005,6 @@ class _AddRecipeState extends State<AddRecipe> {
   }
 
   double progress = 0.0;
-  Future<void> _startUpload(File? file, String keyValue, String keyName,
-      String imgName, String folder) async {
-    var dio = Dio();
-    var storage = FlutterSecureStorage();
-    var formData = FormData();
-    print(file!.path);
-    formData = FormData.fromMap({
-      "media": await MultipartFile.fromFile(file.path),
-      keyName: keyValue,
-      "imgName": imgName,
-      "folder": folder,
-      "uuid": widget.uuid
-    });
-    _imageFile = null;
-    var token = await storage.read(key: "token");
-    print(formData.files[0]);
-    Response response = await dio.post(
-      // 'https://api-tassie.herokuapp.com/drive/upload',
-      'https://api-tassie.herokuapp.com/recs/updateRecipe/',
-      options: Options(headers: {
-        HttpHeaders.contentTypeHeader: "multipart/form-data",
-        HttpHeaders.authorizationHeader: "Bearer " + token!
-      }),
-      data: formData,
-      onSendProgress: (int sent, int total) {
-        // setState(() {
-        //   print(progress);
-        //   progress = (sent / total * 100);
-        //   print(progress);
-
-        // });
-      },
-    );
-
-    if (response.data['status'] == false) {
-      _imageFile = null;
-      if (imgName == 'r_1') {
-        setState(() {
-          isUpload = false;
-        });
-      }
-      showSnack(context, response.data['message'], () {}, 'OK', 5);
-    }
-    if (response.data['status'] == true) {
-      if (imgName == 'r_1') {
-        setState(() {
-          isUpload = true;
-        });
-      }
-      showSnack(context, response.data['message'], () {}, 'OK', 3);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -1090,9 +1014,9 @@ class _AddRecipeState extends State<AddRecipe> {
         final value = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            actionsPadding: EdgeInsets.all(20.0),
-            title: Text('Are you sure?'),
-            content: Text('Do you want to go back'),
+            actionsPadding: const EdgeInsets.all(20.0),
+            title: const Text('Are you sure?'),
+            content: const Text('Do you want to go back'),
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 20.0),
@@ -1100,19 +1024,18 @@ class _AddRecipeState extends State<AddRecipe> {
                   onTap: () {
                     Navigator.of(context).pop(false);
                   },
-                  child: Text("No"),
+                  child: const Text("No"),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               GestureDetector(
                 onTap: () async {
-                  print("henlooooooooo");
                   Provider.of<LeftSwipe>(context, listen: false).setSwipe(true);
                   // Navigator.of(context, rootNavigator: true).popUntil((route) => route.isFirst);
                   Navigator.of(context, rootNavigator: true).pop();
                   Navigator.of(context, rootNavigator: true)
                       .pushReplacement(MaterialPageRoute(builder: (context) {
-                    return HomeHome();
+                    return const HomeHome();
                   }));
                   var url =
                       "https://api-tassie.herokuapp.com/recs/deleteRecipe";
@@ -1120,20 +1043,25 @@ class _AddRecipeState extends State<AddRecipe> {
                   Response response = await dio.post(url,
                       options: Options(headers: {
                         HttpHeaders.contentTypeHeader: "application/json",
-                        HttpHeaders.authorizationHeader: "Bearer " + token!
+                        HttpHeaders.authorizationHeader: "Bearer ${token!}"
                       }),
                       data: {
                         'uuid': widget.uuid,
                         // 'folder': widget.folder
                       });
                   if (response.data['status'] == true) {
-                    print('deleted');
                   } else {
-                    //aama uuid send karvani che, get -> post kari nakh
-                    print('not deleted');
+                    await Future.delayed(const Duration(seconds: 1));
+                    if (!mounted) return;
+                    showSnack(
+                        context,
+                        "Oops something went wrong. Please try again!",
+                        () {},
+                        "OK",
+                        4);
                   }
                 },
-                child: Text("Yes"),
+                child: const Text("Yes"),
               ),
             ],
           ),
@@ -1156,7 +1084,7 @@ class _AddRecipeState extends State<AddRecipe> {
                   Theme.of(context).brightness == Brightness.light
                       ? Brightness.dark
                       : Brightness.light),
-          title: Text(
+          title: const Text(
             'Add some savors!',
             style: TextStyle(
               color: kPrimaryColor,
@@ -1171,16 +1099,15 @@ class _AddRecipeState extends State<AddRecipe> {
           child: Form(
             key: _formKey,
             child: Stepper(
-              physics: ClampingScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               type: StepperType.vertical,
               onStepTapped: (value) => {},
               controlsBuilder: (BuildContext context, ControlsDetails details) {
-                final _isLastStep = _currentStep == steps(size).length - 1;
+                final isLastStep = _currentStep == steps(size).length - 1;
                 return Row(
                   children: <Widget>[
                     TextButton(
                       onPressed: details.onStepContinue,
-                      child: Text(_isLastStep ? 'UPLOAD' : 'NEXT'),
                       style: TextButton.styleFrom(
                           backgroundColor:
                               Theme.of(context).brightness == Brightness.dark
@@ -1190,6 +1117,7 @@ class _AddRecipeState extends State<AddRecipe> {
                               Theme.of(context).brightness == Brightness.dark
                                   ? kPrimaryColor
                                   : kLight),
+                      child: Text(isLastStep ? 'UPLOAD' : 'NEXT'),
                     ),
                     if (_currentStep != 0) ...[
                       TextButton(
@@ -1202,8 +1130,8 @@ class _AddRecipeState extends State<AddRecipe> {
               },
               currentStep: _currentStep,
               onStepContinue: () async {
-                final _isLastStep = _currentStep == steps(size).length - 1;
-                if (_isLastStep) {
+                final isLastStep = _currentStep == steps(size).length - 1;
+                if (isLastStep) {
                   if (_formKey.currentState!.validate() && isUpload) {
                     if (hour != null && min != null) {
                       if (hour == '0' && min == '00') {
@@ -1218,24 +1146,27 @@ class _AddRecipeState extends State<AddRecipe> {
                         var url =
                             "https://api-tassie.herokuapp.com/recs/updateRecipe";
                         var token = await storage.read(key: "token");
-                        Response response = await dio.post(url,
+                        await dio.post(url,
                             options: Options(headers: {
                               HttpHeaders.contentTypeHeader: "application/json",
                               HttpHeaders.authorizationHeader:
-                                  "Bearer " + token!
+                                  "Bearer ${token!}"
                             }),
                             data: {
                               'uuid': widget.uuid,
                               // 'folder': widget.folder,
                               'youtubeLink': youtubeLink
                             });
+                        await Future.delayed(const Duration(seconds: 1));
+                        if (!mounted) return;
+
                         Provider.of<LeftSwipe>(context, listen: false)
                             .setSwipe(true);
                         Navigator.of(context).pop();
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(builder: (context) {
-                            return Home();
+                            return const Home();
                           }),
                         );
                       }
@@ -1253,18 +1184,15 @@ class _AddRecipeState extends State<AddRecipe> {
                 } else {
                   setState(() {
                     _currentStep += 1;
-                    print('currentstep :');
-                    print(_currentStep);
                   });
-                  print('2.d');
                   if (_currentStep == 1) {
                     var url =
                         "https://api-tassie.herokuapp.com/recs/updateRecipe";
                     var token = await storage.read(key: "token");
-                    Response response = await dio.post(url,
+                    await dio.post(url,
                         options: Options(headers: {
                           HttpHeaders.contentTypeHeader: "application/json",
-                          HttpHeaders.authorizationHeader: "Bearer " + token!
+                          HttpHeaders.authorizationHeader: "Bearer ${token!}"
                         }),
                         data: {
                           'uuid': widget.uuid,
@@ -1275,6 +1203,8 @@ class _AddRecipeState extends State<AddRecipe> {
                   if (_currentStep == 2) {
                     if (hour != null && min != null) {
                       if (hour == '0' && min == '00') {
+                        await Future.delayed(const Duration(seconds: 1));
+                        if (!mounted) return;
                         showSnack(
                             context,
                             'Cooking time cannot be 0:00, Are you cooking at light\'s speed xD?',
@@ -1286,14 +1216,11 @@ class _AddRecipeState extends State<AddRecipe> {
                             "https://api-tassie.herokuapp.com/recs/updateRecipe";
                         var token = await storage.read(key: "token");
                         var time = int.parse(hour) * 60 + int.parse(min);
-                        print('should print');
-                        print(flavour);
-                        print(course);
-                        Response response = await dio.post(url,
+                        await dio.post(url,
                             options: Options(headers: {
                               HttpHeaders.contentTypeHeader: "application/json",
                               HttpHeaders.authorizationHeader:
-                                  "Bearer " + token!
+                                  "Bearer ${token!}"
                             }),
                             data: {
                               'uuid': widget.uuid,
@@ -1309,6 +1236,8 @@ class _AddRecipeState extends State<AddRecipe> {
                             });
                       }
                     } else {
+                      await Future.delayed(const Duration(seconds: 1));
+                        if (!mounted) return;
                       showSnack(context, 'Add cooking time', () {}, 'OK', 4);
                     }
                   }
@@ -1316,10 +1245,10 @@ class _AddRecipeState extends State<AddRecipe> {
                     var url =
                         "https://api-tassie.herokuapp.com/recs/updateRecipe";
                     var token = await storage.read(key: "token");
-                    Response response = await dio.post(url,
+                    await dio.post(url,
                         options: Options(headers: {
                           HttpHeaders.contentTypeHeader: "application/json",
-                          HttpHeaders.authorizationHeader: "Bearer " + token!
+                          HttpHeaders.authorizationHeader: "Bearer ${token!}"
                         }),
                         data: {
                           'uuid': widget.uuid,
@@ -1331,10 +1260,10 @@ class _AddRecipeState extends State<AddRecipe> {
                     var url =
                         "https://api-tassie.herokuapp.com/recs/updateRecipe";
                     var token = await storage.read(key: "token");
-                    Response response = await dio.post(url,
+                    await dio.post(url,
                         options: Options(headers: {
                           HttpHeaders.contentTypeHeader: "application/json",
-                          HttpHeaders.authorizationHeader: "Bearer " + token!
+                          HttpHeaders.authorizationHeader: "Bearer ${token!}"
                         }),
                         data: {
                           'uuid': widget.uuid,
@@ -1346,10 +1275,10 @@ class _AddRecipeState extends State<AddRecipe> {
                     var url =
                         "https://api-tassie.herokuapp.com/recs/addHashtag";
                     var token = await storage.read(key: "token");
-                    Response response = await dio.post(url,
+                    await dio.post(url,
                         options: Options(headers: {
                           HttpHeaders.contentTypeHeader: "application/json",
-                          HttpHeaders.authorizationHeader: "Bearer " + token!
+                          HttpHeaders.authorizationHeader: "Bearer ${token!}"
                         }),
                         data: {
                           'uuid': widget.uuid,
@@ -1363,7 +1292,6 @@ class _AddRecipeState extends State<AddRecipe> {
                 _currentStep == 0
                     ? null
                     : setState(() {
-                        print('current step back');
                         _currentStep -= 1;
                       });
               },

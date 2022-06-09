@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tassie/screens/authenticate/otp.dart';
 import 'package:tassie/screens/authenticate/register.dart';
 import 'package:tassie/screens/authenticate/signin.dart';
 
@@ -7,10 +6,10 @@ class Authenticate extends StatefulWidget {
   const Authenticate({Key? key}) : super(key: key);
 
   @override
-  _AuthenticateState createState() => _AuthenticateState();
+  AuthenticateState createState() => AuthenticateState();
 }
 
-class _AuthenticateState extends State<Authenticate> {
+class AuthenticateState extends State<Authenticate> {
   bool showSignIn = true;
   void toggle() {
     setState(() {

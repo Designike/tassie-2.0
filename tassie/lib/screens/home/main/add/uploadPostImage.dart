@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:io';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -9,6 +7,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/homeMapPageContoller.dart';
 import 'package:tassie/screens/home/main/profile/profile.dart';
+
+import '../../../../utils/snackbar.dart';
 
 class Uploader extends StatefulWidget {
   final File? file;
@@ -22,10 +22,11 @@ class Uploader extends StatefulWidget {
     required this.formKey,
     required this.edit,
     this.postUuid,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
-  _UploaderState createState() => _UploaderState();
+  UploaderState createState() => UploaderState();
 }
 
 // class _UploaderState extends State<Uploader> {
@@ -37,13 +38,13 @@ class Uploader extends StatefulWidget {
 //   }
 // }
 
-class _UploaderState extends State<Uploader> {
+class UploaderState extends State<Uploader> {
   // Starts an upload task
 
   double progress = 0.0;
   Future<void> _startUpload() async {
     var dio = Dio();
-    var storage = FlutterSecureStorage();
+    var storage = const FlutterSecureStorage();
     var token = await storage.read(key: "token");
     if (widget.edit) {
       // edit post - start
@@ -52,7 +53,7 @@ class _UploaderState extends State<Uploader> {
         'https://api-tassie.herokuapp.com/feed/editpost',
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
-          HttpHeaders.authorizationHeader: "Bearer " + token!
+          HttpHeaders.authorizationHeader: "Bearer ${token!}"
         }),
         data: {
           "desc": widget.desc,
@@ -60,65 +61,64 @@ class _UploaderState extends State<Uploader> {
         },
         onSendProgress: (int sent, int total) {
           setState(() {
-            print(progress);
             progress = (sent / total * 100);
-            print(progress);
           });
         },
       );
       if (response.data['status'] == true) {
+        await Future.delayed(const Duration(seconds: 1));
+        if (!mounted) return;
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) {
-            return Profile(
+            return const Profile(
               uuid: 'user',
             );
           }),
         );
       } else {
-        // handle error
-        print(response.data['message']);
-        print(response.data['error']);
+        await Future.delayed(const Duration(seconds: 1));
+        if (!mounted) return;
+        showSnack(context, 'Server error', () {}, 'OK', 4);
       }
 
       // edit post - end
     } else {
       // new post - start
       var formData = FormData();
-      print(widget.file!.path);
       formData = FormData.fromMap({
         "media": await MultipartFile.fromFile(widget.file!.path),
         "desc": widget.desc,
       });
 
-      print(formData.files[0]);
       Response response = await dio.post(
         // 'https://api-tassie.herokuapp.com/drive/upload',
         'https://api-tassie.herokuapp.com/feed/newpost',
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "multipart/form-data",
-          HttpHeaders.authorizationHeader: "Bearer " + token!
+          HttpHeaders.authorizationHeader: "Bearer ${token!}"
         }),
         data: formData,
         onSendProgress: (int sent, int total) {
           setState(() {
-            print(progress);
             progress = (sent / total * 100);
-            print(progress);
           });
         },
       );
       if (response.data['status'] == true) {
+        await Future.delayed(const Duration(seconds: 1));
+        if (!mounted) return;
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) {
-            return Home();
+            return const Home();
           }),
         );
       } else {
         // handle error
-        print(response.data['message']);
-        print(response.data['error']);
+        await Future.delayed(const Duration(seconds: 1));
+        if (!mounted) return;
+        showSnack(context, 'Server error', () {}, 'OK', 4);
       }
 
       // new post - end
@@ -127,7 +127,6 @@ class _UploaderState extends State<Uploader> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     if (progress != 0.0) {
       /// Manage the task state and event subscription with a StreamBuilder
 
@@ -159,10 +158,10 @@ class _UploaderState extends State<Uploader> {
                 const EdgeInsets.symmetric(horizontal: kDefaultPadding * 2),
             child: Row(
               children: [
-                CircularProgressIndicator(strokeWidth: 2.0),
+                const CircularProgressIndicator(strokeWidth: 2.0),
                 Expanded(
                   child: AnimatedTextKit(
-                    pause: Duration(milliseconds: 100),
+                    pause: const Duration(milliseconds: 100),
                     isRepeatingAnimation: true,
                     totalRepeatCount: 10,
                     animatedTexts: [
@@ -188,9 +187,13 @@ class _UploaderState extends State<Uploader> {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
         child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15.0),
+            color: kDark[900],
+          ),
           child: IconButton(
-            padding: EdgeInsets.symmetric(vertical: 10.0),
-            icon: Icon(Icons.cloud_upload),
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            icon: const Icon(Icons.cloud_upload),
             iconSize: 30.0,
             color: Theme.of(context).brightness == Brightness.dark
                 ? kPrimaryColor
@@ -198,10 +201,6 @@ class _UploaderState extends State<Uploader> {
             onPressed: () => {
               if (widget.formKey.currentState!.validate()) {_startUpload()}
             },
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-            color: kDark[900],
           ),
         ),
       );

@@ -1,31 +1,27 @@
-// ignore_for_file: prefer_const_constructors, avoid_print
-
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/screens/home/homeMapPageContoller.dart';
 import 'package:tassie/utils/snackbar.dart';
-
 import '../../constants.dart';
 
 class OTPForm extends StatefulWidget {
-  const OTPForm({required this.uuid});
+  const OTPForm({required this.uuid, Key? key}) : super(key: key);
   final String uuid;
 
   @override
-  _OTPFormState createState() => _OTPFormState();
+  OTPFormState createState() => OTPFormState();
 }
 
-class _OTPFormState extends State<OTPForm> {
+class OTPFormState extends State<OTPForm> {
   FocusNode? pin2FocusNode;
   FocusNode? pin3FocusNode;
   FocusNode? pin4FocusNode;
   FocusNode? pin5FocusNode;
   FocusNode? pin6FocusNode;
   var dio = Dio();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   List<String> totp = List<String>.filled(6, '', growable: true);
   @override
   void initState() {
@@ -60,7 +56,7 @@ class _OTPFormState extends State<OTPForm> {
     OutlineInputBorder outlineInputBorder() {
       return OutlineInputBorder(
         borderRadius: BorderRadius.circular(size.width * 0.02),
-        borderSide: BorderSide(color: kDark),
+        borderSide: const BorderSide(color: kDark),
       );
     }
 
@@ -83,16 +79,14 @@ class _OTPFormState extends State<OTPForm> {
                 child: TextFormField(
                   autofocus: true,
                   obscureText: true,
-                  style: TextStyle(fontSize: 24),
+                  style: const TextStyle(fontSize: 24),
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
                   decoration: otpInputDecoration,
                   // maxLength: 1,
                   onChanged: (value) {
-                    print(totp);
                     if (value.length == 1) {
                       totp[0] = value;
-                      print(totp);
                     }
                     nextField(value, pin2FocusNode);
                   },
@@ -103,7 +97,7 @@ class _OTPFormState extends State<OTPForm> {
                 child: TextFormField(
                   focusNode: pin2FocusNode,
                   obscureText: true,
-                  style: TextStyle(fontSize: 24),
+                  style: const TextStyle(fontSize: 24),
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
                   decoration: otpInputDecoration,
@@ -118,7 +112,7 @@ class _OTPFormState extends State<OTPForm> {
                 child: TextFormField(
                   focusNode: pin3FocusNode,
                   obscureText: true,
-                  style: TextStyle(fontSize: 24),
+                  style: const TextStyle(fontSize: 24),
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
                   decoration: otpInputDecoration,
@@ -133,7 +127,7 @@ class _OTPFormState extends State<OTPForm> {
                 child: TextFormField(
                   focusNode: pin4FocusNode,
                   obscureText: true,
-                  style: TextStyle(fontSize: 24),
+                  style: const TextStyle(fontSize: 24),
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
                   decoration: otpInputDecoration,
@@ -148,7 +142,7 @@ class _OTPFormState extends State<OTPForm> {
                 child: TextFormField(
                   focusNode: pin5FocusNode,
                   obscureText: true,
-                  style: TextStyle(fontSize: 24),
+                  style: const TextStyle(fontSize: 24),
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
                   decoration: otpInputDecoration,
@@ -163,14 +157,13 @@ class _OTPFormState extends State<OTPForm> {
                 child: TextFormField(
                   focusNode: pin6FocusNode,
                   obscureText: true,
-                  style: TextStyle(fontSize: 24),
+                  style: const TextStyle(fontSize: 24),
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
                   decoration: otpInputDecoration,
                   onChanged: (value) {
                     if (value.length == 1) {
                       totp[5] = value;
-                      print(totp);
                       pin6FocusNode!.unfocus();
                       // Then you need to check is the code is correct or not
                     }
@@ -179,7 +172,7 @@ class _OTPFormState extends State<OTPForm> {
               ),
             ],
           ),
-          SizedBox(height: 20.0),
+          const SizedBox(height: 20.0),
           GestureDetector(
             // onTap: () async {
             //   if (_formKey.currentState!.validate()) {
@@ -211,24 +204,19 @@ class _OTPFormState extends State<OTPForm> {
               // }
               var otp = totp.join("");
               try {
-                print(totp);
-                print(otp);
                 Response response = await dio.post(
                     // "https://api-tassie.herokuapp.com/user/tsa/" + widget.uuid,
-                    "https://api-tassie.herokuapp.com/user/tsa/" +
-                        widget.uuid,
+                    "https://api-tassie.herokuapp.com/user/tsa/${widget.uuid}",
                     options: Options(headers: {
                       HttpHeaders.contentTypeHeader: "application/json",
                     }),
                     data: {"totp": otp});
                 if (response.data != null) {
                   if (response.data['status'] == true) {
-                    print('1');
                     await storage.write(
                         key: "token", value: response.data['data']['token']);
                     await storage.write(
                         key: "uuid", value: response.data['data']['uuid']);
-                    print('2');
                     // Response response1 = await dio.get(
                     //     "https://api-tassie.herokuapp.com/user/getProfilePic/",
                     //     options: Options(headers: {
@@ -251,17 +239,23 @@ class _OTPFormState extends State<OTPForm> {
                     //   String randomItem = (option..shuffle()).first;
                     //   await storage.write(key: "profilePic", value: randomItem);
                     // }
+                    await Future.delayed(const Duration(seconds: 1));
+                    if (!mounted) return;
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) {
-                        return Home();
+                        return const Home();
                       }),
                     );
                   } else {
+                    await Future.delayed(const Duration(seconds: 1));
+                    if (!mounted) return;
                     showSnack(
                         context, response.data['message'], () {}, 'OK', 4);
                   }
                 } else {
+                  await Future.delayed(const Duration(seconds: 1));
+                    if (!mounted) return;
                   showSnack(context, 'Unable to connect', () {}, 'OK', 4);
                 }
 
@@ -269,18 +263,17 @@ class _OTPFormState extends State<OTPForm> {
                 // print(response.data);
               } on DioError catch (e) {
                 // if (e.response != null) {
-                print(e.response!.data);
                 // }
               }
             },
-            child: Container(
+            child: SizedBox(
               height: 50.0,
               child: Material(
                 borderRadius: BorderRadius.circular(25.0),
                 shadowColor: kPrimaryColorAccent,
                 color: kPrimaryColor,
                 elevation: 5.0,
-                child: Center(
+                child: const Center(
                   child: Text(
                     'Verify',
                     style: TextStyle(
@@ -293,22 +286,22 @@ class _OTPFormState extends State<OTPForm> {
               ),
             ),
           ),
-          SizedBox(height: 20.0),
+          const SizedBox(height: 20.0),
           GestureDetector(
             onTap: () async {
               // widget.func!();
               try {
                 Response response = await dio.get(
                   // "https://api-tassie.herokuapp.com/user/",
-                  "https://api-tassie.herokuapp.com/user/mail/" +
-                      widget.uuid,
+                  "https://api-tassie.herokuapp.com/user/mail/${widget.uuid}",
                   options: Options(headers: {
                     HttpHeaders.contentTypeHeader: "application/json",
                   }),
                 );
-                print(response.data['data']['uuid']);
                 if (response.data != null) {
                   if (response.data['status'] == true) {
+                    await Future.delayed(const Duration(seconds: 1));
+                    if (!mounted) return;
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) {
@@ -318,16 +311,18 @@ class _OTPFormState extends State<OTPForm> {
                       }),
                     );
                   } else {
+                    await Future.delayed(const Duration(seconds: 1));
+                    if (!mounted) return;
                     showSnack(
                         context, response.data['message'], () {}, 'OK', 4);
                   }
                 } else {
+                  await Future.delayed(const Duration(seconds: 1));
+                    if (!mounted) return;
                   showSnack(context, 'Unable to connect', () {}, 'OK', 4);
                 }
               } on DioError catch (e) {
                 if (e.response != null) {
-                  var errorMessage = e.response!.data;
-                  print(errorMessage);
                   showSnack(context, 'Unable to connect', () {}, 'OK', 4);
                 }
               }
@@ -348,8 +343,7 @@ class _OTPFormState extends State<OTPForm> {
                     borderRadius: BorderRadius.circular(25.0)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  // ignore: prefer_const_literals_to_create_immutables
-                  children: [
+                  children: const [
                     Center(
                       child: Text(
                         'Code expired? Resend',
@@ -373,19 +367,20 @@ class _OTPFormState extends State<OTPForm> {
 class OTP extends StatefulWidget {
   final String uuid;
   final int time;
-  const OTP({required this.uuid, required this.time});
+  const OTP({required this.uuid, required this.time, Key? key}): super(key: key);
 
   @override
-  _OTPState createState() => _OTPState();
+  OTPState createState() => OTPState();
 }
 
-class _OTPState extends State<OTP> {
+class OTPState extends State<OTP> {
   final _formKey = GlobalKey<FormState>();
   String? value;
   var dio = Dio();
   Future<String?> check() async {
     const storage = FlutterSecureStorage();
     value = await storage.read(key: "token");
+    return null;
   }
 
   @override
@@ -421,12 +416,11 @@ class _OTPState extends State<OTP> {
               height: size.height * 0.15,
             ),
             Container(
-              padding: EdgeInsets.all(kDefaultPadding * 1.2),
+              padding: const EdgeInsets.all(kDefaultPadding * 1.2),
               child: Column(
-                // ignore: prefer_const_literals_to_create_immutables
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'One Last\nStep!',
                     style: TextStyle(
                       fontSize: 60.0,
@@ -434,19 +428,19 @@ class _OTPState extends State<OTP> {
                       // color: kDark[800]!,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30.0,
                   ),
-                  Text('We have sent OTP to your email.'),
+                  const Text('We have sent OTP to your email.'),
                   Row(
                     children: [
-                      Text('Your code will expire in'),
+                      const Text('Your code will expire in'),
                       TweenAnimationBuilder(
                         tween: Tween(begin: widget.time, end: 0.0),
                         duration: Duration(seconds: widget.time),
                         builder: (_, dynamic value, child) => Text(
                           " ${value.toInt()} seconds",
-                          style: TextStyle(color: kPrimaryColor),
+                          style: const TextStyle(color: kPrimaryColor),
                         ),
                       )
                     ],

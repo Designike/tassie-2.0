@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors_in_immutables, use_key_in_widget_constructors
-
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
@@ -9,12 +7,13 @@ import '../../../../utils/ingredient_data.dart';
 class IngredientTextField extends StatefulWidget {
   late final int? index;
   final List ingredientsList;
-  IngredientTextField({this.index, required this.ingredientsList});
+  IngredientTextField({this.index, required this.ingredientsList, Key? key})
+      : super(key: key);
   @override
-  _IngredientTextFieldState createState() => _IngredientTextFieldState();
+  IngredientTextFieldState createState() => IngredientTextFieldState();
 }
 
-class _IngredientTextFieldState extends State<IngredientTextField> {
+class IngredientTextFieldState extends State<IngredientTextField> {
   // late TextEditingController _ingredientController;
   final TextEditingController _ingredientController = TextEditingController();
   @override
@@ -33,7 +32,7 @@ class _IngredientTextFieldState extends State<IngredientTextField> {
 
   @override
   Widget build(BuildContext context) {
-    bool index;
+    // bool index;
     
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _ingredientController.text = widget.ingredientsList[widget.index!] ?? '';
@@ -75,7 +74,7 @@ class _IngredientTextFieldState extends State<IngredientTextField> {
                 : kDark[900],
           ),
           contentPadding:
-              EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
+              const EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
           floatingLabelBehavior: FloatingLabelBehavior.always,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15.0),

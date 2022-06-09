@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import '../../../../constants.dart';
-import '../../../../utils/ingredient_data.dart';
 
 class StepTextField extends StatefulWidget {
   late final int? index;
   final List stepsList;
-  StepTextField({this.index, required this.stepsList});
+  StepTextField({this.index, required this.stepsList, Key? key})
+      : super(key: key);
   @override
-  _StepTextFieldState createState() => _StepTextFieldState();
+  StepTextFieldState createState() => StepTextFieldState();
 }
 
-class _StepTextFieldState extends State<StepTextField> {
+class StepTextFieldState extends State<StepTextField> {
   // late TextEditingController _stepController;
   final TextEditingController _stepController = TextEditingController();
   @override
@@ -68,7 +67,7 @@ class _StepTextFieldState extends State<StepTextField> {
               : kDark[900],
         ),
         contentPadding:
-            EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
+            const EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
         floatingLabelBehavior: FloatingLabelBehavior.always,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15.0),

@@ -1,8 +1,4 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -17,10 +13,10 @@ class AddPost extends StatefulWidget {
   const AddPost({Key? key}) : super(key: key);
 
   @override
-  _AddPostState createState() => _AddPostState();
+  AddPostState createState() => AddPostState();
 }
 
-class _AddPostState extends State<AddPost> {
+class AddPostState extends State<AddPost> {
   File? _imageFile;
   static String desc = "";
   final _formKey = GlobalKey<FormState>();
@@ -88,15 +84,12 @@ class _AddPostState extends State<AddPost> {
   }
 
   String _appendHashtag(desc1, tag) {
-    print(desc1);
-    print(tag);
     // String desc1 = desc;
     String last = desc1.substring(desc1.length - 1);
     while (last != '#') {
       desc1 = desc1.substring(0, desc1.length - 1);
       last = desc1.substring(desc1.length - 1);
     }
-    print(desc1 + tag.substring(1, tag.length));
     return desc1 + tag.substring(1, tag.length);
   }
 
@@ -163,8 +156,8 @@ class _AddPostState extends State<AddPost> {
       body: ListView(
         children: <Widget>[
           if (_imageFile != null) ...[
-            SizedBox(height: 15.0),
-            Text(
+            const SizedBox(height: 15.0),
+            const Text(
               'Some toppings ...',
               style: TextStyle(
                 color: kPrimaryColor,
@@ -184,18 +177,18 @@ class _AddPostState extends State<AddPost> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   TextButton(
-                    child: Icon(Icons.crop),
                     onPressed: _cropImage,
+                    child: const Icon(Icons.crop),
                   ),
                   TextButton(
-                    child: Icon(Icons.refresh),
                     onPressed: _clear,
+                    child: const Icon(Icons.refresh),
                   ),
                 ],
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(kDefaultPadding * 1.5),
+              padding: const EdgeInsets.all(kDefaultPadding * 1.5),
               child: Form(
                   key: _formKey,
                   child: Column(
@@ -235,7 +228,7 @@ class _AddPostState extends State<AddPost> {
                       //       ),
                       TypeAheadFormField<String?>(
                         hideOnEmpty: true,
-                        debounceDuration: Duration(seconds: 1),
+                        debounceDuration: const Duration(seconds: 1),
                         direction: AxisDirection.up,
                         // suggestionsCallback: _ingredientController.text.isNotEmpty ? _ingredientController.text.characters.last != '#' ? Hashtags.getSuggestions : (v) => [] : (v) => [],
                         suggestionsCallback: Hashtags.getSuggestions,
@@ -256,7 +249,7 @@ class _AddPostState extends State<AddPost> {
                                   ? kPrimaryColor
                                   : kDark[900],
                             ),
-                            contentPadding: EdgeInsets.symmetric(
+                            contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 25.0, vertical: kDefaultPadding),
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             border: OutlineInputBorder(
@@ -277,11 +270,7 @@ class _AddPostState extends State<AddPost> {
                         ),
                         onSuggestionSelected: (v) {
                           // setState(() {
-                          print("first");
-                          print(_appendHashtag(desc, v));
                           _tagController.text = _appendHashtag(desc, v);
-                          print("second");
-                          print(_tagController.text);
                           // });
                         },
                         validator: (val) => val!.isEmpty || val.length > 500
@@ -322,10 +311,10 @@ class _AddPostState extends State<AddPost> {
                 file: _imageFile, desc: desc, formKey: _formKey, edit: false)
           ] else ...[
             Container(
-              padding: EdgeInsets.symmetric(vertical: 50.0),
+              padding: const EdgeInsets.symmetric(vertical: 50.0),
               child: Column(
                 children: [
-                  Text(
+                  const Text(
                     'What\'s cooking ?',
                     style: TextStyle(
                       color: kPrimaryColor,
@@ -333,46 +322,46 @@ class _AddPostState extends State<AddPost> {
                       fontSize: 40.0,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 3 * kDefaultPadding,
                   ),
                   Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(size.width),
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? kDark[900]
+                          : kLight,
+                    ),
                     child: IconButton(
                       padding: EdgeInsets.all(size.width * 0.1),
-                      icon: Icon(Icons.camera_alt_rounded),
+                      icon: const Icon(Icons.camera_alt_rounded),
                       iconSize: 50.0,
                       onPressed: () => _pickImage(ImageSource.camera),
                     ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(size.width),
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? kDark[900]
-                          : kLight,
-                    ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: kDefaultPadding,
                   ),
                   Container(
-                    child: IconButton(
-                      padding: EdgeInsets.all(size.width * 0.1),
-                      icon: Icon(Icons.photo_library_rounded),
-                      iconSize: 50.0,
-                      onPressed: () => _pickImage(ImageSource.gallery),
-                    ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(size.width),
                       color: Theme.of(context).brightness == Brightness.dark
                           ? kDark[900]
                           : kLight,
                     ),
+                    child: IconButton(
+                      padding: EdgeInsets.all(size.width * 0.1),
+                      icon: const Icon(Icons.photo_library_rounded),
+                      iconSize: 50.0,
+                      onPressed: () => _pickImage(ImageSource.gallery),
+                    ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 2 * kDefaultPadding,
                   ),
-                  Container(
+                  SizedBox(
                     width: size.width * 0.5,
-                    child: Text(
+                    child: const Text(
                       'Hey! pick some appetizing stuff !',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 18.0, height: 1.5),
