@@ -101,16 +101,16 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           right: 0.0,
                           child: Container(
                             color: connected
-                                ? Color(0xFF00EE44)
-                                : Color(0xFFEE4400),
+                                ? const Color(0xFF00EE44)
+                                : const Color(0xFFEE4400),
                             child: Center(
                               child:
-                                  Text("${connected ? 'ONLINE' : 'OFFLINE'}"),
+                                  Text(connected ? 'ONLINE' : 'OFFLINE'),
                             ),
                           ),
                         ),
-                        Center(
-                          child: new Text(
+                       const Center(
+                          child: Text(
                             'You are not connected to Internet.',
                           ),
                         ),
