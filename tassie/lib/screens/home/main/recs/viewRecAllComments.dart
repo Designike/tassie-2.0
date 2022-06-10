@@ -271,22 +271,16 @@ class ViewRecAllCommentsState extends State<ViewRecAllComments> {
                                     width: 48.0);
                               } else {
                                 if (!text.hasData) {
-                                  return GestureDetector(
-                                      onTap: () {
-                                        if (mounted) {
-                                          setState(() {});
-                                        }
-                                      },
-                                      child: const SizedBox(
-                                          height: 48.0,
-                                          width: 48.0,
-                                          child: Center(
-                                            child: Icon(
-                                              Icons.refresh,
-                                              // size: 50.0,
-                                              color: kDark,
-                                            ),
-                                          )));
+                                  return const SizedBox(
+                                      height: 48.0,
+                                      width: 48.0,
+                                      child: Center(
+                                        child: Icon(
+                                          Icons.refresh,
+                                          // size: 50.0,
+                                          color: kDark,
+                                        ),
+                                      ));
                                 }
                                 return Image(
                                   height: 48.0,

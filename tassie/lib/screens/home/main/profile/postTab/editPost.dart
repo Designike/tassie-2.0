@@ -117,19 +117,13 @@ class EditPostState extends State<EditPost> {
                           );
                         } else {
                           if (!text.hasData) {
-                            return GestureDetector(
-                                onTap: () {
-                                  if (mounted) {
-                                    setState(() {});
-                                  }
-                                },
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.refresh,
-                                    size: 50.0,
-                                    color: kDark,
-                                  ),
-                                ));
+                            return const Center(
+                              child: Icon(
+                                Icons.refresh,
+                                size: 50.0,
+                                color: kDark,
+                              ),
+                            );
                           }
                           return Image(
                             image: NetworkImage(

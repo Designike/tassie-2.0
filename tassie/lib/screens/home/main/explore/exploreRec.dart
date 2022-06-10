@@ -114,23 +114,17 @@ class ExploreRecState extends State<ExploreRec> {
                       //   fit: BoxFit.cover,
                       // );
                       if (!text.hasData) {
-                        return GestureDetector(
-                            onTap: () {
-                              if (mounted) {
-                                setState(() {});
-                              }
-                            },
-                            child: Container(
-                                margin: const EdgeInsets.all(10.0),
-                                width: double.infinity,
-                                height: (size.width / 2) - 20.0 - 14.0,
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.refresh,
-                                    size: 50.0,
-                                    color: kDark,
-                                  ),
-                                )));
+                        return Container(
+                            margin: const EdgeInsets.all(10.0),
+                            width: double.infinity,
+                            height: (size.width / 2) - 20.0 - 14.0,
+                            child: const Center(
+                              child: Icon(
+                                Icons.refresh,
+                                size: 50.0,
+                                color: kDark,
+                              ),
+                            ));
                       }
                       return InkWell(
                         onDoubleTap: () => {},
@@ -177,19 +171,13 @@ class ExploreRecState extends State<ExploreRec> {
                               );
                             } else {
                               if (!text.hasData) {
-                                return GestureDetector(
-                                    onTap: () {
-                                      if (mounted) {
-                                        setState(() {});
-                                      }
-                                    },
-                                    child: const Center(
-                                      child: Icon(
-                                        Icons.refresh,
-                                        // size: 50.0,
-                                        color: kDark,
-                                      ),
-                                    ));
+                                return const Center(
+                                  child: Icon(
+                                    Icons.refresh,
+                                    // size: 50.0,
+                                    color: kDark,
+                                  ),
+                                );
                               }
                               return Image(
                                 height: (size.width - 42.0) / 12,

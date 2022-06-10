@@ -2,6 +2,7 @@ import 'package:async/async.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:tassie/screens/home/main/profile/profile.dart';
+import 'package:tassie/screens/home/main/recs/viewRecipe.dart';
 
 import '../../../../constants.dart';
 
@@ -110,25 +111,19 @@ class ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
                           );
                         } else {
                           if (!text.hasData) {
-                            return GestureDetector(
-                                onTap: () {
-                                  if (mounted) {
-                                    setState(() {});
-                                  }
-                                },
-                                child: Container(
-                                    margin: const EdgeInsets.all(10.0),
-                                    width: double.infinity,
-                                    // height: ((size.width - 42.0) / 2) -
-                                    //     20, // minus padding, minus margin
-                                    height: 150 - 20,
-                                    child: const Center(
-                                      child: Icon(
-                                        Icons.refresh,
-                                        size: 50.0,
-                                        color: kDark,
-                                      ),
-                                    )));
+                            return Container(
+                                margin: const EdgeInsets.all(10.0),
+                                width: double.infinity,
+                                // height: ((size.width - 42.0) / 2) -
+                                //     20, // minus padding, minus margin
+                                height: 150 - 20,
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.refresh,
+                                    size: 50.0,
+                                    color: kDark,
+                                  ),
+                                ));
                           }
                           return Container(
                             margin: const EdgeInsets.all(10.0),
@@ -148,13 +143,13 @@ class ViewRecSimilarRecState extends State<ViewRecSimilarRec> {
                       })),
               GestureDetector(
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (_) =>
-                  // ViewRecPost(recs: recs, funcB: widget.funcB),
-                  //   ),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          ViewRecPost(recs: recs, funcB: widget.funcB),
+                    ),
+                  );
                 },
                 child: ListTile(
                   title: Text(

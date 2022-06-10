@@ -184,22 +184,16 @@ class _TassieMapState extends State<TassieMap> {
                                           width: 48);
                                     } else {
                                       if (!text.hasData) {
-                                        return GestureDetector(
-                                            onTap: () {
-                                              if (mounted) {
-                                                setState(() {});
-                                              }
-                                            },
-                                            child: const SizedBox(
-                                                height: 48,
-                                                width: 48,
-                                                child: Center(
-                                                  child: Icon(
-                                                    Icons.refresh,
-                                                    // size: 50.0,
-                                                    color: kDark,
-                                                  ),
-                                                )));
+                                        return const SizedBox(
+                                            height: 48,
+                                            width: 48,
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.refresh,
+                                                // size: 50.0,
+                                                color: kDark,
+                                              ),
+                                            ));
                                       }
                                       return Ink.image(
                                         height: 48,

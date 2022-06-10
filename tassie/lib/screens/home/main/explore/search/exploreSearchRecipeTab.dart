@@ -128,22 +128,16 @@ class _ExploreRecipeAvatarState extends State<ExploreRecipeAvatar> {
             );
           } else {
             if (!text.hasData) {
-              return GestureDetector(
-                  onTap: () {
-                    if (mounted) {
-                      setState(() {});
-                    }
-                  },
-                  child: const SizedBox(
-                      height: 50.0,
-                      width: 50.0,
-                      child: Center(
-                        child: Icon(
-                          Icons.refresh,
-                          // size: 50.0,
-                          color: kDark,
-                        ),
-                      )));
+              return const SizedBox(
+                  height: 50.0,
+                  width: 50.0,
+                  child: Center(
+                    child: Icon(
+                      Icons.refresh,
+                      // size: 50.0,
+                      color: kDark,
+                    ),
+                  ));
             }
             return Image(
               height: 50.0,

@@ -112,9 +112,21 @@ class ExplorePostState extends State<ExplorePost> {
                       if (!text.hasData) {
                         return GestureDetector(
                             onTap: () {
-                              if (mounted) {
-                                setState(() {});
-                              }
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => ExploreViewComments(
+                                        post: post,
+                                        noOfComment: widget.noOfComment,
+                                        noOfLike: widget.noOfLike,
+                                        isLiked: widget.isLiked,
+                                        func: widget.func,
+                                        plusComment: widget.plusComment,
+                                        funcB: widget.funcB,
+                                        bookmark: widget.bookmark,
+                                        minusComment: widget.minusComment,
+                                        dp: dp),
+                                  ));
                             },
                             child: Container(
                                 margin: const EdgeInsets.all(10.0),
@@ -214,19 +226,13 @@ class ExplorePostState extends State<ExplorePost> {
                                 );
                               } else {
                                 if (!text.hasData) {
-                                  return GestureDetector(
-                                      onTap: () {
-                                        if (mounted) {
-                                          setState(() {});
-                                        }
-                                      },
-                                      child: const Center(
-                                        child: Icon(
-                                          Icons.refresh,
-                                          size: 50.0,
-                                          color: kDark,
-                                        ),
-                                      ));
+                                  return const Center(
+                                    child: Icon(
+                                      Icons.refresh,
+                                      size: 50.0,
+                                      color: kDark,
+                                    ),
+                                  );
                                 }
                                 return Image(
                                   height: (size.width - 42.0) / 12,

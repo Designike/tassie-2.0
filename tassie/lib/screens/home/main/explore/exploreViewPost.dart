@@ -252,19 +252,13 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                                   //   fit: BoxFit.cover,
                                                   // );
                                                   if (!text.hasData) {
-                                                    return GestureDetector(
-                                                        onTap: () {
-                                                          if (mounted) {
-                                                            setState(() {});
-                                                          }
-                                                        },
-                                                        child: const Center(
-                                                          child: Icon(
-                                                            Icons.refresh,
-                                                            // size: 50.0,
-                                                            color: kDark,
-                                                          ),
-                                                        ));
+                                                    return const Center(
+                                                      child: Icon(
+                                                        Icons.refresh,
+                                                        // size: 50.0,
+                                                        color: kDark,
+                                                      ),
+                                                    );
                                                   }
                                                   return Image(
                                                     height: 50.0,
@@ -331,29 +325,22 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                     //   fit: BoxFit.cover,
                                     // );
                                     if (!text.hasData) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          if (mounted) {
-                                            setState(() {});
-                                          }
-                                        },
-                                        child: Container(
-                                            margin: const EdgeInsets.all(10.0),
-                                            width: double.infinity,
-                                            height: size.width - 40.0,
-                                            // height: 400.0,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(25.0),
+                                      return Container(
+                                          margin: const EdgeInsets.all(10.0),
+                                          width: double.infinity,
+                                          height: size.width - 40.0,
+                                          // height: 400.0,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(25.0),
+                                          ),
+                                          child: const Center(
+                                            child: Icon(
+                                              Icons.refresh,
+                                              size: 50.0,
+                                              color: kDark,
                                             ),
-                                            child: const Center(
-                                              child: Icon(
-                                                Icons.refresh,
-                                                size: 50.0,
-                                                color: kDark,
-                                              ),
-                                            )),
-                                      );
+                                          ));
                                     }
                                     return InkWell(
                                       onDoubleTap: () async {
@@ -682,22 +669,16 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                               //   fit: BoxFit.cover,
                               // );
                               if (!text.hasData) {
-                                return GestureDetector(
-                                    onTap: () {
-                                      if (mounted) {
-                                        setState(() {});
-                                      }
-                                    },
-                                    child: const SizedBox(
-                                        height: 48.0,
-                                        width: 48.0,
-                                        child: Center(
-                                          child: Icon(
-                                            Icons.refresh,
-                                            // size: 50.0,
-                                            color: kDark,
-                                          ),
-                                        )));
+                                return const SizedBox(
+                                    height: 48.0,
+                                    width: 48.0,
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.refresh,
+                                        // size: 50.0,
+                                        color: kDark,
+                                      ),
+                                    ));
                               }
                               return Image(
                                 height: 48.0,

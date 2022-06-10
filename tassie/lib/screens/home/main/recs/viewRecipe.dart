@@ -863,19 +863,13 @@ class ViewRecPostState extends State<ViewRecPost> {
                                       "assets/images/broken.png");
                                 } else {
                                   if (!text.hasData) {
-                                    return GestureDetector(
-                                        onTap: () {
-                                          if (mounted) {
-                                            setState(() {});
-                                          }
-                                        },
-                                        child: const Center(
-                                          child: Icon(
-                                            Icons.refresh,
-                                            size: 50.0,
-                                            color: kDark,
-                                          ),
-                                        ));
+                                    return const Center(
+                                      child: Icon(
+                                        Icons.refresh,
+                                        size: 50.0,
+                                        color: kDark,
+                                      ),
+                                    );
                                   }
                                   return Image.network(text.data.toString());
                                 }
@@ -1188,26 +1182,20 @@ class ViewRecPostState extends State<ViewRecPost> {
                                               );
                                             } else {
                                               if (!text.hasData) {
-                                                return GestureDetector(
-                                                    onTap: () {
-                                                      if (mounted) {
-                                                        setState(() {});
-                                                      }
-                                                    },
-                                                    child: SizedBox(
-                                                        height: (size.width -
-                                                                40.0) /
-                                                            10,
-                                                        width: (size.width -
-                                                                40.0) /
-                                                            10,
-                                                        child: const Center(
-                                                          child: Icon(
-                                                            Icons.refresh,
-                                                            // size: 50.0,
-                                                            color: kDark,
-                                                          ),
-                                                        )));
+                                                return SizedBox(
+                                                    height: (size.width -
+                                                            40.0) /
+                                                        10,
+                                                    width: (size.width -
+                                                            40.0) /
+                                                        10,
+                                                    child: const Center(
+                                                      child: Icon(
+                                                        Icons.refresh,
+                                                        // size: 50.0,
+                                                        color: kDark,
+                                                      ),
+                                                    ));
                                               }
                                               return Image(
                                                 height:

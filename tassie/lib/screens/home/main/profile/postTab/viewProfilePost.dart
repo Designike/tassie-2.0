@@ -332,30 +332,16 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                                         );
                                                       } else {
                                                         if (!text.hasData) {
-                                                          return GestureDetector(
-                                                              onTap: () {
-                                                                if (mounted) {
-                                                                  setState(
-                                                                      () {});
-                                                                }
-                                                              },
-                                                              child:
-                                                                  const SizedBox(
-                                                                      height:
-                                                                          50.0,
-                                                                      width:
-                                                                          50.0,
-                                                                      child:
-                                                                          Center(
-                                                                        child:
-                                                                            Icon(
-                                                                          Icons
-                                                                              .refresh,
-                                                                          // size: 50.0,
-                                                                          color:
-                                                                              kDark,
-                                                                        ),
-                                                                      )));
+                                                          return const SizedBox(
+                                                              height: 50.0,
+                                                              width: 50.0,
+                                                              child: Center(
+                                                                child: Icon(
+                                                                  Icons.refresh,
+                                                                  // size: 50.0,
+                                                                  color: kDark,
+                                                                ),
+                                                              ));
                                                         }
                                                         return Image(
                                                           height: 50.0,
@@ -539,25 +525,18 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                             );
                                           } else {
                                             if (!text.hasData) {
-                                              return GestureDetector(
-                                                  onTap: () {
-                                                    if (mounted) {
-                                                      setState(() {});
-                                                    }
-                                                  },
-                                                  child: Container(
-                                                      margin:
-                                                          const EdgeInsets.all(
-                                                              10.0),
-                                                      width: double.infinity,
-                                                      height: size.width - 40.0,
-                                                      child: const Center(
-                                                        child: Icon(
-                                                          Icons.refresh,
-                                                          size: 50.0,
-                                                          color: kDark,
-                                                        ),
-                                                      )));
+                                              return Container(
+                                                  margin: const EdgeInsets.all(
+                                                      10.0),
+                                                  width: double.infinity,
+                                                  height: size.width - 40.0,
+                                                  child: const Center(
+                                                    child: Icon(
+                                                      Icons.refresh,
+                                                      size: 50.0,
+                                                      color: kDark,
+                                                    ),
+                                                  ));
                                             }
                                             return Container(
                                               margin:
@@ -871,22 +850,16 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                     );
                                   } else {
                                     if (!text.hasData) {
-                                      return GestureDetector(
-                                          onTap: () {
-                                            if (mounted) {
-                                              setState(() {});
-                                            }
-                                          },
-                                          child: const SizedBox(
-                                              height: 48.0,
-                                              width: 48.0,
-                                              child: Center(
-                                                child: Icon(
-                                                  Icons.refresh,
-                                                  // size: 50.0,
-                                                  color: kDark,
-                                                ),
-                                              )));
+                                      return const SizedBox(
+                                          height: 48.0,
+                                          width: 48.0,
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.refresh,
+                                              // size: 50.0,
+                                              color: kDark,
+                                            ),
+                                          ));
                                     }
                                     return Image(
                                       height: 48.0,

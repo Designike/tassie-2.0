@@ -457,9 +457,11 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                           if (!text.hasData) {
                                             return GestureDetector(
                                                 onTap: () {
-                                                  if (mounted) {
-                                                    setState(() {});
-                                                  }
+                                                  Navigator.push(context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) {
+                                                    return const EditProfileImage();
+                                                  }));
                                                 },
                                                 child: const SizedBox(
                                                     height: 128,

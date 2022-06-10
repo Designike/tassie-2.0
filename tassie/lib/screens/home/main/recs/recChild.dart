@@ -140,24 +140,18 @@ class RecPostState extends State<RecPost> {
                                   //   fit: BoxFit.cover,
                                   // );
                                   if (!text.hasData) {
-                                    return GestureDetector(
-                                        onTap: () {
-                                          if (mounted) {
-                                            setState(() {});
-                                          }
-                                        },
-                                        child: Container(
-                                            margin: const EdgeInsets.all(10.0),
-                                            width: double.infinity,
-                                            height: ((size.width - 40.0) / 2) -
-                                                20.0,
-                                            child: const Center(
-                                              child: Icon(
-                                                Icons.refresh,
-                                                size: 50.0,
-                                                color: kDark,
-                                              ),
-                                            )));
+                                    return Container(
+                                        margin: const EdgeInsets.all(10.0),
+                                        width: double.infinity,
+                                        height:
+                                            ((size.width - 40.0) / 2) - 20.0,
+                                        child: const Center(
+                                          child: Icon(
+                                            Icons.refresh,
+                                            size: 50.0,
+                                            color: kDark,
+                                          ),
+                                        ));
                                   }
                                   return Container(
                                     margin: const EdgeInsets.all(10.0),
@@ -212,23 +206,16 @@ class RecPostState extends State<RecPost> {
                                       //   fit: BoxFit.cover,
                                       // );
                                       if (!text.hasData) {
-                                        return GestureDetector(
-                                            onTap: () {
-                                              if (mounted) {
-                                                setState(() {});
-                                              }
-                                            },
-                                            child: SizedBox(
-                                                height:
-                                                    (size.width - 40.0) / 12,
-                                                width: (size.width - 40.0) / 12,
-                                                child: const Center(
-                                                  child: Icon(
-                                                    Icons.refresh,
-                                                    // size: 50.0,
-                                                    color: kDark,
-                                                  ),
-                                                )));
+                                        return SizedBox(
+                                            height: (size.width - 40.0) / 12,
+                                            width: (size.width - 40.0) / 12,
+                                            child: const Center(
+                                              child: Icon(
+                                                Icons.refresh,
+                                                // size: 50.0,
+                                                color: kDark,
+                                              ),
+                                            ));
                                       }
                                       return Image(
                                         height: (size.width - 40.0) / 12,
