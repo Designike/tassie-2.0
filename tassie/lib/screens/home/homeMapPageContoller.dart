@@ -54,28 +54,10 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    // getIng();
-
-    //  AnimationController animatedController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
-    //  animatedController.addListener(() {
-    //   setState(() {
-    //     _angle = animatedController.value * 45 / 360 * pi * 2;
-    //   });
     _selectedIndex = 0;
-    // _screens = [
-    //   Feed(),
-    //   Recipes(),
-    //   // Add(),
-    //   Explore(),
-    //   Profile(uuid: "user"),
-    // ];
     _screens = [
       _buildOffstageNavigator(0),
-      // if(leftSwipeOn) ... [
       _buildOffstageNavigator(1),
-      // ]
-      // _buildOffstageNavigator(2),
-      // _buildOffstageNavigator(3),
     ];
 
     _pageController = PageController(initialPage: _selectedIndex);
