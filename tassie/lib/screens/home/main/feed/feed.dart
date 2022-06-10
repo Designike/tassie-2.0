@@ -18,11 +18,6 @@ class Feed extends StatefulWidget {
 class FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  // List<Map> posts = [
-  //   {"name": "Soham", "time": "30 mins", "image": "https://picsum.photos/200"},
-  //   {"name": "Soham", "time": "30 mins", "image": "https://picsum.photos/200"},
-  //   {"name": "Soham", "time": "30 mins", "image": "https://picsum.photos/200"}
-  // ];
   static int page = 1;
   final ScrollController _sc = ScrollController();
   static List posts = [];
