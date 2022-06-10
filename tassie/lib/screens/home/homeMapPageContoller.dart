@@ -1,11 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:provider/provider.dart';
-import 'package:tassie/constants.dart';
 import 'package:tassie/utils/leftSwipe.dart';
 import 'package:tassie/screens/home/navigator/outerTabNavigator.dart';
 
@@ -80,38 +78,45 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
           resizeToAvoidBottomInset: false,
           body: OfflineBuilder(
             connectivityBuilder: (
-          BuildContext context,
-          ConnectivityResult connectivity,
-          Widget child,
-        ) {
-          final bool connected = connectivity != ConnectivityResult.none;
-          return connected ? PageView(
-            physics: Provider.of<LeftSwipe>(context).isSwipe
-                ? const AlwaysScrollableScrollPhysics()
-                : const NeverScrollableScrollPhysics(),
-            controller: _pageController,
-            scrollDirection: Axis.horizontal,
-            reverse: true,
-            children: _screens,
-          ): Stack(children: [
-            Positioned(
-                height: 100.0,
-                left: 0.0,
-                right: 0.0,
-                child: Container(
-                  color: connected ? Color(0xFF00EE44) : Color(0xFFEE4400),
-                  child: Center(
-                    child: Text("${connected ? 'ONLINE' : 'OFFLINE'}"),
-                  ),
-                ),
-              ),
-              Center(
-                child: new Text(
-                  'You are not connected to Internet.',
-                ),
-              ),
-          ],);
-        },
+              BuildContext context,
+              ConnectivityResult connectivity,
+              Widget child,
+            ) {
+              final bool connected = connectivity != ConnectivityResult.none;
+              return connected
+                  ? PageView(
+                      physics: Provider.of<LeftSwipe>(context).isSwipe
+                          ? const AlwaysScrollableScrollPhysics()
+                          : const NeverScrollableScrollPhysics(),
+                      controller: _pageController,
+                      scrollDirection: Axis.horizontal,
+                      reverse: true,
+                      children: _screens,
+                    )
+                  : Stack(
+                      children: [
+                        Positioned(
+                          height: 100.0,
+                          left: 0.0,
+                          right: 0.0,
+                          child: Container(
+                            color: connected
+                                ? Color(0xFF00EE44)
+                                : Color(0xFFEE4400),
+                            child: Center(
+                              child:
+                                  Text("${connected ? 'ONLINE' : 'OFFLINE'}"),
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: new Text(
+                            'You are not connected to Internet.',
+                          ),
+                        ),
+                      ],
+                    );
+            },
             child: Container(),
           )),
     );
