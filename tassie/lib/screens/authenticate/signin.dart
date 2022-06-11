@@ -27,6 +27,7 @@ class SignInState extends State<SignIn> {
   var dio = Dio();
   final google = GoogleSignIn();
   bool isClicked = false;
+  bool isClickedGoogle = false;
 
   // Future<GoogleSignInAuthentication?> login()
   Future<GoogleSignInAccount?> login() => google.signIn().then((result) {
@@ -57,7 +58,11 @@ class SignInState extends State<SignIn> {
                 }),
               );
             } else {
+              setState(() {
+                  isClickedGoogle = false;
+              });
               // await Future.delayed(const Duration(seconds: 1));
+
               if (!mounted) return;
               Navigator.push(
                 context,
@@ -65,7 +70,8 @@ class SignInState extends State<SignIn> {
                   return GoogleRegister(
                       name: result.displayName!,
                       email: result.email,
-                      password: result.id);
+                      password: result.id,
+                      );
                 }),
               );
             }
@@ -73,12 +79,21 @@ class SignInState extends State<SignIn> {
             // await Future.delayed(const Duration(seconds: 1));
             if (!mounted) return;
             showSnack(context, 'Unable to connect 1A', () {}, 'OK', 4);
+            setState(() {
+              isClickedGoogle = false;
+            });
           }
         }).catchError((err) {
           showSnack(context, 'Unable to connect 2B', () {}, 'OK', 4);
+          setState(() {
+            isClickedGoogle = false;
+          });
         });
       }).catchError((err) {
         showSnack(context, 'Unable to connect 3C', () {}, 'OK', 4);
+        setState(() {
+          isClickedGoogle = false;
+        });
       });
 
   Future<String?> check() async {
@@ -307,9 +322,17 @@ class SignInState extends State<SignIn> {
                     GestureDetector(
                       onTap: () async {
                         try {
-                          await login();
+                          if (!isClickedGoogle) {
+                            await login();
+                            setState(() {
+                              isClickedGoogle = true;
+                            });
+                          }
                         } catch (e) {
                           showSnack(context, "Error", () {}, 'OK', 4);
+                          setState(() {
+                            isClickedGoogle = false;
+                          });
                         }
                       },
                       child: Container(
@@ -332,8 +355,8 @@ class SignInState extends State<SignIn> {
                             children: [
                               Center(
                                 child: Row(
-                                  children: const [
-                                    Padding(
+                                  children: [
+                                    const Padding(
                                       padding: EdgeInsets.only(left: 10.0),
                                       child: Image(
                                         image: AssetImage(
@@ -341,13 +364,22 @@ class SignInState extends State<SignIn> {
                                         height: 40.0,
                                       ),
                                     ),
-                                    Text(
-                                      'Continue with Google',
-                                      style: TextStyle(
-                                        fontFamily: 'Raleway',
-                                        // color: Colors.black,
-                                      ),
-                                    ),
+                                    isClickedGoogle
+                                        ? Transform.scale(
+                                            scale: 0.6,
+                                            child:
+                                                const CircularProgressIndicator(
+                                              color: kLight,
+                                              strokeWidth: 3.0,
+                                            ),
+                                          )
+                                        : const Text(
+                                            'Continue with Google',
+                                            style: TextStyle(
+                                              fontFamily: 'Raleway',
+                                              // color: Colors.black,
+                                            ),
+                                          ),
                                   ],
                                 ),
                               ),

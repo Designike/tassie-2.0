@@ -14,7 +14,8 @@ class GoogleRegister extends StatefulWidget {
       {Key? key,
       required this.email,
       required this.name,
-      required this.password})
+      required this.password,
+      })
       : super(key: key);
 
   final String name;
@@ -56,6 +57,7 @@ class GoogleRegisterState extends State<GoogleRegister> {
       }
     }
   }
+
 
   @override
   void initState() {
@@ -186,14 +188,14 @@ class GoogleRegisterState extends State<GoogleRegister> {
                   (val) async {
                     username = val;
                     // print(username);
-                    if (val.length > 4) {
+                    if (val.length > 3) {
                       // print('1');
                       await checkUsername(val);
                       // print('2');
                     }
                   },
                   (val) {
-                    if (!RegExp(r"^(?=[a-zA-Z0-9.-]{6,32}$)").hasMatch(val!)) {
+                    if (!RegExp(r"^(?=[a-zA-Z0-9.-]{4,32}$)").hasMatch(val!)) {
                       return 'Please enter a valid Username';
                     }
                     if (!uniqueUsername) {
@@ -204,7 +206,7 @@ class GoogleRegisterState extends State<GoogleRegister> {
                 ),
                 const SizedBox(height: 20.0),
                 const Text(
-                    'Type your username, if it is available the save button on corner will be enabled.'),
+                    'Type your username, if it is available the save button on corner will be enabled.\n\nUsername should have minimum 4 characters. Username can only include letters, numbers, "." and "-"'),
                 const SizedBox(height: 20.0),
                 Text(notUniqText, style: const TextStyle(color: kPrimaryColor)),
               ],

@@ -136,13 +136,19 @@ class RegisterState extends State<Register> {
                               borderSide: BorderSide(color: kPrimaryColor))),
                       onChanged: (value) async {
                         username = value;
-                        if (value.length > 4) {
+                        if (value.length > 3) {
                           await checkUsername(value);
                         }
                       },
                       validator: (val) {
-                        if (!RegExp(r"^(?=[a-zA-Z0-9._]{6,32}$)")
+                        if (!RegExp(r"^(?=[a-zA-Z0-9.-]{4,32}$)")
                             .hasMatch(val!)) {
+                          showSnack(
+                              context,
+                              'Username should have minimum 4 characters. Username can only include letters, numbers, "." and "-"',
+                              () {},
+                              'OK',
+                              6);
                           return 'Please enter a valid Username';
                         }
                         // checkUsername(val);

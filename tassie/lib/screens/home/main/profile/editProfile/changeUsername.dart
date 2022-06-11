@@ -151,14 +151,14 @@ class ChangeUsernameState extends State<ChangeUsername> {
                   (val) async {
                     username = val;
                     // print(username);
-                    if (val.length > 4) {
+                    if (val.length > 3) {
                       // print('1');
                       await checkUsername(val);
                       // print('2');
                     }
                   },
                   (val) {
-                    if (!RegExp(r"^(?=[a-zA-Z0-9._]{6,32}$)").hasMatch(val!)) {
+                    if (!RegExp(r"^(?=[a-zA-Z0-9._]{4,32}$)").hasMatch(val!)) {
                       return 'Please enter a valid Username';
                     }
                     if (!uniqueUsername) {
@@ -169,7 +169,7 @@ class ChangeUsernameState extends State<ChangeUsername> {
                 ),
                 const SizedBox(height: 20.0),
                 const Text(
-                    'Type your new username, if it is available the save button on corner will be enabled.'),
+                    'Type your new username, if it is available the save button on corner will be enabled.\n\nUsername should have minimum 4 characters. Username can only include letters, numbers, "." and "-"'),
                 const SizedBox(height: 20.0),
                 Text(notUniqText, style: const TextStyle(color: kPrimaryColor)),
               ],

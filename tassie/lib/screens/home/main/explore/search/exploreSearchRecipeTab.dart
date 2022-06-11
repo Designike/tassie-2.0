@@ -1,6 +1,7 @@
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/home/main/recs/viewRecipe.dart';
 import 'package:tassie/utils/imgLoader.dart';
 
 class ExploreSearchRecipeTab extends StatefulWidget {
@@ -66,6 +67,14 @@ class ExploreSearchRecipeTabState extends State<ExploreSearchRecipeTab> {
                 ? _endMessage()
                 : _buildProgressIndicator()
             : ListTile(
+                onTap: () {
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) {
+                  //     return ViewRecPost();
+                  //   }),
+                  // );
+                },
                 title: Text(recipes[index]['name']),
                 subtitle: Text(
                   recipes[index]['username'],
