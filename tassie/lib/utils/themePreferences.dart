@@ -15,7 +15,9 @@ class ThemeController extends GetxController {
     _themeMode = themeMode;
     update();
     // prefs = await s.getInstance();
-    await storage.write(key:'theme',value: themeMode.toString().split('.')[1]);
+    await storage.write(
+        key: 'theme', value: themeMode.toString().split('.')[1]);
+    print('Theme mode set to $themeMode');
   }
 
   getThemeModeFromPreferences() async {
@@ -23,13 +25,13 @@ class ThemeController extends GetxController {
     String themeText = "dark";
     // prefs = await SharedPreferences.getInstance();
     try {
-      var theme = await storage.read(key:'theme');
+      var theme = await storage.read(key: 'theme');
+      print(theme);
       themeText = theme!;
     } catch (e) {
-      await storage.write(key:'theme',value:"dark");
+      await storage.write(key: 'theme', value: "dark");
     }
-    
-    
+
     try {
       themeMode =
           ThemeMode.values.firstWhere((e) => describeEnum(e) == themeText);

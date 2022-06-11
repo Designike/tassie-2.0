@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/utils/themePreferences.dart';
 
 class ChangeTheme extends StatefulWidget with ChangeNotifier {
   ChangeTheme({Key? key}) : super(key: key);
@@ -13,39 +15,31 @@ class ChangeTheme extends StatefulWidget with ChangeNotifier {
 class ChangeThemeState extends State<ChangeTheme> {
   // bool uniqueUsername = false;
   final _formKey = GlobalKey<FormState>();
+  final storage = const FlutterSecureStorage();
   int selectedTheme = 0;
   String theme = "";
+  var th = ThemeController();
 
-  // Future<void> checkUsername(username) async {
-  //   var dio = Dio();
-  //   // print(username);
-  //   try {
-  //     // print('');
-  //     Response response =
-  //         await dio.get("https://api-tassie.herokuapp.com/user/username/" + username);
-  //     // var res = jsonDecode(response.toString());
-
-  //     // if(response)
-  //     // return res.status;
-  //     // print(response);
-  //     setState(() {
-  //       uniqueUsername = response.data['status'];
-  //     });
-  //   } on DioError catch (e) {
-  //     if (e.response != null) {
-  //       setState(() {
-  //         uniqueUsername = e.response!.data['status'];
-  //       });
-  //     }
-  //   }
-  //   print(uniqueUsername);
-  // }
+  Future<void> getThemeIndex() async {
+    var theme = await storage.read(key: 'theme');
+    if (theme != null) {
+      setState(() {
+        if (theme == "dark") {
+          selectedTheme = 1;
+        }
+        if (theme == "light") {
+          selectedTheme = 2;
+        }
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     // ThemePreferences tp = ThemePreferences();
     // tp.getTheme();
+    getThemeIndex();
   }
 
   @override
@@ -127,20 +121,23 @@ class ChangeThemeState extends State<ChangeTheme> {
           //   "system": "true",
           //   "light": "false"
           // };
-          Get.changeThemeMode(ThemeMode.system);
+          th.setThemeMode(ThemeMode.system);
+          // Get.changeThemeMode(ThemeMode.system);
           // }
         } else if (theme == "Light") {
           // themeNotifier.isDark = {
           //   "system": "false",
           //   "light": "true"
           // };
-          Get.changeThemeMode(ThemeMode.light);
+          th.setThemeMode(ThemeMode.light);
+          // Get.changeThemeMode(ThemeMode.light);
         } else {
           // themeNotifier.isDark = {
           //   "system": "false",
           //   "light": "false"
           // };
-          Get.changeThemeMode(ThemeMode.dark);
+          th.setThemeMode(ThemeMode.dark);
+          // Get.changeThemeMode(ThemeMode.dark);
         }
       });
     }

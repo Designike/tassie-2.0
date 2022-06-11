@@ -1,11 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:provider/provider.dart';
+import 'package:tassie/constants.dart';
 import 'package:tassie/utils/leftSwipe.dart';
 import 'package:tassie/screens/home/navigator/outerTabNavigator.dart';
+import 'package:tassie/utils/leftSwipe.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -70,6 +73,7 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async =>
           !await _navigatorKeys[_selectedIndex]!.currentState!.maybePop(),
@@ -81,7 +85,7 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
               BuildContext context,
               ConnectivityResult connectivity,
               Widget child,
-            ) {
+            )  {
               final bool connected = connectivity != ConnectivityResult.none;
               return connected
                   ? PageView(
@@ -93,29 +97,68 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       reverse: true,
                       children: _screens,
                     )
-                  : Stack(
-                      children: [
-                        Positioned(
-                          height: 100.0,
-                          left: 0.0,
-                          right: 0.0,
-                          child: Container(
-                            color: connected
-                                ? const Color(0xFF00EE44)
-                                : const Color(0xFFEE4400),
-                            child: Center(
-                              child:
-                                  Text(connected ? 'ONLINE' : 'OFFLINE'),
+                  : Scaffold(
+            appBar: AppBar(
+              toolbarHeight: kToolbarHeight * 1.1,
+              backgroundColor: Colors.transparent,
+              systemOverlayStyle: SystemUiOverlayStyle(
+                  statusBarColor: connected ? Colors.green : Colors.red,
+                  statusBarIconBrightness:
+                      Theme.of(context).brightness == Brightness.light
+                          ? Brightness.dark
+                          : Brightness.light),
+              title:  const Text(
+                'Tassie',
+                style: TextStyle(
+                  color: kPrimaryColor,
+                  fontFamily: 'LobsterTwo',
+                  fontSize: 40.0,
+                ),
+              ),
+              centerTitle: true,
+            ),
+            // resizeToAvoidBottomInset: false,
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Divider(
+                  height: 10,
+                  thickness: 0.5,
+                ),
+                  SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: size.height * 0.25,
+                          ),
+                          const Icon(Icons.wifi_off_rounded, size: 80.0, color: kDark,),
+                          const SizedBox(
+                            height: 30.0,
+                          ),
+                          SizedBox(
+                            width: size.width * 0.75,
+                            child: const Text(
+                              'Oops! Seems like you are not connected to internet.',
+                              style: TextStyle(fontSize: 18.0),
+                              textAlign: TextAlign.center,
                             ),
                           ),
-                        ),
-                       const Center(
-                          child: Text(
-                            'You are not connected to Internet.',
+                          const SizedBox(height: 20),
+                          Container(
+                            width: 100.0,
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0),color: connected ? Colors.green : Colors.red,),
+                            child: Center(child: Text(connected ? "Online" :"Offline")),
                           ),
-                        ),
-                      ],
-                    );
+                        ],
+                      ),
+                    ),
+                  ),
+                ]
+            ),
+          );
             },
             child: Container(),
           )),

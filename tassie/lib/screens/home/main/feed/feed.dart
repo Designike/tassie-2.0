@@ -293,7 +293,7 @@ class FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                             ),
                             Image(
                               image:
-                                  MediaQuery.of(context).platformBrightness ==
+                                  Theme.of(context).brightness ==
                                           Brightness.dark
                                       ? const AssetImage(
                                           'assets/images/no_feed_dark.png')

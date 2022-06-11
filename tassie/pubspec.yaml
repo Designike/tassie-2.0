@@ -139,16 +139,16 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 
 flutter_native_splash:
-  color: "#ffffff"
-  image: assets/images/logo.png
-  branding: assets/images/branding.png
+  color: "#f5f5f5"
+  image: assets/images/logo540.png
+  branding: assets/images/branding_small.png
   color_dark: "#121212"
-  image_dark: assets/images/logo.png
-  branding_dark: assets/images/branding.png
+  image_dark: assets/images/logo540.png
+  branding_dark: assets/images/branding_small.png
   android_12:
-    image: assets/images/logo.png
-    icon_background_color: "#ffffff"
-    image_dark: assets/images/logo.png
-    icon_background_color_dark: "#121212"
+    image: assets/images/logo540.png
+    icon_background_color: "#202020"
+    image_dark: assets/images/logo540.png
+    icon_background_color_dark: "#202020"
   
   web: false

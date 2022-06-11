@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:tassie/utils/leftSwipe.dart';
@@ -7,12 +8,14 @@ import 'package:tassie/theme.dart';
 import 'package:tassie/utils/themePreferences.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   ThemeController thc = ThemeController();
   thc.getThemeModeFromPreferences();
+  await Future.delayed(const Duration(milliseconds: 1500));
   runApp(
       ChangeNotifierProvider(create: (_) => LeftSwipe(), child: const MyApp()));
-}
+}   
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
