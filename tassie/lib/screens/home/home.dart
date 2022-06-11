@@ -231,10 +231,10 @@ class HomeHomeState extends State<HomeHome>
                         HttpHeaders.authorizationHeader: "Bearer ${token!}"
                       }),
                     );
-                    await Future.delayed(const Duration(seconds: 1));
+                    // await Future.delayed(const Duration(seconds: 1));
 
                     if (response.data['status'] == true) {
-                      await Future.delayed(const Duration(seconds: 1));
+                      // await Future.delayed(const Duration(seconds: 1));
 
                       if (!mounted) return;
                       Navigator.pushReplacement(
@@ -247,7 +247,7 @@ class HomeHomeState extends State<HomeHome>
                         }),
                       );
                     } else {
-                      await Future.delayed(const Duration(seconds: 1));
+                      // await Future.delayed(const Duration(seconds: 1));
 
                       if (!mounted) return;
                       showSnack(

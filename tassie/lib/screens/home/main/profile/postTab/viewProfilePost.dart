@@ -892,7 +892,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                 });
                             if (response.data['status'] == true) {
                               plusComment();
-                              await Future.delayed(const Duration(seconds: 1));
+                              // await Future.delayed(const Duration(seconds: 1));
 
                               if (!mounted) return;
                               Navigator.pushReplacement(

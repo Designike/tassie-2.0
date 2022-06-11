@@ -240,18 +240,18 @@ class OTP2FormState extends State<OTP2Form> {
                     //   String randomItem = (option..shuffle()).first;
                     //   await storage.write(key: "profilePic", value: randomItem);
                     // }
-                    await Future.delayed(const Duration(seconds: 1));
+                    // await Future.delayed(const Duration(seconds: 1));
                     if (!mounted) return;
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
                   } else {
-                    await Future.delayed(const Duration(seconds: 1));
+                    // await Future.delayed(const Duration(seconds: 1));
                     if (!mounted) return;
                     showSnack(
                         context, response.data['message'], () {}, 'OK', 4);
                   }
                 } else {
-                  await Future.delayed(const Duration(seconds: 1));
+                  // await Future.delayed(const Duration(seconds: 1));
                   if (!mounted) return;
                   showSnack(context, 'Unable to connect', () {}, 'OK', 4);
                 }
@@ -298,7 +298,7 @@ class OTP2FormState extends State<OTP2Form> {
                 );
                 if (response.data != null) {
                   if (response.data['status'] == true) {
-                    await Future.delayed(const Duration(seconds: 1));
+                    // await Future.delayed(const Duration(seconds: 1));
                     if (!mounted) return;
                     Navigator.pushReplacement(
                       context,
@@ -309,13 +309,13 @@ class OTP2FormState extends State<OTP2Form> {
                       }),
                     );
                   } else {
-                    await Future.delayed(const Duration(seconds: 1));
+                    // await Future.delayed(const Duration(seconds: 1));
                     if (!mounted) return;
                     showSnack(
                         context, response.data['message'], () {}, 'OK', 4);
                   }
                 } else {
-                  await Future.delayed(const Duration(seconds: 1));
+                  // await Future.delayed(const Duration(seconds: 1));
                   if (!mounted) return;
                   showSnack(context, 'Unable to connect', () {}, 'OK', 4);
                 }

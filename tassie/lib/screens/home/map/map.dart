@@ -39,7 +39,7 @@ class _TassieMapState extends State<TassieMap> {
     if (!serviceEnabled) {
       serviceEnabled = await location.requestService();
       if (!serviceEnabled) {
-        await Future.delayed(const Duration(seconds: 1));
+        // await Future.delayed(const Duration(seconds: 1));
 
         if (!mounted) return;
         showSnack(context, 'please turn on location', () {}, 'OK', 4);
@@ -50,7 +50,7 @@ class _TassieMapState extends State<TassieMap> {
     if (permissionGranted == PermissionStatus.denied) {
       permissionGranted = await location.requestPermission();
       if (permissionGranted != PermissionStatus.granted) {
-        await Future.delayed(const Duration(seconds: 1));
+        // await Future.delayed(const Duration(seconds: 1));
 
         if (!mounted) return;
         showSnack(context, 'please turn on location', () {}, 'OK', 4);

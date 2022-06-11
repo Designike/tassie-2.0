@@ -1207,7 +1207,7 @@ class EditRecipeState extends State<EditRecipe> {
           },
         );
         if (response.data["status"] == false) {
-          await Future.delayed(const Duration(seconds: 1));
+          // await Future.delayed(const Duration(seconds: 1));
 
           if (!mounted) return {};
           showSnack(context, "Oops something went wrong. Please try again!",
@@ -1264,7 +1264,7 @@ class EditRecipeState extends State<EditRecipe> {
           });
         }
       }
-      await Future.delayed(const Duration(seconds: 1));
+      // await Future.delayed(const Duration(seconds: 1));
 
       if (!mounted) return;
       showSnack(context, response.data['message'], () {}, 'OK', 5);
@@ -1277,7 +1277,7 @@ class EditRecipeState extends State<EditRecipe> {
           });
         }
       }
-      await Future.delayed(const Duration(seconds: 1));
+      // await Future.delayed(const Duration(seconds: 1));
 
       if (!mounted) return;
       showSnack(context, response.data['message'], () {}, 'OK', 3);
@@ -1385,7 +1385,7 @@ class EditRecipeState extends State<EditRecipe> {
                     //   print('not deleted');
                     // }
                   } else {
-                    await Future.delayed(const Duration(seconds: 1));
+                    // await Future.delayed(const Duration(seconds: 1));
 
                     if (!mounted) return;
                     showSnack(
@@ -1402,7 +1402,7 @@ class EditRecipeState extends State<EditRecipe> {
           ),
         );
         if (isPop) {
-          await Future.delayed(const Duration(seconds: 1));
+          // await Future.delayed(const Duration(seconds: 1));
 
           if (!mounted) return false;
           Navigator.of(context).pop();
@@ -1510,7 +1510,7 @@ class EditRecipeState extends State<EditRecipe> {
                                     // 'folder': widget.folder,
                                     'youtubeLink': youtubeLink
                                   });
-                              await Future.delayed(const Duration(seconds: 1));
+                              // await Future.delayed(const Duration(seconds: 1));
 
                               if (!mounted) return;
                               Provider.of<LeftSwipe>(context, listen: false)
@@ -1561,7 +1561,7 @@ class EditRecipeState extends State<EditRecipe> {
                         if (_currentStep == 2) {
                           if (hour != null && min != null) {
                             if (hour == '0' && min == '00') {
-                              await Future.delayed(const Duration(seconds: 1));
+                              // await Future.delayed(const Duration(seconds: 1));
 
                               if (!mounted) return;
                               showSnack(
@@ -1596,7 +1596,7 @@ class EditRecipeState extends State<EditRecipe> {
                                   });
                             }
                           } else {
-                            await Future.delayed(const Duration(seconds: 1));
+                            // await Future.delayed(const Duration(seconds: 1));
 
                             if (!mounted) return;
                             showSnack(

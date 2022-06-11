@@ -95,7 +95,7 @@ class ChangeEmailState extends State<ChangeEmail> {
                           });
                       if (response.data != null) {
                         if (response.data['status'] == true) {
-                          await Future.delayed(const Duration(seconds: 1));
+                          // await Future.delayed(const Duration(seconds: 1));
 
                           if (!mounted) return;
                           Navigator.of(context, rootNavigator: true).push(
@@ -106,14 +106,14 @@ class ChangeEmailState extends State<ChangeEmail> {
                             }),
                           );
                         } else {
-                          await Future.delayed(const Duration(seconds: 1));
+                          // await Future.delayed(const Duration(seconds: 1));
 
                           if (!mounted) return;
                           showSnack(context, response.data['message'], () {},
                               'OK', 4);
                         }
                       } else {
-                        await Future.delayed(const Duration(seconds: 1));
+                        // await Future.delayed(const Duration(seconds: 1));
 
                         if (!mounted) return;
                         showSnack(context, 'Server error', () {}, 'OK', 4);

@@ -1027,7 +1027,7 @@ class AddRecipeState extends State<AddRecipe> {
           },
         );
         if (response.data["status"] == false) {
-          await Future.delayed(const Duration(seconds: 1));
+          // await Future.delayed(const Duration(seconds: 1));
           if (!mounted) return {};
           showSnack(context, "Oops something went wrong. Please try again!",
               () {}, "OK", 4);
@@ -1098,7 +1098,7 @@ class AddRecipeState extends State<AddRecipe> {
                       });
                   if (response.data['status'] == true) {
                   } else {
-                    await Future.delayed(const Duration(seconds: 1));
+                    // await Future.delayed(const Duration(seconds: 1));
                     if (!mounted) return;
                     showSnack(
                         context,
@@ -1204,7 +1204,7 @@ class AddRecipeState extends State<AddRecipe> {
                               // 'folder': widget.folder,
                               'youtubeLink': youtubeLink
                             });
-                        await Future.delayed(const Duration(seconds: 1));
+                        // await Future.delayed(const Duration(seconds: 1));
                         if (!mounted) return;
 
                         Provider.of<LeftSwipe>(context, listen: false)
@@ -1252,7 +1252,7 @@ class AddRecipeState extends State<AddRecipe> {
                   if (_currentStep == 2) {
                     if (hour != null && min != null) {
                       if (hour == '0' && min == '00') {
-                        await Future.delayed(const Duration(seconds: 1));
+                        // await Future.delayed(const Duration(seconds: 1));
                         if (!mounted) return;
                         showSnack(
                             context,
@@ -1285,7 +1285,7 @@ class AddRecipeState extends State<AddRecipe> {
                             });
                       }
                     } else {
-                      await Future.delayed(const Duration(seconds: 1));
+                      // await Future.delayed(const Duration(seconds: 1));
                       if (!mounted) return;
                       showSnack(context, 'Add cooking time', () {}, 'OK', 4);
                     }

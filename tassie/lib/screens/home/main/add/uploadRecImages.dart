@@ -80,7 +80,7 @@ class RecImageUploaderState extends State<RecImageUploader> {
 
     if (response.data['status'] == false) {
       widget.falseResp();
-      await Future.delayed(const Duration(seconds: 1));
+      // await Future.delayed(const Duration(seconds: 1));
       if (!mounted) return;
       showSnack(context, response.data['message'], () {}, 'OK', 5);
     }
@@ -91,7 +91,7 @@ class RecImageUploaderState extends State<RecImageUploader> {
           isUploaded = true;
         });
       }
-      await Future.delayed(const Duration(seconds: 1));
+      // await Future.delayed(const Duration(seconds: 1));
       if (!mounted) return;
       showSnack(context, response.data['message'], () {}, 'OK', 3);
     }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/wrapper.dart';
 import 'package:tassie/utils/snackbar.dart';
 
 import '../home/homeMapPageContoller.dart';
@@ -112,7 +113,7 @@ class GoogleRegisterState extends State<GoogleRegister> {
                           });
                       if (response.data != null) {
                         if (response.data['status'] == true) {
-                          await Future.delayed(const Duration(seconds: 1));
+                          // // await Future.delayed(const Duration(seconds: 1));
 
                           if (!mounted) return;
                           Navigator.pop(context);
@@ -125,9 +126,10 @@ class GoogleRegisterState extends State<GoogleRegister> {
                           await storage.write(
                               key: "profilePic",
                               value: response.data['data']['profilePic']);
-                          await Future.delayed(const Duration(seconds: 1));
+                          // // await Future.delayed(const Duration(seconds: 1));
 
                           if (!mounted) return;
+                          print("dasoda");
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (context) {
@@ -137,17 +139,20 @@ class GoogleRegisterState extends State<GoogleRegister> {
                           // showSnack(context, 'Username update in progress',
                           //     () {}, 'OK', 3);
                         } else {
-                          await Future.delayed(const Duration(seconds: 1));
+                          print(response.data);
+                          // // await Future.delayed(const Duration(seconds: 1));
 
                           if (!mounted) return;
-                          showSnack(context, 'Server error', () {}, 'OK', 4);
+                          showSnack(context, 'Server error 1A', () {}, 'OK', 4);
                           Navigator.pop(context);
                         }
                       } else {
-                        await Future.delayed(const Duration(seconds: 1));
+                        print(response.data);
+
+                        // await Future.delayed(const Duration(seconds: 1));
 
                         if (!mounted) return;
-                        showSnack(context, 'Server error', () {}, 'OK', 4);
+                        showSnack(context, 'Server error 2B', () {}, 'OK', 4);
                         Navigator.pop(context);
                       }
                     }
@@ -188,7 +193,7 @@ class GoogleRegisterState extends State<GoogleRegister> {
                     }
                   },
                   (val) {
-                    if (!RegExp(r"^(?=[a-zA-Z0-9._]{6,32}$)").hasMatch(val!)) {
+                    if (!RegExp(r"^(?=[a-zA-Z0-9.-]{6,32}$)").hasMatch(val!)) {
                       return 'Please enter a valid Username';
                     }
                     if (!uniqueUsername) {

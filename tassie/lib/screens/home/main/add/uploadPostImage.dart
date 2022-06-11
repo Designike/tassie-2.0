@@ -68,7 +68,7 @@ class UploaderState extends State<Uploader> {
         },
       );
       if (response.data['status'] == true) {
-        await Future.delayed(const Duration(seconds: 1));
+        // await Future.delayed(const Duration(seconds: 1));
         if (!mounted) return;
         Navigator.pushReplacement(
           context,
@@ -79,7 +79,7 @@ class UploaderState extends State<Uploader> {
           }),
         );
       } else {
-        await Future.delayed(const Duration(seconds: 1));
+        // await Future.delayed(const Duration(seconds: 1));
         if (!mounted) return;
         showSnack(context, 'Server error', () {}, 'OK', 4);
       }
@@ -110,7 +110,7 @@ class UploaderState extends State<Uploader> {
         },
       );
       if (response.data['status'] == true) {
-        await Future.delayed(const Duration(seconds: 1));
+        // await Future.delayed(const Duration(seconds: 1));
         if (!mounted) return;
         Navigator.pushReplacement(
           context,
@@ -120,7 +120,7 @@ class UploaderState extends State<Uploader> {
         );
       } else {
         // handle error
-        await Future.delayed(const Duration(seconds: 1));
+        // await Future.delayed(const Duration(seconds: 1));
         if (!mounted) return;
         showSnack(context, 'Server error', () {}, 'OK', 4);
       }

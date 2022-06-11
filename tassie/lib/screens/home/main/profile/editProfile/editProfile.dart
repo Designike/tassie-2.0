@@ -89,7 +89,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                         "gender": gender
                       });
                   if (response.data['status']) {
-                    await Future.delayed(const Duration(seconds: 1));
+                    // await Future.delayed(const Duration(seconds: 1));
 
                     if (!mounted) return;
                     Navigator.pop(context);

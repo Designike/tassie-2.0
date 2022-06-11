@@ -48,7 +48,7 @@ class SignInState extends State<SignIn> {
               await storage.write(
                   key: "profilePic",
                   value: response.data['data']['profilePic']);
-              await Future.delayed(const Duration(seconds: 1));
+              // await Future.delayed(const Duration(seconds: 1));
               if (!mounted) return;
               Navigator.pushReplacement(
                 context,
@@ -57,7 +57,7 @@ class SignInState extends State<SignIn> {
                 }),
               );
             } else {
-              await Future.delayed(const Duration(seconds: 1));
+              // await Future.delayed(const Duration(seconds: 1));
               if (!mounted) return;
               Navigator.push(
                 context,
@@ -70,7 +70,7 @@ class SignInState extends State<SignIn> {
               );
             }
           } else {
-            await Future.delayed(const Duration(seconds: 1));
+            // await Future.delayed(const Duration(seconds: 1));
             if (!mounted) return;
             showSnack(context, 'Unable to connect 1A', () {}, 'OK', 4);
           }
@@ -252,7 +252,7 @@ class SignInState extends State<SignIn> {
                               //   await storage.write(
                               //       key: "profilePic", value: randomItem);
                               // }
-                              await Future.delayed(const Duration(seconds: 1));
+                              // await Future.delayed(const Duration(seconds: 1));
                               if (!mounted) return;
                               Navigator.pushReplacement(
                                 context,
@@ -261,7 +261,7 @@ class SignInState extends State<SignIn> {
                                 }),
                               );
                             } else {
-                              await Future.delayed(const Duration(seconds: 1));
+                              // await Future.delayed(const Duration(seconds: 1));
                               if (!mounted) return;
                               showSnack(context, response.data['message'],
                                   () {}, 'OK', 4);

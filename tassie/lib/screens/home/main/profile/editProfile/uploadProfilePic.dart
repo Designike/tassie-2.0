@@ -60,7 +60,7 @@ class ProfileUploaderState extends State<ProfileUploader> {
       //     return Home();
       //   }),
       // );
-      await Future.delayed(const Duration(seconds: 1));
+      // await Future.delayed(const Duration(seconds: 1));
 
       if (!mounted) return;
       Navigator.of(context).pop();
@@ -71,7 +71,7 @@ class ProfileUploaderState extends State<ProfileUploader> {
       }
     } else {
       // handle error
-      await Future.delayed(const Duration(seconds: 1));
+      // await Future.delayed(const Duration(seconds: 1));
 
       if (!mounted) return;
       Navigator.of(context).pop();

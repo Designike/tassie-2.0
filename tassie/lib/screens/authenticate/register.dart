@@ -247,7 +247,7 @@ class RegisterState extends State<Register> {
                                   "password": password,
                                 });
                             if (response.data['status'] == true) {
-                              await Future.delayed(const Duration(seconds: 1));
+                              // await Future.delayed(const Duration(seconds: 1));
                               if (!mounted) return;
                               Navigator.push(
                                 context,
@@ -258,7 +258,7 @@ class RegisterState extends State<Register> {
                                 }),
                               );
                             } else {
-                              await Future.delayed(const Duration(seconds: 1));
+                              // await Future.delayed(const Duration(seconds: 1));
                               if (!mounted) return;
                               showSnack(context, response.data['message'],
                                   () {}, 'OK', 4);
@@ -271,7 +271,7 @@ class RegisterState extends State<Register> {
                           } on DioError catch (e) {
                             if (e.response != null) {
                               // var errorMessage = e.response!.data;
-                              await Future.delayed(const Duration(seconds: 1));
+                              // await Future.delayed(const Duration(seconds: 1));
                               if (!mounted) return;
                               showSnack(context, e.response!.data['message'],
                                   () {}, 'OK', 4);

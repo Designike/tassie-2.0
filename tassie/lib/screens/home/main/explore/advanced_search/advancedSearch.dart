@@ -549,10 +549,10 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                     });
                 // print(response);
                 var id = response.data['data']['id'];
-                await Future.delayed(const Duration(seconds: 1));
+                // await Future.delayed(const Duration(seconds: 1));
                 if (response.data != null) {
                   if (response.data['data']['id'] != null) {
-                    await Future.delayed(const Duration(seconds: 1));
+                    // await Future.delayed(const Duration(seconds: 1));
 
                     if (!mounted) return;
                     Navigator.of(context, rootNavigator: true).pop();
@@ -563,7 +563,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                       }),
                     );
                   } else {
-                    await Future.delayed(const Duration(seconds: 1));
+                    // await Future.delayed(const Duration(seconds: 1));
 
                     if (!mounted) return;
                     Navigator.of(context, rootNavigator: true).pop();
@@ -575,7 +575,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                         3);
                   }
                 } else {
-                  await Future.delayed(const Duration(seconds: 1));
+                  // await Future.delayed(const Duration(seconds: 1));
 
                   if (!mounted) return;
                   showSnack(context, 'Some error occured. Try again!', () {},
