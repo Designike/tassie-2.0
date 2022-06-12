@@ -20,7 +20,7 @@ class StepTextFieldState extends State<StepTextField> {
     // _stepController = TextEditingController();
     _stepController.selection = TextSelection.fromPosition(
         TextPosition(offset: _stepController.text.length));
-    _stepController.text = widget.stepsList[widget.index!];
+    // _stepController.text = widget.stepsList[widget.index!];
   }
 
   @override
