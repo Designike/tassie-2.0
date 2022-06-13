@@ -1487,6 +1487,7 @@ class ViewRecPostState extends State<ViewRecPost> {
                       height: 10.0,
                     ),
                     Card(
+                      color: Colors.transparent,
                       elevation: 10,
                       child: Padding(
                         padding: const EdgeInsets.all(kDefaultPadding),
@@ -1502,10 +1503,13 @@ class ViewRecPostState extends State<ViewRecPost> {
                               ),
                             ),
                             const SizedBox(
-                              height: 10.0,
+                              height: 40.0,
                             ),
-                            YoutubePlayer(
-                                controller: yController, bottomActions: []),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: YoutubePlayer(
+                                  controller: yController, bottomActions: []),
+                            ),
                             Center(
                               child: TextButton.icon(
                                 icon: const Icon(Icons.fullscreen),

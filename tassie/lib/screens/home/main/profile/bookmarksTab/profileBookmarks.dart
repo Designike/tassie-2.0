@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/utils/imgLoader.dart';
 
 class ProfileBookmarks extends StatefulWidget {
   const ProfileBookmarks({Key? key}) : super(key: key);
@@ -203,7 +205,7 @@ class ProfileBookmarksState extends State<ProfileBookmarks> {
                                             ? _endMessage()
                                             : _buildProgressIndicator()
                                         // : FeedPost(index: index, posts: posts);
-                                        : Image.network(posts[index]['url']);
+                                        : ProfileBookmarksPostChild(posts: posts[index]);
                                     // return Container(
                                     //   color: Colors.red,
                                     // );
@@ -242,7 +244,7 @@ class ProfileBookmarksState extends State<ProfileBookmarks> {
                                         ? isEndR
                                             ? _endMessage()
                                             : _buildProgressIndicator()
-                                        : Image.network(recs[index]['url']);
+                                        : ProfileBookmarksRecipeChild(recs: recs[index]);
                                   },
                                   itemCount: recs.length,
                                 )
@@ -263,5 +265,123 @@ class ProfileBookmarksState extends State<ProfileBookmarks> {
         ),
       ),
     );
+  }
+}
+
+class ProfileBookmarksPostChild extends StatefulWidget {
+  const ProfileBookmarksPostChild({
+    Key? key,
+    required this.posts,
+  }) : super(key: key);
+
+  final Map posts;
+
+  @override
+  State<ProfileBookmarksPostChild> createState() => _ProfileBookmarksPostChildState();
+}
+
+class _ProfileBookmarksPostChildState extends State<ProfileBookmarksPostChild> {
+  AsyncMemoizer memoizer = AsyncMemoizer();
+  late Future storedFuture;
+
+  @override
+  void didUpdateWidget(covariant ProfileBookmarksPostChild oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    memoizer = AsyncMemoizer();
+    storedFuture = loadImg(widget.posts['recipeImageID'], memoizer);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: storedFuture,
+        builder: (BuildContext context, AsyncSnapshot text) {
+          if ((text.connectionState == ConnectionState.waiting) ||
+              text.hasError) {
+            return Container();
+          } else {
+            if (!text.hasData) {
+              return const Center(
+                child: Icon(
+                  Icons.refresh,
+                  // size: 50.0,
+                  color: kDark,
+                ),
+              );
+            }
+            return Image(
+              image: NetworkImage(text.data.toString()),
+              fit: BoxFit.cover,
+            );
+          }
+        });
+  }
+}
+
+class ProfileBookmarksRecipeChild extends StatefulWidget {
+  const ProfileBookmarksRecipeChild({
+    Key? key,
+    required this.recs,
+  }) : super(key: key);
+
+  final Map recs;
+
+  @override
+  State<ProfileBookmarksRecipeChild> createState() => _ProfileBookmarksRecipeChildState();
+}
+
+class _ProfileBookmarksRecipeChildState extends State<ProfileBookmarksRecipeChild> {
+   AsyncMemoizer memoizer = AsyncMemoizer();
+  late Future storedFuture;
+
+  @override
+  void didUpdateWidget(covariant ProfileBookmarksRecipeChild oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    memoizer = AsyncMemoizer();
+    storedFuture = loadImg(widget.recs['recipeImageID'], memoizer);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: storedFuture,
+        builder: (BuildContext context, AsyncSnapshot text) {
+          if ((text.connectionState == ConnectionState.waiting) ||
+              text.hasError) {
+            return Container();
+          } else {
+            if (!text.hasData) {
+              return const Center(
+                child: Icon(
+                  Icons.refresh,
+                  // size: 50.0,
+                  color: kDark,
+                ),
+              );
+            }
+            return Image(
+              image: NetworkImage(text.data.toString()),
+              fit: BoxFit.cover,
+            );
+          }
+        });
   }
 }
