@@ -62,7 +62,7 @@ class ChangeThemeState extends State<ChangeTheme> {
                 Theme.of(context).brightness == Brightness.light
                     ? Brightness.dark
                     : Brightness.light),
-        title: const Text("Change Email"),
+        title: const Text("Change Theme"),
         actions: [
           IconButton(
               icon: const Icon(
