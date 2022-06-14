@@ -455,43 +455,44 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                               width: 128);
                                         } else {
                                           if (!text.hasData) {
-                                            return GestureDetector(
-                                                onTap: () {
-                                                  Navigator.push(context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) {
-                                                    return const EditProfileImage();
-                                                  }));
-                                                },
-                                                child: const SizedBox(
-                                                    height: 128,
-                                                    width: 128,
-                                                    child: Center(
-                                                      child: Icon(
-                                                        Icons.refresh,
-                                                        // size: 50.0,
-                                                        color: kDark,
-                                                      ),
-                                                    )));
+                                            if (widget.uuid == "user") {
+                                              return GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) {
+                                                      return const EditProfileImage();
+                                                    }));
+                                                  },
+                                                  child: const SizedBox(
+                                                      height: 128,
+                                                      width: 128,
+                                                      child: Center(
+                                                        child: Icon(
+                                                          Icons.refresh,
+                                                          // size: 50.0,
+                                                          color: kDark,
+                                                        ),
+                                                      )));
+                                            }
                                           }
                                           return Ink.image(
-                                            height: 128,
-                                            width: 128,
-                                            image: NetworkImage(
-                                                text.data.toString()),
-                                            fit: BoxFit.cover,
-                                            child: InkWell(
-                                              onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) {
-                                                    return const EditProfileImage();
-                                                  }),
-                                                );
-                                              },
-                                            ),
-                                          );
+                                              height: 128,
+                                              width: 128,
+                                              image: NetworkImage(
+                                                  text.data.toString()),
+                                              fit: BoxFit.cover,
+                                              child: InkWell(onTap: () {
+                                                if (widget.uuid == "user") {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) {
+                                                      return const EditProfileImage();
+                                                    }),
+                                                  );
+                                                }
+                                              }));
                                         }
                                       })
                                   : Image.asset("assets/images/broken.png",
