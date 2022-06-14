@@ -9,6 +9,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/main/profile/profile.dart';
 import 'package:tassie/utils/imgLoader.dart';
+import 'package:tassie/utils/snackbar.dart';
 
 class Subscribers extends StatefulWidget {
   const Subscribers({Key? key}) : super(key: key);
@@ -64,7 +65,9 @@ class _SubscribersState extends State<Subscribers> {
   }
 
   void _getMoreData(int index) async {
+    print('1');
     if (!isEnd) {
+      print('2');
       if (!isLazyLoading) {
         if (mounted) {
           setState(() {
@@ -73,9 +76,9 @@ class _SubscribersState extends State<Subscribers> {
         }
         uuid = (await storage.read(key: "uuid"))!;
         var url =
-            "https://api-tassie.herokuapp.com/feed/lazycomment/$uuid/${index.toString()}";
+            "https://api-tassie.herokuapp.com/profile/lazysubscribers/$uuid/${index.toString()}";
         var token = await storage.read(key: "token");
-
+        print('3');
         Response response = await dio.get(
           url,
           options: Options(headers: {
@@ -83,15 +86,16 @@ class _SubscribersState extends State<Subscribers> {
             HttpHeaders.authorizationHeader: "Bearer ${token!}"
           }),
         );
+        print('4');
         List tList = [];
-        if (response.data['data']['comments']['results'] != null) {
+        print(response.data);
+        if (response.data['data']!= null) {
           for (int i = 0;
               i <
-                  response
-                      .data['data']['comments']['results']['comments'].length;
+                  response.data['data']['subscribers'].length; 
               i++) {
             tList.add(
-                response.data['data']['comments']['results']['comments'][i]);
+                response.data['data']['subscribers'][i]);
           }
           if (mounted) {
             setState(() {
@@ -109,7 +113,7 @@ class _SubscribersState extends State<Subscribers> {
               page++;
             });
           }
-          if (response.data['data']['comments']['results']['comments'].length ==
+          if (response.data['data']['subscribers'].length ==
               0) {
             if (mounted) {
               setState(() {
@@ -117,6 +121,8 @@ class _SubscribersState extends State<Subscribers> {
               });
             }
           }
+        } else {
+          showSnack(context, "Server error", () {}, 'OK', 3);
         }
       }
     }
@@ -143,7 +149,7 @@ class _SubscribersState extends State<Subscribers> {
       child: Center(
         child: Opacity(
           opacity: 0.8,
-          child: Text('That\'s all for now!'),
+          child: Text('Yep, that\'s it!'),
         ),
       ),
     );
@@ -152,6 +158,32 @@ class _SubscribersState extends State<Subscribers> {
   @override
   void initState() {
     super.initState();
+  isLoading = false;
+  page = 1;
+  isLazyLoading = false;
+  isEnd = false;
+  uuid = "";
+
+  users = [
+    {
+      "uuid": '1',
+      'name': 'John',
+      'username': 'John',
+      'profilePic': 'assets/Avacado.png'
+    },
+    {
+      "uuid": '1',
+      'name': 'John',
+      'username': 'John',
+      'profilePic': 'assets/Avacado.png'
+    },
+    {
+      "uuid": '1',
+      'name': 'John',
+      'username': 'John',
+      'profilePic': 'assets/Avacado.png'
+    },
+  ];
     _getMoreData(page);
     _sc.addListener(() {
       if (_sc.position.pixels == _sc.position.maxScrollExtent) {
@@ -198,11 +230,58 @@ class _SubscribersState extends State<Subscribers> {
               ),
               centerTitle: true,
             ),
-            body: ListView.builder(
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(0.0),
-              itemBuilder: (context, index) {
-                return ListTile(
+            // body: ListView.builder(
+            //   shrinkWrap: true,
+            //   padding: const EdgeInsets.all(0.0),
+            //   controller: _sc,
+            //   itemBuilder: (context, index) {
+            //     return index == users.length
+            //                   ? isEnd
+            //                       ? _endMessage()
+            //                       : _buildProgressIndicator()
+            //                   : ListTile(
+            //       onTap: () {
+            //         Navigator.push(
+            //           context,
+            //           MaterialPageRoute(builder: (context) {
+            //             return Profile(uuid: users[index]['uuid']);
+            //           }),
+            //         );
+            //         // Navigator.push(
+            //         //   context,
+            //         //   MaterialPageRoute(builder: (context) {
+            //         //     return Home();
+            //         //   }),
+            //         // );
+            //       },
+            //       title: Text(users[index]['username']),
+            //       subtitle: Text(
+            //         users[index]['name'],
+            //         style: TextStyle(
+            //             color: Theme.of(context).brightness == Brightness.dark
+            //                 ? kLight
+            //                 : kDark[900]),
+            //       ),
+            //       leading: CircleAvatar(
+            //         child: ClipOval(
+            //           child: SubscriberUserAvatar(
+            //               profilePic: users[index]['profilePic']),
+            //         ),
+            //       ),
+            //     );
+            //   },
+            //   itemCount: users.length,
+            // ),
+            body: ListView(
+              controller: _sc,
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: [
+                for(int index = 0; index < users.length; index++) ... [
+                 index == users.length
+                              ? isEnd
+                                  ? _endMessage()
+                                  : _buildProgressIndicator()
+                              : ListTile(
                   onTap: () {
                     Navigator.push(
                       context,
@@ -231,9 +310,9 @@ class _SubscribersState extends State<Subscribers> {
                           profilePic: users[index]['profilePic']),
                     ),
                   ),
-                );
-              },
-              itemCount: users.length,
+                )
+                ]
+              ],
             ),
           );
   }
