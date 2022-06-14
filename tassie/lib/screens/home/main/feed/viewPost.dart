@@ -153,6 +153,7 @@ class ViewCommentsState extends State<ViewComments> {
     comments = [];
     _getMoreData(page);
     super.initState();
+    print(widget.post);
     // load();
     memoizer = AsyncMemoizer();
     memoizer1 = AsyncMemoizer();
@@ -311,7 +312,7 @@ class ViewCommentsState extends State<ViewComments> {
                                           ),
                                         ])),
                                     subtitle: Text(
-                                      widget.post['createdAt'],
+                                      "${DateTime.parse(widget.post['createdAt']).hour}:${DateTime.parse(widget.post['createdAt']).minute}",
                                       style: TextStyle(
                                           color: Theme.of(context).brightness ==
                                                   Brightness.dark

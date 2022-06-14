@@ -49,6 +49,8 @@ class ExploreSearchRecipeTabState extends State<ExploreSearchRecipeTab> {
 
   @override
   void initState() {
+    print("here");
+    print(widget.recipes);
     super.initState();
   }
 
@@ -68,12 +70,13 @@ class ExploreSearchRecipeTabState extends State<ExploreSearchRecipeTab> {
                 : _buildProgressIndicator()
             : ListTile(
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) {
-                  //     return ViewRecPost();
-                  //   }),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) {
+                      return ViewRecPost(
+                          recs: widget.recipes[index], funcB: (t) {});
+                    }),
+                  );
                 },
                 title: Text(recipes[index]['name']),
                 subtitle: Text(

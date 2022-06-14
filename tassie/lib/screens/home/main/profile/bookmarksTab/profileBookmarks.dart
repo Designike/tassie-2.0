@@ -5,6 +5,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/home/main/feed/viewPost.dart';
+import 'package:tassie/screens/home/main/profile/postTab/viewProfilePost.dart';
+import 'package:tassie/screens/home/main/recs/viewRecipe.dart';
 import 'package:tassie/utils/imgLoader.dart';
 
 class ProfileBookmarks extends StatefulWidget {
@@ -66,6 +69,7 @@ class ProfileBookmarksState extends State<ProfileBookmarks> {
           }
           if (response.data['data']['posts'] != null) {
             posts.addAll(response.data['data']['posts']);
+            print(posts);
           }
           isLoading = false;
           page++;
@@ -205,7 +209,23 @@ class ProfileBookmarksState extends State<ProfileBookmarks> {
                                             ? _endMessage()
                                             : _buildProgressIndicator()
                                         // : FeedPost(index: index, posts: posts);
-                                        : ProfileBookmarksPostChild(posts: posts[index]);
+                                        : GestureDetector(
+                                            child: ProfileBookmarksPostChild(
+                                                posts: posts[index]),
+                                            onTap: () async {
+                                              await Navigator.of(context,
+                                                      rootNavigator: true)
+                                                  .push(
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ViewCommentsPost(
+                                                          post: posts[index],
+                                                          refreshPage:
+                                                              _refreshPage),
+                                                ),
+                                              );
+                                            },
+                                          );
                                     // return Container(
                                     //   color: Colors.red,
                                     // );
@@ -244,7 +264,21 @@ class ProfileBookmarksState extends State<ProfileBookmarks> {
                                         ? isEndR
                                             ? _endMessage()
                                             : _buildProgressIndicator()
-                                        : ProfileBookmarksRecipeChild(recs: recs[index]);
+                                        : GestureDetector(
+                                            child: ProfileBookmarksRecipeChild(
+                                              recs: recs[index],
+                                            ),
+                                            onTap: () async {
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (_) => ViewRecPost(
+                                                        recs: recs[index],
+                                                        refreshPage:
+                                                            _refreshPage,
+                                                        funcB:
+                                                            (isBookmarked) {})),
+                                              );
+                                            });
                                   },
                                   itemCount: recs.length,
                                 )
@@ -277,7 +311,8 @@ class ProfileBookmarksPostChild extends StatefulWidget {
   final Map posts;
 
   @override
-  State<ProfileBookmarksPostChild> createState() => _ProfileBookmarksPostChildState();
+  State<ProfileBookmarksPostChild> createState() =>
+      _ProfileBookmarksPostChildState();
 }
 
 class _ProfileBookmarksPostChildState extends State<ProfileBookmarksPostChild> {
@@ -293,13 +328,14 @@ class _ProfileBookmarksPostChildState extends State<ProfileBookmarksPostChild> {
   void initState() {
     super.initState();
     memoizer = AsyncMemoizer();
-    storedFuture = loadImg(widget.posts['recipeImageID'], memoizer);
+    storedFuture = loadImg(widget.posts['postID'], memoizer);
   }
 
   @override
   void dispose() {
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -336,11 +372,13 @@ class ProfileBookmarksRecipeChild extends StatefulWidget {
   final Map recs;
 
   @override
-  State<ProfileBookmarksRecipeChild> createState() => _ProfileBookmarksRecipeChildState();
+  State<ProfileBookmarksRecipeChild> createState() =>
+      _ProfileBookmarksRecipeChildState();
 }
 
-class _ProfileBookmarksRecipeChildState extends State<ProfileBookmarksRecipeChild> {
-   AsyncMemoizer memoizer = AsyncMemoizer();
+class _ProfileBookmarksRecipeChildState
+    extends State<ProfileBookmarksRecipeChild> {
+  AsyncMemoizer memoizer = AsyncMemoizer();
   late Future storedFuture;
 
   @override
@@ -359,6 +397,7 @@ class _ProfileBookmarksRecipeChildState extends State<ProfileBookmarksRecipeChil
   void dispose() {
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
