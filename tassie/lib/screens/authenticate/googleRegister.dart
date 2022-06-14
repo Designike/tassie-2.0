@@ -131,7 +131,7 @@ class GoogleRegisterState extends State<GoogleRegister> {
                           // // await Future.delayed(const Duration(seconds: 1));
 
                           if (!mounted) return;
-                          print("dasoda");
+                          // print("dasoda");
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (context) {
@@ -141,7 +141,7 @@ class GoogleRegisterState extends State<GoogleRegister> {
                           // showSnack(context, 'Username update in progress',
                           //     () {}, 'OK', 3);
                         } else {
-                          print(response.data);
+                          // print(response.data);
                           // // await Future.delayed(const Duration(seconds: 1));
 
                           if (!mounted) return;
@@ -149,7 +149,7 @@ class GoogleRegisterState extends State<GoogleRegister> {
                           Navigator.pop(context);
                         }
                       } else {
-                        print(response.data);
+                        // print(response.data);
 
                         // await Future.delayed(const Duration(seconds: 1));
 

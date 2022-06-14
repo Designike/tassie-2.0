@@ -69,7 +69,7 @@ class ProfileBookmarksState extends State<ProfileBookmarks> {
           }
           if (response.data['data']['posts'] != null) {
             posts.addAll(response.data['data']['posts']);
-            print(posts);
+            // print(posts);
           }
           isLoading = false;
           page++;

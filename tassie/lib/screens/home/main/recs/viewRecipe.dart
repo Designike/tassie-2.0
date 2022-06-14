@@ -163,7 +163,7 @@ class ViewRecPostState extends State<ViewRecPost> {
           recipeImageID = response.data['data']['recipe']['recipeImageID'];
           youtubeLink =
               (response.data['data']['recipe']['youtubeLink']).split('/')[3];
-          print(youtubeLink);
+          // print(youtubeLink);
           // isLazyLoading = false;
           if (response.data['data']['recipeData']['userRating'].isNotEmpty) {
             rating = response.data['data']['recipeData']['userRating'][0]

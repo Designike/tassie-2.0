@@ -154,7 +154,7 @@ class ViewCommentsState extends State<ViewComments> {
     comments = [];
     _getMoreData(page);
     super.initState();
-    print(widget.post);
+    // print(widget.post);
     // load();
     memoizer = AsyncMemoizer();
     memoizer1 = AsyncMemoizer();

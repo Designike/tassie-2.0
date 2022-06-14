@@ -67,8 +67,8 @@ class SearchBarState extends State<SearchBar> {
               // print(recs);
               if (response.data['data']['recs'] != null) {
                 recipes.addAll(response.data['data']['recs']);
-                print("HERE");
-                print(recipes);
+                // print("HERE");
+                // print(recipes);
                 // print(noOfLikes);
               }
               if (response.data['data']['tags'] != null) {

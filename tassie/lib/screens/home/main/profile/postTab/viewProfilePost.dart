@@ -241,8 +241,8 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
     memoizer = AsyncMemoizer();
     memoizer1 = AsyncMemoizer();
     memoizer2 = AsyncMemoizer();
-    print(widget.post['postID']);
-    print(dp);
+    // print(widget.post['postID']);
+    // print(dp);
     // storedFuture = loadImg(widget.post['postID'], memoizer);
     // storedFuture1 = loadImg(dp, memoizer1);
     // storedFuture2 = loadImg(dp, memoizer2);
