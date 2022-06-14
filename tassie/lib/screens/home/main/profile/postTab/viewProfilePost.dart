@@ -133,7 +133,13 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
 
   Future<void> getdp() async {
     dp = await storage.read(key: "profilePic");
-    isLoading3 = false;
+    storedFuture = loadImg(widget.post['postID'], memoizer);
+    storedFuture1 = loadImg(dp, memoizer1);
+    storedFuture2 = loadImg(dp, memoizer2);
+    setState(() {
+      isLoading3 = false;
+    });
+    
   }
 
   Widget _buildProgressIndicator() {
@@ -235,9 +241,11 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
     memoizer = AsyncMemoizer();
     memoizer1 = AsyncMemoizer();
     memoizer2 = AsyncMemoizer();
-    storedFuture = loadImg(widget.post['postID'], memoizer);
-    storedFuture1 = loadImg(dp, memoizer1);
-    storedFuture2 = loadImg(dp, memoizer2);
+    print(widget.post['postID']);
+    print(dp);
+    // storedFuture = loadImg(widget.post['postID'], memoizer);
+    // storedFuture1 = loadImg(dp, memoizer1);
+    // storedFuture2 = loadImg(dp, memoizer2);
     _sc.addListener(() {
       if (_sc.position.pixels == _sc.position.maxScrollExtent) {
         _getMoreData(page);
@@ -315,7 +323,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                             child: CircleAvatar(
                                               child: ClipOval(
                                                 child: FutureBuilder(
-                                                    future: storedFuture,
+                                                    future: storedFuture2,
                                                     builder: (BuildContext
                                                             context,
                                                         AsyncSnapshot text) {

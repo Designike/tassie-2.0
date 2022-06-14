@@ -181,7 +181,7 @@ class GoogleRegisterState extends State<GoogleRegister> {
                   height: 15.0,
                 ),
                 buildTextField(
-                  "Name",
+                  "Username",
                   username,
                   false,
                   TextInputType.text,
