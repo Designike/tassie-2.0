@@ -13,6 +13,7 @@ import 'package:tassie/screens/home/main/profile/editProfile/editProfileImage.da
 import 'package:tassie/screens/home/main/profile/bookmarksTab/profileBookmarks.dart';
 import 'package:tassie/screens/home/main/profile/postTab/profilePostTab.dart';
 import 'package:tassie/screens/home/main/profile/settingsTab/settings.dart';
+import 'package:tassie/screens/home/main/profile/subscribers.dart';
 import 'package:tassie/utils/showMoreText.dart';
 import 'package:tassie/utils/snackbar.dart';
 import 'package:tassie/utils/imgLoader.dart';
@@ -586,14 +587,24 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Column(
-                                children: [
-                                  Text(subscribers.toString(),
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16)),
-                                  const Text('Subscribers'),
-                                ],
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) {
+                                      return const Subscribers();
+                                    }),
+                                  );
+                                },
+                                child: Column(
+                                  children: [
+                                    Text(subscribers.toString(),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16)),
+                                    const Text('Subscribers'),
+                                  ],
+                                ),
                               ),
                               Column(
                                 children: [
