@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:tassie/screens/home/main/profile/postTab/editPost.dart';
 import 'package:tassie/screens/home/main/profile/profile.dart';
 import 'package:tassie/utils/snackbar.dart';
@@ -139,7 +140,6 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
     setState(() {
       isLoading3 = false;
     });
-    
   }
 
   Widget _buildProgressIndicator() {
@@ -546,19 +546,32 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                                     ),
                                                   ));
                                             }
-                                            return Container(
-                                              margin:
-                                                  const EdgeInsets.all(10.0),
-                                              width: double.infinity,
-                                              height: size.width - 40.0,
-                                              // height: 400.0,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(25.0),
-                                                image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      text.data.toString()),
-                                                  fit: BoxFit.cover,
+                                            return GestureDetector(
+                                              onTap: () {
+                                                Navigator.of(context,
+                                                        rootNavigator: true)
+                                                    .push(MaterialPageRoute(
+                                                        builder: (context) => PhotoView(
+                                                            imageProvider:
+                                                                NetworkImage(text
+                                                                    .data
+                                                                    .toString()))));
+                                              },
+                                              child: Container(
+                                                margin:
+                                                    const EdgeInsets.all(10.0),
+                                                width: double.infinity,
+                                                height: size.width - 40.0,
+                                                // height: 400.0,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          25.0),
+                                                  image: DecorationImage(
+                                                    image: NetworkImage(
+                                                        text.data.toString()),
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
                                               ),
                                             );

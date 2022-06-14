@@ -2,11 +2,14 @@ import 'dart:io';
 
 import 'package:async/async.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/home/main/profile/profile.dart';
 import 'package:tassie/screens/home/main/profile/recipeTab/editRecipe.dart';
 import 'package:tassie/screens/home/main/recs/youtubeFullscreen.dart';
 import 'package:tassie/utils/showMoreText.dart';
@@ -500,8 +503,7 @@ class ViewRecPostState extends State<ViewRecPost> {
       ),
     ]);
   }
-  
-  
+
   @override
   void initState() {
     super.initState();
@@ -851,40 +853,44 @@ class ViewRecPostState extends State<ViewRecPost> {
                   children: [
                     Hero(
                       tag: widget.recs['uuid'],
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: SizedBox(
-                          width: size.width,
-                          height: size.width,
-                          // child: recipeImageID != " "
-                          //     ? Image(
-                          //         image: NetworkImage(getImage(recipeImageID)),
-                          //         fit: BoxFit.cover,
-                          //       )
-                          //     : null,
-                          child: FutureBuilder(
-                              future: storedFuture,
-                              builder:
-                                  (BuildContext context, AsyncSnapshot text) {
-                                if ((text.connectionState ==
-                                        ConnectionState.waiting) ||
-                                    text.hasError) {
-                                  return Image.asset(
-                                      "assets/images/broken.png");
-                                } else {
-                                  if (!text.hasData) {
-                                    return const Center(
-                                      child: Icon(
-                                        Icons.refresh,
-                                        size: 50.0,
-                                        color: kDark,
-                                      ),
-                                    );
-                                  }
-                                  return Image.network(text.data.toString());
+                      child: SizedBox(
+                        width: size.width,
+                        height: size.width,
+                        // child: recipeImageID != " "
+                        //     ? Image(
+                        //         image: NetworkImage(getImage(recipeImageID)),
+                        //         fit: BoxFit.cover,
+                        //       )
+                        //     : null,
+                        child: FutureBuilder(
+                            future: storedFuture,
+                            builder:
+                                (BuildContext context, AsyncSnapshot text) {
+                              if ((text.connectionState ==
+                                      ConnectionState.waiting) ||
+                                  text.hasError) {
+                                return Image.asset("assets/images/broken.png");
+                              } else {
+                                if (!text.hasData) {
+                                  return const Center(
+                                    child: Icon(
+                                      Icons.refresh,
+                                      size: 50.0,
+                                      color: kDark,
+                                    ),
+                                  );
                                 }
-                              }),
-                        ),
+                                return GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context, rootNavigator: true)
+                                          .push(MaterialPageRoute(
+                                              builder: (context) => PhotoView(
+                                                  imageProvider: NetworkImage(
+                                                      text.data.toString()))));
+                                    },
+                                    child: Image.network(text.data.toString()));
+                              }
+                            }),
                       ),
                     ),
                     Transform.translate(
@@ -1219,13 +1225,39 @@ class ViewRecPostState extends State<ViewRecPost> {
                                     ),
                                   ),
                                 ),
-                                title: Text(
-                                  chefName,
-                                  style: const TextStyle(
+                                // title: Text(
+                                //   chefName,
+                                //   style: const TextStyle(
+                                //     overflow: TextOverflow.ellipsis,
+                                //     fontWeight: FontWeight.bold,
+                                //   ),
+                                // ),
+                                title: RichText(
                                     overflow: TextOverflow.ellipsis,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                    text: TextSpan(children: [
+                                      TextSpan(
+                                        text: chefName,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.light
+                                              ? kDark[900]
+                                              : kLight,
+                                        ),
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
+                                            if (uuid ==
+                                                widget.recs['userUuid']) {
+                                              Navigator.of(context)
+                                                  .push(MaterialPageRoute(
+                                                builder: (_) => Profile(
+                                                  uuid: widget.recs['userUuid'],
+                                                ),
+                                              ));
+                                            }
+                                          },
+                                      ),
+                                    ])),
                                 trailing: uuid == widget.recs['userUuid']
                                     ? null
                                     : isSubscribed
@@ -1518,10 +1550,8 @@ class ViewRecPostState extends State<ViewRecPost> {
                                   Navigator.of(context, rootNavigator: true)
                                       .push(
                                     MaterialPageRoute(
-                                      builder: (context) => 
-                                      YoutubeFullScreen(
-                                          url: youtubeLink)
-                                    ),
+                                        builder: (context) => YoutubeFullScreen(
+                                            url: youtubeLink)),
                                   );
                                 },
                                 style: TextButton.styleFrom(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:tassie/constants.dart';
 
 class MyBullet extends StatelessWidget {
@@ -126,7 +127,13 @@ class StepIngImageState extends State<StepIngImage> {
                                     );
                                   }
                                   return GestureDetector(
-                                    onTap: () {},
+                                    onTap: () {
+                                      Navigator.of(context, rootNavigator: true)
+                                          .push(MaterialPageRoute(
+                                              builder: (context) => PhotoView(
+                                                  imageProvider: NetworkImage(
+                                                      text.data.toString()))));
+                                    },
                                     child: Image(
                                       image: NetworkImage(text.data.toString()),
                                       fit: BoxFit.cover,

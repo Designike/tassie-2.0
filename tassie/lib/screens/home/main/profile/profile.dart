@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/main/profile/editProfile/editProfile.dart';
 import 'package:tassie/screens/home/main/profile/editProfile/editProfileImage.dart';
@@ -483,15 +484,24 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                                   text.data.toString()),
                                               fit: BoxFit.cover,
                                               child: InkWell(onTap: () {
-                                                if (widget.uuid == "user") {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) {
-                                                      return const EditProfileImage();
-                                                    }),
-                                                  );
-                                                }
+                                                // if (widget.uuid == "user") {
+                                                //   Navigator.push(
+                                                //     context,
+                                                //     MaterialPageRoute(
+                                                //         builder: (context) {
+                                                //       return const EditProfileImage();
+                                                //     }),
+                                                //   );
+                                                // }
+
+                                                Navigator.of(context,
+                                                        rootNavigator: true)
+                                                    .push(MaterialPageRoute(
+                                                        builder: (context) => PhotoView(
+                                                            imageProvider:
+                                                                NetworkImage(text
+                                                                    .data
+                                                                    .toString()))));
                                               }));
                                         }
                                       })
