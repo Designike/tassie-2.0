@@ -65,9 +65,7 @@ class _SubscribersState extends State<Subscribers> {
   }
 
   void _getMoreData(int index) async {
-    print('1');
     if (!isEnd) {
-      print('2');
       if (!isLazyLoading) {
         if (mounted) {
           setState(() {
@@ -78,7 +76,6 @@ class _SubscribersState extends State<Subscribers> {
         var url =
             "https://api-tassie.herokuapp.com/profile/lazysubscribers/$uuid/${index.toString()}";
         var token = await storage.read(key: "token");
-        print('3');
         Response response = await dio.get(
           url,
           options: Options(headers: {
@@ -86,9 +83,7 @@ class _SubscribersState extends State<Subscribers> {
             HttpHeaders.authorizationHeader: "Bearer ${token!}"
           }),
         );
-        print('4');
         List tList = [];
-        print(response.data);
         if (response.data['data']!= null) {
           for (int i = 0;
               i <
