@@ -592,7 +592,7 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (context) {
-                                      return const Subscribers();
+                                      return const Subscribers(isSubscriber:true);
                                     }),
                                   );
                                 },
@@ -606,14 +606,24 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                   ],
                                 ),
                               ),
-                              Column(
-                                children: [
-                                  Text(subscribeds.toString(),
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16)),
-                                  const Text('Subscribed'),
-                                ],
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) {
+                                      return const Subscribers(isSubscriber:false);
+                                    }),
+                                  );
+                                },
+                                child: Column(
+                                  children: [
+                                    Text(subscribeds.toString(),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16)),
+                                    const Text('Subscribed'),
+                                  ],
+                                ),
                               ),
                             ],
                           ),

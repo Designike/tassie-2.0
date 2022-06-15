@@ -12,7 +12,8 @@ import 'package:tassie/utils/imgLoader.dart';
 import 'package:tassie/utils/snackbar.dart';
 
 class Subscribers extends StatefulWidget {
-  const Subscribers({Key? key}) : super(key: key);
+  const Subscribers({Key? key, required this.isSubscriber}) : super(key: key);
+  final bool isSubscriber;
 
   @override
   State<Subscribers> createState() => _SubscribersState();
@@ -25,44 +26,32 @@ class _SubscribersState extends State<Subscribers> {
   bool isEnd = false;
   String uuid = "";
 
-  List users = [
-    {
-      "uuid": '1',
-      'name': 'John',
-      'username': 'John',
-      'profilePic': 'assets/Avacado.png'
-    },
-    {
-      "uuid": '1',
-      'name': 'John',
-      'username': 'John',
-      'profilePic': 'assets/Avacado.png'
-    },
-    {
-      "uuid": '1',
-      'name': 'John',
-      'username': 'John',
-      'profilePic': 'assets/Avacado.png'
-    },
-  ];
+  List users = [];
+
+  // List users = [
+  //   {
+  //     "uuid": '1',
+  //     'name': 'John',
+  //     'username': 'John',
+  //     'profilePic': 'assets/Avacado.png'
+  //   },
+  //   {
+  //     "uuid": '1',
+  //     'name': 'John',
+  //     'username': 'John',
+  //     'profilePic': 'assets/Avacado.png'
+  //   },
+  //   {
+  //     "uuid": '1',
+  //     'name': 'John',
+  //     'username': 'John',
+  //     'profilePic': 'assets/Avacado.png'
+  //   },
+  // ];
 
   final dio = Dio();
   final storage = const FlutterSecureStorage();
   final ScrollController _sc = ScrollController();
-
-  Future<void> getSubscribers() async {
-    // var url =
-    //         "https://api-tassie.herokuapp.com/feed/lazycomment/${widget.post['uuid']}/${widget.post['userUuid']}/$index";
-    //     var token = await storage.read(key: "token");
-    // var uuid = await storage.read(key: "uuid");
-    // Response response = await dio.get(
-    //   url,
-    //   options: Options(headers: {
-    //     HttpHeaders.contentTypeHeader: "application/json",
-    //     HttpHeaders.authorizationHeader: "Bearer ${token!}"
-    //   }),
-    // );
-  }
 
   void _getMoreData(int index) async {
     if (!isEnd) {
@@ -72,9 +61,16 @@ class _SubscribersState extends State<Subscribers> {
             isLazyLoading = true;
           });
         }
+        String url = "";
         uuid = (await storage.read(key: "uuid"))!;
-        var url =
-            "https://api-tassie.herokuapp.com/profile/lazysubscribers/$uuid/${index.toString()}";
+        if (widget.isSubscriber) {
+          url =
+              "https://api-tassie.herokuapp.com/profile/lazysubscribers/$uuid/${index.toString()}";
+        } else {
+          url =
+              "https://api-tassie.herokuapp.com/profile/lazysubscribeds/$uuid/${index.toString()}";
+        }
+        print(url);
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
@@ -84,13 +80,11 @@ class _SubscribersState extends State<Subscribers> {
           }),
         );
         List tList = [];
-        if (response.data['data']!= null) {
+        if (response.data['data'] != null) {
           for (int i = 0;
-              i <
-                  response.data['data']['subscribers'].length; 
+              i < response.data['data']['subscribers'].length;
               i++) {
-            tList.add(
-                response.data['data']['subscribers'][i]);
+            tList.add(response.data['data']['subscribers'][i]);
           }
           if (mounted) {
             setState(() {
@@ -108,8 +102,7 @@ class _SubscribersState extends State<Subscribers> {
               page++;
             });
           }
-          if (response.data['data']['subscribers'].length ==
-              0) {
+          if (response.data['data']['subscribers'].length == 0) {
             if (mounted) {
               setState(() {
                 isEnd = true;
@@ -117,6 +110,7 @@ class _SubscribersState extends State<Subscribers> {
             }
           }
         } else {
+          if (!mounted) return;
           showSnack(context, "Server error", () {}, 'OK', 3);
         }
       }
@@ -153,32 +147,32 @@ class _SubscribersState extends State<Subscribers> {
   @override
   void initState() {
     super.initState();
-  isLoading = false;
-  page = 1;
-  isLazyLoading = false;
-  isEnd = false;
-  uuid = "";
+    isLoading = false;
+    page = 1;
+    isLazyLoading = false;
+    isEnd = false;
+    uuid = "";
 
-  users = [
-    {
-      "uuid": '1',
-      'name': 'John',
-      'username': 'John',
-      'profilePic': 'assets/Avacado.png'
-    },
-    {
-      "uuid": '1',
-      'name': 'John',
-      'username': 'John',
-      'profilePic': 'assets/Avacado.png'
-    },
-    {
-      "uuid": '1',
-      'name': 'John',
-      'username': 'John',
-      'profilePic': 'assets/Avacado.png'
-    },
-  ];
+    // users = [
+    //   {
+    //     "uuid": '1',
+    //     'name': 'John',
+    //     'username': 'John',
+    //     'profilePic': 'assets/Avacado.png'
+    //   },
+    //   {
+    //     "uuid": '1',
+    //     'name': 'John',
+    //     'username': 'John',
+    //     'profilePic': 'assets/Avacado.png'
+    //   },
+    //   {
+    //     "uuid": '1',
+    //     'name': 'John',
+    //     'username': 'John',
+    //     'profilePic': 'assets/Avacado.png'
+    //   },
+    // ];
     _getMoreData(page);
     _sc.addListener(() {
       if (_sc.position.pixels == _sc.position.maxScrollExtent) {
@@ -271,41 +265,42 @@ class _SubscribersState extends State<Subscribers> {
               controller: _sc,
               physics: const AlwaysScrollableScrollPhysics(),
               children: [
-                for(int index = 0; index < users.length; index++) ... [
-                 index == users.length
-                              ? isEnd
-                                  ? _endMessage()
-                                  : _buildProgressIndicator()
-                              : ListTile(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) {
-                        return Profile(uuid: users[index]['uuid']);
-                      }),
-                    );
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) {
-                    //     return Home();
-                    //   }),
-                    // );
-                  },
-                  title: Text(users[index]['username']),
-                  subtitle: Text(
-                    users[index]['name'],
-                    style: TextStyle(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? kLight
-                            : kDark[900]),
-                  ),
-                  leading: CircleAvatar(
-                    child: ClipOval(
-                      child: SubscriberUserAvatar(
-                          profilePic: users[index]['profilePic']),
-                    ),
-                  ),
-                )
+                for (int index = 0; index < users.length; index++) ...[
+                  index == users.length
+                      ? isEnd
+                          ? _endMessage()
+                          : _buildProgressIndicator()
+                      : ListTile(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) {
+                                return Profile(uuid: users[index]['uuid']);
+                              }),
+                            );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(builder: (context) {
+                            //     return Home();
+                            //   }),
+                            // );
+                          },
+                          title: Text(users[index]['username']),
+                          subtitle: Text(
+                            users[index]['name'],
+                            style: TextStyle(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? kLight
+                                    : kDark[900]),
+                          ),
+                          leading: CircleAvatar(
+                            child: ClipOval(
+                              child: SubscriberUserAvatar(
+                                  profilePic: users[index]['profilePic']),
+                            ),
+                          ),
+                        )
                 ]
               ],
             ),
