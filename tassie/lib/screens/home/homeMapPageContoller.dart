@@ -44,6 +44,7 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
         tabItem: index,
         rightSwipe: () {
           if (mounted) {
+            Provider.of<LeftSwipe>(context, listen: false).setSwipe(true);
             setState(() {
               _selectedIndex = 0;
               _pageController.jumpToPage(0);

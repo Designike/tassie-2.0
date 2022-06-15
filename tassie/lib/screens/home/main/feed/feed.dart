@@ -228,6 +228,7 @@ class FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                       //           index: index, posts: posts, nameList: nameList);
                       //     }),
                       child: ListView.builder(
+                        cacheExtent:(posts.length).toDouble()+1,
                         itemCount: posts.length + 1,
                         itemBuilder: (context, index) {
                           return index == posts.length

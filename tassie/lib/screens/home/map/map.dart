@@ -6,8 +6,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:provider/provider.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/utils/imgLoader.dart';
+import 'package:tassie/utils/leftSwipe.dart';
 import 'package:tassie/utils/snackbar.dart';
 
 class TassieMap extends StatefulWidget {
@@ -62,7 +64,9 @@ class _TassieMapState extends State<TassieMap> {
     LocationData locationData;
     Location location = Location();
     locationData = await location.getLocation();
+
     if (mounted) {
+      Provider.of<LeftSwipe>(context, listen: false).setSwipe(false);
       setState(() {
         lat = locationData.latitude!;
         lng = locationData.longitude!;
@@ -95,6 +99,7 @@ class _TassieMapState extends State<TassieMap> {
     checkPermission();
     // getdp();
     getLocation();
+
     super.initState();
     storedFuture = loadImg(widget.dp, memoizer);
   }
