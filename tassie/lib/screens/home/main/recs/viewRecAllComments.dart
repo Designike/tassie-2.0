@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:async/async.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -254,7 +255,7 @@ class ViewRecAllCommentsState extends State<ViewRecAllComments> {
                         // child: Image(
                         //   height: 48.0,
                         //   width: 48.0,
-                        //   image: NetworkImage('https://picsum.photos/200'),
+                        //   image: CachedNetworkImageProvider('https://picsum.photos/200'),
                         //   fit: BoxFit.cover,
                         // ),
                         child: FutureBuilder(
@@ -285,7 +286,8 @@ class ViewRecAllCommentsState extends State<ViewRecAllComments> {
                                 return Image(
                                   height: 48.0,
                                   width: 48.0,
-                                  image: NetworkImage(text.data.toString()),
+                                  image: CachedNetworkImageProvider(
+                                      text.data.toString()),
                                   fit: BoxFit.cover,
                                 );
                               }

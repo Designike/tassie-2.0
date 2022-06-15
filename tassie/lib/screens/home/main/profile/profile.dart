@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:async/async.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -436,7 +437,7 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                               //   height: 128,
                               //   width: 128,
                               //   image:
-                              //       NetworkImage('https://picsum.photos/200'),
+                              //       CachedNetworkImageProvider('https://picsum.photos/200'),
                               //   fit: BoxFit.cover,
                               //   child: InkWell(
                               //     onTap: () {},
@@ -481,7 +482,7 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                           return Ink.image(
                                               height: 128,
                                               width: 128,
-                                              image: NetworkImage(
+                                              image: CachedNetworkImageProvider(
                                                   text.data.toString()),
                                               fit: BoxFit.cover,
                                               child: InkWell(onTap: () {
@@ -500,7 +501,7 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                                     .push(MaterialPageRoute(
                                                         builder: (context) => PhotoView(
                                                             imageProvider:
-                                                                NetworkImage(text
+                                                                CachedNetworkImageProvider(text
                                                                     .data
                                                                     .toString()))));
                                               }));
@@ -592,7 +593,8 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (context) {
-                                      return const Subscribers(isSubscriber:true);
+                                      return const Subscribers(
+                                          isSubscriber: true);
                                     }),
                                   );
                                 },
@@ -611,7 +613,8 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (context) {
-                                      return const Subscribers(isSubscriber:false);
+                                      return const Subscribers(
+                                          isSubscriber: false);
                                     }),
                                   );
                                 },

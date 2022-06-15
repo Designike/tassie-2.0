@@ -577,7 +577,41 @@ class AddRecipeState extends State<AddRecipe> {
                     : kDark[700]),
           ),
           content: Column(
-            children: [..._getIngredient(size)],
+            children: [
+              ..._getIngredient(size),
+              GestureDetector(
+                onTap: () {
+                  int index = ingredientsList.length - 1;
+                  ingredientsList.insert(index + 1, "");
+                  ingredientPics[(index + 1).toString()] = '';
+                  if (mounted) {
+                    setState(() {
+                      clearIngs[index + 1] = false;
+                    });
+                  }
+                },
+                child: Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: kDark[900],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Add Ingredient'),
+                      const SizedBox(width: 5.0),
+                      Icon(Icons.add,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? kPrimaryColor
+                              : kPrimaryColorAccent),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         Step(
@@ -592,11 +626,46 @@ class AddRecipeState extends State<AddRecipe> {
                     : kDark[700]),
           ),
           content: Column(
-            children: [..._getRecipe(size)],
+            children: [
+              ..._getRecipe(size),
+              GestureDetector(
+                onTap: () {
+                  int index = stepsList.length - 1;
+                  stepsList.insert(index + 1, "");
+                  stepPics[(index + 1).toString()] = '';
+                  if (mounted) {
+                    setState(() {
+                      clearSteps[index + 1] = false;
+                    });
+                  }
+                },
+                child: Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: kDark[900],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Add Step'),
+                      const SizedBox(width: 5.0),
+                      Icon(Icons.add,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? kPrimaryColor
+                              : kPrimaryColorAccent),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         Step(
           isActive: _currentStep >= 4,
+          state: _currentStep > 4 ? StepState.complete : StepState.indexed,
           title: const Text('Description'),
           subtitle: Text(
             'You can also add hashtags and mentions',
@@ -1302,7 +1371,7 @@ class AddRecipeState extends State<AddRecipe> {
                         data: {
                           'uuid': widget.uuid,
                           // 'folder': widget.folder,
-                          'ingredients': ingredientsList
+                          'ingredients': ingredientsList == [null] ? [] : ingredientsList
                         });
                   }
                   if (_currentStep == 4) {
@@ -1317,7 +1386,7 @@ class AddRecipeState extends State<AddRecipe> {
                         data: {
                           'uuid': widget.uuid,
                           // 'folder': widget.folder,
-                          'steps': stepsList
+                          'steps': stepsList == [null] ? [] : stepsList
                         }); // 'folder': widget.folder,
                   }
                   if (_currentStep == 5) {

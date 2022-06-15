@@ -16,9 +16,13 @@ Future loadImg(key, AsyncMemoizer memoizer) async {
             HttpHeaders.contentTypeHeader: "application/json",
           }),
           data: {"key": key});
-      var res = await http.get(Uri.parse(response.data['data']['url']));
+      try {
+        var res = await http.get(Uri.parse(response.data['data']['url']));
 
-      return res.statusCode == 200 ? response.data['data']['url'] : null;
+        return res.statusCode == 200 ? response.data['data']['url'] : null;
+      } catch (er) {
+        return null;
+      }
     });
   } catch (e) {
     return null;

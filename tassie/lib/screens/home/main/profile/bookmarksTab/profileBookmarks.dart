@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:async/async.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -355,7 +356,7 @@ class _ProfileBookmarksPostChildState extends State<ProfileBookmarksPostChild> {
               );
             }
             return Image(
-              image: NetworkImage(text.data.toString()),
+              image: CachedNetworkImageProvider(text.data.toString()),
               fit: BoxFit.cover,
             );
           }
@@ -417,7 +418,7 @@ class _ProfileBookmarksRecipeChildState
               );
             }
             return Image(
-              image: NetworkImage(text.data.toString()),
+              image: CachedNetworkImageProvider(text.data.toString()),
               fit: BoxFit.cover,
             );
           }

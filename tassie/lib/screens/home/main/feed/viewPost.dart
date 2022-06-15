@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:async/async.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -234,7 +235,7 @@ class ViewCommentsState extends State<ViewComments> {
                                           // child: Image(
                                           //   height: 50.0,
                                           //   width: 50.0,
-                                          //   image: NetworkImage(
+                                          //   image: CachedNetworkImageProvider(
                                           //       widget.post['url']),
                                           //   fit: BoxFit.cover,
                                           // ),
@@ -255,7 +256,7 @@ class ViewCommentsState extends State<ViewComments> {
                                                   );
                                                 } else {
                                                   // return Image(
-                                                  //   image: NetworkImage(text.data.toString()),
+                                                  //   image: CachedNetworkImageProvider(text.data.toString()),
                                                   //   fit: BoxFit.cover,
                                                   // );
                                                   if (!text.hasData) {
@@ -273,8 +274,10 @@ class ViewCommentsState extends State<ViewComments> {
                                                   return Image(
                                                     height: 50.0,
                                                     width: 50.0,
-                                                    image: NetworkImage(
-                                                        text.data.toString()),
+                                                    image:
+                                                        CachedNetworkImageProvider(
+                                                            text.data
+                                                                .toString()),
                                                     fit: BoxFit.cover,
                                                   );
                                                 }
@@ -358,7 +361,7 @@ class ViewCommentsState extends State<ViewComments> {
                               //     borderRadius: BorderRadius.circular(25.0),
                               //     image: DecorationImage(
                               //       image:
-                              //           NetworkImage(widget.post['profilePic']),
+                              //           CachedNetworkImageProvider(widget.post['profilePic']),
                               //       fit: BoxFit.cover,
                               //     ),
                               //   ),
@@ -388,7 +391,7 @@ class ViewCommentsState extends State<ViewComments> {
                                       );
                                     } else {
                                       // return Image(
-                                      //   image: NetworkImage(text.data.toString()),
+                                      //   image: CachedNetworkImageProvider(text.data.toString()),
                                       //   fit: BoxFit.cover,
                                       // );
                                       if (!text.hasData) {
@@ -411,8 +414,9 @@ class ViewCommentsState extends State<ViewComments> {
                                               .push(MaterialPageRoute(
                                                   builder: (context) => PhotoView(
                                                       imageProvider:
-                                                          NetworkImage(text.data
-                                                              .toString()))));
+                                                          CachedNetworkImageProvider(
+                                                              text.data
+                                                                  .toString()))));
                                         },
                                         child: Container(
                                           margin: const EdgeInsets.all(10.0),
@@ -423,7 +427,7 @@ class ViewCommentsState extends State<ViewComments> {
                                             borderRadius:
                                                 BorderRadius.circular(25.0),
                                             image: DecorationImage(
-                                              image: NetworkImage(
+                                              image: CachedNetworkImageProvider(
                                                   text.data.toString()),
                                               fit: BoxFit.cover,
                                             ),
@@ -730,7 +734,8 @@ class ViewCommentsState extends State<ViewComments> {
                               return Image(
                                 height: 48.0,
                                 width: 48.0,
-                                image: NetworkImage(text.data.toString()),
+                                image: CachedNetworkImageProvider(
+                                    text.data.toString()),
                                 fit: BoxFit.cover,
                               );
                             }

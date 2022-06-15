@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,7 @@ class CreateCommentState extends State<CreateComment> {
                 // child: Image(
                 //   height: 50.0,
                 //   width: 50.0,
-                //   image: NetworkImage(comment['profilePic']),
+                //   image: CachedNetworkImageProvider(comment['profilePic']),
                 //   fit: BoxFit.cover,
                 // ),
                 child: FutureBuilder(
@@ -94,7 +95,8 @@ class CreateCommentState extends State<CreateComment> {
                         return Image(
                           height: 50.0,
                           width: 50.0,
-                          image: NetworkImage(text.data.toString()),
+                          image:
+                              CachedNetworkImageProvider(text.data.toString()),
                           fit: BoxFit.cover,
                         );
                       }

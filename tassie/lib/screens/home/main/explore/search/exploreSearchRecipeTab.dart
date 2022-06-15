@@ -1,4 +1,5 @@
 import 'package:async/async.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/main/recs/viewRecipe.dart';
@@ -154,7 +155,7 @@ class _ExploreRecipeAvatarState extends State<ExploreRecipeAvatar> {
             return Image(
               height: 50.0,
               width: 50.0,
-              image: NetworkImage(text.data.toString()),
+              image: CachedNetworkImageProvider(text.data.toString()),
               fit: BoxFit.cover,
             );
           }

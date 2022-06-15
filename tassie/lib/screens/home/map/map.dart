@@ -1,4 +1,5 @@
 import 'package:async/async.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -169,7 +170,7 @@ class _TassieMapState extends State<TassieMap> {
                               //   height: 128,
                               //   width: 128,
                               //   image:
-                              //       NetworkImage('https://picsum.photos/200'),
+                              //       CachedNetworkImageProvider('https://picsum.photos/200'),
                               //   fit: BoxFit.cover,
                               //   child: InkWell(
                               //     onTap: () {},
@@ -203,8 +204,8 @@ class _TassieMapState extends State<TassieMap> {
                                       return Ink.image(
                                         height: 48,
                                         width: 48,
-                                        image:
-                                            NetworkImage(text.data.toString()),
+                                        image: CachedNetworkImageProvider(
+                                            text.data.toString()),
                                         fit: BoxFit.cover,
                                         child: InkWell(
                                           onTap: () {},

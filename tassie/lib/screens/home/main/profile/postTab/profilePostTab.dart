@@ -1,4 +1,5 @@
 import 'package:async/async.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/main/profile/postTab/viewProfilePost.dart';
@@ -174,7 +175,7 @@ class _ProfilePostTabChildState extends State<ProfilePostTabChild> {
               );
             }
             return Image(
-              image: NetworkImage(text.data.toString()),
+              image: CachedNetworkImageProvider(text.data.toString()),
               fit: BoxFit.cover,
             );
           }

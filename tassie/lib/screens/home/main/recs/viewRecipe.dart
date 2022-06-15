@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:async/async.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -161,8 +162,14 @@ class ViewRecPostState extends State<ViewRecPost> {
           isBookmarked = response.data['data']['recipeData']['isBookmarked'];
           isLiked = response.data['data']['recipeData']['isLiked'];
           recipeImageID = response.data['data']['recipe']['recipeImageID'];
-          youtubeLink =
-              (response.data['data']['recipe']['youtubeLink']).split('/')[3];
+          // print(response.data['data']['recipe']);
+          if (response.data['data']['recipe']['youtubeLink'] != "") {
+            // youtubeLink =
+            //     (response.data['data']['recipe']['youtubeLink']).split('/')[3];
+            youtubeLink = YoutubePlayer.convertUrlToId(
+                response.data['data']['recipe']['youtubeLink'])!;
+          }
+
           // print(youtubeLink);
           // isLazyLoading = false;
           if (response.data['data']['recipeData']['userRating'].isNotEmpty) {
@@ -200,11 +207,12 @@ class ViewRecPostState extends State<ViewRecPost> {
           } else {
             meanRating = 0;
           }
-          yController = YoutubePlayerController(
-              initialVideoId: youtubeLink,
-              flags: const YoutubePlayerFlags(
-                  mute: false, autoPlay: false, loop: false));
-
+          if (youtubeLink != "") {
+            yController = YoutubePlayerController(
+                initialVideoId: youtubeLink,
+                flags: const YoutubePlayerFlags(
+                    mute: false, autoPlay: false, loop: false));
+          }
           // stepsWidgetList = generateList(steps, stepPics);
           // commentsWidgetList = generateCommentList();
           // similarWidgetList = generateSimilarList();
@@ -248,7 +256,7 @@ class ViewRecPostState extends State<ViewRecPost> {
   //             child: Image(
   //               height: 50.0,
   //               width: 50.0,
-  //               image: NetworkImage(comment['profilePic']),
+  //               image: CachedNetworkImageProvider(comment['profilePic']),
   //               fit: BoxFit.cover,
   //             ),
   //           ),
@@ -858,7 +866,7 @@ class ViewRecPostState extends State<ViewRecPost> {
                         height: size.width,
                         // child: recipeImageID != " "
                         //     ? Image(
-                        //         image: NetworkImage(getImage(recipeImageID)),
+                        //         image: CachedNetworkImageProvider(getImage(recipeImageID)),
                         //         fit: BoxFit.cover,
                         //       )
                         //     : null,
@@ -885,10 +893,12 @@ class ViewRecPostState extends State<ViewRecPost> {
                                       Navigator.of(context, rootNavigator: true)
                                           .push(MaterialPageRoute(
                                               builder: (context) => PhotoView(
-                                                  imageProvider: NetworkImage(
-                                                      text.data.toString()))));
+                                                  imageProvider:
+                                                      CachedNetworkImageProvider(
+                                                          text.data
+                                                              .toString()))));
                                     },
-                                    child: Image.network(text.data.toString()));
+                                    child: CachedNetworkImage(imageUrl:text.data.toString()));
                               }
                             }),
                       ),
@@ -1177,7 +1187,7 @@ class ViewRecPostState extends State<ViewRecPost> {
                                       // child: Image(
                                       //   height: (size.width - 40.0) / 10,
                                       //   width: (size.width - 40.0) / 10,
-                                      //   image: NetworkImage(
+                                      //   image: CachedNetworkImageProvider(
                                       //       'https://picsum.photos/200'),
                                       //   fit: BoxFit.cover,
                                       // ),
@@ -1216,8 +1226,9 @@ class ViewRecPostState extends State<ViewRecPost> {
                                                 height:
                                                     (size.width - 40.0) / 10,
                                                 width: (size.width - 40.0) / 10,
-                                                image: NetworkImage(
-                                                    text.data.toString()),
+                                                image:
+                                                    CachedNetworkImageProvider(
+                                                        text.data.toString()),
                                                 fit: BoxFit.cover,
                                               );
                                             }
@@ -1518,58 +1529,59 @@ class ViewRecPostState extends State<ViewRecPost> {
                     const SizedBox(
                       height: 10.0,
                     ),
-                    Card(
-                      color: Colors.transparent,
-                      elevation: 10,
-                      child: Padding(
-                        padding: const EdgeInsets.all(kDefaultPadding),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Youtube Video',
-                              style: TextStyle(
-                                // color: kPrimaryColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20.0,
+                    if (youtubeLink != "") ...[
+                      Card(
+                        color: Colors.transparent,
+                        elevation: 10,
+                        child: Padding(
+                          padding: const EdgeInsets.all(kDefaultPadding),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Youtube Video',
+                                style: TextStyle(
+                                  // color: kPrimaryColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20.0,
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 40.0,
-                            ),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10.0),
-                              child: YoutubePlayer(
-                                  controller: yController, bottomActions: []),
-                            ),
-                            Center(
-                              child: TextButton.icon(
-                                icon: const Icon(Icons.fullscreen),
-                                label: const Text('View in fullscreen'),
-                                onPressed: () async {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .push(
-                                    MaterialPageRoute(
-                                        builder: (context) => YoutubeFullScreen(
-                                            url: youtubeLink)),
-                                  );
-                                },
-                                style: TextButton.styleFrom(
-                                    primary: kPrimaryColor),
+                              const SizedBox(
+                                height: 40.0,
                               ),
-                            )
-                          ],
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10.0),
+                                child: YoutubePlayer(
+                                    controller: yController, bottomActions: []),
+                              ),
+                              Center(
+                                child: TextButton.icon(
+                                  icon: const Icon(Icons.fullscreen),
+                                  label: const Text('View in fullscreen'),
+                                  onPressed: () async {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .push(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              YoutubeFullScreen(
+                                                  url: youtubeLink)),
+                                    );
+                                  },
+                                  style: TextButton.styleFrom(
+                                      primary: kPrimaryColor),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-
-                    const Divider(
-                      thickness: 8,
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-
+                      const Divider(
+                        thickness: 8,
+                      ),
+                      const SizedBox(
+                        height: 10.0,
+                      )
+                    ],
                     Container(
                       padding: const EdgeInsets.all(kDefaultPadding),
                       child: Column(

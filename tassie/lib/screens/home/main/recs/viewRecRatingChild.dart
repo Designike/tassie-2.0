@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:async/async.dart';
@@ -61,7 +62,7 @@ class CreateRatingState extends State<CreateRating> {
                 // child: Image(
                 //   height: 50.0,
                 //   width: 50.0,
-                //   image: NetworkImage(comment['profilePic']),
+                //   image: CachedNetworkImageProvider(comment['profilePic']),
                 //   fit: BoxFit.cover,
                 // ),
                 child: FutureBuilder(
@@ -88,7 +89,8 @@ class CreateRatingState extends State<CreateRating> {
                         return Image(
                           height: 50.0,
                           width: 50.0,
-                          image: NetworkImage(text.data.toString()),
+                          image:
+                              CachedNetworkImageProvider(text.data.toString()),
                           fit: BoxFit.cover,
                         );
                       }

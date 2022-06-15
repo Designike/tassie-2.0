@@ -1,4 +1,5 @@
 import 'package:async/async.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -105,7 +106,7 @@ class ExplorePostState extends State<ExplorePost> {
                       );
                     } else {
                       // return Image(
-                      //   image: NetworkImage(text.data.toString()),
+                      //   image: CachedNetworkImageProvider(text.data.toString()),
                       //   fit: BoxFit.cover,
                       // );
 
@@ -166,7 +167,8 @@ class ExplorePostState extends State<ExplorePost> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(25.0),
                             image: DecorationImage(
-                              image: NetworkImage(text.data.toString()),
+                              image: CachedNetworkImageProvider(
+                                  text.data.toString()),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -205,7 +207,7 @@ class ExplorePostState extends State<ExplorePost> {
                         // child: Image(
                         //   height: (size.width - 42.0) / 12,
                         //   width: (size.width - 42.0) / 12,
-                        //   image: NetworkImage(post['profilePic']),
+                        //   image: CachedNetworkImageProvider(post['profilePic']),
                         //   fit: BoxFit.cover,
                         // ),
                         child: FutureBuilder(
@@ -237,7 +239,8 @@ class ExplorePostState extends State<ExplorePost> {
                                 return Image(
                                   height: (size.width - 42.0) / 12,
                                   width: (size.width - 42.0) / 12,
-                                  image: NetworkImage(text.data.toString()),
+                                  image: CachedNetworkImageProvider(
+                                      text.data.toString()),
                                   fit: BoxFit.cover,
                                 );
                               }

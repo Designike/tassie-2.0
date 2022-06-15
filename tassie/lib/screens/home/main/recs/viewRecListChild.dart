@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:tassie/constants.dart';
@@ -99,9 +100,9 @@ class StepIngImageState extends State<StepIngImage> {
                           width: size.width - (2 * kDefaultPadding),
                           height: size.width - (2 * kDefaultPadding),
                           // child: Image(
-                          //   // image: NetworkImage(url),
+                          //   // image: CachedNetworkImageProvider(url),
                           //   image:
-                          //       NetworkImage('https://picsum.photos/200'),
+                          //       CachedNetworkImageProvider('https://picsum.photos/200'),
                           //   fit: BoxFit.cover,
                           // ),
                           child: FutureBuilder(
@@ -131,11 +132,14 @@ class StepIngImageState extends State<StepIngImage> {
                                       Navigator.of(context, rootNavigator: true)
                                           .push(MaterialPageRoute(
                                               builder: (context) => PhotoView(
-                                                  imageProvider: NetworkImage(
-                                                      text.data.toString()))));
+                                                  imageProvider:
+                                                      CachedNetworkImageProvider(
+                                                          text.data
+                                                              .toString()))));
                                     },
                                     child: Image(
-                                      image: NetworkImage(text.data.toString()),
+                                      image: CachedNetworkImageProvider(
+                                          text.data.toString()),
                                       fit: BoxFit.cover,
                                     ),
                                   );

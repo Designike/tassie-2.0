@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:async/async.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -110,7 +111,7 @@ class ExploreRecState extends State<ExploreRec> {
                       );
                     } else {
                       // return Image(
-                      //   image: NetworkImage(text.data.toString()),
+                      //   image: CachedNetworkImageProvider(text.data.toString()),
                       //   fit: BoxFit.cover,
                       // );
                       if (!text.hasData) {
@@ -138,7 +139,8 @@ class ExploreRecState extends State<ExploreRec> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(25.0),
                             image: DecorationImage(
-                              image: NetworkImage(text.data.toString()),
+                              image: CachedNetworkImageProvider(
+                                  text.data.toString()),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -182,7 +184,8 @@ class ExploreRecState extends State<ExploreRec> {
                               return Image(
                                 height: (size.width - 42.0) / 12,
                                 width: (size.width - 42.0) / 12,
-                                image: NetworkImage(text.data.toString()),
+                                image: CachedNetworkImageProvider(
+                                    text.data.toString()),
                                 fit: BoxFit.cover,
                               );
                             }

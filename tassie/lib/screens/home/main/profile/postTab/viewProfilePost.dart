@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:async/async.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -354,7 +355,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                                         return Image(
                                                           height: 50.0,
                                                           width: 50.0,
-                                                          image: NetworkImage(
+                                                          image: CachedNetworkImageProvider(
                                                               text.data
                                                                   .toString()),
                                                           fit: BoxFit.cover,
@@ -553,7 +554,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                                     .push(MaterialPageRoute(
                                                         builder: (context) => PhotoView(
                                                             imageProvider:
-                                                                NetworkImage(text
+                                                                CachedNetworkImageProvider(text
                                                                     .data
                                                                     .toString()))));
                                               },
@@ -568,8 +569,10 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                                       BorderRadius.circular(
                                                           25.0),
                                                   image: DecorationImage(
-                                                    image: NetworkImage(
-                                                        text.data.toString()),
+                                                    image:
+                                                        CachedNetworkImageProvider(
+                                                            text.data
+                                                                .toString()),
                                                     fit: BoxFit.cover,
                                                   ),
                                                 ),
@@ -885,7 +888,8 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                     return Image(
                                       height: 48.0,
                                       width: 48.0,
-                                      image: NetworkImage(text.data.toString()),
+                                      image: CachedNetworkImageProvider(
+                                          text.data.toString()),
                                       fit: BoxFit.cover,
                                     );
                                   }

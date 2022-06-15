@@ -107,7 +107,7 @@ class FeedPostState extends State<FeedPost> {
                           //     child: Image(
                           //       height: 50.0,
                           //       width: 50.0,
-                          //       image: NetworkImage(post['url']),
+                          //       image: CachedNetworkImageProvider(post['url']),
                           //       fit: BoxFit.cover,
                           //     ),
                           child: FutureBuilder(
@@ -126,7 +126,7 @@ class FeedPostState extends State<FeedPost> {
                                   );
                                 } else {
                                   // return Image(
-                                  //   image: NetworkImage(text.data.toString()),
+                                  //   image: CachedNetworkImageProvider(text.data.toString()),
                                   //   fit: BoxFit.cover,
                                   // );
                                   if (!text.hasData) {
@@ -144,7 +144,8 @@ class FeedPostState extends State<FeedPost> {
                                   return Image(
                                     height: 50.0,
                                     width: 50.0,
-                                    image: CachedNetworkImageProvider(text.data.toString()),
+                                    image: CachedNetworkImageProvider(
+                                        text.data.toString()),
                                     fit: BoxFit.cover,
                                   );
                                 }
@@ -250,7 +251,8 @@ class FeedPostState extends State<FeedPost> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(25.0),
                                 image: DecorationImage(
-                                  image: CachedNetworkImageProvider(text.data.toString()),
+                                  image: CachedNetworkImageProvider(
+                                      text.data.toString()),
                                   fit: BoxFit.cover,
                                 ),
                               ),

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:async/async.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -366,7 +367,7 @@ class _SubscriberUserAvatarState extends State<SubscriberUserAvatar> {
             return Image(
               height: 50.0,
               width: 50.0,
-              image: NetworkImage(text.data.toString()),
+              image: CachedNetworkImageProvider(text.data.toString()),
               fit: BoxFit.cover,
             );
           }

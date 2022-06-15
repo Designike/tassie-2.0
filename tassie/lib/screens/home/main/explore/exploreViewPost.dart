@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:async/async.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -227,7 +228,7 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                           // child: Image(
                                           //   height: 50.0,
                                           //   width: 50.0,
-                                          //   image: NetworkImage(
+                                          //   image: CachedNetworkImageProvider(
                                           //       widget.post['url']),
                                           //   fit: BoxFit.cover,
                                           // ),
@@ -248,7 +249,7 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                                   );
                                                 } else {
                                                   // return Image(
-                                                  //   image: NetworkImage(text.data.toString()),
+                                                  //   image: CachedNetworkImageProvider(text.data.toString()),
                                                   //   fit: BoxFit.cover,
                                                   // );
                                                   if (!text.hasData) {
@@ -263,8 +264,10 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                                   return Image(
                                                     height: 50.0,
                                                     width: 50.0,
-                                                    image: NetworkImage(
-                                                        text.data.toString()),
+                                                    image:
+                                                        CachedNetworkImageProvider(
+                                                            text.data
+                                                                .toString()),
                                                     fit: BoxFit.cover,
                                                   );
                                                 }
@@ -321,7 +324,7 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                     );
                                   } else {
                                     // return Image(
-                                    //   image: NetworkImage(text.data.toString()),
+                                    //   image: CachedNetworkImageProvider(text.data.toString()),
                                     //   fit: BoxFit.cover,
                                     // );
                                     if (!text.hasData) {
@@ -375,7 +378,7 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                           borderRadius:
                                               BorderRadius.circular(25.0),
                                           image: DecorationImage(
-                                            image: NetworkImage(
+                                            image: CachedNetworkImageProvider(
                                                 text.data.toString()),
                                             fit: BoxFit.cover,
                                           ),
@@ -648,7 +651,7 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                       // child: Image(
                       //   height: 48.0,
                       //   width: 48.0,
-                      //   image: NetworkImage(widget.post['url']),
+                      //   image: CachedNetworkImageProvider(widget.post['url']),
                       //   fit: BoxFit.cover,
                       // ),
                       child: FutureBuilder(
@@ -665,7 +668,7 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                               );
                             } else {
                               // return Image(
-                              //   image: NetworkImage(text.data.toString()),
+                              //   image: CachedNetworkImageProvider(text.data.toString()),
                               //   fit: BoxFit.cover,
                               // );
                               if (!text.hasData) {
@@ -683,7 +686,8 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                               return Image(
                                 height: 48.0,
                                 width: 48.0,
-                                image: NetworkImage(text.data.toString()),
+                                image: CachedNetworkImageProvider(
+                                    text.data.toString()),
                                 fit: BoxFit.cover,
                               );
                             }
