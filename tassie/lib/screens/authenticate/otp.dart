@@ -23,6 +23,7 @@ class OTPFormState extends State<OTPForm> {
   var dio = Dio();
   final storage = const FlutterSecureStorage();
   List<String> totp = List<String>.filled(6, '', growable: true);
+  bool isClicked = false;
   @override
   void initState() {
     super.initState();
@@ -31,6 +32,7 @@ class OTPFormState extends State<OTPForm> {
     pin4FocusNode = FocusNode();
     pin5FocusNode = FocusNode();
     pin6FocusNode = FocusNode();
+    isClicked = false;
   }
 
   @override
@@ -204,6 +206,9 @@ class OTPFormState extends State<OTPForm> {
               // }
               var otp = totp.join("");
               try {
+                setState(() {
+                  isClicked = true;
+                });
                 Response response = await dio.post(
                     // "https://api-tassie.herokuapp.com/user/tsa/" + widget.uuid,
                     "https://api-tassie.herokuapp.com/user/tsa/${widget.uuid}",
@@ -241,6 +246,9 @@ class OTPFormState extends State<OTPForm> {
                     // }
                     // await Future.delayed(const Duration(seconds: 1));
                     if (!mounted) return;
+                    setState(() {
+                      isClicked = false;
+                    });
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) {
@@ -250,12 +258,18 @@ class OTPFormState extends State<OTPForm> {
                   } else {
                     // await Future.delayed(const Duration(seconds: 1));
                     if (!mounted) return;
+                    setState(() {
+                      isClicked = false;
+                    });
                     showSnack(
                         context, response.data['message'], () {}, 'OK', 4);
                   }
                 } else {
                   // await Future.delayed(const Duration(seconds: 1));
                   if (!mounted) return;
+                  setState(() {
+                    isClicked = false;
+                  });
                   showSnack(context, 'Unable to connect', () {}, 'OK', 4);
                 }
 
@@ -264,6 +278,9 @@ class OTPFormState extends State<OTPForm> {
               } on DioError {
                 // if (e.response != null) {
                 // }
+                setState(() {
+                  isClicked = false;
+                });
                 showSnack(context, 'Unable to connect', () {}, 'OK', 4);
               }
             },
@@ -274,15 +291,23 @@ class OTPFormState extends State<OTPForm> {
                 shadowColor: kPrimaryColorAccent,
                 color: kPrimaryColor,
                 elevation: 5.0,
-                child: const Center(
-                  child: Text(
-                    'Verify',
-                    style: TextStyle(
-                      fontFamily: 'Raleway',
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                child: Center(
+                  child: isClicked
+                      ? Transform.scale(
+                          scale: 0.6,
+                          child: const CircularProgressIndicator(
+                            color: kLight,
+                            strokeWidth: 3.0,
+                          ),
+                        )
+                      : Text(
+                          'Verify',
+                          style: TextStyle(
+                            fontFamily: 'Raleway',
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ),
             ),

@@ -288,6 +288,13 @@ class RegisterState extends State<Register> {
                                 });
                               }
                             }
+                          } catch (e) {
+                            showSnack(context, 'Server error 1C', () {}, 'OK', 4);
+                            if (mounted) {
+                                setState(() {
+                                  isClicked = false;
+                                });
+                            }
                           }
                         }
                       },
