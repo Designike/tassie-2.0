@@ -145,7 +145,7 @@ class GoogleRegisterState extends State<GoogleRegister> {
                           // // await Future.delayed(const Duration(seconds: 1));
 
                           if (!mounted) return;
-                          showSnack(context, 'Server error 1A', () {}, 'OK', 4);
+                          showSnack(context, response.data['message'], () {}, 'OK', 4);
                           Navigator.pop(context);
                         }
                       } else {
