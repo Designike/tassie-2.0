@@ -394,8 +394,8 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                           subtitle: Text(
                                             createdAt,
                                             style: TextStyle(
-                                                color: MediaQuery.of(context)
-                                                            .platformBrightness ==
+                                                color: Theme.of(context)
+                                                            .brightness ==
                                                         Brightness.dark
                                                     ? kLight
                                                     : kDark[900]),
@@ -744,8 +744,8 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                               text: widget.post['username'],
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                color: MediaQuery.of(context)
-                                                            .platformBrightness ==
+                                                color: Theme.of(context)
+                                                            .brightness ==
                                                         Brightness.light
                                                     ? kDark[900]
                                                     : kLight,
@@ -765,8 +765,8 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                             // text: widget.post['description'],
                                             text: description,
                                             style: TextStyle(
-                                              color: MediaQuery.of(context)
-                                                          .platformBrightness ==
+                                              color: Theme.of(context)
+                                                          .brightness ==
                                                       Brightness.light
                                                   ? kDark[900]
                                                   : kLight,
@@ -825,7 +825,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                     topLeft: Radius.circular(30.0),
                     topRight: Radius.circular(30.0),
                   ),
-                  color: MediaQuery.of(context).platformBrightness ==
+                  color: Theme.of(context).brightness ==
                           Brightness.dark
                       ? kDark[900]
                       : kLight,

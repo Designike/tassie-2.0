@@ -210,8 +210,8 @@ class _SubscribersState extends State<Subscribers> {
                       Theme.of(context).brightness == Brightness.light
                           ? Brightness.dark
                           : Brightness.light),
-              title: const Text(
-                'Subscribers!',
+              title: Text(
+                widget.isSubscriber ? 'Subscribers!' : 'Subscribed!',
                 style: TextStyle(
                   color: kPrimaryColor,
                   fontFamily: 'LobsterTwo',

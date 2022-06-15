@@ -113,21 +113,21 @@ class ExplorePostState extends State<ExplorePost> {
                       if (!text.hasData) {
                         return GestureDetector(
                             onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => ExploreViewComments(
-                                        post: post,
-                                        noOfComment: widget.noOfComment,
-                                        noOfLike: widget.noOfLike,
-                                        isLiked: widget.isLiked,
-                                        func: widget.func,
-                                        plusComment: widget.plusComment,
-                                        funcB: widget.funcB,
-                                        bookmark: widget.bookmark,
-                                        minusComment: widget.minusComment,
-                                        dp: dp),
-                                  ));
+                              Navigator.of(context, rootNavigator: true).push(
+                                MaterialPageRoute(builder: (context) {
+                                  return ExploreViewComments(
+                                      post: post,
+                                      noOfComment: widget.noOfComment,
+                                      noOfLike: widget.noOfLike,
+                                      isLiked: widget.isLiked,
+                                      func: widget.func,
+                                      plusComment: widget.plusComment,
+                                      funcB: widget.funcB,
+                                      bookmark: widget.bookmark,
+                                      minusComment: widget.minusComment,
+                                      dp: dp);
+                                }),
+                              );
                             },
                             child: Container(
                                 margin: const EdgeInsets.all(10.0),

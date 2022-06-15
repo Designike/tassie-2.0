@@ -284,8 +284,8 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                     subtitle: Text(
                                       widget.post['createdAt'],
                                       style: TextStyle(
-                                          color: MediaQuery.of(context)
-                                                      .platformBrightness ==
+                                          color: Theme.of(context)
+                                                      .brightness ==
                                                   Brightness.dark
                                               ? kLight
                                               : kDark[900]),
@@ -546,8 +546,8 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                       text: widget.post['username'],
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: MediaQuery.of(context)
-                                                    .platformBrightness ==
+                                        color: Theme.of(context)
+                                                    .brightness ==
                                                 Brightness.light
                                             ? kDark[900]
                                             : kLight,
@@ -557,8 +557,8 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                     TextSpan(
                                       text: widget.post['description'],
                                       style: TextStyle(
-                                        color: MediaQuery.of(context)
-                                                    .platformBrightness ==
+                                        color: Theme.of(context)
+                                                    .brightness ==
                                                 Brightness.light
                                             ? kDark[900]
                                             : kLight,
@@ -616,7 +616,7 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
               topLeft: Radius.circular(30.0),
               topRight: Radius.circular(30.0),
             ),
-            color: MediaQuery.of(context).platformBrightness == Brightness.dark
+            color: Theme.of(context).brightness == Brightness.dark
                 ? kDark[900]
                 : kLight,
           ),

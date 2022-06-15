@@ -1145,8 +1145,8 @@ class ViewRecPostState extends State<ViewRecPost> {
                                             text: '${hours}h ',
                                             style: TextStyle(
                                               fontSize: 18.0,
-                                              color: MediaQuery.of(context)
-                                                          .platformBrightness ==
+                                              color: Theme.of(context)
+                                                          .brightness ==
                                                       Brightness.dark
                                                   ? kLight
                                                   : kDark[900],
@@ -1157,8 +1157,8 @@ class ViewRecPostState extends State<ViewRecPost> {
                                           text: '${mins}m',
                                           style: TextStyle(
                                             fontSize: 18.0,
-                                            color: MediaQuery.of(context)
-                                                        .platformBrightness ==
+                                            color: Theme.of(context)
+                                                        .brightness ==
                                                     Brightness.dark
                                                 ? kLight
                                                 : kDark[900],
@@ -1729,8 +1729,8 @@ class ViewRecPostState extends State<ViewRecPost> {
                             Center(
                               child: Container(
                                 decoration: BoxDecoration(
-                                    color: MediaQuery.of(context)
-                                                .platformBrightness ==
+                                    color: Theme.of(context)
+                                                .brightness ==
                                             Brightness.dark
                                         ? kDark[900]
                                         : kLight,
@@ -1951,8 +1951,8 @@ class ViewRecPostState extends State<ViewRecPost> {
                               Center(
                                 child: Container(
                                   decoration: BoxDecoration(
-                                      color: MediaQuery.of(context)
-                                                  .platformBrightness ==
+                                      color: Theme.of(context)
+                                                  .brightness ==
                                               Brightness.dark
                                           ? kDark[900]
                                           : kLight,
