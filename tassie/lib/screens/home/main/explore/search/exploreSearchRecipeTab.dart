@@ -62,8 +62,10 @@ class ExploreSearchRecipeTabState extends State<ExploreSearchRecipeTab> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     List recipes = widget.recipes;
     return ListView.builder(
+      cacheExtent: size.height * 2.5,
       itemBuilder: (context, index) {
         return index == recipes.length
             ? widget.isEndR

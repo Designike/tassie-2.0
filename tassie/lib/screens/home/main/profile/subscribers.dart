@@ -190,6 +190,7 @@ class _SubscribersState extends State<Subscribers> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return (isLoading == true)
         ? const Scaffold(
             // backgroundColor: Colors.white,
@@ -264,6 +265,7 @@ class _SubscribersState extends State<Subscribers> {
             // ),
             body: ListView(
               controller: _sc,
+              cacheExtent: size.height * 2,
               physics: const AlwaysScrollableScrollPhysics(),
               children: [
                 for (int index = 0; index < users.length; index++) ...[

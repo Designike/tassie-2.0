@@ -41,10 +41,12 @@ class EditPostState extends State<EditPost> {
         HttpHeaders.authorizationHeader: "Bearer ${token!}",
       }),
     );
+    post = response.data['data'];
+        _tagController = TextEditingController(text: post['description']);
+        storedFuture = loadImg(post['postID'], memoizer);
     if (mounted) {
       setState(() {
-        post = response.data['data'];
-        _tagController = TextEditingController(text: post['description']);
+        
         isLoading = false;
       });
     }
@@ -72,9 +74,8 @@ class EditPostState extends State<EditPost> {
   void initState() {
     desc = '';
     super.initState();
-    getPost();
     memoizer = AsyncMemoizer();
-    storedFuture = loadImg(post['postID'], memoizer);
+    getPost();
   }
 
   @override

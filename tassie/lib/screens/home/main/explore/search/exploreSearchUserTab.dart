@@ -32,8 +32,10 @@ class ExploreSearchUserTabState extends State<ExploreSearchUserTab> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     List users = widget.users;
     return ListView.builder(
+      cacheExtent: size.height * 2.5,
       shrinkWrap: true,
       padding: const EdgeInsets.all(0.0),
       itemBuilder: (context, index) {

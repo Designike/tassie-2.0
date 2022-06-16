@@ -65,6 +65,7 @@ class RecipeTabState extends State<RecipeTab> {
     return RefreshIndicator(
       onRefresh: widget.refreshPage,
       child: ListView(
+        cacheExtent: size.height * 2,
         children: [
           recs.isNotEmpty
               ? GridView.builder(

@@ -857,6 +857,7 @@ class ViewRecPostState extends State<ViewRecPost> {
                   ),
                 )
               : ListView(
+                cacheExtent: size.height * 3,
                   padding: const EdgeInsets.only(top: 0),
                   children: [
                     Hero(

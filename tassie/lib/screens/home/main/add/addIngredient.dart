@@ -20,7 +20,8 @@ class IngredientTextFieldState extends State<IngredientTextField> {
   void initState() {
     super.initState();
     // _ingredientController = TextEditingController();
-    _ingredientController.selection = TextSelection.fromPosition(TextPosition(offset: _ingredientController.text.length));
+    _ingredientController.selection = TextSelection.fromPosition(
+        TextPosition(offset: _ingredientController.text.length));
     // _ingredientController.text = widget.ingredientsList[widget.index!];
   }
 
@@ -33,7 +34,7 @@ class IngredientTextFieldState extends State<IngredientTextField> {
   @override
   Widget build(BuildContext context) {
     // bool index;
-    
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _ingredientController.text = widget.ingredientsList[widget.index!] ?? '';
     });
@@ -58,49 +59,59 @@ class IngredientTextFieldState extends State<IngredientTextField> {
     //   },
     // );
     return TypeAheadFormField<String?>(
-      // direction: AxisDirection.up,
-      autoFlipDirection: true,
-      suggestionsCallback: IngredientData.getSuggestions,
-      textFieldConfiguration: TextFieldConfiguration(
-        controller: _ingredientController,
-        onChanged: (v) => widget.ingredientsList[widget.index!] = v,
-        decoration: InputDecoration(
-          labelText: 'Add Ingredient',
-          labelStyle: TextStyle(
-            // fontFamily: 'Raleway',
-            fontSize: 16.0,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? kPrimaryColor
-                : kDark[900],
-          ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 25.0, vertical: kDefaultPadding),
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? kPrimaryColor
-                    : kDark[900]!),
-            borderRadius: BorderRadius.circular(15.0),
+        // direction: AxisDirection.up,
+        autoFlipDirection: true,
+        suggestionsCallback: IngredientData.getSuggestions,
+        textFieldConfiguration: TextFieldConfiguration(
+          controller: _ingredientController,
+          onChanged: (v) => widget.ingredientsList[widget.index!] = v,
+          decoration: InputDecoration(
+            labelText: 'Add Ingredient',
+            labelStyle: TextStyle(
+              // fontFamily: 'Raleway',
+              fontSize: 16.0,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? kPrimaryColor
+                  : kDark[900],
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+                horizontal: 25.0, vertical: kDefaultPadding),
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? kPrimaryColor
+                      : kDark[900]!),
+              borderRadius: BorderRadius.circular(15.0),
+            ),
           ),
         ),
-      ),
-      itemBuilder: (context, String? suggestion) => ListTile(
-        title: Text(suggestion!),
-      ),
-      onSuggestionSelected: (String? v) {
-        // setState(() {
-        widget.ingredientsList[widget.index!] = v;
-        // print(_ingredientController.text);
-        // });
-      },
-      validator: (v) {
-        if (v!.trim().isEmpty) return 'Please enter something';
-        return null;
-      },
-    );
+        itemBuilder: (context, String? suggestion) => ListTile(
+              title: Text(suggestion!),
+            ),
+        onSuggestionSelected: (String? v) {
+          // setState(() {
+          widget.ingredientsList[widget.index!] = v;
+          // print(_ingredientController.text);
+          // });
+        },
+        validator: (v) {
+          if (v!.trim().isEmpty) return 'Please enter something';
+          return null;
+        },
+        noItemsFoundBuilder: (value) {
+          var localizedMessage =
+              "Type your own ingredient, we would be glad to add it to our list!";
+          return Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 15.0,
+              horizontal: 8,
+            ),
+            child: Text(localizedMessage, style: const TextStyle(color: kDark)),
+          );
+        });
   }
 }

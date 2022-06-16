@@ -291,6 +291,7 @@ class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                       padding: const EdgeInsets.symmetric(
                           vertical: 50.0, horizontal: 7.0),
                       child: MasonryGridView.count(
+                          cacheExtent: size.height * 2.5,
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           crossAxisCount: 2,

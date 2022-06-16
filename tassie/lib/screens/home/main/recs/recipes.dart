@@ -204,6 +204,7 @@ class RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
                   if (recs.isNotEmpty) ...[
                     Expanded(
                       child: GridView.builder(
+                        cacheExtent: size.height * 2.5,
                         controller: _sc,
                         physics: const AlwaysScrollableScrollPhysics(),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

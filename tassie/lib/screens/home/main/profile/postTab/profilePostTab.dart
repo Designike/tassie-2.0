@@ -69,6 +69,7 @@ class PostTabState extends State<PostTab> with AutomaticKeepAliveClientMixin {
     return RefreshIndicator(
       onRefresh: widget.refreshPage,
       child: ListView(
+        cacheExtent: size.height * 2,
         children: [
           posts.isNotEmpty
               ? GridView.builder(
