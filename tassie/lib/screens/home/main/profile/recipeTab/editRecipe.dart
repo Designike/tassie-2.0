@@ -820,6 +820,7 @@ class EditRecipeState extends State<EditRecipe> {
                   onSuggestionSelected: (v) {
                     // setState(() {
                     _tagController.text = _appendHashtag(desc, v);
+                    desc = _tagController.text;
                     // });
                   },
                   validator: (val) => val!.isEmpty || val.length > 500
@@ -1388,6 +1389,7 @@ class EditRecipeState extends State<EditRecipe> {
                     // await Future.delayed(const Duration(seconds: 1));
 
                     if (!mounted) return;
+                    Navigator.of(context).pop();
                     showSnack(
                         context,
                         "Check missing ingredients, description, steps or recipe image!",

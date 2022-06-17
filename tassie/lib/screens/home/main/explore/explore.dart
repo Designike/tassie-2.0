@@ -165,8 +165,8 @@ class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) {
-                        // return const SearchBar();
-                        return ViewHashtag(tag: "coolers");
+                        return const SearchBar();
+                        // return ViewHashtag(tag: "coolers");
                       }),
                     );
                   },

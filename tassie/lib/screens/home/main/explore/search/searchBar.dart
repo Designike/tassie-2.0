@@ -198,6 +198,26 @@ class SearchBarState extends State<SearchBar> {
                       //  || (!RegExp(r"^[a-zA-Z0-9]+").hasMatch(val))
                       ? 'Search name should not be empty'
                       : null,
+                  textInputAction: TextInputAction.search,
+                  onFieldSubmitted: (val){
+                    page = 1;
+                      recipes = [];
+                      users = [];
+                      tags = [];
+                      if (mounted) {
+                        setState(() {
+                          isLoading = true;
+                          isLazyLoadingR = false;
+                          isLazyLoadingU = false;
+                          isLazyLoadingT = false;
+                          isEndR = false;
+                          isEndU = false;
+                          isEndT = false;
+                        });
+                      }
+
+                      _getRecosts(page);
+                  },
                 ),
                 actions: [
                   IconButton(

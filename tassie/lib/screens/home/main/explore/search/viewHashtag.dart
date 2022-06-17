@@ -11,6 +11,7 @@ import 'package:tassie/screens/home/main/explore/advanced_search/advancedSearch.
 import 'package:tassie/screens/home/main/explore/explorePost.dart';
 import 'package:tassie/screens/home/main/explore/exploreRec.dart';
 import 'package:tassie/screens/home/main/explore/search/searchBar.dart';
+import 'package:tassie/utils/snackbar.dart';
 
 class ViewHashtag extends StatefulWidget {
   const ViewHashtag({Key? key, required this.tag}) : super(key: key);
@@ -56,6 +57,7 @@ class ViewHashtagState extends State<ViewHashtag>
         );
         print(response);
         if (response.data['data'] != null) {
+          if (response.data['data']['status'] == true) {
           if (mounted) {
             setState(() {
               if (index == 1) {
@@ -87,6 +89,15 @@ class ViewHashtagState extends State<ViewHashtag>
             }
           }
           // print(recs);
+        } else {
+          showSnack(context, response.data['message'] , (){}, 'OK', 3);
+          if (mounted) {
+            setState(() {
+              isLoading = false;
+              isLazyLoading = false;
+            });
+          }
+        }
         } else {
           if (mounted) {
             setState(() {

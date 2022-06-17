@@ -724,6 +724,7 @@ class AddRecipeState extends State<AddRecipe> {
                   onSuggestionSelected: (v) {
                     // setState(() {
                     _tagController.text = _appendHashtag(desc, v);
+                    desc = _tagController.text;
                     // });
                   },
                   validator: (val) => val!.isEmpty || val.length > 500
