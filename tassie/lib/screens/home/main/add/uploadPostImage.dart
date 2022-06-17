@@ -48,6 +48,7 @@ class UploaderState extends State<Uploader> {
     var token = await storage.read(key: "token");
     if (widget.edit) {
       // edit post - start
+      print(widget.desc);
       Response response = await dio.post(
         // 'https://api-tassie.herokuapp.com/drive/upload',
         'https://api-tassie.herokuapp.com/feed/editpost',
@@ -70,14 +71,16 @@ class UploaderState extends State<Uploader> {
       if (response.data['status'] == true) {
         // await Future.delayed(const Duration(seconds: 1));
         if (!mounted) return;
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) {
-            return const Profile(
-              uuid: 'user',
-            );
-          }),
-        );
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) {
+        //     return const Profile(
+        //       uuid: 'user',
+        //     );
+        //   }),
+        // );
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
       } else {
         // await Future.delayed(const Duration(seconds: 1));
         if (!mounted) return;

@@ -277,6 +277,7 @@ class AddPostState extends State<AddPost> {
                           // setState(() {
                           _tagController.text = _appendHashtag(desc, v);
                           // });
+                          desc = _tagController.text;
                         },
                         validator: (val) => val!.isEmpty || val.length > 500
                             ? 'Description should be within 500 characters'

@@ -31,10 +31,14 @@ class SearchBarState extends State<SearchBar> {
   final dio = Dio();
   final storage = const FlutterSecureStorage();
   final TextEditingController _tc = TextEditingController();
+
   void _getRecosts(int index) async {
+    // print('1');
     if (!isEndR || !isEndU || !isEndT) {
+      // print('2');
       if (!isLazyLoadingR || !isLazyLoadingU || !isLazyLoadingT) {
         // showSuggestions(context);
+        // print('3');
         if (mounted) {
           setState(() {
             isLazyLoadingR = true;
@@ -42,7 +46,7 @@ class SearchBarState extends State<SearchBar> {
             isLazyLoadingT = true;
           });
         }
-
+        query = query.replaceAll(RegExp(r'[^\w\s]+'), '');
         var url =
             "https://api-tassie.herokuapp.com/search/lazySearch/${index.toString()}/$query";
         var token = await storage.read(key: "token");
@@ -50,11 +54,13 @@ class SearchBarState extends State<SearchBar> {
           url,
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer ${token!}"
+            HttpHeaders.authorizationHeader: "Bearer $token"
           }),
         );
+        // print('4');
         // print(response.data);
         if (response.data['data'] != null) {
+          // print('5');
           if (mounted) {
             setState(() {
               // if (index == 1) {
@@ -85,6 +91,7 @@ class SearchBarState extends State<SearchBar> {
           }
           // print(response.data['data']['posts']);
           if (response.data['data']['recs'] == null) {
+            // print('6');
             if (mounted) {
               setState(() {
                 isEndR = true;
@@ -92,6 +99,7 @@ class SearchBarState extends State<SearchBar> {
             }
           }
           if (response.data['data']['users'] == null) {
+            // print('7');
             if (mounted) {
               setState(() {
                 isEndU = true;
@@ -99,6 +107,7 @@ class SearchBarState extends State<SearchBar> {
             }
           }
           if (response.data['data']['tags'] == null) {
+            print('8');
             if (mounted) {
               setState(() {
                 isEndT = true;
@@ -107,6 +116,7 @@ class SearchBarState extends State<SearchBar> {
           }
           // print(recs);
         } else {
+          print('9');
           if (mounted) {
             setState(() {
               isLoading = false;
@@ -117,7 +127,9 @@ class SearchBarState extends State<SearchBar> {
           }
         }
       }
+      print('10');
     }
+    print('11');
   }
 
   Widget _buildProgressIndicator() {
@@ -138,6 +150,13 @@ class SearchBarState extends State<SearchBar> {
   @override
   void initState() {
     super.initState();
+    isLazyLoadingR = false;
+    isLazyLoadingU = false;
+    isLazyLoadingT = false;
+    isLoading = false;
+    isEndR = false;
+    isEndU = false;
+    isEndT = false;
   }
 
   @override
@@ -175,8 +194,9 @@ class SearchBarState extends State<SearchBar> {
                   onChanged: (value) {
                     query = value;
                   },
-                  validator: (val) => val!.isEmpty || val.length > 100
-                      ? 'Recipe name should be within 100 characters'
+                  validator: (val) => val!.isEmpty
+                      //  || (!RegExp(r"^[a-zA-Z0-9]+").hasMatch(val))
+                      ? 'Search name should not be empty'
                       : null,
                 ),
                 actions: [
@@ -198,8 +218,15 @@ class SearchBarState extends State<SearchBar> {
                       if (mounted) {
                         setState(() {
                           isLoading = true;
+                          isLazyLoadingR = false;
+                          isLazyLoadingU = false;
+                          isLazyLoadingT = false;
+                          isEndR = false;
+                          isEndU = false;
+                          isEndT = false;
                         });
                       }
+
                       _getRecosts(page);
                     },
                   ),

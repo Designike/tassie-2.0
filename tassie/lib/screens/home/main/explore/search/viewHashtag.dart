@@ -11,16 +11,16 @@ import 'package:tassie/screens/home/main/explore/advanced_search/advancedSearch.
 import 'package:tassie/screens/home/main/explore/explorePost.dart';
 import 'package:tassie/screens/home/main/explore/exploreRec.dart';
 import 'package:tassie/screens/home/main/explore/search/searchBar.dart';
-import 'package:tassie/screens/home/main/explore/search/viewHashtag.dart';
 
-class Explore extends StatefulWidget {
-  const Explore({Key? key}) : super(key: key);
-
+class ViewHashtag extends StatefulWidget {
+  const ViewHashtag({Key? key, required this.tag}) : super(key: key);
+  final String tag;
   @override
-  ExploreState createState() => ExploreState();
+  ViewHashtagState createState() => ViewHashtagState();
 }
 
-class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
+class ViewHashtagState extends State<ViewHashtag>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -45,7 +45,7 @@ class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
           });
         }
         var url =
-            "https://api-tassie.herokuapp.com/search/lazyExplore/${index.toString()}/${previousLength.toString()}";
+            "https://api-tassie.herokuapp.com/search/lazyHashtag/${index.toString()}/${previousLength.toString()}/${widget.tag}";
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
@@ -54,6 +54,7 @@ class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
             HttpHeaders.authorizationHeader: "Bearer ${token!}"
           }),
         );
+        print(response);
         if (response.data['data'] != null) {
           if (mounted) {
             setState(() {
@@ -148,54 +149,28 @@ class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
           ))
         : Scaffold(
             appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                foregroundColor: Theme.of(context).brightness == Brightness.dark
-                    ? kLight
-                    : kDark[900],
-                systemOverlayStyle: SystemUiOverlayStyle(
-                  statusBarColor: Theme.of(context).scaffoldBackgroundColor,
-                  statusBarIconBrightness:
-                      Theme.of(context).brightness == Brightness.light
-                          ? Brightness.dark
-                          : Brightness.light,
+              backgroundColor: Colors.transparent,
+              foregroundColor: Theme.of(context).brightness == Brightness.dark
+                  ? kLight
+                  : kDark[900],
+              systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarColor: Theme.of(context).scaffoldBackgroundColor,
+                statusBarIconBrightness:
+                    Theme.of(context).brightness == Brightness.light
+                        ? Brightness.dark
+                        : Brightness.light,
+              ),
+              toolbarHeight: kToolbarHeight * 1.2,
+              title: const Text(
+                'What\'s on trend!',
+                style: TextStyle(
+                  color: kPrimaryColor,
+                  fontFamily: 'LobsterTwo',
+                  fontSize: 30.0,
                 ),
-                toolbarHeight: kToolbarHeight * 1.2,
-                title: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) {
-                        // return const SearchBar();
-                        return ViewHashtag(tag: "coolers");
-                      }),
-                    );
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? kDark[900]
-                          : kLight,
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    width: size.width * 0.8,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    child: const Text('Search', style: TextStyle(color: kDark)),
-                  ),
-                ),
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) {
-                          return const SearchBar();
-                        }),
-                      );
-                    },
-                    icon: const Icon(Icons.search_rounded),
-                  ),
-                ]),
+              ),
+              centerTitle: true,
+            ),
             body: RefreshIndicator(
               onRefresh: _refreshPage,
               child: CustomScrollView(
@@ -205,83 +180,21 @@ class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                   SliverToBoxAdapter(
                     child: Column(
                       children: [
-                        const SizedBox(height: 50.0),
-                        Center(
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) {
-                                  return const AdvancedSearch();
-                                }),
-                              );
-                            },
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                CircularText(
-                                  children: [
-                                    TextItem(
-                                      text: Text(
-                                        "Confused what to cook? --"
-                                            .toUpperCase(),
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: kDark.withOpacity(0.6),
-                                          // fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      space: 6,
-                                      startAngle: -90,
-                                      startAngleAlignment:
-                                          StartAngleAlignment.center,
-                                      direction:
-                                          CircularTextDirection.clockwise,
-                                    ),
-                                    TextItem(
-                                      text: Text(
-                                        "-- Tap to suggest recipe "
-                                            .toUpperCase(),
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: kDark.withOpacity(0.6),
-                                          // fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      space: 6,
-                                      startAngle: 90,
-                                      startAngleAlignment:
-                                          StartAngleAlignment.center,
-                                      direction:
-                                          CircularTextDirection.anticlockwise,
-                                    ),
-                                  ],
-                                  radius: 108,
-                                  position: CircularTextPosition.inside,
-                                  // backgroundPaint: Paint()..color = Colors.grey.shade200,
-                                ),
-                                Container(
-                                  // padding: EdgeInsets.all(5.0),
-                                  margin: const EdgeInsets.all(kDefaultPadding),
-                                  width: size.width * 0.4,
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? kDark[900]
-                                          : kLight,
-                                      borderRadius:
-                                          BorderRadius.circular(size.width)),
-                                  child: Lottie.asset(
-                                      Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? 'assets/images/cooker_dark.json'
-                                          : 'assets/images/cooker_light.json',
-                                      fit: BoxFit.cover),
-                                ),
-                              ],
-                            ),
-                            //
-                          ),
+                        // const SizedBox(height: 50.0),
+                        Padding(
+                          padding: const EdgeInsets.all(kDefaultPadding),
+                          child: Center(
+                              child: Text(
+                            '#${widget.tag}',
+                            style: TextStyle(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? kLight
+                                    : kDark[900],
+                                fontSize: 30.0,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline),
+                          )),
                         ),
                         // Text('Tap to suggest recipe!',
                         //     style: TextStyle(fontSize: 16.0)),

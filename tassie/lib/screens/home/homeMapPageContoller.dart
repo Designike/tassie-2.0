@@ -89,15 +89,50 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
             )  {
               final bool connected = connectivity != ConnectivityResult.none;
               return connected
-                  ? PageView(
-                      physics: Provider.of<LeftSwipe>(context).isSwipe
-                          ? const AlwaysScrollableScrollPhysics()
-                          : const NeverScrollableScrollPhysics(),
-                      controller: _pageController,
-                      scrollDirection: Axis.horizontal,
-                      reverse: true,
-                      children: _screens,
-                    )
+                  ? WillPopScope(
+                    onWillPop: () async {
+        final value = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            actionsPadding: const EdgeInsets.all(20.0),
+            title: const Text('Are you sure?'),
+            content: const Text('Do you want to exit the app'),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: const Text("No"),
+                ),
+              ),
+              const SizedBox(height: 16),
+              GestureDetector(
+                onTap: () {
+                    Navigator.of(context).pop(true);
+                  },
+                child: const Text("Yes"),
+              ),
+            ],
+          ),
+        );
+        if (value != null) {
+          return Future.value(value);
+        } else {
+          return Future.value(false);
+        }
+      },
+                    child: PageView(
+                        physics: Provider.of<LeftSwipe>(context).isSwipe
+                            ? const AlwaysScrollableScrollPhysics()
+                            : const NeverScrollableScrollPhysics(),
+                        controller: _pageController,
+                        scrollDirection: Axis.horizontal,
+                        reverse: true,
+                        children: _screens,
+                      ),
+                  )
                   : Scaffold(
             appBar: AppBar(
               toolbarHeight: kToolbarHeight * 1.1,

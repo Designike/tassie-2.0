@@ -42,11 +42,11 @@ class EditPostState extends State<EditPost> {
       }),
     );
     post = response.data['data'];
-        _tagController = TextEditingController(text: post['description']);
-        storedFuture = loadImg(post['postID'], memoizer);
+    desc = post['description'];
+    _tagController = TextEditingController(text: post['description']);
+    storedFuture = loadImg(post['postID'], memoizer);
     if (mounted) {
       setState(() {
-        
         isLoading = false;
       });
     }
@@ -189,6 +189,7 @@ class EditPostState extends State<EditPost> {
                             onSuggestionSelected: (v) {
                               // setState(() {
                               _tagController.text = _appendHashtag(desc, v);
+                              desc = _tagController.text;
                               // });
                             },
                             validator: (val) => val!.isEmpty || val.length > 500
