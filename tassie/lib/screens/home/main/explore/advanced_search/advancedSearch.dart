@@ -4,8 +4,10 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_circular_text/circular_text.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:lottie/lottie.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/main/explore/advanced_search/advancedSearchResults.dart';
 import 'package:tassie/utils/ingredient_data.dart';
@@ -305,7 +307,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
               padding: EdgeInsets.only(top: kDefaultPadding),
               child: Text('Meal Type'),
             ),
-
+        
             // SizedBox(height: 3 * kDefaultPadding,),
             Wrap(
               children: [
@@ -322,7 +324,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
               padding: EdgeInsets.only(top: kDefaultPadding),
               child: Text('Flavour'),
             ),
-
+        
             // SizedBox(height: 3 * kDefaultPadding,),
             Wrap(
               children: [
@@ -340,7 +342,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
               padding: EdgeInsets.only(top: kDefaultPadding),
               child: Text('Course'),
             ),
-
+        
             // SizedBox(height: 3 * kDefaultPadding,),
             Wrap(
               children: [
@@ -495,40 +497,34 @@ class AdvancedSearchState extends State<AdvancedSearch> {
             const SizedBox(
               height: kDefaultPadding,
             ),
-
+        
             TextButton(
               onPressed: () async {
                 Navigator.of(context, rootNavigator: true).push(
                   MaterialPageRoute(builder: (context) {
                     return Scaffold(
                       // backgroundColor: Colors.white,
-                      body: Center(
-                          // child: AnimatedTextKit(
-                          //   pause: Duration(milliseconds: 100),
-                          //   animatedTexts: [
-                          //     FadeAnimatedText('Finding Trivets'),
-                          //     FadeAnimatedText('Settling grubs'),
-                          //     FadeAnimatedText('Hoarding stuff'),
-                          //   ],
-                          // ),
-                          child: SizedBox(
-                        width: size.width,
-                        height: size.height,
+                      body: Container(
+                        // width: size.width,
+                        // height: size.height,
                         child: TextLiquidFill(
-                          text: 'Tassie',
-                          waveColor: kPrimaryColor,
-                          boxBackgroundColor: kDark[900]!,
-                          textStyle: const TextStyle(
-                            fontSize: 50.0,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "LobsterTwo",
-                          ),
-                          boxHeight: 300.0,
+                      text: 'Tassie',
+                      boxHeight: size.height,
+                      boxWidth: size.width,
+                      waveColor: kPrimaryColor,
+                      loadDuration: Duration(seconds: 3),
+                      boxBackgroundColor: kDark[900]!,
+                      textStyle: const TextStyle(
+                        fontSize: 56.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "LobsterTwo",
+                      ),
                         ),
-                      )),
+                      ),
                     );
                   }),
                 );
+                // await Future.delayed(Duration(milliseconds: 500));
                 var token = await storage.read(key: "token");
                 // print(formData.files[0]);
                 // print(flavour);
@@ -546,14 +542,14 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                       'maxTime': int.parse(hour) * 60 + int.parse(min),
                       'ingredients': ingredients,
                       'meal': meal,
-                    });
+                    }
+                    );
                 // print(response);
                 var id = response.data['data']['id'];
-                // await Future.delayed(const Duration(seconds: 1));
                 if (response.data != null) {
                   if (response.data['data']['id'] != null) {
-                    // await Future.delayed(const Duration(seconds: 1));
-
+                    await Future.delayed(const Duration(milliseconds: 1000));
+        
                     if (!mounted) return;
                     Navigator.of(context, rootNavigator: true).pop();
                     Navigator.pushReplacement(
@@ -564,7 +560,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                     );
                   } else {
                     // await Future.delayed(const Duration(seconds: 1));
-
+        
                     if (!mounted) return;
                     Navigator.of(context, rootNavigator: true).pop();
                     showSnack(
@@ -576,7 +572,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                   }
                 } else {
                   // await Future.delayed(const Duration(seconds: 1));
-
+        
                   if (!mounted) return;
                   showSnack(context, 'Some error occured. Try again!', () {},
                       'OK', 3);
@@ -590,10 +586,15 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                     ? kPrimaryColor
                     : kLight,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+                  borderRadius: BorderRadius.circular(10.0),
+                
                 ),
               ),
-              child: const Text('Find Recipes'),
+              
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: const Text('Find Recipes'),
+              ),
             ),
             const SizedBox(
               height: 100.0,

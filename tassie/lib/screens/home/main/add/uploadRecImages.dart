@@ -147,16 +147,15 @@ class RecImageUploaderState extends State<RecImageUploader> {
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.0),
-              color: kDark[900],
+              color: Theme.of(context).brightness == Brightness.dark ?kDark[900] : kLight,
+              border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.transparent :Color(0xFFE4E4E4)),
             ),
             child: IconButton(
               padding:
                   const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
               icon: const Icon(Icons.cloud_upload),
               iconSize: 30.0,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? kPrimaryColor
-                  : kPrimaryColorAccent,
+              color: kPrimaryColor,
               onPressed: () {
                 _startUpload(widget.file, widget.keyValue, widget.keyName,
                     widget.imgName);

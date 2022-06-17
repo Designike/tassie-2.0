@@ -57,7 +57,7 @@ class ViewHashtagState extends State<ViewHashtag>
         );
         print(response);
         if (response.data['data'] != null) {
-          if (response.data['data']['status'] == true) {
+          if (response.data['status'] == true) {
           if (mounted) {
             setState(() {
               if (index == 1) {

@@ -30,7 +30,6 @@ class _TabNavigator2State extends State<TabNavigator2> {
   String? dp;
   bool isLoading = true;
   var storage = const FlutterSecureStorage();
-
   Future<void> getdp() async {
     dp = await storage.read(key: "profilePic");
     if (mounted) {

@@ -284,8 +284,7 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                     subtitle: Text(
                                       widget.post['createdAt'],
                                       style: TextStyle(
-                                          color: Theme.of(context)
-                                                      .brightness ==
+                                          color: Theme.of(context).brightness ==
                                                   Brightness.dark
                                               ? kLight
                                               : kDark[900]),
@@ -299,77 +298,16 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                 ),
                               ],
                             ),
-                            FutureBuilder(
-                                future: storedFuture,
-                                builder:
-                                    (BuildContext context, AsyncSnapshot text) {
-                                  if ((text.connectionState ==
-                                          ConnectionState.waiting ||
-                                      text.hasError)) {
-                                    return Container(
-                                      margin: const EdgeInsets.all(10.0),
-                                      width: double.infinity,
-                                      height: size.width - 40.0,
-                                      // height: 400.0,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(25.0),
-                                        image: const DecorationImage(
-                                          image: AssetImage(
-                                            'assets/images/broken.png',
-                                          ),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    );
-                                  } else {
-                                    // return Image(
-                                    //   image: CachedNetworkImageProvider(text.data.toString()),
-                                    //   fit: BoxFit.cover,
-                                    // );
-                                    if (!text.hasData) {
+                            Hero(
+                              tag: 'exp_${widget.post['uuid']}',
+                              child: FutureBuilder(
+                                  future: storedFuture,
+                                  builder:
+                                      (BuildContext context, AsyncSnapshot text) {
+                                    if ((text.connectionState ==
+                                            ConnectionState.waiting ||
+                                        text.hasError)) {
                                       return Container(
-                                          margin: const EdgeInsets.all(10.0),
-                                          width: double.infinity,
-                                          height: size.width - 40.0,
-                                          // height: 400.0,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(25.0),
-                                          ),
-                                          child: const Center(
-                                            child: Icon(
-                                              Icons.refresh,
-                                              size: 50.0,
-                                              color: kDark,
-                                            ),
-                                          ));
-                                    }
-                                    return InkWell(
-                                      onDoubleTap: () async {
-                                        if (!liked) {
-                                          var token =
-                                              await storage.read(key: "token");
-                                          dio.post(
-                                              "https://api-tassie.herokuapp.com/feed/like",
-                                              options: Options(headers: {
-                                                HttpHeaders.contentTypeHeader:
-                                                    "application/json",
-                                                HttpHeaders.authorizationHeader:
-                                                    "Bearer ${token!}"
-                                              }),
-                                              data: {
-                                                'uuid': widget.post['uuid']
-                                              });
-                                          widget.func(true);
-                                          if (mounted) {
-                                            setState(() {});
-                                          }
-                                        }
-                                      },
-                                      splashColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      child: Container(
                                         margin: const EdgeInsets.all(10.0),
                                         width: double.infinity,
                                         height: size.width - 40.0,
@@ -377,16 +315,80 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(25.0),
-                                          image: DecorationImage(
-                                            image: CachedNetworkImageProvider(
-                                                text.data.toString()),
+                                          image: const DecorationImage(
+                                            image: AssetImage(
+                                              'assets/images/broken.png',
+                                            ),
                                             fit: BoxFit.cover,
                                           ),
                                         ),
-                                      ),
-                                    );
-                                  }
-                                }),
+                                      );
+                                    } else {
+                                      // return Image(
+                                      //   image: CachedNetworkImageProvider(text.data.toString()),
+                                      //   fit: BoxFit.cover,
+                                      // );
+                                      if (!text.hasData) {
+                                        return Container(
+                                            margin: const EdgeInsets.all(10.0),
+                                            width: double.infinity,
+                                            height: size.width - 40.0,
+                                            // height: 400.0,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(25.0),
+                                            ),
+                                            child: const Center(
+                                              child: Icon(
+                                                Icons.refresh,
+                                                size: 50.0,
+                                                color: kDark,
+                                              ),
+                                            ));
+                                      }
+                                      return InkWell(
+                                        onDoubleTap: () async {
+                                          if (!liked) {
+                                            var token =
+                                                await storage.read(key: "token");
+                                            dio.post(
+                                                "https://api-tassie.herokuapp.com/feed/like",
+                                                options: Options(headers: {
+                                                  HttpHeaders.contentTypeHeader:
+                                                      "application/json",
+                                                  HttpHeaders.authorizationHeader:
+                                                      "Bearer ${token!}"
+                                                }),
+                                                data: {
+                                                  'uuid': widget.post['uuid']
+                                                });
+                                            widget.func(true);
+                                            if (mounted) {
+                                              setState(() {});
+                                            }
+                                          }
+                                        },
+                                        splashColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        child: Container(
+                                          margin: const EdgeInsets.all(10.0),
+                                          width: double.infinity,
+                                          height: size.width - 40.0,
+                                          // height: 400.0,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(25.0),
+                                            image: DecorationImage(
+                                              image: CachedNetworkImageProvider(
+                                                  text.data.toString()),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }),
+                            ),
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 20.0),
@@ -546,8 +548,7 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                       text: widget.post['username'],
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: Theme.of(context)
-                                                    .brightness ==
+                                        color: Theme.of(context).brightness ==
                                                 Brightness.light
                                             ? kDark[900]
                                             : kLight,
@@ -557,8 +558,7 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                     TextSpan(
                                       text: widget.post['description'],
                                       style: TextStyle(
-                                        color: Theme.of(context)
-                                                    .brightness ==
+                                        color: Theme.of(context).brightness ==
                                                 Brightness.light
                                             ? kDark[900]
                                             : kLight,

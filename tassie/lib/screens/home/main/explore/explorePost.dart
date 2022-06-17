@@ -79,6 +79,10 @@ class ExplorePostState extends State<ExplorePost> {
             ? kDark[900]
             : kLight,
         borderRadius: BorderRadius.circular(25.0),
+        border: Border.all(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.transparent
+                : Color(0xFFE4E4E4)),
       ),
       child: Column(
         children: <Widget>[
@@ -143,33 +147,36 @@ class ExplorePostState extends State<ExplorePost> {
                       }
                       return InkWell(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => ExploreViewComments(
-                                    post: post,
-                                    noOfComment: widget.noOfComment,
-                                    noOfLike: widget.noOfLike,
-                                    isLiked: widget.isLiked,
-                                    func: widget.func,
-                                    plusComment: widget.plusComment,
-                                    funcB: widget.funcB,
-                                    bookmark: widget.bookmark,
-                                    minusComment: widget.minusComment,
-                                    dp: dp),
-                              ));
+                          Navigator.of(context, rootNavigator: true).push(
+                            MaterialPageRoute(builder: (context) {
+                              return ExploreViewComments(
+                                  post: post,
+                                  noOfComment: widget.noOfComment,
+                                  noOfLike: widget.noOfLike,
+                                  isLiked: widget.isLiked,
+                                  func: widget.func,
+                                  plusComment: widget.plusComment,
+                                  funcB: widget.funcB,
+                                  bookmark: widget.bookmark,
+                                  minusComment: widget.minusComment,
+                                  dp: dp);
+                            }),
+                          );
                         },
-                        child: Container(
-                          margin: const EdgeInsets.all(10.0),
-                          width: double.infinity,
-                          height: (size.width / 2) - 20.0 - 14.0,
-                          // height: 400.0,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25.0),
-                            image: DecorationImage(
-                              image: CachedNetworkImageProvider(
-                                  text.data.toString()),
-                              fit: BoxFit.cover,
+                        child: Hero(
+                          tag: 'exp_${post['uuid']}',
+                          child: Container(
+                            margin: const EdgeInsets.all(10.0),
+                            width: double.infinity,
+                            height: (size.width / 2) - 20.0 - 14.0,
+                            // height: 400.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25.0),
+                              image: DecorationImage(
+                                image: CachedNetworkImageProvider(
+                                    text.data.toString()),
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         ),

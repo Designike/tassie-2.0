@@ -152,6 +152,10 @@ class AddRecipeState extends State<AddRecipe> {
                     color: Theme.of(context).brightness == Brightness.dark
                         ? kDark[900]
                         : kLight,
+                    border: Border.all(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.transparent
+                            : Color(0xFFE4E4E4)),
                   ),
                   child: IconButton(
                     padding: EdgeInsets.all(size.width * 0.05),
@@ -168,6 +172,7 @@ class AddRecipeState extends State<AddRecipe> {
                     color: Theme.of(context).brightness == Brightness.dark
                         ? kDark[900]
                         : kLight,
+                        border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.transparent :Color(0xFFE4E4E4)),
                   ),
                   child: IconButton(
                     padding: EdgeInsets.all(size.width * 0.05),
@@ -596,7 +601,8 @@ class AddRecipeState extends State<AddRecipe> {
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
-                    color: kDark[900],
+                    color: Theme.of(context).brightness == Brightness.dark ? kDark[900] : kLight,
+                    border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.transparent :Color(0xFFE4E4E4)),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -645,7 +651,8 @@ class AddRecipeState extends State<AddRecipe> {
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
-                    color: kDark[900],
+                    color: Theme.of(context).brightness == Brightness.dark ? kDark[900] : kLight,
+                    border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.transparent :Color(0xFFE4E4E4)),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1152,7 +1159,7 @@ class AddRecipeState extends State<AddRecipe> {
                   Navigator.of(context, rootNavigator: true).pop();
                   Navigator.of(context, rootNavigator: true)
                       .pushReplacement(MaterialPageRoute(builder: (context) {
-                    return const HomeHome();
+                    return const Home();
                   }));
                   var url =
                       "https://api-tassie.herokuapp.com/recs/deleteRecipe";
@@ -1372,7 +1379,8 @@ class AddRecipeState extends State<AddRecipe> {
                         data: {
                           'uuid': widget.uuid,
                           // 'folder': widget.folder,
-                          'ingredients': ingredientsList == [null] ? [] : ingredientsList
+                          'ingredients':
+                              ingredientsList == [null] ? [] : ingredientsList
                         });
                   }
                   if (_currentStep == 4) {

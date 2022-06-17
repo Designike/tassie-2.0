@@ -5,7 +5,7 @@ import 'package:tassie/constants.dart';
 ThemeData lightThemeData(BuildContext context) {
   return ThemeData.light().copyWith(
     primaryColor: kPrimaryColor,
-    scaffoldBackgroundColor: Colors.grey[100],
+    scaffoldBackgroundColor: Colors.grey[50],
     appBarTheme: appBarTheme,
     iconTheme: const IconThemeData(color: kContentColorLightTheme),
     textTheme: GoogleFonts.latoTextTheme(Theme.of(context).textTheme)

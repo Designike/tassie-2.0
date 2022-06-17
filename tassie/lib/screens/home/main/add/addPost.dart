@@ -337,6 +337,10 @@ class AddPostState extends State<AddPost> {
                       color: Theme.of(context).brightness == Brightness.dark
                           ? kDark[900]
                           : kLight,
+                      border: Border.all(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.transparent
+                              : Color(0xFFE4E4E4)),
                     ),
                     child: IconButton(
                       padding: EdgeInsets.all(size.width * 0.1),
@@ -354,6 +358,10 @@ class AddPostState extends State<AddPost> {
                       color: Theme.of(context).brightness == Brightness.dark
                           ? kDark[900]
                           : kLight,
+                      border: Border.all(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.transparent
+                              : Color(0xFFE4E4E4)),
                     ),
                     child: IconButton(
                       padding: EdgeInsets.all(size.width * 0.1),

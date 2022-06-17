@@ -8,6 +8,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/home/main/explore/advanced_search/advancedSearch.dart';
+import 'package:tassie/screens/home/main/explore/advanced_search/advancedSearchLoader.dart';
 import 'package:tassie/screens/home/main/explore/explorePost.dart';
 import 'package:tassie/screens/home/main/explore/exploreRec.dart';
 import 'package:tassie/screens/home/main/explore/search/searchBar.dart';
@@ -176,6 +177,10 @@ class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                           ? kDark[900]
                           : kLight,
                       borderRadius: BorderRadius.circular(10.0),
+                      border: Border.all(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.transparent
+                              : Color(0xFFE4E4E4)),
                     ),
                     width: size.width * 0.8,
                     padding: const EdgeInsets.symmetric(
@@ -212,73 +217,83 @@ class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) {
-                                  return const AdvancedSearch();
+                                  return AdvancedSearchLoader(size: size);
                                 }),
                               );
                             },
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                CircularText(
-                                  children: [
-                                    TextItem(
-                                      text: Text(
-                                        "Confused what to cook? --"
-                                            .toUpperCase(),
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: kDark.withOpacity(0.6),
-                                          // fontWeight: FontWeight.bold,
+                            child: Hero(
+                              tag: "cooker",
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  CircularText(
+                                    children: [
+                                      TextItem(
+                                        text: Text(
+                                          "Confused what to cook? --"
+                                              .toUpperCase(),
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: kDark.withOpacity(0.6),
+                                            // fontWeight: FontWeight.bold,
+                                          ),
                                         ),
+                                        space: 6,
+                                        startAngle: -90,
+                                        startAngleAlignment:
+                                            StartAngleAlignment.center,
+                                        direction:
+                                            CircularTextDirection.clockwise,
                                       ),
-                                      space: 6,
-                                      startAngle: -90,
-                                      startAngleAlignment:
-                                          StartAngleAlignment.center,
-                                      direction:
-                                          CircularTextDirection.clockwise,
-                                    ),
-                                    TextItem(
-                                      text: Text(
-                                        "-- Tap to suggest recipe "
-                                            .toUpperCase(),
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: kDark.withOpacity(0.6),
-                                          // fontWeight: FontWeight.bold,
+                                      TextItem(
+                                        text: Text(
+                                          "-- Tap to suggest recipe "
+                                              .toUpperCase(),
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: kDark.withOpacity(0.6),
+                                            // fontWeight: FontWeight.bold,
+                                          ),
                                         ),
+                                        space: 6,
+                                        startAngle: 90,
+                                        startAngleAlignment:
+                                            StartAngleAlignment.center,
+                                        direction:
+                                            CircularTextDirection.anticlockwise,
                                       ),
-                                      space: 6,
-                                      startAngle: 90,
-                                      startAngleAlignment:
-                                          StartAngleAlignment.center,
-                                      direction:
-                                          CircularTextDirection.anticlockwise,
-                                    ),
-                                  ],
-                                  radius: 108,
-                                  position: CircularTextPosition.inside,
-                                  // backgroundPaint: Paint()..color = Colors.grey.shade200,
-                                ),
-                                Container(
-                                  // padding: EdgeInsets.all(5.0),
-                                  margin: const EdgeInsets.all(kDefaultPadding),
-                                  width: size.width * 0.4,
-                                  decoration: BoxDecoration(
+                                    ],
+                                    radius: 108,
+                                    position: CircularTextPosition.inside,
+                                    // backgroundPaint: Paint()..color = Colors.grey.shade200,
+                                  ),
+                                  Container(
+                                    // padding: EdgeInsets.all(5.0),
+                                    margin:
+                                        const EdgeInsets.all(kDefaultPadding),
+                                    width: size.width * 0.4,
+                                    decoration: BoxDecoration(
                                       color: Theme.of(context).brightness ==
                                               Brightness.dark
                                           ? kDark[900]
                                           : kLight,
                                       borderRadius:
-                                          BorderRadius.circular(size.width)),
-                                  child: Lottie.asset(
-                                      Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? 'assets/images/cooker_dark.json'
-                                          : 'assets/images/cooker_light.json',
-                                      fit: BoxFit.cover),
-                                ),
-                              ],
+                                          BorderRadius.circular(size.width),
+                                      border: Border.all(
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? Colors.transparent
+                                              : Color(0xFFE4E4E4)),
+                                    ),
+                                    child: Lottie.asset(
+                                        Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? 'assets/images/cooker_dark.json'
+                                            : 'assets/images/cooker_light.json',
+                                        fit: BoxFit.cover),
+                                  ),
+                                ],
+                              ),
                             ),
                             //
                           ),

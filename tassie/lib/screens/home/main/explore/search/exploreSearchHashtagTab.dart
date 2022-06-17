@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tassie/constants.dart';
+import 'package:tassie/screens/home/main/explore/search/viewHashtag.dart';
 
 class ExploreSearchHashtagTab extends StatefulWidget {
   const ExploreSearchHashtagTab(
@@ -62,13 +63,21 @@ class ExploreSearchHashtagTabState extends State<ExploreSearchHashtagTab> {
                 ? _endMessage()
                 : _buildProgressIndicator()
             : ListTile(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) {
+                      return ViewHashtag(tag: hashtags[index]['name'].substring(1));
+                    }),
+                  );
+              },
                 title: Text(hashtags[index]['name']),
                 leading: Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: kDark),
                     borderRadius: BorderRadius.circular(100.0),
                   ),
-                  padding: const EdgeInsets.all(5.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 9),
                   child: const Text(
                     '#',
                     style:

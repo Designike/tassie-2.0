@@ -88,6 +88,7 @@ class FeedPostState extends State<FeedPost> {
               ? kDark[900]
               : kLight,
           borderRadius: BorderRadius.circular(25.0),
+          border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.transparent :Color(0xFFE4E4E4)),
         ),
         child: Column(
           children: <Widget>[
@@ -208,57 +209,60 @@ class FeedPostState extends State<FeedPost> {
                         widget.func(true);
                       }
                     },
-                    child: FutureBuilder(
-                        future: storedFuture,
-                        builder: (BuildContext context, AsyncSnapshot text) {
-                          if ((text.connectionState ==
-                                  ConnectionState.waiting) ||
-                              text.hasError) {
-                            return Container(
-                              margin: const EdgeInsets.all(10.0),
-                              width: double.infinity,
-                              height: size.width - 40.0,
-                              // height: 400.0,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25.0),
-                                image: const DecorationImage(
-                                  image: AssetImage(
-                                    'assets/images/broken.png',
-                                  ),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            );
-                          } else {
-                            if (!text.hasData) {
+                    child: Hero(
+                      tag: post['uuid'],
+                      child: FutureBuilder(
+                          future: storedFuture,
+                          builder: (BuildContext context, AsyncSnapshot text) {
+                            if ((text.connectionState ==
+                                    ConnectionState.waiting) ||
+                                text.hasError) {
                               return Container(
-                                  margin: const EdgeInsets.all(10.0),
-                                  width: double.infinity,
-                                  height: size.width - 40.0,
-                                  child: const Center(
-                                    child: Icon(
-                                      Icons.refresh,
-                                      size: 50.0,
-                                      color: kDark,
+                                margin: const EdgeInsets.all(10.0),
+                                width: double.infinity,
+                                height: size.width - 40.0,
+                                // height: 400.0,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  image: const DecorationImage(
+                                    image: AssetImage(
+                                      'assets/images/broken.png',
                                     ),
-                                  ));
-                            }
-                            return Container(
-                              margin: const EdgeInsets.all(10.0),
-                              width: double.infinity,
-                              height: size.width - 40.0,
-                              // height: 400.0,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25.0),
-                                image: DecorationImage(
-                                  image: CachedNetworkImageProvider(
-                                      text.data.toString()),
-                                  fit: BoxFit.cover,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              ),
-                            );
-                          }
-                        }),
+                              );
+                            } else {
+                              if (!text.hasData) {
+                                return Container(
+                                    margin: const EdgeInsets.all(10.0),
+                                    width: double.infinity,
+                                    height: size.width - 40.0,
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.refresh,
+                                        size: 50.0,
+                                        color: kDark,
+                                      ),
+                                    ));
+                              }
+                              return Container(
+                                margin: const EdgeInsets.all(10.0),
+                                width: double.infinity,
+                                height: size.width - 40.0,
+                                // height: 400.0,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  image: DecorationImage(
+                                    image: CachedNetworkImageProvider(
+                                        text.data.toString()),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              );
+                            }
+                          }),
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),

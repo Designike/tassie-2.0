@@ -738,13 +738,19 @@ class ProfileState extends State<Profile> with AutomaticKeepAliveClientMixin {
                                       child: Container(
                                         padding: const EdgeInsets.all(10.0),
                                         decoration: BoxDecoration(
-                                            color:
-                                                Theme.of(context).brightness ==
-                                                        Brightness.dark
-                                                    ? kDark[900]
-                                                    : kLight,
-                                            borderRadius:
-                                                BorderRadius.circular(10.0)),
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? kDark[900]
+                                              : kLight,
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          border: Border.all(
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.dark
+                                                  ? Colors.transparent
+                                                  : Color(0xFFE4E4E4)),
+                                        ),
                                         child: Center(
                                             child: editBtnClicked
                                                 ? const Text('Loading ...')

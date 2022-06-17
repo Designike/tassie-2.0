@@ -69,85 +69,89 @@ class ExploreRecState extends State<ExploreRec> {
             ? kDark[900]
             : kLight,
         borderRadius: BorderRadius.circular(25.0),
+        border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.transparent :Color(0xFFE4E4E4)),
       ),
       child: Column(
         children: [
           Column(
             children: [
-              FutureBuilder(
-                  future: storedFuture,
-                  builder: (BuildContext context, AsyncSnapshot text) {
-                    if (text.connectionState == ConnectionState.waiting) {
-                      return Container(
-                        margin: const EdgeInsets.all(10.0),
-                        width: double.infinity,
-                        height: (size.width / 2) - 20.0 - 14.0,
-                        // height: 400.0,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25.0),
-                          image: const DecorationImage(
-                            image: AssetImage(
-                              'assets/images/broken.png',
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      );
-                    } else if (text.error != null) {
-                      return Container(
-                        margin: const EdgeInsets.all(10.0),
-                        width: double.infinity,
-                        height: (size.width / 2) - 20.0 - 14.0,
-                        // height: 400.0,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25.0),
-                          image: const DecorationImage(
-                            image: AssetImage(
-                              'assets/images/broken.png',
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      );
-                    } else {
-                      // return Image(
-                      //   image: CachedNetworkImageProvider(text.data.toString()),
-                      //   fit: BoxFit.cover,
-                      // );
-                      if (!text.hasData) {
+              Hero(
+                tag: recs['uuid'],
+                child: FutureBuilder(
+                    future: storedFuture,
+                    builder: (BuildContext context, AsyncSnapshot text) {
+                      if (text.connectionState == ConnectionState.waiting) {
                         return Container(
-                            margin: const EdgeInsets.all(10.0),
-                            width: double.infinity,
-                            height: (size.width / 2) - 20.0 - 14.0,
-                            child: const Center(
-                              child: Icon(
-                                Icons.refresh,
-                                size: 50.0,
-                                color: kDark,
-                              ),
-                            ));
-                      }
-                      return InkWell(
-                        onDoubleTap: () => {},
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        child: Container(
                           margin: const EdgeInsets.all(10.0),
                           width: double.infinity,
                           height: (size.width / 2) - 20.0 - 14.0,
                           // height: 400.0,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(25.0),
-                            image: DecorationImage(
-                              image: CachedNetworkImageProvider(
-                                  text.data.toString()),
+                            image: const DecorationImage(
+                              image: AssetImage(
+                                'assets/images/broken.png',
+                              ),
                               fit: BoxFit.cover,
                             ),
                           ),
-                        ),
-                      );
-                    }
-                  }),
+                        );
+                      } else if (text.error != null) {
+                        return Container(
+                          margin: const EdgeInsets.all(10.0),
+                          width: double.infinity,
+                          height: (size.width / 2) - 20.0 - 14.0,
+                          // height: 400.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25.0),
+                            image: const DecorationImage(
+                              image: AssetImage(
+                                'assets/images/broken.png',
+                              ),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      } else {
+                        // return Image(
+                        //   image: CachedNetworkImageProvider(text.data.toString()),
+                        //   fit: BoxFit.cover,
+                        // );
+                        if (!text.hasData) {
+                          return Container(
+                              margin: const EdgeInsets.all(10.0),
+                              width: double.infinity,
+                              height: (size.width / 2) - 20.0 - 14.0,
+                              child: const Center(
+                                child: Icon(
+                                  Icons.refresh,
+                                  size: 50.0,
+                                  color: kDark,
+                                ),
+                              ));
+                        }
+                        return InkWell(
+                          onDoubleTap: () => {},
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          child: Container(
+                            margin: const EdgeInsets.all(10.0),
+                            width: double.infinity,
+                            height: (size.width / 2) - 20.0 - 14.0,
+                            // height: 400.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25.0),
+                              image: DecorationImage(
+                                image: CachedNetworkImageProvider(
+                                    text.data.toString(),),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                    }),
+              ),
               ListTile(
                 dense: true,
                 leading: Container(
