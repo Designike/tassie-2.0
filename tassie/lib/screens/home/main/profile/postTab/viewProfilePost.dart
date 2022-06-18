@@ -117,15 +117,16 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
       },
     );
     if (response.data["status"] == true) {
+      noOfComment = response.data['data']['comments'];
+      noOfLikes = response.data['data']['likes'];
+      isBookmarked = response.data['data']['isBookmarked'];
+      isLiked = response.data['data']['isLiked'];
+      username = response.data['data']['username'];
+      createdAt = response.data['data']['createdAt'];
+      // print(createdAt);
+      description = response.data['data']['description'];
       if (mounted) {
         setState(() {
-          noOfComment = response.data['data']['comments'];
-          noOfLikes = response.data['data']['likes'];
-          isBookmarked = response.data['data']['isBookmarked'];
-          isLiked = response.data['data']['isLiked'];
-          username = response.data['data']['username'];
-          createdAt = response.data['data']['createdAt'];
-          description = response.data['data']['description'];
           // getdp();
           isLoading2 = false;
         });
@@ -263,7 +264,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return isLoading && isLoading2 && isLoading3
+    return (isLoading && isLoading2 && isLoading3)
         ? const Scaffold(
             // backgroundColor: Colors.white,
             body: Center(
@@ -392,7 +393,10 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                                 ),
                                               ])),
                                           subtitle: Text(
-                                            createdAt,
+                                            // "${DateTime.parse(createdAt).hour}:${DateTime.parse(createdAt).minute}",
+                                            (createdAt.isEmpty)
+                                                ? "0:00"
+                                                : "${DateTime.parse(createdAt).hour}:${DateTime.parse(createdAt).minute}",
                                             style: TextStyle(
                                                 color: Theme.of(context)
                                                             .brightness ==
@@ -825,8 +829,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                     topLeft: Radius.circular(30.0),
                     topRight: Radius.circular(30.0),
                   ),
-                  color: Theme.of(context).brightness ==
-                          Brightness.dark
+                  color: Theme.of(context).brightness == Brightness.dark
                       ? kDark[900]
                       : kLight,
                 ),

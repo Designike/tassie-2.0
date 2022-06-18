@@ -242,7 +242,9 @@ class AddPostState extends State<AddPost> {
                           maxLines: null,
                           controller: _tagController,
                           onChanged: (v) {
-                            desc = v;
+                            setState(() {
+                              desc = v;
+                            });
                           },
                           decoration: InputDecoration(
                             labelText: 'Description',
@@ -274,10 +276,10 @@ class AddPostState extends State<AddPost> {
                           title: Text(suggestion!),
                         ),
                         onSuggestionSelected: (v) {
-                          // setState(() {
                           _tagController.text = _appendHashtag(desc, v);
-                          // });
-                          desc = _tagController.text;
+                          setState(() {
+                            desc = _tagController.text;
+                          });
                         },
                         validator: (val) => val!.isEmpty || val.length > 500
                             ? 'Description should be within 500 characters'

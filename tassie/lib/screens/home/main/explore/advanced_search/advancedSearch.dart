@@ -51,7 +51,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
         flavour = flav;
         selectedFlavour = index;
         data['flavour'] = flav;
-        print(data);
+        // print(data);
       });
     }
   }
@@ -62,7 +62,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
         course = cour;
         selectedCourse = index;
         data['course'] = cour;
-        print(data);
+        // print(data);
       });
     }
   }
@@ -84,7 +84,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
       setState(() {
         mealType[index] = check;
         data['meal'] = mealType;
-        print(data);
+        // print(data);
       });
     }
     // print(course);

@@ -56,6 +56,7 @@ class FeedPostState extends State<FeedPost> {
 
   @override
   void initState() {
+    // print(widget.post['createdAt']);
     getdp();
     memoizer = AsyncMemoizer();
     memoizer1 = AsyncMemoizer();
@@ -88,7 +89,10 @@ class FeedPostState extends State<FeedPost> {
               ? kDark[900]
               : kLight,
           borderRadius: BorderRadius.circular(25.0),
-          border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.transparent :Color(0xFFE4E4E4)),
+          border: Border.all(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.transparent
+                  : Color(0xFFE4E4E4)),
         ),
         child: Column(
           children: <Widget>[
