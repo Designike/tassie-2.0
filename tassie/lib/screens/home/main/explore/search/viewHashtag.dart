@@ -173,7 +173,7 @@ class ViewHashtagState extends State<ViewHashtag>
               ),
               toolbarHeight: kToolbarHeight * 1.2,
               title: const Text(
-                'What\'s on trend!',
+                'What\'s in trend!',
                 style: TextStyle(
                   color: kPrimaryColor,
                   fontFamily: 'LobsterTwo',

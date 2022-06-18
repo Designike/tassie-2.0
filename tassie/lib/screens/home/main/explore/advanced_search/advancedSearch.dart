@@ -23,25 +23,35 @@ class AdvancedSearch extends StatefulWidget {
 class AdvancedSearchState extends State<AdvancedSearch> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _tagController = TextEditingController();
-  bool isVeg = true;
-  int selectedFlavour = 0;
-  int selectedCourse = 0;
-  String flavour = "Spicy";
-  String course = "Snack";
-  int selectedMeal = 0;
-  List<bool> meal = [true, false, false, false];
+  int isVeg = 2;
+  int selectedFlavour = 5;
+  int selectedCourse = 6;
+  String flavour = "";
+  String course = "";
+  int selectedMeal = 4;
+  List<bool> mealType = [false, false, false, false];
   List<String> hours = ['0', '1', '2', '3'];
   final minutes = ['00', '15', '30', '45'];
-  String hour = '1';
+  String hour = '0';
   String min = '00';
   List ingredients = [];
   final storage = const FlutterSecureStorage();
   final dio = Dio();
+  Map data = {
+    'ingredients': [],
+  };
+
+  // void addKey(key,value) {
+  //   data[key] = value;
+  // }
+
   void changeFlavour(int index, String flav) {
     if (mounted) {
       setState(() {
         flavour = flav;
         selectedFlavour = index;
+        data['flavour'] = flav;
+        print(data);
       });
     }
   }
@@ -51,43 +61,78 @@ class AdvancedSearchState extends State<AdvancedSearch> {
       setState(() {
         course = cour;
         selectedCourse = index;
+        data['course'] = cour;
+        print(data);
       });
     }
   }
 
-  void changeMeal(int index, String m) {
+  // void changeMeal(int index, String m) {
+  //   if (mounted) {
+  //     setState(() {
+  //       // mealType[index] = check;
+  //       meal = List.filled(4, false);
+  //       meal[index] = true;
+  //       selectedMeal = index;
+  //       data['meal'] = meal;
+  //     });
+  //   }
+  //   // print(course);
+  // }
+  void changeMeal(int index, bool check) {
     if (mounted) {
       setState(() {
-        // mealType[index] = check;
-        meal = List.filled(4, false);
-        meal[index] = true;
-        selectedMeal = index;
+        mealType[index] = check;
+        data['meal'] = mealType;
+        print(data);
       });
     }
     // print(course);
   }
 
-  Widget mealRadio(int index, String m) {
+  Widget mealCheckBox(int index, String flav) {
     return Padding(
-      padding: const EdgeInsets.only(right: kDefaultPadding, top: 10.0),
+      padding: const EdgeInsets.only(
+          right: kDefaultPadding, bottom: kDefaultPadding),
       child: OutlinedButton(
-        onPressed: () => changeMeal(index, m),
+        onPressed: () => changeMeal(index, !mealType[index]),
         style: OutlinedButton.styleFrom(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
           padding: const EdgeInsets.all(15.0),
           side: BorderSide(
-            color: selectedMeal == index ? kPrimaryColor : kDark,
-            width: selectedMeal == index ? 2 : 1,
+            color: mealType[index] ? kPrimaryColor : kDark,
+            width: mealType[index] ? 2 : 1,
           ),
-          backgroundColor: selectedMeal == index
+          backgroundColor: mealType[index]
               ? kPrimaryColor.withOpacity(0.1)
               : Colors.transparent,
         ),
-        child: Text(m),
+        child: Text(flav),
       ),
     );
   }
+  // Widget mealRadio(int index, String m) {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(right: kDefaultPadding, top: 10.0),
+  //     child: OutlinedButton(
+  //       onPressed: () => changeMeal(index, m),
+  //       style: OutlinedButton.styleFrom(
+  //         shape:
+  //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+  //         padding: const EdgeInsets.all(15.0),
+  //         side: BorderSide(
+  //           color: selectedMeal == index ? kPrimaryColor : kDark,
+  //           width: selectedMeal == index ? 2 : 1,
+  //         ),
+  //         backgroundColor: selectedMeal == index
+  //             ? kPrimaryColor.withOpacity(0.1)
+  //             : Colors.transparent,
+  //       ),
+  //       child: Text(m),
+  //     ),
+  //   );
+  // }
 
   Widget flavourRadio(int index, String flav) {
     return Padding(
@@ -241,12 +286,131 @@ class AdvancedSearchState extends State<AdvancedSearch> {
             const Text(
               'Can\'t decide what to eat? We have got you! \nApply your filters, and get ready for some yumminess.',
             ),
-            // SizedBox(
-            //   height: 2 * kDefaultPadding,
-            // ),
+            SizedBox(
+              height: kDefaultPadding,
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context, rootNavigator: true).push(
+                  MaterialPageRoute(builder: (context) {
+                    return Scaffold(
+                      // backgroundColor: Colors.white,
+                      body: Container(
+                        // width: size.width,
+                        // height: size.height,
+                        child: TextLiquidFill(
+                          text: 'Tassie',
+                          boxHeight: size.height,
+                          boxWidth: size.width,
+                          waveColor: kPrimaryColor,
+                          loadDuration: Duration(seconds: 3),
+                          boxBackgroundColor: kDark[900]!,
+                          textStyle: const TextStyle(
+                            fontSize: 56.0,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "LobsterTwo",
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                );
+                // await Future.delayed(Duration(milliseconds: 500));
+                var token = await storage.read(key: "token");
+                // print(formData.files[0]);
+                // print(flavour);
+                Response response = await dio.post(
+                    // 'https://api-tassie.herokuapp.com/drive/upload',
+                    'https://api-tassie.herokuapp.com/search/guess',
+                    options: Options(headers: {
+                      HttpHeaders.contentTypeHeader: "application/json",
+                      HttpHeaders.authorizationHeader: "Bearer ${token!}"
+                    }),
+                    data: {
+                      'ingredients': [],
+                      'meal': [false, false, false, false],
+                    });
+                // print(response);
+                var id = response.data['data']['id'];
+                if (response.data != null) {
+                  if (response.data['data']['id'] != null) {
+                    await Future.delayed(const Duration(milliseconds: 1000));
+
+                    if (!mounted) return;
+                    Navigator.of(context, rootNavigator: true).pop();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return AdvancedSearchResults(suggestionID: id);
+                      }),
+                    );
+                  } else {
+                    // await Future.delayed(const Duration(seconds: 1));
+
+                    if (!mounted) return;
+                    Navigator.of(context, rootNavigator: true).pop();
+                    showSnack(context, 'No results found.', () {}, 'OK', 3);
+                  }
+                } else {
+                  // await Future.delayed(const Duration(seconds: 1));
+
+                  if (!mounted) return;
+                  showSnack(context, 'Some error occured. Try again!', () {},
+                      'OK', 3);
+                }
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: Theme.of(context).brightness == Brightness.dark
+                    ? kDark[900]
+                    : kPrimaryColor,
+                primary: Theme.of(context).brightness == Brightness.dark
+                    ? kPrimaryColor
+                    : kLight,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: const Text('Suggest trending recipes'),
+              ),
+            ),
+            SizedBox(
+              height: 2 * kDefaultPadding,
+            ),
             const Padding(
+              padding: EdgeInsets.only(bottom: 20.0),
+              child: Text(
+                'Advanced Search',
+                style: TextStyle(fontSize: 22, color: kPrimaryColor),
+              ),
+            ),
+            Padding(
               padding: EdgeInsets.only(top: kDefaultPadding, bottom: 10.0),
-              child: Text('Category'),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Category'),
+                  TextButton(
+                    onPressed: () {
+                      // change data - remove veg
+                      if (data['veg'] != null) {
+                        data.remove('veg');
+                      }
+                      print(data);
+                    },
+                    style: TextButton.styleFrom(
+                        // backgroundColor:
+                        // Theme.of(context).brightness == Brightness.dark
+                        //     ? kDark[900]
+                        //     : kPrimaryColor,
+                        primary: Theme.of(context).brightness == Brightness.dark
+                            ? kPrimaryColor
+                            : kLight),
+                    child: Text('Reset'),
+                  ),
+                ],
+              ),
             ),
             // SizedBox(height: 3 * kDefaultPadding,),
             Wrap(
@@ -257,8 +421,10 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                     onPressed: () {
                       if (mounted) {
                         setState(() {
-                          isVeg = true;
+                          isVeg = 0;
+                          data['veg'] = true;
                         });
+                        print(data);
                       }
                     },
                     style: OutlinedButton.styleFrom(
@@ -266,10 +432,10 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                           borderRadius: BorderRadius.circular(15.0)),
                       padding: const EdgeInsets.all(15.0),
                       side: BorderSide(
-                        color: isVeg ? Colors.green : kDark,
-                        width: isVeg ? 2 : 1,
+                        color: isVeg == 0 ? Colors.green : kDark,
+                        width: isVeg   == 0? 2 : 1,
                       ),
-                      backgroundColor: isVeg
+                      backgroundColor: isVeg == 0
                           ? kPrimaryColor.withOpacity(0.1)
                           : Colors.transparent,
                     ),
@@ -280,8 +446,12 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                   onPressed: () {
                     if (mounted) {
                       setState(() {
-                        isVeg = false;
+                        isVeg = 1;
+                        if (data['veg'] != null) {
+                          data['veg'] = false;
+                        }
                       });
+                      print(data);
                     }
                   },
                   style: OutlinedButton.styleFrom(
@@ -289,10 +459,10 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                         borderRadius: BorderRadius.circular(15.0)),
                     padding: const EdgeInsets.all(15.0),
                     side: BorderSide(
-                      color: !isVeg ? Colors.red : kDark,
-                      width: !isVeg ? 2 : 1,
+                      color: isVeg == 1 ? Colors.red : kDark,
+                      width: isVeg == 1 ? 2 : 1,
                     ),
-                    backgroundColor: !isVeg
+                    backgroundColor: isVeg == 1
                         ? kPrimaryColor.withOpacity(0.1)
                         : Colors.transparent,
                   ),
@@ -303,28 +473,74 @@ class AdvancedSearchState extends State<AdvancedSearch> {
             // SizedBox(
             //   height: kDefaultPadding,
             // ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(top: kDefaultPadding),
-              child: Text('Meal Type'),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Meal Type'),
+                  TextButton(
+                    onPressed: () {
+                      // change data - set meal to false * 4
+                      if (data['meal'] != null) {
+                        data['meal'] = [false, false, false, false];
+                      }
+                      print(data);
+                    },
+                    style: TextButton.styleFrom(
+                        // backgroundColor:
+                        // Theme.of(context).brightness == Brightness.dark
+                        //     ? kDark[900]
+                        //     : kPrimaryColor,
+                        primary: Theme.of(context).brightness == Brightness.dark
+                            ? kPrimaryColor
+                            : kLight),
+                    child: Text('Reset'),
+                  ),
+                ],
+              ),
             ),
-        
+
             // SizedBox(height: 3 * kDefaultPadding,),
             Wrap(
               children: [
-                mealRadio(0, 'Breakfast'),
-                mealRadio(1, 'Lunch'),
-                mealRadio(2, 'Dinner'),
-                mealRadio(3, 'Craving'),
+                mealCheckBox(0, 'Breakfast'),
+                mealCheckBox(1, 'Lunch'),
+                mealCheckBox(2, 'Dinner'),
+                mealCheckBox(3, 'Craving'),
               ],
             ),
             // SizedBox(
             //   height: kDefaultPadding,
             // ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(top: kDefaultPadding),
-              child: Text('Flavour'),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Flavour'),
+                  TextButton(
+                    onPressed: () {
+                      // change data - remove veg
+                      if (data['flavour'] != null) {
+                        data.remove('flavour');
+                      }
+                      print(data);
+                    },
+                    style: TextButton.styleFrom(
+                        // backgroundColor:
+                        // Theme.of(context).brightness == Brightness.dark
+                        //     ? kDark[900]
+                        //     : kPrimaryColor,
+                        primary: Theme.of(context).brightness == Brightness.dark
+                            ? kPrimaryColor
+                            : kLight),
+                    child: Text('Reset'),
+                  ),
+                ],
+              ),
             ),
-        
+
             // SizedBox(height: 3 * kDefaultPadding,),
             Wrap(
               children: [
@@ -338,11 +554,34 @@ class AdvancedSearchState extends State<AdvancedSearch> {
             // SizedBox(
             //   height: kDefaultPadding,
             // ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(top: kDefaultPadding),
-              child: Text('Course'),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Course'),
+                  TextButton(
+                    onPressed: () {
+                      // change data - remove course
+                      if (data['course'] != null) {
+                        data.remove('course');
+                      }
+                      print(data);
+                    },
+                    style: TextButton.styleFrom(
+                        // backgroundColor:
+                        // Theme.of(context).brightness == Brightness.dark
+                        //     ? kDark[900]
+                        //     : kPrimaryColor,
+                        primary: Theme.of(context).brightness == Brightness.dark
+                            ? kPrimaryColor
+                            : kLight),
+                    child: Text('Reset'),
+                  ),
+                ],
+              ),
             ),
-        
+
             // SizedBox(height: 3 * kDefaultPadding,),
             Wrap(
               children: [
@@ -357,9 +596,32 @@ class AdvancedSearchState extends State<AdvancedSearch> {
             // SizedBox(
             //   height: kDefaultPadding,
             // ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(top: kDefaultPadding, bottom: 10.0),
-              child: Text('Cooking Time (HH : MM)'),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Cooking Time (HH : MM)'),
+                  TextButton(
+                    onPressed: () {
+                      // change data - remove maxTime
+                      if (data['maxTime'] != null) {
+                        data.remove('maxTime');
+                      }
+                      print(data);
+                    },
+                    style: TextButton.styleFrom(
+                        // backgroundColor:
+                        // Theme.of(context).brightness == Brightness.dark
+                        //     ? kDark[900]
+                        //     : kPrimaryColor,
+                        primary: Theme.of(context).brightness == Brightness.dark
+                            ? kPrimaryColor
+                            : kLight),
+                    child: Text('Reset'),
+                  ),
+                ],
+              ),
             ),
             Row(
               children: [
@@ -497,7 +759,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
             const SizedBox(
               height: kDefaultPadding,
             ),
-        
+
             TextButton(
               onPressed: () async {
                 Navigator.of(context, rootNavigator: true).push(
@@ -508,17 +770,17 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                         // width: size.width,
                         // height: size.height,
                         child: TextLiquidFill(
-                      text: 'Tassie',
-                      boxHeight: size.height,
-                      boxWidth: size.width,
-                      waveColor: kPrimaryColor,
-                      loadDuration: Duration(seconds: 3),
-                      boxBackgroundColor: kDark[900]!,
-                      textStyle: const TextStyle(
-                        fontSize: 56.0,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: "LobsterTwo",
-                      ),
+                          text: 'Tassie',
+                          boxHeight: size.height,
+                          boxWidth: size.width,
+                          waveColor: kPrimaryColor,
+                          loadDuration: Duration(seconds: 3),
+                          boxBackgroundColor: kDark[900]!,
+                          textStyle: const TextStyle(
+                            fontSize: 56.0,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "LobsterTwo",
+                          ),
                         ),
                       ),
                     );
@@ -535,21 +797,15 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                       HttpHeaders.contentTypeHeader: "application/json",
                       HttpHeaders.authorizationHeader: "Bearer ${token!}"
                     }),
-                    data: {
-                      'veg': isVeg,
-                      'flavour': flavour,
-                      'course': course,
-                      'maxTime': int.parse(hour) * 60 + int.parse(min),
-                      'ingredients': ingredients,
-                      'meal': meal,
-                    }
-                    );
+                    data: data);
                 // print(response);
                 var id = response.data['data']['id'];
                 if (response.data != null) {
+                  if(response.data['status'] == true) {
+                  
                   if (response.data['data']['id'] != null) {
                     await Future.delayed(const Duration(milliseconds: 1000));
-        
+
                     if (!mounted) return;
                     Navigator.of(context, rootNavigator: true).pop();
                     Navigator.pushReplacement(
@@ -560,7 +816,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                     );
                   } else {
                     // await Future.delayed(const Duration(seconds: 1));
-        
+
                     if (!mounted) return;
                     Navigator.of(context, rootNavigator: true).pop();
                     showSnack(
@@ -570,9 +826,16 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                         'OK',
                         3);
                   }
+                  } else {
+                  // await Future.delayed(const Duration(seconds: 1));
+
+                  if (!mounted) return;
+                  showSnack(context, response.data['message'], () {},
+                      'OK', 3);
+                }
                 } else {
                   // await Future.delayed(const Duration(seconds: 1));
-        
+
                   if (!mounted) return;
                   showSnack(context, 'Some error occured. Try again!', () {},
                       'OK', 3);
@@ -587,10 +850,8 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                     : kLight,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
-                
                 ),
               ),
-              
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: const Text('Find Recipes'),
