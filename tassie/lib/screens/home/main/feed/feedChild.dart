@@ -187,7 +187,7 @@ class FeedPostState extends State<FeedPost> {
                           ),
                         ])),
                     subtitle: Text(
-                      "${DateTime.parse(post['createdAt']).hour}:${DateTime.parse(post['createdAt']).minute}",
+                      "${DateTime.parse(post['createdAt']).hour}:${DateTime.parse(post['createdAt']).minute} ${months[DateTime.parse(post['createdAt']).month]} ${DateTime.parse(post['createdAt']).day}",
                       style: TextStyle(
                           color: Theme.of(context).brightness == Brightness.dark
                               ? kLight

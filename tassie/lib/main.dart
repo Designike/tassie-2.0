@@ -11,6 +11,8 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  ImageCache ic = ImageCache();
+  ic.maximumSizeBytes = 1048576000;
   ThemeController thc = ThemeController();
   thc.getThemeModeFromPreferences();
   SystemChrome.setPreferredOrientations(

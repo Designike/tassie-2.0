@@ -317,7 +317,7 @@ class ViewCommentsState extends State<ViewComments> {
                                           ),
                                         ])),
                                     subtitle: Text(
-                                      "${DateTime.parse(widget.post['createdAt']).hour}:${DateTime.parse(widget.post['createdAt']).minute}",
+                                      "${DateTime.parse(widget.post['createdAt']).hour}:${DateTime.parse(widget.post['createdAt']).minute} ${months[DateTime.parse(widget.post['createdAt']).month]} ${DateTime.parse(widget.post['createdAt']).day}",
                                       style: TextStyle(
                                           color: Theme.of(context).brightness ==
                                                   Brightness.dark

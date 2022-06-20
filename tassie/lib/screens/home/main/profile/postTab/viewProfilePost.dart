@@ -397,7 +397,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                             // "${DateTime.parse(createdAt).hour}:${DateTime.parse(createdAt).minute}",
                                             (createdAt.isEmpty)
                                                 ? "0:00"
-                                                : "${DateTime.parse(createdAt).hour}:${DateTime.parse(createdAt).minute}",
+                                                : "${DateTime.parse(createdAt).hour}:${DateTime.parse(createdAt).minute} ${months[DateTime.parse(createdAt).month]} ${DateTime.parse(createdAt).day}",
                                             style: TextStyle(
                                                 color: Theme.of(context)
                                                             .brightness ==
