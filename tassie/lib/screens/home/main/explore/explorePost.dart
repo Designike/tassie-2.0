@@ -44,6 +44,7 @@ class ExplorePostState extends State<ExplorePost> {
   String? dp;
   late Future storedFuture;
   late Future storedFuture1;
+  late Map post;
   // String _image = "";
   // bool isImage = false;
 
@@ -54,6 +55,7 @@ class ExplorePostState extends State<ExplorePost> {
   @override
   void initState() {
     super.initState();
+    post = widget.post;
     getdp();
     memoizer = AsyncMemoizer();
     memoizer1 = AsyncMemoizer();
@@ -69,7 +71,7 @@ class ExplorePostState extends State<ExplorePost> {
   @override
   Widget build(BuildContext context) {
     // print(widget.bookmark);
-    Map post = widget.post;
+    
     Size size = MediaQuery.of(context).size;
     return Container(
       width: double.infinity,

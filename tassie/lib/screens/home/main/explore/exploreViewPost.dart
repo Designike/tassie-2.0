@@ -59,6 +59,10 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
   final storage = const FlutterSecureStorage();
   String comment = '';
   String? uuid;
+  bool liked = false;
+  bool isBookmarked = false;
+  int noOfComments = 0;
+  int noOfLikes = 0;
 
   Widget _buildProgressIndicator() {
     return Padding(
@@ -149,6 +153,10 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
   @override
   void initState() {
     page = 1;
+    liked = widget.isLiked;
+    isBookmarked = widget.bookmark;
+    noOfComments = comments.length;
+    noOfLikes = widget.noOfLike;
     comments = [];
     _getMoreData(page);
     super.initState();
@@ -164,6 +172,7 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
         _getMoreData(page);
       }
     });
+    // print(widget.isLiked);
   }
 
   @override
@@ -174,10 +183,10 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
 
   @override
   Widget build(BuildContext context) {
-    bool liked = widget.isLiked;
-    int noOfComments = comments.length;
+    // liked = widget.isLiked;
+    noOfComments = comments.length;
     Size size = MediaQuery.of(context).size;
-    bool isBookmarked = widget.bookmark;
+    // isBookmarked = widget.bookmark;
     return Scaffold(
       // backgroundColor: Color(0xFFEDF0F6),
       body: CustomScrollView(
@@ -302,8 +311,8 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                               tag: 'exp_${widget.post['uuid']}',
                               child: FutureBuilder(
                                   future: storedFuture,
-                                  builder:
-                                      (BuildContext context, AsyncSnapshot text) {
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot text) {
                                     if ((text.connectionState ==
                                             ConnectionState.waiting ||
                                         text.hasError)) {
@@ -349,22 +358,27 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                       return InkWell(
                                         onDoubleTap: () async {
                                           if (!liked) {
-                                            var token =
-                                                await storage.read(key: "token");
+                                            var token = await storage.read(
+                                                key: "token");
                                             dio.post(
                                                 "https://api-tassie.herokuapp.com/feed/like",
                                                 options: Options(headers: {
                                                   HttpHeaders.contentTypeHeader:
                                                       "application/json",
-                                                  HttpHeaders.authorizationHeader:
+                                                  HttpHeaders
+                                                          .authorizationHeader:
                                                       "Bearer ${token!}"
                                                 }),
                                                 data: {
                                                   'uuid': widget.post['uuid']
                                                 });
                                             widget.func(true);
+
                                             if (mounted) {
-                                              setState(() {});
+                                              setState(() {
+                                                liked = true;
+                                                noOfLikes += 1;
+                                              });
                                             }
                                           }
                                         },
@@ -410,6 +424,7 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                                   ),
                                             iconSize: 30.0,
                                             onPressed: () async {
+                                              print(liked);
                                               if (liked) {
                                                 // print(post);
 
@@ -423,16 +438,17 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                                           "application/json",
                                                       HttpHeaders
                                                               .authorizationHeader:
-                                                          "Bearer ${token!}"
+                                                          "Bearer $token"
                                                     }),
                                                     data: {
                                                       'uuid':
                                                           widget.post['uuid']
                                                     });
                                                 widget.func(false);
+                                                noOfLikes -= 1;
                                               } else {
                                                 // print(post);
-
+                                                // print("chale");
                                                 var token = await storage.read(
                                                     key: "token");
                                                 dio.post(
@@ -443,22 +459,25 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                                           "application/json",
                                                       HttpHeaders
                                                               .authorizationHeader:
-                                                          "Bearer ${token!}"
+                                                          "Bearer $token"
                                                     }),
                                                     data: {
                                                       'uuid':
                                                           widget.post['uuid']
                                                     });
                                                 widget.func(true);
+                                                noOfLikes += 1;
                                               }
                                               if (mounted) {
-                                                setState(() {});
+                                                setState(() {
+                                                  liked = !liked;
+                                                });
                                               }
                                               // print(likeNumber.toString());
                                             },
                                           ),
                                           Text(
-                                            widget.noOfLike.toString(),
+                                            noOfLikes.toString(),
                                             style: const TextStyle(
                                               fontSize: 14.0,
                                               fontWeight: FontWeight.w600,
@@ -506,6 +525,7 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                               'uuid': widget.post['uuid']
                                             });
                                         widget.funcB(true);
+                                        // isBookmarked = true;
                                       } else {
                                         var token =
                                             await storage.read(key: "token");
@@ -521,9 +541,12 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                               'uuid': widget.post['uuid']
                                             });
                                         widget.funcB(false);
+                                        // isBookmarked = false;
                                       }
                                       if (mounted) {
-                                        setState(() {});
+                                        setState(() {
+                                          isBookmarked = !isBookmarked;
+                                        });
                                       }
                                     },
                                   ),
