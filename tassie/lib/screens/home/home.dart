@@ -320,7 +320,7 @@ class HomeHomeState extends State<HomeHome>
                       //   _selectedIndex = 0;
                       //   _pageController.jumpToPage(0);
                       // });
-
+          
                       // ignore: prefer_const_literals_to_create_immutables
                     },
                     child: Column(
@@ -369,7 +369,8 @@ class HomeHomeState extends State<HomeHome>
                     ),
                   ),
                   const SizedBox(
-                    width: 40.0,
+                    width: 5.0,
+                    height: 1.0,
                   ),
                   MaterialButton(
                     onPressed: () {
