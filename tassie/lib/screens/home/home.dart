@@ -153,6 +153,7 @@ class HomeHomeState extends State<HomeHome>
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return
         // (isFetching == true)
         //     ? Scaffold(
@@ -308,6 +309,7 @@ class HomeHomeState extends State<HomeHome>
             notchMargin: 6.0,
             child: SizedBox(
               height: 65.0,
+              width: size.width,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [

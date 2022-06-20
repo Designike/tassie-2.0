@@ -129,6 +129,7 @@ class ViewCommentsState extends State<ViewComments> {
               comments.addAll(tList);
               for (int i = 0; i < tList.length; i++) {
                 AsyncMemoizer memoizer4 = AsyncMemoizer();
+                print(tList[i]['profilePic']);
                 Future storedFuture =
                     loadImg(tList[i]['profilePic'], memoizer4);
                 commentStoredFutures.add(storedFuture);
@@ -398,7 +399,8 @@ class ViewCommentsState extends State<ViewComments> {
                                         // );
                                         if (!text.hasData) {
                                           return Container(
-                                              margin: const EdgeInsets.all(10.0),
+                                              margin:
+                                                  const EdgeInsets.all(10.0),
                                               width: double.infinity,
                                               height: size.width - 40.0,
                                               child: const Center(
@@ -416,9 +418,9 @@ class ViewCommentsState extends State<ViewComments> {
                                                 .push(MaterialPageRoute(
                                                     builder: (context) => PhotoView(
                                                         imageProvider:
-                                                            CachedNetworkImageProvider(
-                                                                text.data
-                                                                    .toString()))));
+                                                            CachedNetworkImageProvider(text
+                                                                .data
+                                                                .toString()))));
                                           },
                                           child: Container(
                                             margin: const EdgeInsets.all(10.0),
@@ -429,8 +431,9 @@ class ViewCommentsState extends State<ViewComments> {
                                               borderRadius:
                                                   BorderRadius.circular(25.0),
                                               image: DecorationImage(
-                                                image: CachedNetworkImageProvider(
-                                                    text.data.toString()),
+                                                image:
+                                                    CachedNetworkImageProvider(
+                                                        text.data.toString()),
                                                 fit: BoxFit.cover,
                                               ),
                                             ),

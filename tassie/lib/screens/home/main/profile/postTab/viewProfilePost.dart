@@ -210,6 +210,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
               comments.addAll(tList);
               for (int i = 0; i < tList.length; i++) {
                 AsyncMemoizer memoizer4 = AsyncMemoizer();
+                print(tList);
                 Future storedFuture =
                     loadImg(tList[i]['profilePic'], memoizer4);
                 commentStoredFutures.add(storedFuture);
@@ -404,86 +405,100 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                                     ? kLight
                                                     : kDark[900]),
                                           ),
-                                          trailing: PopupMenuButton(
-                                            icon: const Icon(Icons.more_horiz),
-                                            elevation: 20,
-                                            enabled: true,
-                                            onSelected: (value) async {
-                                              if (value == "edit") {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            EditPost(
-                                                                uuid: widget
-                                                                        .post[
-                                                                    'uuid'])));
-                                              } else if (value == "delete") {
-                                                try {
-                                                  var token = await storage
-                                                      .read(key: "token");
-                                                  Response response =
-                                                      await dio.get(
-                                                    "https://api-tassie.herokuapp.com/feed/deletePost/${widget.post['uuid']}",
-                                                    options: Options(headers: {
-                                                      HttpHeaders
-                                                              .contentTypeHeader:
-                                                          "application/json",
-                                                      HttpHeaders
-                                                              .authorizationHeader:
-                                                          "Bearer ${token!}"
-                                                    }),
-                                                  );
+                                          trailing: uuid ==
+                                                  widget.post['userUuid']
+                                              ? PopupMenuButton(
+                                                  icon: const Icon(
+                                                      Icons.more_horiz),
+                                                  elevation: 20,
+                                                  enabled: true,
+                                                  onSelected: (value) async {
+                                                    if (value == "edit") {
+                                                      Navigator.of(context).push(
+                                                          MaterialPageRoute(
+                                                              builder: (context) => EditPost(
+                                                                  uuid: widget
+                                                                          .post[
+                                                                      'uuid'])));
+                                                    } else if (value ==
+                                                        "delete") {
+                                                      try {
+                                                        var token =
+                                                            await storage.read(
+                                                                key: "token");
+                                                        Response response =
+                                                            await dio.get(
+                                                          "https://api-tassie.herokuapp.com/feed/deletePost/${widget.post['uuid']}",
+                                                          options:
+                                                              Options(headers: {
+                                                            HttpHeaders
+                                                                    .contentTypeHeader:
+                                                                "application/json",
+                                                            HttpHeaders
+                                                                    .authorizationHeader:
+                                                                "Bearer ${token!}"
+                                                          }),
+                                                        );
 
-                                                  if (response.data != null) {
-                                                    if (response
-                                                            .data['status'] ==
-                                                        true) {
-                                                      await Future.delayed(
-                                                          const Duration(
-                                                              seconds: 1));
+                                                        if (response.data !=
+                                                            null) {
+                                                          if (response.data[
+                                                                  'status'] ==
+                                                              true) {
+                                                            await Future.delayed(
+                                                                const Duration(
+                                                                    seconds:
+                                                                        1));
 
-                                                      if (!mounted) return;
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      widget.refreshPage();
-                                                    } else {
-                                                      await Future.delayed(
-                                                          const Duration(
-                                                              seconds: 1));
+                                                            if (!mounted)
+                                                              return;
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                            widget
+                                                                .refreshPage();
+                                                          } else {
+                                                            await Future.delayed(
+                                                                const Duration(
+                                                                    seconds:
+                                                                        1));
 
-                                                      if (!mounted) return;
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      showSnack(
-                                                          context,
-                                                          response
-                                                              .data['message'],
-                                                          () {},
-                                                          'OK',
-                                                          4);
+                                                            if (!mounted)
+                                                              return;
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                            showSnack(
+                                                                context,
+                                                                response.data[
+                                                                    'message'],
+                                                                () {},
+                                                                'OK',
+                                                                4);
+                                                          }
+                                                        }
+                                                      } catch (e) {
+                                                        showSnack(
+                                                            context,
+                                                            "Oops something went wrong! Try After some time",
+                                                            () {},
+                                                            'OK',
+                                                            3);
+                                                      }
                                                     }
-                                                  }
-                                                } catch (e) {
-                                                  showSnack(
-                                                      context,
-                                                      "Oops something went wrong! Try After some time",
-                                                      () {},
-                                                      'OK',
-                                                      3);
-                                                }
-                                              }
-                                            },
-                                            itemBuilder: (context) => [
-                                              const PopupMenuItem(
-                                                value: "edit",
-                                                child: Text("Edit"),
-                                              ),
-                                              const PopupMenuItem(
-                                                value: "delete",
-                                                child: Text("Delete"),
-                                              ),
-                                            ],
-                                          ),
+                                                  },
+                                                  itemBuilder: (context) => [
+                                                    const PopupMenuItem(
+                                                      value: "edit",
+                                                      child: Text("Edit"),
+                                                    ),
+                                                    const PopupMenuItem(
+                                                      value: "delete",
+                                                      child: Text("Delete"),
+                                                    ),
+                                                  ],
+                                                )
+                                              : null,
                                         ),
                                       ),
                                     ],
