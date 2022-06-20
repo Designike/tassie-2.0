@@ -85,7 +85,7 @@ class ViewRecPostState extends State<ViewRecPost> {
   List similar = [];
   var items = ["Edit", "Delete"];
   String youtubeLink = "";
-
+  String chefImageID = "";
   int checker = 0;
 
   List<Widget> ingWidgetList = [];
@@ -113,7 +113,8 @@ class ViewRecPostState extends State<ViewRecPost> {
 
   Future<void> getImage() async {
     storedFuture = loadImg(recipeImageID, memoizer);
-    storedFuture3 = loadImg(dp, memoizer3);
+    // storedFuture3 = loadImg(dp, memoizer3);
+    storedFuture3 = loadImg(chefImageID, memoizer3);
     if (mounted) {
       setState(() {
         isLoading = false;
@@ -162,6 +163,7 @@ class ViewRecPostState extends State<ViewRecPost> {
           isBookmarked = response.data['data']['recipeData']['isBookmarked'];
           isLiked = response.data['data']['recipeData']['isLiked'];
           recipeImageID = response.data['data']['recipe']['recipeImageID'];
+          chefImageID = response.data['data']['recipe']['profilePic'];
           // print(response.data['data']['recipe']);
           if (response.data['data']['recipe']['youtubeLink'] != "") {
             // youtubeLink =
@@ -1613,7 +1615,7 @@ class ViewRecPostState extends State<ViewRecPost> {
                                             text: TextSpan(
                                               children: [
                                                 TextSpan(
-                                                  text: meanRating.toString(),
+                                                  text: meanRating.toStringAsFixed(1),
                                                   style: TextStyle(
                                                     color: MediaQuery.of(
                                                                     context)
