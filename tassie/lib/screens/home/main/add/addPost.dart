@@ -5,7 +5,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tassie/screens/home/main/add/uploadPostImage.dart';
-
+import 'package:image/image.dart' as im;
 import '../../../../constants.dart';
 import '../../../../utils/hashtagSuggestions.dart';
 
@@ -69,6 +69,32 @@ class AddPostState extends State<AddPost> {
     }
   }
 
+  // Future<File> compress(File image1, int counter) async {
+  //   if (image1.lengthSync() < 1000000) {
+  //     return File(image1.path);
+  //   }
+  //   // print(image.lengthSync());
+  //   CroppedFile? selected = await ImageCropper()
+  //       .cropImage(sourcePath: image1.path, compressQuality: counter);
+  //   print(image1.path);
+  //   print(image1.lengthSync());
+  //   print(counter);
+  //   return await compress(File(selected!.path), counter + 10);
+  // }
+
+  Future<File> compress(File image1) async {
+    
+    while(image1.lengthSync() > 250000){
+      print(image1.lengthSync());
+      im.Image? image = im.decodeImage(await File(image1.path).readAsBytes());
+      im.Image? compressed = im.copyResize(image!, width: image.width ~/ 2);
+      File? compressedFile = File(image1.path);
+      await compressedFile.writeAsBytes(im.encodeJpg(compressed, quality: 50));
+      image1 = compressedFile;
+    }
+    return File(image1.path);
+  }
+
   /// Select an image via gallery or camera
   Future<void> _pickImage(ImageSource source) async {
     await Permission.photos.request();
@@ -80,9 +106,11 @@ class AddPostState extends State<AddPost> {
       if (mounted) {
         setState(() {
           _imageFile = File(selected.path);
-          _cropImage();
         });
       }
+      _imageFile = await compress(_imageFile!);
+      print(_imageFile!.lengthSync());
+      _cropImage();
     }
   }
 
