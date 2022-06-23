@@ -5,7 +5,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tassie/screens/home/main/profile/editProfile/uploadProfilePic.dart';
-
+import 'package:image/image.dart' as im;
 import '../../../../../constants.dart';
 
 class EditProfileImage extends StatefulWidget {
@@ -17,6 +17,7 @@ class EditProfileImage extends StatefulWidget {
 
 class EditProfileImageState extends State<EditProfileImage> {
   File? _imageFile;
+  bool isCompressed = false;
   @override
   void initState() {
     // desc = '';
@@ -48,7 +49,26 @@ class EditProfileImageState extends State<EditProfileImage> {
       setState(() {
         _imageFile = File(cropped!.path);
       });
+      _imageFile = await compress(_imageFile!);
+      print(_imageFile!.lengthSync());
+      setState(() {});
     }
+  }
+
+  Future<File> compress(File image1) async {
+    while (image1.lengthSync() > 150000) {
+      print(image1.lengthSync());
+      im.Image? image = im.decodeImage(await File(image1.path).readAsBytes());
+      im.Image? compressed = im.copyResize(image!,
+          width: image.width ~/ 2, height: image.height ~/ 2);
+      File? compressedFile = File(image1.path);
+      await compressedFile.writeAsBytes(im.encodeJpg(compressed, quality: 70));
+      image1 = compressedFile;
+    }
+    setState(() {
+      isCompressed = true;
+    });
+    return File(image1.path);
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -118,7 +138,16 @@ class EditProfileImageState extends State<EditProfileImage> {
                 children: const [],
               ),
             ),
-            ProfileUploader(file: _imageFile)
+            if (!isCompressed) ...[
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 2),
+                child: Center(
+                  child: CircularProgressIndicator(strokeWidth: 2.0),
+                ),
+              ),
+            ] else ...[
+              ProfileUploader(file: _imageFile)
+            ]
           ] else ...[
             Container(
               padding: const EdgeInsets.symmetric(vertical: 50.0),

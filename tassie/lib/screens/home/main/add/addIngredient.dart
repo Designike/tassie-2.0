@@ -7,7 +7,8 @@ import '../../../../utils/ingredient_data.dart';
 class IngredientTextField extends StatefulWidget {
   late final int? index;
   final List ingredientsList;
-  IngredientTextField({this.index, required this.ingredientsList, Key? key})
+  final Map newIngFlags;
+  IngredientTextField({this.index, required this.ingredientsList, Key? key, required this.newIngFlags})
       : super(key: key);
   @override
   IngredientTextFieldState createState() => IngredientTextFieldState();
@@ -95,6 +96,7 @@ class IngredientTextFieldState extends State<IngredientTextField> {
         onSuggestionSelected: (String? v) {
           // setState(() {
           widget.ingredientsList[widget.index!] = v;
+          widget.newIngFlags.remove(widget.index!);
           // print(_ingredientController.text);
           // });
         },
@@ -102,9 +104,12 @@ class IngredientTextFieldState extends State<IngredientTextField> {
           if (v!.trim().isEmpty) return 'Please enter something';
           return null;
         },
-        noItemsFoundBuilder: (value) {
+        noItemsFoundBuilder: (contxt) {
           var localizedMessage =
               "Type your own ingredient, we would be glad to add it to our list!";
+
+          widget.newIngFlags[widget.index!] = widget.ingredientsList[widget.index!];
+
           return Padding(
             padding: const EdgeInsets.symmetric(
               vertical: 15.0,

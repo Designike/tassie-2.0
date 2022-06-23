@@ -19,6 +19,7 @@ import 'addIngredient.dart';
 import 'addStep.dart';
 import '../../../../utils/hashtagSuggestions.dart';
 import '../../homeMapPageContoller.dart';
+import 'package:image/image.dart' as im;
 
 class AddRecipe extends StatefulWidget {
   final String uuid;
@@ -34,16 +35,14 @@ class AddRecipeState extends State<AddRecipe> {
   final storage = const FlutterSecureStorage();
   int _currentStep = 0;
   File? _imageFile;
+  bool isCompressed = true;
   String recipeName = "";
   String youtubeLink = "";
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _tagController = TextEditingController();
   String desc = "";
-  //a chene ek vaar set kri leje jyare recipe pic les ane validator ma check krvanu
   File? recipePic;
-  //ama index thi save krto jaje etle update thatu jase
   Map ingredientPics = {'0': ''};
-  //ama bhi same
   Map stepPics = {'0': ''};
 
   Map clearSteps = {0: false};
@@ -66,7 +65,7 @@ class AddRecipeState extends State<AddRecipe> {
   bool isUpload = false;
   String hour = '0';
   String min = '15';
-
+  Map newIngFlags = {};
   // RangeValues _currentRangeValues = RangeValues(0, 15);
   //ane tassie mathi leto avje code plus vado e page ma bov kayi che nayi ena sivayi
   List<Widget> _uploadImg(size, key, index, image) {
@@ -134,71 +133,84 @@ class AddRecipeState extends State<AddRecipe> {
           ),
         ),
       ] else ...[
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(kDefaultPadding),
-              child: Text('Choose recipe image'),
-            ),
-            // SizedBox(height: 3 * kDefaultPadding,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(left: kDefaultPadding),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(size.width),
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? kDark[900]
-                        : kLight,
-                    border: Border.all(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.transparent
-                            : Color(0xFFE4E4E4)),
+        if (isCompressed) ...[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(kDefaultPadding),
+                child: Text('Choose recipe image'),
+              ),
+              // SizedBox(height: 3 * kDefaultPadding,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(left: kDefaultPadding),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(size.width),
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? kDark[900]
+                          : kLight,
+                      border: Border.all(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.transparent
+                              : Color(0xFFE4E4E4)),
+                    ),
+                    child: IconButton(
+                      padding: EdgeInsets.all(size.width * 0.05),
+                      icon: const Icon(Icons.camera_alt_rounded),
+                      iconSize: 50.0,
+                      onPressed: () =>
+                          _pickImage(ImageSource.camera, key, index),
+                    ),
                   ),
-                  child: IconButton(
-                    padding: EdgeInsets.all(size.width * 0.05),
-                    icon: const Icon(Icons.camera_alt_rounded),
-                    iconSize: 50.0,
-                    onPressed: () => _pickImage(ImageSource.camera, key, index),
+                  // SizedBox(height: kDefaultPadding,),
+                  Container(
+                    margin: const EdgeInsets.only(left: kDefaultPadding),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(size.width),
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? kDark[900]
+                          : kLight,
+                      border: Border.all(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.transparent
+                              : Color(0xFFE4E4E4)),
+                    ),
+                    child: IconButton(
+                      padding: EdgeInsets.all(size.width * 0.05),
+                      icon: const Icon(Icons.photo_library_rounded),
+                      iconSize: 50.0,
+                      onPressed: () =>
+                          _pickImage(ImageSource.gallery, key, index),
+                    ),
                   ),
-                ),
-                // SizedBox(height: kDefaultPadding,),
-                Container(
-                  margin: const EdgeInsets.only(left: kDefaultPadding),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(size.width),
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? kDark[900]
-                        : kLight,
-                        border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.transparent :Color(0xFFE4E4E4)),
-                  ),
-                  child: IconButton(
-                    padding: EdgeInsets.all(size.width * 0.05),
-                    icon: const Icon(Icons.photo_library_rounded),
-                    iconSize: 50.0,
-                    onPressed: () =>
-                        _pickImage(ImageSource.gallery, key, index),
-                  ),
-                ),
-                // SizedBox(height: 2 * kDefaultPadding,),
-                //     Container(
-                //       width: size.width * 0.5,
-                //       child: Text(
-                //   'Hey! pick some appetizing stuff !',
-                //   textAlign: TextAlign.center,
-                //   style: TextStyle(
-                //       fontSize: 18.0,
-                //       height: 1.5
+                  // SizedBox(height: 2 * kDefaultPadding,),
+                  //     Container(
+                  //       width: size.width * 0.5,
+                  //       child: Text(
+                  //   'Hey! pick some appetizing stuff !',
+                  //   textAlign: TextAlign.center,
+                  //   style: TextStyle(
+                  //       fontSize: 18.0,
+                  //       height: 1.5
 
-                //   ),
-                // ),
-                //     ),
-              ],
+                  //   ),
+                  // ),
+                  //     ),
+                ],
+              ),
+            ],
+          )
+        ] else ...[
+          Padding(
+            padding: EdgeInsets.all(kDefaultPadding * 2),
+            child: Center(
+              child: const Text('Loading ...'),
             ),
-          ],
-        )
+          ),
+        ],
       ]
     ];
     return upload;
@@ -601,8 +613,13 @@ class AddRecipeState extends State<AddRecipe> {
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
-                    color: Theme.of(context).brightness == Brightness.dark ? kDark[900] : kLight,
-                    border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.transparent :Color(0xFFE4E4E4)),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? kDark[900]
+                        : kLight,
+                    border: Border.all(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.transparent
+                            : Color(0xFFE4E4E4)),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -651,8 +668,13 @@ class AddRecipeState extends State<AddRecipe> {
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
-                    color: Theme.of(context).brightness == Brightness.dark ? kDark[900] : kLight,
-                    border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.transparent :Color(0xFFE4E4E4)),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? kDark[900]
+                        : kLight,
+                    border: Border.all(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.transparent
+                            : Color(0xFFE4E4E4)),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -886,7 +908,7 @@ class AddRecipeState extends State<AddRecipe> {
               children: [
                 Expanded(
                     child: IngredientTextField(
-                        index: i, ingredientsList: ingredientsList)),
+                        index: i, ingredientsList: ingredientsList, newIngFlags: newIngFlags)),
                 const SizedBox(
                   width: 16,
                 ),
@@ -963,20 +985,72 @@ class AddRecipeState extends State<AddRecipe> {
           ),
           IOSUiSettings(title: 'Garnish it,')
         ]);
-    if (mounted) {
-      setState(() {
-        if (key == 'r') {
-          recipePic = File(cropped!.path);
-          _imageFile = null;
-        } else if (key == 'i') {
-          ingredientPics[(index).toString()] = cropped;
-          _imageFile = null;
-        } else {
-          stepPics[(index).toString()] = cropped;
-          _imageFile = null;
-        }
-      });
+    setState(() {
+      isCompressed = false;
+    });
+    if (key == 'r') {
+      recipePic = (cropped != null) ? await compress(File(cropped.path)) : null;
+      if (recipePic == null) {
+        setState(() {
+          isCompressed = true;
+        });
+      }
+      _imageFile = null;
+    } else if (key == 'i') {
+      ingredientPics[(index).toString()] =
+          (cropped != null) ? await compress(File(cropped.path)) : null;
+      if (ingredientPics[(index).toString()] == null) {
+        setState(() {
+          isCompressed = true;
+        });
+      }
+      _imageFile = null;
+    } else {
+      stepPics[(index).toString()] =
+          (cropped != null) ? await compress(File(cropped.path)) : null;
+      if (stepPics[(index).toString()] == null) {
+        setState(() {
+          isCompressed = true;
+        });
+      }
+      _imageFile = null;
     }
+    if (mounted) {
+      setState(() {});
+    }
+    // if (mounted) {
+    //   setState(() {
+    //     if (key == 'r') {
+    //       recipePic = File(cropped!.path);
+    //       _imageFile = null;
+    //     } else if (key == 'i') {
+    //       ingredientPics[(index).toString()] = cropped;
+    //       _imageFile = null;
+    //     } else {
+    //       stepPics[(index).toString()] = cropped;
+    //       _imageFile = null;
+    //     }
+    //   });
+    // }
+    // _imageFile = await compress(_imageFile!);
+    // print(_imageFile!.lengthSync());
+    // setState(() {});
+  }
+
+  Future<File> compress(File image1) async {
+    while (image1.lengthSync() > 200000) {
+      print(image1.lengthSync());
+      im.Image? image = im.decodeImage(await File(image1.path).readAsBytes());
+      im.Image? compressed = im.copyResize(image!,
+          width: image.width ~/ 2, height: image.height ~/ 2);
+      File? compressedFile = File(image1.path);
+      await compressedFile.writeAsBytes(im.encodeJpg(compressed, quality: 70));
+      image1 = compressedFile;
+    }
+    setState(() {
+      isCompressed = true;
+    });
+    return File(image1.path);
   }
 
   /// Select an image via gallery or camera
@@ -1380,7 +1454,8 @@ class AddRecipeState extends State<AddRecipe> {
                           'uuid': widget.uuid,
                           // 'folder': widget.folder,
                           'ingredients':
-                              ingredientsList == [null] ? [] : ingredientsList
+                              ingredientsList == [null] ? [] : ingredientsList,
+                          'newIngFlags':newIngFlags
                         });
                   }
                   if (_currentStep == 4) {

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+// import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -18,6 +19,7 @@ class AddPost extends StatefulWidget {
 
 class AddPostState extends State<AddPost> {
   File? _imageFile;
+  bool isCompressed = false;
   static String desc = "";
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _tagController = TextEditingController();
@@ -51,7 +53,7 @@ class AddPostState extends State<AddPost> {
         // maxHeight: 512,
         aspectRatioPresets: [CropAspectRatioPreset.square],
         aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
-        compressQuality: 80,
+        compressQuality: 5,
         uiSettings: [
           AndroidUiSettings(
             toolbarTitle: 'Garnish it',
@@ -67,6 +69,9 @@ class AddPostState extends State<AddPost> {
         _imageFile = cropped == null ? null : File(cropped.path);
       });
     }
+    _imageFile = await compress(_imageFile!);
+    print(_imageFile!.lengthSync());
+    setState(() {});
   }
 
   // Future<File> compress(File image1, int counter) async {
@@ -83,15 +88,18 @@ class AddPostState extends State<AddPost> {
   // }
 
   Future<File> compress(File image1) async {
-    
-    while(image1.lengthSync() > 250000){
+    while (image1.lengthSync() > 250000) {
       print(image1.lengthSync());
       im.Image? image = im.decodeImage(await File(image1.path).readAsBytes());
-      im.Image? compressed = im.copyResize(image!, width: image.width ~/ 2);
+      im.Image? compressed = im.copyResize(image!,
+          width: image.width ~/ 2, height: image.height ~/ 2);
       File? compressedFile = File(image1.path);
-      await compressedFile.writeAsBytes(im.encodeJpg(compressed, quality: 50));
+      await compressedFile.writeAsBytes(im.encodeJpg(compressed, quality: 70));
       image1 = compressedFile;
     }
+    setState(() {
+      isCompressed = true;
+    });
     return File(image1.path);
   }
 
@@ -108,9 +116,27 @@ class AddPostState extends State<AddPost> {
           _imageFile = File(selected.path);
         });
       }
-      _imageFile = await compress(_imageFile!);
-      print(_imageFile!.lengthSync());
       _cropImage();
+
+      // if (isCompressed) {
+      //   if (!mounted) return;
+      //   Navigator.of(context).pop();
+
+      // } else {
+      //   if (!mounted) return;
+      //   Navigator.of(context).push(
+      //     MaterialPageRoute(
+      //         builder: (context) => const Scaffold(
+      //               // backgroundColor: Colors.white,
+      //               body: Center(
+      //                 child: SpinKitThreeBounce(
+      //                   color: kPrimaryColor,
+      //                   size: 50.0,
+      //                 ),
+      //               ),
+      //             )),
+      //   );
+      // }
     }
   }
 
@@ -342,9 +368,17 @@ class AddPostState extends State<AddPost> {
             //               print(response.toString());
             //             }
             //           },
-
-            Uploader(
-                file: _imageFile, desc: desc, formKey: _formKey, edit: false)
+            if (!isCompressed) ...[
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 2),
+                child: Center(
+                  child: CircularProgressIndicator(strokeWidth: 2.0),
+                ),
+              ),
+            ] else ...[
+              Uploader(
+                  file: _imageFile, desc: desc, formKey: _formKey, edit: false)
+            ]
           ] else ...[
             Container(
               padding: const EdgeInsets.symmetric(vertical: 50.0),

@@ -4,7 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-
+import 'package:image/image.dart' as im;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -79,6 +79,7 @@ class EditRecipeState extends State<EditRecipe> {
   final storage = const FlutterSecureStorage();
   int _currentStep = 0;
   File? _imageFile;
+  bool isCompressed = true;
   String recipeName = "";
   String youtubeLink = "";
   String desc = "";
@@ -106,7 +107,7 @@ class EditRecipeState extends State<EditRecipe> {
   String flavour = "Spicy";
   String course = "Snack";
   List<bool> mealType = [false, false, false, false];
-  List<String> hours = ['0', '1', '2', '3'];
+  final List<String> hours = ['0', '1', '2', '3'];
   final minutes = ['00', '15', '30', '45'];
 
   List flavours = ['Spicy', 'Sweet', 'Sour', 'Salty', 'Bitter'];
@@ -129,11 +130,15 @@ class EditRecipeState extends State<EditRecipe> {
   bool isLoading = true;
   bool isPop = false;
   bool isUpload = true;
+  Map newIngFlags = {};
 
-  Future<File> _fileFromImageUrl(filepath) async {
+  Future _fileFromImageUrl(filepath) async {
     // print(filepath);
     AsyncMemoizer memoizer = AsyncMemoizer();
-    String storedFuture = await loadImg(filepath, memoizer);
+    String storedFuture = await loadImg(filepath, memoizer) ?? "";
+    if (storedFuture == "") {
+      return null;
+    }
     // print('2a');
     final response = await http.get(Uri.parse(storedFuture));
     // print('2b');
@@ -166,7 +171,13 @@ class EditRecipeState extends State<EditRecipe> {
     _clearSteps = falsify(widget.steps, _clearSteps);
     _ingFlags = falsify2(widget.ingredientPics, _ingFlags);
     _stepFlags = falsify2(widget.stepPics, _stepFlags);
-    recipePic = await _fileFromImageUrl(widget.recipeImageID);
+    if (widget.recipeImageID != "") {
+      recipePic = await _fileFromImageUrl(widget.recipeImageID);
+    } else {
+      setState(() {
+        isUpload = false;
+      });
+    }
     if (widget.stepPics.isEmpty) {
       if (widget.ingredientPics.isEmpty) {
         if (mounted) {
@@ -294,66 +305,76 @@ class EditRecipeState extends State<EditRecipe> {
           ),
         ),
       ] else ...[
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(kDefaultPadding),
-              child: Text('Choose recipe image'),
-            ),
-            // SizedBox(height: 3 * kDefaultPadding,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(left: kDefaultPadding),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(size.width),
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? kDark[900]
-                        : kLight,
+        if (isCompressed) ...[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(kDefaultPadding),
+                child: Text('Choose recipe image'),
+              ),
+              // SizedBox(height: 3 * kDefaultPadding,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(left: kDefaultPadding),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(size.width),
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? kDark[900]
+                          : kLight,
+                    ),
+                    child: IconButton(
+                      padding: EdgeInsets.all(size.width * 0.05),
+                      icon: const Icon(Icons.camera_alt_rounded),
+                      iconSize: 50.0,
+                      onPressed: () =>
+                          _pickImage(ImageSource.camera, key, index),
+                    ),
                   ),
-                  child: IconButton(
-                    padding: EdgeInsets.all(size.width * 0.05),
-                    icon: const Icon(Icons.camera_alt_rounded),
-                    iconSize: 50.0,
-                    onPressed: () => _pickImage(ImageSource.camera, key, index),
+                  // SizedBox(height: kDefaultPadding,),
+                  Container(
+                    margin: const EdgeInsets.only(left: kDefaultPadding),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(size.width),
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? kDark[900]
+                          : kLight,
+                    ),
+                    child: IconButton(
+                      padding: EdgeInsets.all(size.width * 0.05),
+                      icon: const Icon(Icons.photo_library_rounded),
+                      iconSize: 50.0,
+                      onPressed: () =>
+                          _pickImage(ImageSource.gallery, key, index),
+                    ),
                   ),
-                ),
-                // SizedBox(height: kDefaultPadding,),
-                Container(
-                  margin: const EdgeInsets.only(left: kDefaultPadding),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(size.width),
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? kDark[900]
-                        : kLight,
-                  ),
-                  child: IconButton(
-                    padding: EdgeInsets.all(size.width * 0.05),
-                    icon: const Icon(Icons.photo_library_rounded),
-                    iconSize: 50.0,
-                    onPressed: () =>
-                        _pickImage(ImageSource.gallery, key, index),
-                  ),
-                ),
-                // SizedBox(height: 2 * kDefaultPadding,),
-                //     Container(
-                //       width: size.width * 0.5,
-                //       child: Text(
-                //   'Hey! pick some appetizing stuff !',
-                //   textAlign: TextAlign.center,
-                //   style: TextStyle(
-                //       fontSize: 18.0,
-                //       height: 1.5
+                  // SizedBox(height: 2 * kDefaultPadding,),
+                  //     Container(
+                  //       width: size.width * 0.5,
+                  //       child: Text(
+                  //   'Hey! pick some appetizing stuff !',
+                  //   textAlign: TextAlign.center,
+                  //   style: TextStyle(
+                  //       fontSize: 18.0,
+                  //       height: 1.5
 
-                //   ),
-                // ),
-                //     ),
-              ],
+                  //   ),
+                  // ),
+                  //     ),
+                ],
+              ),
+            ],
+          )
+        ] else ...[
+          Padding(
+            padding: EdgeInsets.all(kDefaultPadding * 2),
+            child: Center(
+              child: const Text('Loading ...'),
             ),
-          ],
-        )
+          ),
+        ],
       ]
     ];
     return upload;
@@ -979,6 +1000,7 @@ class EditRecipeState extends State<EditRecipe> {
                     child: IngredientTextField(
                   index: i,
                   ingredientsList: ingredientsList,
+                  newIngFlags: newIngFlags,
                 )),
                 const SizedBox(
                   width: 16,
@@ -1053,18 +1075,55 @@ class EditRecipeState extends State<EditRecipe> {
         ]);
     if (mounted) {
       setState(() {
-        if (key == 'r') {
-          recipePic = File(cropped!.path);
-          _imageFile = null;
-        } else if (key == 'i') {
-          ingredientPics[(index).toString()] = cropped;
-          _imageFile = null;
-        } else {
-          stepPics[(index).toString()] = cropped;
-          _imageFile = null;
-        }
+        isCompressed = false;
       });
     }
+    if (key == 'r') {
+      recipePic = (cropped != null) ? await compress(File(cropped.path)) : null;
+      if (recipePic == null) {
+        setState(() {
+          isCompressed = true;
+        });
+      }
+      _imageFile = null;
+    } else if (key == 'i') {
+      ingredientPics[(index).toString()] =
+          (cropped != null) ? await compress(File(cropped.path)) : null;
+      if (ingredientPics[(index).toString()] == null) {
+        setState(() {
+          isCompressed = true;
+        });
+      }
+      _imageFile = null;
+    } else {
+      stepPics[(index).toString()] =
+          (cropped != null) ? await compress(File(cropped.path)) : null;
+      if (stepPics[(index).toString()] == null) {
+        setState(() {
+          isCompressed = true;
+        });
+      }
+      _imageFile = null;
+    }
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<File> compress(File image1) async {
+    while (image1.lengthSync() > 200000) {
+      print(image1.lengthSync());
+      im.Image? image = im.decodeImage(await File(image1.path).readAsBytes());
+      im.Image? compressed = im.copyResize(image!,
+          width: image.width ~/ 2, height: image.height ~/ 2);
+      File? compressedFile = File(image1.path);
+      await compressedFile.writeAsBytes(im.encodeJpg(compressed, quality: 70));
+      image1 = compressedFile;
+    }
+    setState(() {
+      isCompressed = true;
+    });
+    return File(image1.path);
   }
 
   /// Select an image via gallery or camera
@@ -1287,7 +1346,6 @@ class EditRecipeState extends State<EditRecipe> {
 
   @override
   void initState() {
-    super.initState();
     if (mounted) {
       setState(() {
         desc = widget.desc;
@@ -1297,8 +1355,29 @@ class EditRecipeState extends State<EditRecipe> {
         widget.ingredients.forEach((element) {
           ingredientsList.add(element);
         });
-        hour = widget.hours.toString();
-        min = widget.mins.toString();
+        // print('xyz');
+        // print(stepsList);
+        // print(ingredientsList);
+        if (widget.steps.isEmpty) {
+          stepsList = [null];
+
+          stepPics = {'0': ''};
+
+          _clearSteps = {0: false};
+        }
+        if (widget.ingredients.isEmpty) {
+          ingredientsList = [null];
+          _clearIngs = {0: false};
+          ingredientPics = {'0': ''};
+        }
+
+        // print('abc');
+        // print(stepsList);
+        // print(ingredientsList);
+        hour = widget.hours.toString() == "" ? '0' : widget.hours.toString();
+        min = widget.mins == 0 || widget.mins.toString() == ""
+            ? '00'
+            : widget.mins.toString();
         recipeName = widget.recipeName;
         isVeg = widget.isVeg;
         mealType = [
@@ -1319,6 +1398,7 @@ class EditRecipeState extends State<EditRecipe> {
       });
     }
     urlToFile();
+    super.initState();
     // print("ncaisadhuashuduasihduiasuiduiashudh2");
     // print(stepPics);
     // print(ingredientPics);
@@ -1619,7 +1699,9 @@ class EditRecipeState extends State<EditRecipe> {
                               data: {
                                 'uuid': widget.uuid,
                                 // 'folder': widget.folder,
-                                'ingredients': ingredientsList
+                                'ingredients': ingredientsList == [null]
+                                    ? []
+                                    : ingredientsList
                               });
                         }
                         if (_currentStep == 4) {
@@ -1636,7 +1718,7 @@ class EditRecipeState extends State<EditRecipe> {
                               data: {
                                 'uuid': widget.uuid,
                                 // 'folder': widget.folder,
-                                'steps': stepsList
+                                'steps': stepsList == [null] ? [] : stepsList
                               }); // 'folder': widget.folder,
                         }
                         if (_currentStep == 5) {
