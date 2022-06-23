@@ -398,6 +398,9 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                         data.remove('veg');
                       }
                       print(data);
+                      setState(() {
+                        isVeg = 2;
+                      });
                     },
                     style: TextButton.styleFrom(
                         // backgroundColor:
@@ -433,7 +436,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                       padding: const EdgeInsets.all(15.0),
                       side: BorderSide(
                         color: isVeg == 0 ? Colors.green : kDark,
-                        width: isVeg   == 0? 2 : 1,
+                        width: isVeg == 0 ? 2 : 1,
                       ),
                       backgroundColor: isVeg == 0
                           ? kPrimaryColor.withOpacity(0.1)
@@ -485,6 +488,9 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                       if (data['meal'] != null) {
                         data['meal'] = [false, false, false, false];
                       }
+                      setState(() {
+                        mealType = [false, false, false, false];
+                      });
                       print(data);
                     },
                     style: TextButton.styleFrom(
@@ -525,6 +531,9 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                       if (data['flavour'] != null) {
                         data.remove('flavour');
                       }
+                      setState(() {
+                        selectedFlavour = 5;
+                      });
                       print(data);
                     },
                     style: TextButton.styleFrom(
@@ -566,6 +575,9 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                       if (data['course'] != null) {
                         data.remove('course');
                       }
+                      setState(() {
+                        selectedCourse = 6;
+                      });
                       print(data);
                     },
                     style: TextButton.styleFrom(
@@ -608,6 +620,10 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                       if (data['maxTime'] != null) {
                         data.remove('maxTime');
                       }
+                      setState(() {
+                        hour = '0';
+                        min = '00';
+                      });
                       print(data);
                     },
                     style: TextButton.styleFrom(
@@ -801,38 +817,37 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                 // print(response);
                 var id = response.data['data']['id'];
                 if (response.data != null) {
-                  if(response.data['status'] == true) {
-                  
-                  if (response.data['data']['id'] != null) {
-                    await Future.delayed(const Duration(milliseconds: 1000));
+                  if (response.data['status'] == true) {
+                    if (response.data['data']['id'] != null) {
+                      await Future.delayed(const Duration(milliseconds: 1000));
 
-                    if (!mounted) return;
-                    Navigator.of(context, rootNavigator: true).pop();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) {
-                        return AdvancedSearchResults(suggestionID: id);
-                      }),
-                    );
+                      if (!mounted) return;
+                      Navigator.of(context, rootNavigator: true).pop();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) {
+                          return AdvancedSearchResults(suggestionID: id);
+                        }),
+                      );
+                    } else {
+                      // await Future.delayed(const Duration(seconds: 1));
+
+                      if (!mounted) return;
+                      Navigator.of(context, rootNavigator: true).pop();
+                      showSnack(
+                          context,
+                          'No results found. Try some other combination!',
+                          () {},
+                          'OK',
+                          3);
+                    }
                   } else {
                     // await Future.delayed(const Duration(seconds: 1));
 
                     if (!mounted) return;
-                    Navigator.of(context, rootNavigator: true).pop();
                     showSnack(
-                        context,
-                        'No results found. Try some other combination!',
-                        () {},
-                        'OK',
-                        3);
+                        context, response.data['message'], () {}, 'OK', 3);
                   }
-                  } else {
-                  // await Future.delayed(const Duration(seconds: 1));
-
-                  if (!mounted) return;
-                  showSnack(context, response.data['message'], () {},
-                      'OK', 3);
-                }
                 } else {
                   // await Future.delayed(const Duration(seconds: 1));
 

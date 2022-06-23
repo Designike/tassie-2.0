@@ -763,7 +763,47 @@ class EditRecipeState extends State<EditRecipe> {
                     : kDark[700]),
           ),
           content: Column(
-            children: [..._getIngredient(size)],
+            children: [
+              ..._getIngredient(size),
+              GestureDetector(
+                onTap: () {
+                  int index = ingredientsList.length - 1;
+                  ingredientsList.insert(index + 1, "");
+                  ingredientPics[(index + 1).toString()] = '';
+                  if (mounted) {
+                    setState(() {
+                      _clearIngs[index + 1] = false;
+                    });
+                  }
+                },
+                child: Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? kDark[900]
+                        : kLight,
+                    border: Border.all(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.transparent
+                            : Color(0xFFE4E4E4)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Add Ingredient'),
+                      const SizedBox(width: 5.0),
+                      Icon(Icons.add,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? kPrimaryColor
+                              : kPrimaryColorAccent),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         Step(
@@ -778,7 +818,47 @@ class EditRecipeState extends State<EditRecipe> {
                     : kDark[700]),
           ),
           content: Column(
-            children: [..._getRecipe(size)],
+            children: [
+              ..._getRecipe(size),
+              GestureDetector(
+                onTap: () {
+                  int index = stepsList.length - 1;
+                  stepsList.insert(index + 1, "");
+                  stepPics[(index + 1).toString()] = '';
+                  if (mounted) {
+                    setState(() {
+                      _clearSteps[index + 1] = false;
+                    });
+                  }
+                },
+                child: Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? kDark[900]
+                        : kLight,
+                    border: Border.all(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.transparent
+                            : Color(0xFFE4E4E4)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Add Step'),
+                      const SizedBox(width: 5.0),
+                      Icon(Icons.add,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? kPrimaryColor
+                              : kPrimaryColorAccent),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         Step(
