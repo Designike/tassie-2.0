@@ -96,7 +96,7 @@ class IngredientTextFieldState extends State<IngredientTextField> {
         onSuggestionSelected: (String? v) {
           // setState(() {
           widget.ingredientsList[widget.index!] = v;
-          widget.newIngFlags.remove(widget.index!);
+          widget.newIngFlags.remove((widget.index!).toString());
           // print(_ingredientController.text);
           // });
         },
@@ -108,7 +108,7 @@ class IngredientTextFieldState extends State<IngredientTextField> {
           var localizedMessage =
               "Type your own ingredient, we would be glad to add it to our list!";
 
-          widget.newIngFlags[widget.index!] = widget.ingredientsList[widget.index!];
+          widget.newIngFlags[(widget.index!).toString()] = widget.ingredientsList[widget.index!];
 
           return Padding(
             padding: const EdgeInsets.symmetric(
