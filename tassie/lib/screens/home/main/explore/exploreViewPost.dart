@@ -515,10 +515,10 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                     onPressed: () async {
                                       if (!isBookmarked) {
                                         if (mounted) {
-                                              setState(() {
-                                                isBookmarked = true;
-                                              });
-                                            }
+                                          setState(() {
+                                            isBookmarked = true;
+                                          });
+                                        }
                                         var token =
                                             await storage.read(key: "token");
                                         await dio.post(
@@ -535,10 +535,10 @@ class ExploreViewCommentsState extends State<ExploreViewComments> {
                                         widget.funcB(true);
                                       } else {
                                         if (mounted) {
-                                              setState(() {
-                                                isBookmarked = false;
-                                              });
-                                            }
+                                          setState(() {
+                                            isBookmarked = false;
+                                          });
+                                        }
                                         var token =
                                             await storage.read(key: "token");
                                         await dio.post(

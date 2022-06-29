@@ -55,49 +55,49 @@ class ViewHashtagState extends State<ViewHashtag>
             HttpHeaders.authorizationHeader: "Bearer ${token!}"
           }),
         );
-        print(response);
+        // print(response);
         if (response.data['data'] != null) {
           if (response.data['status'] == true) {
-          if (mounted) {
-            setState(() {
-              if (index == 1) {
-                isLoading = false;
-              }
-              isLazyLoading = false;
-              recosts.addAll(response.data['data']['results']);
-              // posts.addAll(tList);
-              // print(recs);
-              if (response.data['data']['data'] != null) {
-                recostsData.addAll(response.data['data']['data']);
-                // print(recostsData);
-              }
-              if (response.data['data']['indices'] != null) {
-                recostsToggle.addAll(response.data['data']['indices']);
-                // print(noOfLikes);
-
-              }
-              previousLength = (response.data['data']['results']).length;
-              page++;
-            });
-          }
-          // print(response.data['data']['posts']);
-          if (response.data['data']['results'].length == 0) {
             if (mounted) {
               setState(() {
-                isEnd = true;
+                if (index == 1) {
+                  isLoading = false;
+                }
+                isLazyLoading = false;
+                recosts.addAll(response.data['data']['results']);
+                // posts.addAll(tList);
+                // print(recs);
+                if (response.data['data']['data'] != null) {
+                  recostsData.addAll(response.data['data']['data']);
+                  // print(recostsData);
+                }
+                if (response.data['data']['indices'] != null) {
+                  recostsToggle.addAll(response.data['data']['indices']);
+                  // print(noOfLikes);
+
+                }
+                previousLength = (response.data['data']['results']).length;
+                page++;
+              });
+            }
+            // print(response.data['data']['posts']);
+            if (response.data['data']['results'].length == 0) {
+              if (mounted) {
+                setState(() {
+                  isEnd = true;
+                });
+              }
+            }
+            // print(recs);
+          } else {
+            showSnack(context, response.data['message'], () {}, 'OK', 3);
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+                isLazyLoading = false;
               });
             }
           }
-          // print(recs);
-        } else {
-          showSnack(context, response.data['message'] , (){}, 'OK', 3);
-          if (mounted) {
-            setState(() {
-              isLoading = false;
-              isLazyLoading = false;
-            });
-          }
-        }
         } else {
           if (mounted) {
             setState(() {

@@ -2129,9 +2129,8 @@ class ViewRecPostState extends State<ViewRecPost> {
                         const SizedBox(
                           height: 100.0,
                         ),
-                      ]
-                      else...[
-                         const SizedBox(
+                      ] else ...[
+                        const SizedBox(
                           height: 100.0,
                         ),
                       ]

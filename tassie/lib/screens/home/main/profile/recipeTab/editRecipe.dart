@@ -1192,7 +1192,7 @@ class EditRecipeState extends State<EditRecipe> {
 
   Future<File> compress(File image1) async {
     while (image1.lengthSync() > 200000) {
-      print(image1.lengthSync());
+      // print(image1.lengthSync());
       im.Image? image = im.decodeImage(await File(image1.path).readAsBytes());
       im.Image? compressed = im.copyResize(image!,
           width: image.width ~/ 2, height: image.height ~/ 2);

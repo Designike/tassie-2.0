@@ -51,7 +51,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
         flavour = flav;
         selectedFlavour = index;
         data['flavour'] = flav;
-        // print(data);
+        // // print(data);
       });
     }
   }
@@ -62,7 +62,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
         course = cour;
         selectedCourse = index;
         data['course'] = cour;
-        // print(data);
+        // // print(data);
       });
     }
   }
@@ -84,7 +84,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
       setState(() {
         mealType[index] = check;
         data['meal'] = mealType;
-        // print(data);
+        // // print(data);
       });
     }
     // print(course);
@@ -397,7 +397,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                       if (data['veg'] != null) {
                         data.remove('veg');
                       }
-                      print(data);
+                      // print(data);
                       setState(() {
                         isVeg = 2;
                       });
@@ -427,7 +427,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                           isVeg = 0;
                           data['veg'] = true;
                         });
-                        print(data);
+                        // print(data);
                       }
                     },
                     style: OutlinedButton.styleFrom(
@@ -454,7 +454,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                           data['veg'] = false;
                         }
                       });
-                      print(data);
+                      // print(data);
                     }
                   },
                   style: OutlinedButton.styleFrom(
@@ -491,7 +491,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                       setState(() {
                         mealType = [false, false, false, false];
                       });
-                      print(data);
+                      // print(data);
                     },
                     style: TextButton.styleFrom(
                         // backgroundColor:
@@ -534,7 +534,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                       setState(() {
                         selectedFlavour = 5;
                       });
-                      print(data);
+                      // print(data);
                     },
                     style: TextButton.styleFrom(
                         // backgroundColor:
@@ -578,7 +578,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                       setState(() {
                         selectedCourse = 6;
                       });
-                      print(data);
+                      // print(data);
                     },
                     style: TextButton.styleFrom(
                         // backgroundColor:
@@ -624,7 +624,7 @@ class AdvancedSearchState extends State<AdvancedSearch> {
                         hour = '0';
                         min = '00';
                       });
-                      print(data);
+                      // print(data);
                     },
                     style: TextButton.styleFrom(
                         // backgroundColor:

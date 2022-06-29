@@ -33,7 +33,7 @@ class Hashtags {
           "tag": "#$tag",
         },
       );
-      
+
       tags = [];
       for (final i in response.data['data']) {
         tags.add(i['name']);

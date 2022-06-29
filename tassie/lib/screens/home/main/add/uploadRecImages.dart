@@ -147,8 +147,13 @@ class RecImageUploaderState extends State<RecImageUploader> {
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.0),
-              color: Theme.of(context).brightness == Brightness.dark ?kDark[900] : kLight,
-              border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.transparent :Color(0xFFE4E4E4)),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? kDark[900]
+                  : kLight,
+              border: Border.all(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.transparent
+                      : Color(0xFFE4E4E4)),
             ),
             child: IconButton(
               padding:

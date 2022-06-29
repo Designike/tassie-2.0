@@ -48,7 +48,7 @@ class UploaderState extends State<Uploader> {
     var token = await storage.read(key: "token");
     if (widget.edit) {
       // edit post - start
-      print(widget.desc);
+      // print(widget.desc);
       Response response = await dio.post(
         // 'https://api-tassie.herokuapp.com/drive/upload',
         'https://api-tassie.herokuapp.com/feed/editpost',

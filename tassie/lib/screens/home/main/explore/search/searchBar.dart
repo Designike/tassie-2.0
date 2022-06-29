@@ -107,7 +107,7 @@ class SearchBarState extends State<SearchBar> {
             }
           }
           if (response.data['data']['tags'] == null) {
-            print('8');
+            // print('8');
             if (mounted) {
               setState(() {
                 isEndT = true;
@@ -116,7 +116,7 @@ class SearchBarState extends State<SearchBar> {
           }
           // print(recs);
         } else {
-          print('9');
+          // print('9');
           if (mounted) {
             setState(() {
               isLoading = false;
@@ -127,9 +127,9 @@ class SearchBarState extends State<SearchBar> {
           }
         }
       }
-      print('10');
+      // print('10');
     }
-    print('11');
+    // print('11');
   }
 
   Widget _buildProgressIndicator() {
@@ -199,24 +199,24 @@ class SearchBarState extends State<SearchBar> {
                       ? 'Search name should not be empty'
                       : null,
                   textInputAction: TextInputAction.search,
-                  onFieldSubmitted: (val){
+                  onFieldSubmitted: (val) {
                     page = 1;
-                      recipes = [];
-                      users = [];
-                      tags = [];
-                      if (mounted) {
-                        setState(() {
-                          isLoading = true;
-                          isLazyLoadingR = false;
-                          isLazyLoadingU = false;
-                          isLazyLoadingT = false;
-                          isEndR = false;
-                          isEndU = false;
-                          isEndT = false;
-                        });
-                      }
+                    recipes = [];
+                    users = [];
+                    tags = [];
+                    if (mounted) {
+                      setState(() {
+                        isLoading = true;
+                        isLazyLoadingR = false;
+                        isLazyLoadingU = false;
+                        isLazyLoadingT = false;
+                        isEndR = false;
+                        isEndU = false;
+                        isEndT = false;
+                      });
+                    }
 
-                      _getRecosts(page);
+                    _getRecosts(page);
                   },
                 ),
                 actions: [

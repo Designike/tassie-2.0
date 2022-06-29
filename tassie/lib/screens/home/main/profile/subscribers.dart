@@ -71,7 +71,7 @@ class _SubscribersState extends State<Subscribers> {
           url =
               "https://api-tassie.herokuapp.com/profile/lazysubscribeds/$uuid/${index.toString()}";
         }
-        print(url);
+        // print(url);
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,

@@ -247,13 +247,12 @@ class RecipesState extends State<Recipes> with AutomaticKeepAliveClientMixin {
                               height: size.height * 0.25,
                             ),
                             Image(
-                              image:
-                                  Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? const AssetImage(
-                                          'assets/images/no_feed_dark.png')
-                                      : const AssetImage(
-                                          'assets/images/no_feed_light.png'),
+                              image: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? const AssetImage(
+                                      'assets/images/no_feed_dark.png')
+                                  : const AssetImage(
+                                      'assets/images/no_feed_light.png'),
                               width: size.width * 0.75,
                             ),
                             const SizedBox(

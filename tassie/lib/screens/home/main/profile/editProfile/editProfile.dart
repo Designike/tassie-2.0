@@ -54,18 +54,17 @@ class EditProfilePageState extends State<EditProfilePage> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         // elevation: 1,
         foregroundColor: Theme.of(context).brightness == Brightness.light
-                    ? kDark[900]
-                    : kLight,
+            ? kDark[900]
+            : kLight,
         systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Theme.of(context).scaffoldBackgroundColor,
             statusBarIconBrightness:
                 Theme.of(context).brightness == Brightness.light
                     ? Brightness.dark
                     : Brightness.light),
-        title:  Text(
+        title: Text(
           "Edit Profile",
           style: TextStyle(fontWeight: FontWeight.bold),
-          
         ),
         actions: [
           IconButton(

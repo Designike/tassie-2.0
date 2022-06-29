@@ -50,14 +50,14 @@ class EditProfileImageState extends State<EditProfileImage> {
         _imageFile = File(cropped!.path);
       });
       _imageFile = await compress(_imageFile!);
-      print(_imageFile!.lengthSync());
+      // print(_imageFile!.lengthSync());
       setState(() {});
     }
   }
 
   Future<File> compress(File image1) async {
     while (image1.lengthSync() > 150000) {
-      print(image1.lengthSync());
+      // print(image1.lengthSync());
       im.Image? image = im.decodeImage(await File(image1.path).readAsBytes());
       im.Image? compressed = im.copyResize(image!,
           width: image.width ~/ 2, height: image.height ~/ 2);

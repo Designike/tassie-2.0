@@ -210,7 +210,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
               comments.addAll(tList);
               for (int i = 0; i < tList.length; i++) {
                 AsyncMemoizer memoizer4 = AsyncMemoizer();
-                print(tList);
+                // print(tList);
                 Future storedFuture =
                     loadImg(tList[i]['profilePic'], memoizer4);
                 commentStoredFutures.add(storedFuture);

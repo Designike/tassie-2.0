@@ -908,7 +908,9 @@ class AddRecipeState extends State<AddRecipe> {
               children: [
                 Expanded(
                     child: IngredientTextField(
-                        index: i, ingredientsList: ingredientsList, newIngFlags: newIngFlags)),
+                        index: i,
+                        ingredientsList: ingredientsList,
+                        newIngFlags: newIngFlags)),
                 const SizedBox(
                   width: 16,
                 ),
@@ -1039,7 +1041,7 @@ class AddRecipeState extends State<AddRecipe> {
 
   Future<File> compress(File image1) async {
     while (image1.lengthSync() > 200000) {
-      print(image1.lengthSync());
+      // print(image1.lengthSync());
       im.Image? image = im.decodeImage(await File(image1.path).readAsBytes());
       im.Image? compressed = im.copyResize(image!,
           width: image.width ~/ 2, height: image.height ~/ 2);
@@ -1455,7 +1457,7 @@ class AddRecipeState extends State<AddRecipe> {
                           // 'folder': widget.folder,
                           'ingredients':
                               ingredientsList == [null] ? [] : ingredientsList,
-                          'newIngFlags':newIngFlags
+                          'newIngFlags': newIngFlags
                         });
                   }
                   if (_currentStep == 4) {

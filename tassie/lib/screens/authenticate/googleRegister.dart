@@ -10,13 +10,12 @@ import 'package:tassie/utils/snackbar.dart';
 import '../home/homeMapPageContoller.dart';
 
 class GoogleRegister extends StatefulWidget {
-  const GoogleRegister(
-      {Key? key,
-      required this.email,
-      required this.name,
-      required this.password,
-      })
-      : super(key: key);
+  const GoogleRegister({
+    Key? key,
+    required this.email,
+    required this.name,
+    required this.password,
+  }) : super(key: key);
 
   final String name;
   final String email;
@@ -57,7 +56,6 @@ class GoogleRegisterState extends State<GoogleRegister> {
       }
     }
   }
-
 
   @override
   void initState() {
@@ -145,7 +143,8 @@ class GoogleRegisterState extends State<GoogleRegister> {
                           // // await Future.delayed(const Duration(seconds: 1));
 
                           if (!mounted) return;
-                          showSnack(context, response.data['message'], () {}, 'OK', 4);
+                          showSnack(context, response.data['message'], () {},
+                              'OK', 4);
                           Navigator.pop(context);
                         }
                       } else {

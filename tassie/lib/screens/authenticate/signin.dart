@@ -60,7 +60,7 @@ class SignInState extends State<SignIn> {
               );
             } else {
               setState(() {
-                  isClickedGoogle = false;
+                isClickedGoogle = false;
               });
               // await Future.delayed(const Duration(seconds: 1));
 
@@ -69,10 +69,10 @@ class SignInState extends State<SignIn> {
                 context,
                 MaterialPageRoute(builder: (context) {
                   return GoogleRegister(
-                      name: result.displayName!,
-                      email: result.email,
-                      password: result.id,
-                      );
+                    name: result.displayName!,
+                    email: result.email,
+                    password: result.id,
+                  );
                 }),
               );
             }

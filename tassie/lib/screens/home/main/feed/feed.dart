@@ -8,6 +8,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tassie/constants.dart';
 import 'package:tassie/screens/authenticate/authenticate.dart';
 import 'package:tassie/screens/home/main/feed/feedChild.dart';
+import 'package:tassie/utils/snackbar.dart';
 
 class Feed extends StatefulWidget {
   const Feed({Key? key}) : super(key: key);
@@ -33,77 +34,84 @@ class FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
 
   void _getMoreData(int index) async {
     // Provider.of<LeftSwipe>(context, listen: false).setSwipe(true);
-    if (!isEnd) {
-      if (mounted && !isLazyLoading) {
-        setState(() {
-          isLazyLoading = true;
-        });
-        // var url = "https://api-tassie.herokuapp.com/feed/lazyfeed/" +
-        //     index.toString();
-        var url = "https://api-tassie.herokuapp.com/feed/lazyfeed/$index";
+    try {
+      if (!isEnd) {
+        if (mounted && !isLazyLoading) {
+          setState(() {
+            isLazyLoading = true;
+          });
+          // var url = "https://api-tassie.herokuapp.com/feed/lazyfeed/" +
+          //     index.toString();
+          var url = "https://api-tassie.herokuapp.com/feed/lazyfeed/$index";
 
-        var token = await storage.read(key: "token");
-        // print(token);
-        Response response = await dio.get(
-          url,
-          options: Options(headers: {
-            HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer ${token!}"
-          }),
-        );
-        // List tList = [];
-        if (response.data['status'] == true) {
-          if (response.data['data']['posts'] != null) {
-            if (mounted) {
-              setState(() {
-                if (index == 1) {
-                  isLoading = false;
-                }
-                isLazyLoading = false;
-                posts.addAll(response.data['data']['posts']['results']);
-                // posts.addAll(tList);
-                if (response.data['data']['posts']['noOfComments'] != null) {
-                  noOfComments
-                      .addAll(response.data['data']['posts']['noOfComments']);
-                }
-                if (response.data['data']['posts']['noOfLikes'] != null) {
-                  noOfLikes.addAll(response.data['data']['posts']['noOfLikes']);
-                }
-                if (response.data['data']['posts']['bookmarks'] != null) {
-                  bookmark.addAll(response.data['data']['posts']['bookmarks']);
-                }
-                page++;
-              });
-            }
-            // print(response.data['data']['posts']);
-            if (response.data['data']['posts']['results'].length == 0) {
+          var token = await storage.read(key: "token");
+          // print(token);
+          Response response = await dio.get(
+            url,
+            options: Options(headers: {
+              HttpHeaders.contentTypeHeader: "application/json",
+              HttpHeaders.authorizationHeader: "Bearer ${token!}"
+            }),
+          );
+          // List tList = [];
+          if (response.data['status'] == true) {
+            if (response.data['data']['posts'] != null) {
               if (mounted) {
                 setState(() {
-                  isEnd = true;
+                  if (index == 1) {
+                    isLoading = false;
+                  }
+                  isLazyLoading = false;
+                  posts.addAll(response.data['data']['posts']['results']);
+                  // posts.addAll(tList);
+                  if (response.data['data']['posts']['noOfComments'] != null) {
+                    noOfComments
+                        .addAll(response.data['data']['posts']['noOfComments']);
+                  }
+                  if (response.data['data']['posts']['noOfLikes'] != null) {
+                    noOfLikes
+                        .addAll(response.data['data']['posts']['noOfLikes']);
+                  }
+                  if (response.data['data']['posts']['bookmarks'] != null) {
+                    bookmark
+                        .addAll(response.data['data']['posts']['bookmarks']);
+                  }
+                  page++;
+                });
+              }
+              // print(response.data['data']['posts']);
+              if (response.data['data']['posts']['results'].length == 0) {
+                if (mounted) {
+                  setState(() {
+                    isEnd = true;
+                  });
+                }
+              }
+            } else {
+              if (mounted) {
+                setState(() {
+                  isLoading = false;
+                  isLazyLoading = false;
                 });
               }
             }
           } else {
-            if (mounted) {
-              setState(() {
-                isLoading = false;
-                isLazyLoading = false;
-              });
-            }
-          }
-        } else {
-          await storage.delete(key: "token");
-          // await Future.delayed(const Duration(seconds: 1));
+            await storage.delete(key: "token");
+            // await Future.delayed(const Duration(seconds: 1));
 
-          if (!mounted) return;
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) {
-              return const Authenticate();
-            }),
-          );
+            if (!mounted) return;
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) {
+                return const Authenticate();
+              }),
+            );
+          }
         }
       }
+    } catch (e) {
+      // print(e);
+      showSnack(context, "Server Error", () {}, "OK", 4);
     }
   }
 
@@ -228,7 +236,7 @@ class FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                       //           index: index, posts: posts, nameList: nameList);
                       //     }),
                       child: ListView.builder(
-                        cacheExtent:size.height * 4,
+                        cacheExtent: size.height * 4,
                         itemCount: posts.length + 1,
                         itemBuilder: (context, index) {
                           return index == posts.length
@@ -293,13 +301,12 @@ class FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                               height: size.height * 0.25,
                             ),
                             Image(
-                              image:
-                                  Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? const AssetImage(
-                                          'assets/images/no_feed_dark.png')
-                                      : const AssetImage(
-                                          'assets/images/no_feed_light.png'),
+                              image: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? const AssetImage(
+                                      'assets/images/no_feed_dark.png')
+                                  : const AssetImage(
+                                      'assets/images/no_feed_light.png'),
                               width: size.width * 0.75,
                             ),
                             const SizedBox(
