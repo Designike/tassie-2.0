@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:tassie/utils/leftSwipe.dart';
 import 'package:tassie/screens/wrapper.dart';
 import 'package:tassie/theme.dart';
@@ -11,6 +12,7 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
   ImageCache ic = ImageCache();
   ic.maximumSizeBytes = 1048576000;
   ThemeController thc = ThemeController();

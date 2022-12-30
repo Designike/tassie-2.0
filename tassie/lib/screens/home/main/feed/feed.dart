@@ -9,6 +9,7 @@ import 'package:tassie/constants.dart';
 import 'package:tassie/screens/authenticate/authenticate.dart';
 import 'package:tassie/screens/home/main/feed/feedChild.dart';
 import 'package:tassie/utils/snackbar.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class Feed extends StatefulWidget {
   const Feed({Key? key}) : super(key: key);
@@ -157,6 +158,35 @@ class FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
     }
   }
 
+  BannerAd? banner;
+
+  void createBannerAd() {
+    banner = BannerAd(
+      adUnitId: "ca-app-pub-6882682815888845/9486743320",
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        // Called when an ad is successfully received.
+        onAdLoaded: (Ad ad) => print('${ad.runtimeType} loaded.'),
+        // Called when an ad request failed.
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          print('${ad.runtimeType} failed to load: $error');
+        },
+        // Called when an ad opens an overlay that covers the screen.
+        onAdOpened: (Ad ad) => print('${ad.runtimeType} opened.'),
+        // Called when an ad removes an overlay that covers the screen.
+        onAdClosed: (Ad ad) {
+          print('${ad.runtimeType} closed');
+          ad.dispose();
+          createBannerAd();
+          print('${ad.runtimeType} reloaded');
+        },
+        // Called when an ad is in the process of leaving the application.
+        // onApplicationExit: (Ad ad) => print('Left application.'),
+      ),
+    )..load();
+  }
+
   @override
   void initState() {
     posts = [];
@@ -167,6 +197,7 @@ class FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
     isLoading = true;
     isEnd = false;
     _getMoreData(page);
+    createBannerAd();
     super.initState();
     // load();
 
@@ -227,6 +258,17 @@ class FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
                     height: 10,
                     thickness: 0.5,
                   ),
+                  banner == null
+                      ? const SizedBox(
+                          height: 1,
+                        )
+                      : SizedBox(
+                          height: 50,
+                          width: size.width,
+                          child: AdWidget(
+                            ad: banner!,
+                          ),
+                        ),
                   if (posts.isNotEmpty) ...[
                     Expanded(
                       // child: ListView.builder(
