@@ -25,7 +25,7 @@ class ChangeUsernameState extends State<ChangeUsername> {
     try {
       // print('');
       Response response = await dio
-          .get("https://api-tassie.herokuapp.com/user/username/$username");
+          .get("$baseAPI/user/username/$username");
       // var res = jsonDecode(response.toString());
 
       // if(response)
@@ -91,7 +91,7 @@ class ChangeUsernameState extends State<ChangeUsername> {
                     var token = await storage.read(key: "token");
                     if (_formKey.currentState!.validate()) {
                       Response response = await dio.post(
-                          "https://api-tassie.herokuapp.com/profile/updateUsername/",
+                          "$baseAPI/profile/updateUsername/",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
                             HttpHeaders.authorizationHeader: "Bearer ${token!}"

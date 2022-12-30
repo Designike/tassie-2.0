@@ -60,8 +60,8 @@ class RecImageUploaderState extends State<RecImageUploader> {
     // _imageFile = null;
     var token = await storage.read(key: "token");
     Response response = await dio.post(
-      // 'https://api-tassie.herokuapp.com/drive/upload',
-      'https://api-tassie.herokuapp.com/recs/updateRecipe/',
+      // '$baseAPI/drive/upload',
+      '$baseAPI/recs/updateRecipe/',
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "multipart/form-data",
         HttpHeaders.authorizationHeader: "Bearer ${token!}"

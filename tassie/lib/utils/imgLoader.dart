@@ -10,8 +10,8 @@ Future loadImg(key, AsyncMemoizer memoizer) async {
     final dio = Dio();
     return memoizer.runOnce(() async {
       Response response = await dio.post(
-          // "https://api-tassie.herokuapp.com/user/",
-          "https://api-tassie.herokuapp.com/drive/file",
+          // "$baseAPI/user/",
+          "$baseAPI/drive/file",
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
           }),
@@ -29,8 +29,8 @@ Future loadImg(key, AsyncMemoizer memoizer) async {
   }
   // } else {
   //   Response response = await dio.post(
-  //       // "https://api-tassie.herokuapp.com/user/",
-  //       "https://api-tassie.herokuapp.com/drive/file",
+  //       // "$baseAPI/user/",
+  //       "$baseAPI/drive/file",
   //       options: Options(headers: {
   //         HttpHeaders.contentTypeHeader: "application/json",
   //       }),

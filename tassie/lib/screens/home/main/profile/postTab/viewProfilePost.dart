@@ -104,7 +104,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
   }
 
   void getStats() async {
-    var url = "https://api-tassie.herokuapp.com/profile/postStats";
+    var url = "$baseAPI/profile/postStats";
     var token = await storage.read(key: "token");
     Response response = await dio.post(
       url,
@@ -180,7 +180,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
           });
         }
         var url =
-            "https://api-tassie.herokuapp.com/feed/lazycomment/${widget.post['uuid']}/${widget.post['userUuid']}/$index";
+            "$baseAPI/feed/lazycomment/${widget.post['uuid']}/${widget.post['userUuid']}/$index";
         var token = await storage.read(key: "token");
 
         uuid = await storage.read(key: "uuid");
@@ -428,7 +428,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                                                 key: "token");
                                                         Response response =
                                                             await dio.get(
-                                                          "https://api-tassie.herokuapp.com/feed/deletePost/${widget.post['uuid']}",
+                                                          "$baseAPI/feed/deletePost/${widget.post['uuid']}",
                                                           options:
                                                               Options(headers: {
                                                             HttpHeaders
@@ -509,7 +509,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                         var token =
                                             await storage.read(key: "token");
                                         dio.post(
-                                            "https://api-tassie.herokuapp.com/feed/like",
+                                            "$baseAPI/feed/like",
                                             options: Options(headers: {
                                               HttpHeaders.contentTypeHeader:
                                                   "application/json",
@@ -627,7 +627,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                                       var token = await storage
                                                           .read(key: "token");
                                                       dio.post(
-                                                          "https://api-tassie.herokuapp.com/feed/unlike",
+                                                          "$baseAPI/feed/unlike",
                                                           options: Options(headers: {
                                                             HttpHeaders
                                                                     .contentTypeHeader:
@@ -647,7 +647,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                                       var token = await storage
                                                           .read(key: "token");
                                                       dio.post(
-                                                          "https://api-tassie.herokuapp.com/feed/like",
+                                                          "$baseAPI/feed/like",
                                                           options: Options(headers: {
                                                             HttpHeaders
                                                                     .contentTypeHeader:
@@ -706,7 +706,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                               var token = await storage.read(
                                                   key: "token");
                                               await dio.post(
-                                                  "https://api-tassie.herokuapp.com/feed/bookmark",
+                                                  "$baseAPI/feed/bookmark",
                                                   options: Options(headers: {
                                                     HttpHeaders
                                                             .contentTypeHeader:
@@ -723,7 +723,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                                               var token = await storage.read(
                                                   key: "token");
                                               await dio.post(
-                                                  "https://api-tassie.herokuapp.com/feed/removeBookmark",
+                                                  "$baseAPI/feed/removeBookmark",
                                                   options: Options(headers: {
                                                     HttpHeaders
                                                             .contentTypeHeader:
@@ -922,7 +922,7 @@ class ViewCommentsPostState extends State<ViewCommentsPost> {
                           onPressed: () async {
                             var token = await storage.read(key: "token");
                             Response response = await dio.post(
-                                "https://api-tassie.herokuapp.com/feed/addComment",
+                                "$baseAPI/feed/addComment",
                                 options: Options(headers: {
                                   HttpHeaders.contentTypeHeader:
                                       "application/json",

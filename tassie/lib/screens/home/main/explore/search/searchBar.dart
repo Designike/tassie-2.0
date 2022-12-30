@@ -48,7 +48,7 @@ class SearchBarState extends State<SearchBar> {
         }
         query = query.replaceAll(RegExp(r'[^\w\s]+'), '');
         var url =
-            "https://api-tassie.herokuapp.com/search/lazySearch/${index.toString()}/$query";
+            "$baseAPI/search/lazySearch/${index.toString()}/$query";
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,

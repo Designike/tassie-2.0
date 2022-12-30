@@ -34,8 +34,8 @@ class EditPostState extends State<EditPost> {
     var dio = Dio();
     var token = await storage.read(key: "token");
     Response response = await dio.get(
-      // "https://api-tassie.herokuapp.com/user/",
-      "https://api-tassie.herokuapp.com/profile/getPost/${widget.uuid}",
+      // "$baseAPI/user/",
+      "$baseAPI/profile/getPost/${widget.uuid}",
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "application/json",
         HttpHeaders.authorizationHeader: "Bearer ${token!}",

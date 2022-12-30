@@ -41,9 +41,9 @@ class FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
           setState(() {
             isLazyLoading = true;
           });
-          // var url = "https://api-tassie.herokuapp.com/feed/lazyfeed/" +
+          // var url = "$baseAPI/feed/lazyfeed/" +
           //     index.toString();
-          var url = "https://api-tassie.herokuapp.com/feed/lazyfeed/$index";
+          var url = "$baseAPI/feed/lazyfeed/$index";
 
           var token = await storage.read(key: "token");
           // print(token);

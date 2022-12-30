@@ -70,7 +70,7 @@ class ViewRecAllCommentsState extends State<ViewRecAllComments> {
           });
         }
         var url =
-            'https://api-tassie.herokuapp.com/recs/lazyreccomment/${widget.recipeUuid}/${widget.userUuid}/$index';
+            '$baseAPI/recs/lazyreccomment/${widget.recipeUuid}/${widget.userUuid}/$index';
 
         var token = await storage.read(key: "token");
         uuid = await storage.read(key: "uuid");
@@ -305,7 +305,7 @@ class ViewRecAllCommentsState extends State<ViewRecAllComments> {
                     onPressed: () async {
                       var token = await storage.read(key: "token");
                       Response response = await dio.post(
-                          "https://api-tassie.herokuapp.com/recs/addComment",
+                          "$baseAPI/recs/addComment",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
                             HttpHeaders.authorizationHeader: "Bearer ${token!}"

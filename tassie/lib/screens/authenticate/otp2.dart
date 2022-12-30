@@ -190,7 +190,7 @@ class OTP2FormState extends State<OTP2Form> {
             onTap: () async {
               // if (_formKey.currentState!.validate()) {
               //   final response = await dio.post(
-              //     "https://api-tassie.herokuapp.com/user/login/",
+              //     "$baseAPI/user/login/",
               //     options: Options(headers: {
               //       HttpHeaders.contentTypeHeader: "application/json",
               //     }),
@@ -205,8 +205,8 @@ class OTP2FormState extends State<OTP2Form> {
               try {
                 var token = await storage.read(key: "token");
                 Response response = await dio.post(
-                    // "https://api-tassie.herokuapp.com/user/tsa/" + widget.uuid,
-                    "https://api-tassie.herokuapp.com/user/verifyEmail",
+                    // "$baseAPI/user/tsa/" + widget.uuid,
+                    "$baseAPI/user/verifyEmail",
                     options: Options(headers: {
                       HttpHeaders.contentTypeHeader: "application/json",
                       HttpHeaders.authorizationHeader: "Bearer ${token!}",
@@ -219,7 +219,7 @@ class OTP2FormState extends State<OTP2Form> {
                     // await storage.write(
                     //     key: "uuid", value: response.data['data']['uuid']);
                     // Response response1 = await dio.get(
-                    //     "https://api-tassie.herokuapp.com/user/getProfilePic/",
+                    //     "$baseAPI/user/getProfilePic/",
                     //     options: Options(headers: {
                     //       HttpHeaders.contentTypeHeader: "application/json",
                     //       HttpHeaders.authorizationHeader:
@@ -290,8 +290,8 @@ class OTP2FormState extends State<OTP2Form> {
               // widget.func!();
               try {
                 Response response = await dio.get(
-                  // "https://api-tassie.herokuapp.com/user/",
-                  "https://api-tassie.herokuapp.com/user/mail/${widget.uuid}",
+                  // "$baseAPI/user/",
+                  "$baseAPI/user/mail/${widget.uuid}",
                   options: Options(headers: {
                     HttpHeaders.contentTypeHeader: "application/json",
                   }),

@@ -46,7 +46,7 @@ class ExploreState extends State<Explore> with AutomaticKeepAliveClientMixin {
           });
         }
         var url =
-            "https://api-tassie.herokuapp.com/search/lazyExplore/${index.toString()}/${previousLength.toString()}";
+            "$baseAPI/search/lazyExplore/${index.toString()}/${previousLength.toString()}";
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,

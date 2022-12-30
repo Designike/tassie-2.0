@@ -46,7 +46,7 @@ class ViewHashtagState extends State<ViewHashtag>
           });
         }
         var url =
-            "https://api-tassie.herokuapp.com/search/lazyHashtag/${index.toString()}/${previousLength.toString()}/${widget.tag}";
+            "$baseAPI/search/lazyHashtag/${index.toString()}/${previousLength.toString()}/${widget.tag}";
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,

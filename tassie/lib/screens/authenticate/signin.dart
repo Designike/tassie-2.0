@@ -34,8 +34,8 @@ class SignInState extends State<SignIn> {
   Future<GoogleSignInAccount?> login() => google.signIn().then((result) {
         result?.authentication.then((googleKey) async {
           Response response = await dio.post(
-              // "https://api-tassie.herokuapp.com/user/tsa/" + widget.uuid,
-              "https://api-tassie.herokuapp.com/user/googleSignin",
+              // "$baseAPI/user/tsa/" + widget.uuid,
+              "$baseAPI/user/googleSignin",
               options: Options(headers: {
                 HttpHeaders.contentTypeHeader: "application/json",
                 // HttpHeaders.authorizationHeader: "Bearer " + token!,
@@ -228,7 +228,7 @@ class SignInState extends State<SignIn> {
                             });
                           }
                           Response response = await dio.post(
-                            "https://api-tassie.herokuapp.com/user/login/",
+                            "$baseAPI/user/login/",
                             options: Options(headers: {
                               HttpHeaders.contentTypeHeader: "application/json",
                             }),
@@ -246,7 +246,7 @@ class SignInState extends State<SignIn> {
                                   key: "uuid",
                                   value: response.data['data']['uuid']);
                               // Response response1 = await dio.get(
-                              //     "https://api-tassie.herokuapp.com/user/getProfilePic/",
+                              //     "$baseAPI/user/getProfilePic/",
                               //     options: Options(headers: {
                               //       HttpHeaders.contentTypeHeader:
                               //           "application/json",

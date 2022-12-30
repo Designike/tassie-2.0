@@ -61,7 +61,7 @@ class ChangePasswordState extends State<ChangePassword> {
                 var token = await storage.read(key: "token");
                 if (_formKey.currentState!.validate()) {
                   Response response = await dio.post(
-                      "https://api-tassie.herokuapp.com/user/updatePassword",
+                      "$baseAPI/user/updatePassword",
                       options: Options(headers: {
                         HttpHeaders.contentTypeHeader: "application/json",
                         HttpHeaders.authorizationHeader: "Bearer ${token!}"

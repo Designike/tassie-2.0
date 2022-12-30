@@ -147,8 +147,8 @@ class CreateCommentState extends State<CreateComment> {
                 onPressed: () async {
                   var token = await storage.read(key: "token");
                   String url = widget.isPost
-                      ? "https://api-tassie.herokuapp.com/feed/removeComment"
-                      : "https://api-tassie.herokuapp.com/recs/removeComment";
+                      ? "$baseAPI/feed/removeComment"
+                      : "$baseAPI/recs/removeComment";
                   Map data = widget.isPost
                       ? {
                           'postUuid': widget.recipeUuid,

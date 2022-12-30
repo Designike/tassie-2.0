@@ -66,10 +66,10 @@ class _SubscribersState extends State<Subscribers> {
         uuid = (await storage.read(key: "uuid"))!;
         if (widget.isSubscriber) {
           url =
-              "https://api-tassie.herokuapp.com/profile/lazysubscribers/$uuid/${index.toString()}";
+              "$baseAPI/profile/lazysubscribers/$uuid/${index.toString()}";
         } else {
           url =
-              "https://api-tassie.herokuapp.com/profile/lazysubscribeds/$uuid/${index.toString()}";
+              "$baseAPI/profile/lazysubscribeds/$uuid/${index.toString()}";
         }
         // print(url);
         var token = await storage.read(key: "token");

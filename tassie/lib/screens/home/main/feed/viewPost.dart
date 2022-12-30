@@ -99,7 +99,7 @@ class ViewCommentsState extends State<ViewComments> {
           });
         }
         var url =
-            "https://api-tassie.herokuapp.com/feed/lazycomment/${widget.post['uuid']}/${widget.post['userUuid']}/${index.toString()}";
+            "$baseAPI/feed/lazycomment/${widget.post['uuid']}/${widget.post['userUuid']}/${index.toString()}";
         var token = await storage.read(key: "token");
 
         uuid = await storage.read(key: "uuid");
@@ -338,7 +338,7 @@ class ViewCommentsState extends State<ViewComments> {
                                 if (!liked) {
                                   var token = await storage.read(key: "token");
                                   dio.post(
-                                      "https://api-tassie.herokuapp.com/feed/like",
+                                      "$baseAPI/feed/like",
                                       options: Options(headers: {
                                         HttpHeaders.contentTypeHeader:
                                             "application/json",
@@ -470,7 +470,7 @@ class ViewCommentsState extends State<ViewComments> {
                                                 var token = await storage.read(
                                                     key: "token");
                                                 dio.post(
-                                                    "https://api-tassie.herokuapp.com/feed/unlike",
+                                                    "$baseAPI/feed/unlike",
                                                     options: Options(headers: {
                                                       HttpHeaders
                                                               .contentTypeHeader:
@@ -490,7 +490,7 @@ class ViewCommentsState extends State<ViewComments> {
                                                 var token = await storage.read(
                                                     key: "token");
                                                 dio.post(
-                                                    "https://api-tassie.herokuapp.com/feed/like",
+                                                    "$baseAPI/feed/like",
                                                     options: Options(headers: {
                                                       HttpHeaders
                                                               .contentTypeHeader:
@@ -550,7 +550,7 @@ class ViewCommentsState extends State<ViewComments> {
                                         var token =
                                             await storage.read(key: "token");
                                         await dio.post(
-                                            "https://api-tassie.herokuapp.com/feed/bookmark",
+                                            "$baseAPI/feed/bookmark",
                                             options: Options(headers: {
                                               HttpHeaders.contentTypeHeader:
                                                   "application/json",
@@ -565,7 +565,7 @@ class ViewCommentsState extends State<ViewComments> {
                                         var token =
                                             await storage.read(key: "token");
                                         await dio.post(
-                                            "https://api-tassie.herokuapp.com/feed/removeBookmark",
+                                            "$baseAPI/feed/removeBookmark",
                                             options: Options(headers: {
                                               HttpHeaders.contentTypeHeader:
                                                   "application/json",
@@ -756,7 +756,7 @@ class ViewCommentsState extends State<ViewComments> {
                     onPressed: () async {
                       var token = await storage.read(key: "token");
                       Response response = await dio.post(
-                          "https://api-tassie.herokuapp.com/feed/addComment",
+                          "$baseAPI/feed/addComment",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
                             HttpHeaders.authorizationHeader: "Bearer ${token!}"

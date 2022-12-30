@@ -50,8 +50,8 @@ class UploaderState extends State<Uploader> {
       // edit post - start
       // print(widget.desc);
       Response response = await dio.post(
-        // 'https://api-tassie.herokuapp.com/drive/upload',
-        'https://api-tassie.herokuapp.com/feed/editpost',
+        // '$baseAPI/drive/upload',
+        '$baseAPI/feed/editpost',
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Bearer ${token!}"
@@ -97,8 +97,8 @@ class UploaderState extends State<Uploader> {
       });
 
       Response response = await dio.post(
-        // 'https://api-tassie.herokuapp.com/drive/upload',
-        'https://api-tassie.herokuapp.com/feed/newpost',
+        // '$baseAPI/drive/upload',
+        '$baseAPI/feed/newpost',
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "multipart/form-data",
           HttpHeaders.authorizationHeader: "Bearer ${token!}"

@@ -26,7 +26,7 @@ class ChangeEmailState extends State<ChangeEmail> {
     var dio = Dio();
     try {
       Response response = await dio
-          .get("https://api-tassie.herokuapp.com/user/checkEmail/$email");
+          .get("$baseAPI/user/checkEmail/$email");
       if (mounted) {
         setState(() {
           uniqueEmail = response.data['status'];
@@ -84,7 +84,7 @@ class ChangeEmailState extends State<ChangeEmail> {
                     var token = await storage.read(key: "token");
                     if (_formKey.currentState!.validate()) {
                       Response response = await dio.post(
-                          "https://api-tassie.herokuapp.com/user/email",
+                          "$baseAPI/user/email",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
                             HttpHeaders.authorizationHeader: "Bearer ${token!}"

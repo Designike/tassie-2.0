@@ -38,8 +38,8 @@ class ProfileUploaderState extends State<ProfileUploader> {
     });
 
     Response response = await dio.post(
-      // 'https://api-tassie.herokuapp.com/drive/upload',
-      'https://api-tassie.herokuapp.com/user/updateProfileImage',
+      // '$baseAPI/drive/upload',
+      '$baseAPI/user/updateProfileImage',
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "multipart/form-data",
         HttpHeaders.authorizationHeader: "Bearer ${token!}"

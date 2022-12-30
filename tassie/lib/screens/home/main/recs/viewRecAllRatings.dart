@@ -64,7 +64,7 @@ class ViewRecAllRatingsState extends State<ViewRecAllRatings> {
           });
         }
         var url =
-            "https://api-tassie.herokuapp.com/recs/lazyrating/${widget.recipeUuid}/${widget.userUuid}/${index.toString()}";
+            "$baseAPI/recs/lazyrating/${widget.recipeUuid}/${widget.userUuid}/${index.toString()}";
 
         var token = await storage.read(key: "token");
         uuid = await storage.read(key: "uuid");

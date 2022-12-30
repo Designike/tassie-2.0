@@ -57,7 +57,7 @@ class HomeHomeState extends State<HomeHome>
       // print(json.decode(lstorage.getItem('ingreds')).runtimeType);
       if ((lstorage.getItem('ingreds') == null) ||
           DateTime.parse(date!).isBefore(DateTime.now())) {
-        var url = "https://api-tassie.herokuapp.com/recs/getIng/";
+        var url = "$baseAPI/recs/getIng/";
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,
@@ -222,7 +222,7 @@ class HomeHomeState extends State<HomeHome>
                     Provider.of<LeftSwipe>(context, listen: false)
                         .setSwipe(false);
                     var url =
-                        "https://api-tassie.herokuapp.com/recs/createRecipe/";
+                        "$baseAPI/recs/createRecipe/";
 
                     var token = await storage.read(key: "token");
                     Response response = await dio.get(

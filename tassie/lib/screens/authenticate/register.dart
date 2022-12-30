@@ -26,7 +26,7 @@ class RegisterState extends State<Register> {
     // var dio = Dio();
     try {
       Response response = await dio
-          .get("https://api-tassie.herokuapp.com/user/username/$username");
+          .get("$baseAPI/user/username/$username");
       // var res = jsonDecode(response.toString());
 
       // if(response)
@@ -44,7 +44,7 @@ class RegisterState extends State<Register> {
     // var dio = Dio();
     try {
       Response response = await dio
-          .get("https://api-tassie.herokuapp.com/user/checkEmail/$email");
+          .get("$baseAPI/user/checkEmail/$email");
       // var res = jsonDecode(response.toString());
 
       // if(response)
@@ -223,7 +223,7 @@ class RegisterState extends State<Register> {
                         // }
                         if (_formKey.currentState!.validate()) {
                           // final response = await dio.post(
-                          //   "https://api-tassie.herokuapp.com/user/login/",
+                          //   "$baseAPI/user/login/",
                           //   options: Options(headers: {
                           //     HttpHeaders.contentTypeHeader: "application/json",
                           //   }),
@@ -240,8 +240,8 @@ class RegisterState extends State<Register> {
                           }
                           try {
                             Response response = await dio.post(
-                                // "https://api-tassie.herokuapp.com/user/",
-                                "https://api-tassie.herokuapp.com/user/",
+                                // "$baseAPI/user/",
+                                "$baseAPI/user/",
                                 options: Options(headers: {
                                   HttpHeaders.contentTypeHeader:
                                       "application/json",

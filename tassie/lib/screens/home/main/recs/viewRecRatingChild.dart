@@ -142,7 +142,7 @@ class CreateRatingState extends State<CreateRating> {
         //         onPressed: () async {
         //           var token = await storage.read(key: "token");
         //           Response response =
-        //               await dio.post("https://api-tassie.herokuapp.com/recs/removeComment",
+        //               await dio.post("$baseAPI/recs/removeComment",
         //                   options: Options(headers: {
         //                     HttpHeaders.contentTypeHeader: "application/json",
         //                     HttpHeaders.authorizationHeader: "Bearer " + token!

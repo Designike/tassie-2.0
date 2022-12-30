@@ -1085,8 +1085,8 @@ class AddRecipeState extends State<AddRecipe> {
       var token = await storage.read(key: "token");
       // print(formData.files[0]);
       await dio.post(
-          // 'https://api-tassie.herokuapp.com/drive/upload',
-          'https://api-tassie.herokuapp.com/recs/resetImage/',
+          // '$baseAPI/drive/upload',
+          '$baseAPI/recs/resetImage/',
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
             HttpHeaders.authorizationHeader: "Bearer ${token!}"
@@ -1104,8 +1104,8 @@ class AddRecipeState extends State<AddRecipe> {
       var token = await storage.read(key: "token");
       // print(formData.files[0]);
       await dio.post(
-          // 'https://api-tassie.herokuapp.com/drive/upload',
-          'https://api-tassie.herokuapp.com/recs/resetImage/',
+          // '$baseAPI/drive/upload',
+          '$baseAPI/recs/resetImage/',
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
             HttpHeaders.authorizationHeader: "Bearer ${token!}"
@@ -1124,8 +1124,8 @@ class AddRecipeState extends State<AddRecipe> {
       var token = await storage.read(key: "token");
       // print(formData.files[0]);
       await dio.post(
-          // 'https://api-tassie.herokuapp.com/drive/upload',
-          'https://api-tassie.herokuapp.com/recs/resetImage/',
+          // '$baseAPI/drive/upload',
+          '$baseAPI/recs/resetImage/',
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
             HttpHeaders.authorizationHeader: "Bearer ${token!}"
@@ -1165,8 +1165,8 @@ class AddRecipeState extends State<AddRecipe> {
       // print(send);
       if (send.isNotEmpty) {
         Response response = await dio.post(
-          // 'https://api-tassie.herokuapp.com/drive/upload',
-          'https://api-tassie.herokuapp.com/recs/renameImages',
+          // '$baseAPI/drive/upload',
+          '$baseAPI/recs/renameImages',
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
             HttpHeaders.authorizationHeader: "Bearer ${token!}"
@@ -1238,7 +1238,7 @@ class AddRecipeState extends State<AddRecipe> {
                     return const Home();
                   }));
                   var url =
-                      "https://api-tassie.herokuapp.com/recs/deleteRecipe";
+                      "$baseAPI/recs/deleteRecipe";
                   var token = await storage.read(key: "token");
                   Response response = await dio.post(url,
                       options: Options(headers: {
@@ -1344,7 +1344,7 @@ class AddRecipeState extends State<AddRecipe> {
                       } else {
                         // to submit here
                         var url =
-                            "https://api-tassie.herokuapp.com/recs/updateRecipe";
+                            "$baseAPI/recs/updateRecipe";
                         var token = await storage.read(key: "token");
                         await dio.post(url,
                             options: Options(headers: {
@@ -1389,7 +1389,7 @@ class AddRecipeState extends State<AddRecipe> {
                   }
                   if (_currentStep == 1) {
                     var url =
-                        "https://api-tassie.herokuapp.com/recs/updateRecipe";
+                        "$baseAPI/recs/updateRecipe";
                     var token = await storage.read(key: "token");
                     await dio.post(url,
                         options: Options(headers: {
@@ -1415,7 +1415,7 @@ class AddRecipeState extends State<AddRecipe> {
                             4);
                       } else {
                         var url =
-                            "https://api-tassie.herokuapp.com/recs/updateRecipe";
+                            "$baseAPI/recs/updateRecipe";
                         var token = await storage.read(key: "token");
                         var time = int.parse(hour) * 60 + int.parse(min);
                         await dio.post(url,
@@ -1445,7 +1445,7 @@ class AddRecipeState extends State<AddRecipe> {
                   }
                   if (_currentStep == 3) {
                     var url =
-                        "https://api-tassie.herokuapp.com/recs/updateRecipe";
+                        "$baseAPI/recs/updateRecipe";
                     var token = await storage.read(key: "token");
                     await dio.post(url,
                         options: Options(headers: {
@@ -1462,7 +1462,7 @@ class AddRecipeState extends State<AddRecipe> {
                   }
                   if (_currentStep == 4) {
                     var url =
-                        "https://api-tassie.herokuapp.com/recs/updateRecipe";
+                        "$baseAPI/recs/updateRecipe";
                     var token = await storage.read(key: "token");
                     await dio.post(url,
                         options: Options(headers: {
@@ -1477,7 +1477,7 @@ class AddRecipeState extends State<AddRecipe> {
                   }
                   if (_currentStep == 5) {
                     var url =
-                        "https://api-tassie.herokuapp.com/recs/addHashtag";
+                        "$baseAPI/recs/addHashtag";
                     var token = await storage.read(key: "token");
                     await dio.post(url,
                         options: Options(headers: {

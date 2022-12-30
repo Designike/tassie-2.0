@@ -203,7 +203,7 @@ class FeedPostState extends State<FeedPost> {
                     onDoubleTap: () async {
                       if (!liked) {
                         var token = await storage.read(key: "token");
-                        dio.post("https://api-tassie.herokuapp.com/feed/like",
+                        dio.post("$baseAPI/feed/like",
                             options: Options(headers: {
                               HttpHeaders.contentTypeHeader: "application/json",
                               HttpHeaders.authorizationHeader:
@@ -292,7 +292,7 @@ class FeedPostState extends State<FeedPost> {
                                       var token =
                                           await storage.read(key: "token");
                                       dio.post(
-                                          "https://api-tassie.herokuapp.com/feed/unlike",
+                                          "$baseAPI/feed/unlike",
                                           options: Options(headers: {
                                             HttpHeaders.contentTypeHeader:
                                                 "application/json",
@@ -307,7 +307,7 @@ class FeedPostState extends State<FeedPost> {
                                       var token =
                                           await storage.read(key: "token");
                                       dio.post(
-                                          "https://api-tassie.herokuapp.com/feed/like",
+                                          "$baseAPI/feed/like",
                                           options: Options(headers: {
                                             HttpHeaders.contentTypeHeader:
                                                 "application/json",
@@ -376,7 +376,7 @@ class FeedPostState extends State<FeedPost> {
                             if (!isBookmarked) {
                               var token = await storage.read(key: "token");
                               await dio.post(
-                                  "https://api-tassie.herokuapp.com/feed/bookmark",
+                                  "$baseAPI/feed/bookmark",
                                   options: Options(headers: {
                                     HttpHeaders.contentTypeHeader:
                                         "application/json",
@@ -388,7 +388,7 @@ class FeedPostState extends State<FeedPost> {
                             } else {
                               var token = await storage.read(key: "token");
                               await dio.post(
-                                  "https://api-tassie.herokuapp.com/feed/removeBookmark",
+                                  "$baseAPI/feed/removeBookmark",
                                   options: Options(headers: {
                                     HttpHeaders.contentTypeHeader:
                                         "application/json",

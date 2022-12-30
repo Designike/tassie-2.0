@@ -35,7 +35,7 @@ class GoogleRegisterState extends State<GoogleRegister> {
     try {
       // print('');
       Response response = await dio
-          .get("https://api-tassie.herokuapp.com/user/username/$username");
+          .get("$baseAPI/user/username/$username");
       // var res = jsonDecode(response.toString());
 
       // if(response)
@@ -99,7 +99,7 @@ class GoogleRegisterState extends State<GoogleRegister> {
                     // var token = await storage.read(key: "token");
                     if (_formKey.currentState!.validate()) {
                       Response response = await dio.post(
-                          "https://api-tassie.herokuapp.com/user/googleRegister/",
+                          "$baseAPI/user/googleRegister/",
                           options: Options(headers: {
                             HttpHeaders.contentTypeHeader: "application/json",
                             // HttpHeaders.authorizationHeader: "Bearer " + token!

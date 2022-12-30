@@ -66,7 +66,7 @@ class AdvancedSearchResultsState extends State<AdvancedSearchResults>
           });
         }
         var url =
-            "https://api-tassie.herokuapp.com/search/lazyguess/$index/${widget.suggestionID}";
+            "$baseAPI/search/lazyguess/$index/${widget.suggestionID}";
         var token = await storage.read(key: "token");
         Response response = await dio.get(
           url,

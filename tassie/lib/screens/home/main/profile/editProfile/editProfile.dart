@@ -78,7 +78,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 var token = await storage.read(key: "token");
                 if (_formKey.currentState!.validate()) {
                   Response response = await dio.post(
-                      "https://api-tassie.herokuapp.com/profile/updateProfile/",
+                      "$baseAPI/profile/updateProfile/",
                       options: Options(headers: {
                         HttpHeaders.contentTypeHeader: "application/json",
                         HttpHeaders.authorizationHeader: "Bearer ${token!}"
