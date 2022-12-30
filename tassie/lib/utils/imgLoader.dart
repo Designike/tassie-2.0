@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
+import 'package:tassie/constants.dart';
 
 // AsyncMemoizer _memoizer = AsyncMemoizer();
 Future loadImg(key, AsyncMemoizer memoizer) async {
